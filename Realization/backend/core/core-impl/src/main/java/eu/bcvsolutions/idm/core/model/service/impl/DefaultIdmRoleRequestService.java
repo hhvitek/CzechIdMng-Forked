@@ -348,7 +348,7 @@ public class DefaultIdmRoleRequestService
 
 	@Override
 	@Transactional
-	public IdmRoleRequestDto startRequestInternal(EntityEvent<IdmRoleRequestDto> event) {
+	public IdmRoleRequestDto startRequestInternal(EntityEvent<IdmRoleRequestDto> event, EntityEvent<?> parentEvent) {
 		IdmRoleRequestDto request = event.getContent();
 		//
 		LOG.debug("Start role request [{}], checkRight [{}], immediate [{}]",
@@ -374,9 +374,15 @@ public class DefaultIdmRoleRequestService
 		this.save(request);
 		event.setContent(request);
 		//
-		IdmRoleRequestDto content = this.publish(event).getContent();
+		IdmRoleRequestDto content = this.publish(event, parentEvent).getContent();
 		// Returned content is not actual, we need to load fresh request
 		return this.get(content.getId());
+	}
+
+	@Override
+	@Transactional
+	public IdmRoleRequestDto startRequestInternal(EntityEvent<IdmRoleRequestDto> event) {
+		return startRequestInternal(event, null);
 	}
 
 	@Override
@@ -1061,8 +1067,10 @@ public class DefaultIdmRoleRequestService
 		// prevent to start asynchronous event before previous update event is completed. 
 		requestEvent.setSuperOwnerId(applicant);
 		//
-		return startRequestInternal(requestEvent);
+		return startRequestInternal(requestEvent, parentEvent);
 	}
+
+
 
 	@Override
 	public IdmConceptRoleRequestDto createConcept(IdmRoleRequestDto roleRequest, IdmIdentityContractDto contract, UUID identityRoleId,
