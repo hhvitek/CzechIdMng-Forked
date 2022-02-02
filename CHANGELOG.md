@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [11.2.4]
+
+### Developer
+
+- 🟢 [#3047](https://redmine.czechidm.com/issues/3047) - Execution of AbstractLongRunningTaskExecutor#end method is no longer
+locked by EntityEventLock. This enables other threads to run, without waiting for currently executed LRT to finish.
+
+
 ## [11.2.0]
 
 ### Administrator
