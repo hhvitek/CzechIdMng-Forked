@@ -16,6 +16,7 @@ import java.util.UUID;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import eu.bcvsolutions.idm.acc.domain.AccountType;
 import eu.bcvsolutions.idm.core.api.config.datasource.CoreEntityManager;
 import org.activiti.engine.ProcessEngine;
 import org.junit.After;
@@ -37,7 +38,6 @@ import eu.bcvsolutions.idm.acc.domain.SynchronizationInactiveOwnerBehaviorType;
 import eu.bcvsolutions.idm.acc.domain.SynchronizationLinkedActionType;
 import eu.bcvsolutions.idm.acc.domain.SynchronizationMissingEntityActionType;
 import eu.bcvsolutions.idm.acc.domain.SynchronizationUnlinkedActionType;
-import eu.bcvsolutions.idm.acc.domain.SystemEntityType;
 import eu.bcvsolutions.idm.acc.domain.SystemOperationType;
 import eu.bcvsolutions.idm.acc.dto.AbstractSysSyncConfigDto;
 import eu.bcvsolutions.idm.acc.dto.AccAccountDto;
@@ -76,6 +76,7 @@ import eu.bcvsolutions.idm.acc.service.api.SysSystemEntityService;
 import eu.bcvsolutions.idm.acc.service.api.SysSystemMappingService;
 import eu.bcvsolutions.idm.acc.service.api.SysSystemService;
 import eu.bcvsolutions.idm.acc.service.impl.DefaultSynchronizationServiceTest;
+import eu.bcvsolutions.idm.acc.service.impl.IdentitySynchronizationExecutor;
 import eu.bcvsolutions.idm.core.api.config.domain.EventConfiguration;
 import eu.bcvsolutions.idm.core.api.config.domain.PrivateIdentityConfiguration;
 import eu.bcvsolutions.idm.core.api.domain.AutomaticRoleAttributeRuleComparison;
@@ -1004,7 +1005,7 @@ public class IdentitySyncTest extends AbstractIntegrationTest {
 		this.getBean().setTestData(userTwo, testFirstName, testLastName);
 
 		SysSystemMappingFilter mappingFilter = new SysSystemMappingFilter();
-		mappingFilter.setEntityType(SystemEntityType.IDENTITY);
+		mappingFilter.setEntityType(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE);
 		mappingFilter.setSystemId(system.getId());
 		mappingFilter.setOperationType(SystemOperationType.SYNCHRONIZATION);
 		List<SysSystemMappingDto> mappings = systemMappingService.find(mappingFilter, null).getContent();
@@ -2680,7 +2681,7 @@ public class IdentitySyncTest extends AbstractIntegrationTest {
 		Assert.assertEquals(1, identities.size());
 
 		// System entity is no longer "wish"
-		SysSystemEntityDto systemEntity = systemEntityService.getBySystemAndEntityTypeAndUid(system, SystemEntityType.IDENTITY, IDENTITY_ONE);
+		SysSystemEntityDto systemEntity = systemEntityService.getBySystemAndEntityTypeAndUid(system, IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE, IDENTITY_ONE);
 		Assert.assertFalse(systemEntity.isWish());
 
 		// Delete log
@@ -2709,7 +2710,7 @@ public class IdentitySyncTest extends AbstractIntegrationTest {
 		Assert.assertFalse(log.isContainsError());
 
 		// System entity is no longer "wish"
-		SysSystemEntityDto systemEntity = systemEntityService.getBySystemAndEntityTypeAndUid(system, SystemEntityType.IDENTITY, IDENTITY_ONE);
+		SysSystemEntityDto systemEntity = systemEntityService.getBySystemAndEntityTypeAndUid(system, IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE, IDENTITY_ONE);
 		Assert.assertFalse(systemEntity.isWish());
 
 		// Delete log
@@ -2743,7 +2744,7 @@ public class IdentitySyncTest extends AbstractIntegrationTest {
 		Assert.assertFalse(log.isContainsError());
 
 		// System entity has "wish"
-		SysSystemEntityDto systemEntity = systemEntityService.getBySystemAndEntityTypeAndUid(system, SystemEntityType.IDENTITY, IDENTITY_ONE);
+		SysSystemEntityDto systemEntity = systemEntityService.getBySystemAndEntityTypeAndUid(system, IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE, IDENTITY_ONE);
 		Assert.assertTrue(systemEntity.isWish());
 
 		// Delete log
@@ -2777,7 +2778,7 @@ public class IdentitySyncTest extends AbstractIntegrationTest {
 		Assert.assertFalse(log.isContainsError());
 
 		// System entity has "wish"
-		SysSystemEntityDto systemEntity = systemEntityService.getBySystemAndEntityTypeAndUid(system, SystemEntityType.IDENTITY, IDENTITY_ONE);
+		SysSystemEntityDto systemEntity = systemEntityService.getBySystemAndEntityTypeAndUid(system, IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE, IDENTITY_ONE);
 		Assert.assertTrue(systemEntity.isWish());
 
 		// Delete log
@@ -2814,7 +2815,7 @@ public class IdentitySyncTest extends AbstractIntegrationTest {
 		Assert.assertFalse(log.isContainsError());
 
 		// System entity has no longer "wish"
-		SysSystemEntityDto systemEntity = systemEntityService.getBySystemAndEntityTypeAndUid(system, SystemEntityType.IDENTITY, IDENTITY_ONE);
+		SysSystemEntityDto systemEntity = systemEntityService.getBySystemAndEntityTypeAndUid(system, IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE, IDENTITY_ONE);
 		Assert.assertFalse(systemEntity.isWish());
 
 		// Delete log
@@ -2855,7 +2856,7 @@ public class IdentitySyncTest extends AbstractIntegrationTest {
 		Assert.assertFalse(log.isContainsError());
 
 		// System entity has "wish"
-		SysSystemEntityDto systemEntity = systemEntityService.getBySystemAndEntityTypeAndUid(system, SystemEntityType.IDENTITY, IDENTITY_ONE);
+		SysSystemEntityDto systemEntity = systemEntityService.getBySystemAndEntityTypeAndUid(system, IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE, IDENTITY_ONE);
 		Assert.assertTrue(systemEntity.isWish());
 
 		// Delete log
@@ -3063,7 +3064,7 @@ public class IdentitySyncTest extends AbstractIntegrationTest {
 	public SysSyncIdentityConfigDto doCreateSyncConfig(SysSystemDto system, boolean correlationByEmail) {
 
 		SysSystemMappingFilter mappingFilter = new SysSystemMappingFilter();
-		mappingFilter.setEntityType(SystemEntityType.IDENTITY);
+		mappingFilter.setEntityType(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE);
 		mappingFilter.setSystemId(system.getId());
 		mappingFilter.setOperationType(SystemOperationType.SYNCHRONIZATION);
 		List<SysSystemMappingDto> mappings = systemMappingService.find(mappingFilter, null).getContent();
@@ -3122,9 +3123,10 @@ public class IdentitySyncTest extends AbstractIntegrationTest {
 		// Create synchronization mapping
 		SysSystemMappingDto syncSystemMapping = new SysSystemMappingDto();
 		syncSystemMapping.setName(getHelper().createName());
-		syncSystemMapping.setEntityType(SystemEntityType.IDENTITY);
+		syncSystemMapping.setEntityType(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE);
 		syncSystemMapping.setOperationType(SystemOperationType.SYNCHRONIZATION);
 		syncSystemMapping.setObjectClass(objectClasses.get(0).getId());
+		syncSystemMapping.setAccountType(AccountType.PERSONAL);
 		final SysSystemMappingDto syncMapping = systemMappingService.save(syncSystemMapping);
 		createMapping(system, syncMapping);
 		this.getBean().initIdentityData(username, email);
@@ -3262,7 +3264,7 @@ public class IdentitySyncTest extends AbstractIntegrationTest {
 	private void createSystemEntityWish(SysSystemDto system) {
 		SysSystemEntityDto systemEntity = new SysSystemEntityDto();
 		systemEntity.setUid(IDENTITY_ONE);
-		systemEntity.setEntityType(SystemEntityType.IDENTITY);
+		systemEntity.setEntityType(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE);
 		systemEntity.setWish(true);
 		systemEntity.setSystem(system.getId());
 		systemEntity = systemEntityService.save(systemEntity);

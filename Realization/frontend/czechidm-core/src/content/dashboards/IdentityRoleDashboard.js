@@ -49,12 +49,12 @@ class IdentityRoleDashboard extends Basic.AbstractContent {
             forceSearchParameters={
               new Domain.SearchParameters()
                 .setFilter('identityId', entityId)
+                .setFilter('onlyAssignments', true)
                 .setFilter('directRole', true)
                 .setFilter('addEavMetadata', true)
             }
             showAddButton={ false }
             match={{params: {...(this.props.match ? this.props.match.params : []), entityId }}}
-            columns={ _.difference(IdentityRoleTable.defaultProps.columns, ['directRole', 'contractPosition']) }
             _permissions={ permissions }/>
         </Basic.Panel>
       </Basic.Div>

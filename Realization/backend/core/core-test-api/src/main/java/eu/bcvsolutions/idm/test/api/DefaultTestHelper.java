@@ -12,6 +12,7 @@ import java.util.function.Function;
 
 import javax.sql.DataSource;
 
+import eu.bcvsolutions.idm.core.api.dto.ApplicantImplDto;
 import eu.bcvsolutions.idm.core.scheduler.api.service.LongRunningTaskExecutor;
 import org.flywaydb.core.internal.exception.FlywaySqlException;
 import org.flywaydb.core.internal.jdbc.JdbcUtils;
@@ -388,6 +389,7 @@ public class DefaultTestHelper implements TestHelper {
 		waitForResult(res -> {
 			IdmLongRunningTaskFilter filter = new IdmLongRunningTaskFilter();
 			filter.setOperationStates(Lists.newArrayList(OperationState.CREATED, OperationState.RUNNING));
+			filter.setRunning(true);
 			filter.setTransactionId(transactionId);
 			//
 			List<IdmLongRunningTaskDto> tasks = taskManager.findLongRunningTasks(filter, null).getContent();
@@ -768,7 +770,7 @@ public class DefaultTestHelper implements TestHelper {
 	@Override
 	public IdmRoleRequestDto createRoleRequest(IdmIdentityContractDto contract, ConceptRoleRequestOperation operation, IdmRoleDto... roles) {
 		IdmRoleRequestDto roleRequest = new IdmRoleRequestDto();
-		roleRequest.setApplicant(contract.getIdentity());
+		roleRequest.setApplicantInfo(new ApplicantImplDto(contract.getIdentity(), IdmIdentityDto.class.getCanonicalName()));
 		roleRequest.setRequestedByType(RoleRequestedByType.MANUALLY);
 		roleRequest.setExecuteImmediately(true);
 		roleRequest = roleRequestService.save(roleRequest);
@@ -1024,6 +1026,12 @@ public class DefaultTestHelper implements TestHelper {
 	}
 
 	@Override
+	public IdmRoleDto createRoleIfNotExists(String roleCode) {
+		final IdmRoleDto byCode = roleService.getByCode(roleCode);
+		return byCode == null ? createRole(roleCode) : byCode;
+	}
+
+	@Override
 	public IdmFormAttributeDto createEavAttribute(String code, Class<? extends Identifiable> clazz,
 			PersistentType type) {
 		IdmFormAttributeDto eavAttribute = new IdmFormAttributeDto();
@@ -1041,8 +1049,15 @@ public class DefaultTestHelper implements TestHelper {
 	@Override
 	public void setEavValue(Identifiable owner, IdmFormAttributeDto attribute, Class<? extends Identifiable> clazz,
 			Serializable value, PersistentType type) {
-		UUID ownerId = UUID.fromString(owner.getId().toString());
 		IdmFormDefinitionDto main = formDefinitionService.findOneByMain(clazz.getName());
+		
+		setEavValue(owner, attribute, clazz, value, type, main);
+	}
+	
+	@Override
+	public void setEavValue(Identifiable owner, IdmFormAttributeDto attribute, Class<? extends Identifiable> clazz,
+			Serializable value, PersistentType type, IdmFormDefinitionDto formDefinition) {
+		UUID ownerId = UUID.fromString(owner.getId().toString());
 		List<IdmFormValueDto> values = Lists.newArrayList(formService.getValues(ownerId, clazz, attribute));
 		
 		if (values.isEmpty()) {
@@ -1056,7 +1071,7 @@ public class DefaultTestHelper implements TestHelper {
 			values.get(0).setValue(value);
 		}
 		
-		formService.saveFormInstance(owner, main, values);
+		formService.saveFormInstance(owner, formDefinition, values);
 		
 	}
 

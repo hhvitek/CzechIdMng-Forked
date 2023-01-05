@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import java.time.LocalDate;
+
+import eu.bcvsolutions.idm.core.api.service.RoleAssignmentValidRequestService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 
 import eu.bcvsolutions.idm.acc.TestHelper;
-import eu.bcvsolutions.idm.acc.domain.SystemEntityType;
+import eu.bcvsolutions.idm.acc.domain.AccountType;
 import eu.bcvsolutions.idm.acc.domain.SystemOperationType;
 import eu.bcvsolutions.idm.acc.dto.AccIdentityAccountDto;
 import eu.bcvsolutions.idm.acc.dto.SysRoleSystemDto;
@@ -33,6 +35,7 @@ import eu.bcvsolutions.idm.acc.service.api.SysSchemaAttributeService;
 import eu.bcvsolutions.idm.acc.service.api.SysSystemAttributeMappingService;
 import eu.bcvsolutions.idm.acc.service.api.SysSystemMappingService;
 import eu.bcvsolutions.idm.acc.service.api.SysSystemService;
+import eu.bcvsolutions.idm.acc.service.impl.IdentitySynchronizationExecutor;
 import eu.bcvsolutions.idm.core.api.domain.OperationState;
 import eu.bcvsolutions.idm.core.api.dto.IdmIdentityContractDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmIdentityDto;
@@ -79,6 +82,8 @@ public class IdentityRoleValidRequestSchedulerTest extends AbstractIntegrationTe
 	@Autowired private IdmIdentityRoleRepository identityRoleRepository;
 	@Autowired private IdmLongRunningTaskService longRunningTaskService;
 	@Autowired private IdmIdentityRoleValidRequestService identityRoleValidRequestService;
+
+	@Autowired List<RoleAssignmentValidRequestService> vrs;
 	//
 	// local variables
 	private SysSystemDto system = null;
@@ -158,7 +163,7 @@ public class IdentityRoleValidRequestSchedulerTest extends AbstractIntegrationTe
 		// it must not exists
 		assertEquals(true, list.isEmpty());
 		//
-		IdentityRoleValidRequestTaskExecutor taskExecutor1 = new IdentityRoleValidRequestTaskExecutor();
+		IdentityRoleValidRequestTaskExecutor taskExecutor1 = new IdentityRoleValidRequestTaskExecutor(vrs);
 		
 		LongRunningFutureTask<Boolean> futureTask1 = longRunningTaskManager.execute(taskExecutor1);
 		assertEquals(true, futureTask1.getFutureTask().get());
@@ -180,7 +185,7 @@ public class IdentityRoleValidRequestSchedulerTest extends AbstractIntegrationTe
 		identityRoleRepository.save(identityRole);
 		
 		// execute again
-		IdentityRoleValidRequestTaskExecutor taskExecutor2 = new IdentityRoleValidRequestTaskExecutor();
+		IdentityRoleValidRequestTaskExecutor taskExecutor2 = new IdentityRoleValidRequestTaskExecutor(vrs);
 
 		LongRunningFutureTask<Boolean> futureTask2 = longRunningTaskManager.execute(taskExecutor2);
 		
@@ -238,7 +243,7 @@ public class IdentityRoleValidRequestSchedulerTest extends AbstractIntegrationTe
 		list = identityRoleValidRequestService.findAllValid();
 		assertEquals(MAX_CREATE, list.size());
 		
-		IdentityRoleValidRequestTaskExecutor taskExecutor = new IdentityRoleValidRequestTaskExecutor();
+		IdentityRoleValidRequestTaskExecutor taskExecutor = new IdentityRoleValidRequestTaskExecutor(vrs);
 		LongRunningFutureTask<Boolean> futureTask = longRunningTaskManager.execute(taskExecutor);
 		
 		assertEquals(true, futureTask.getFutureTask().get());
@@ -324,9 +329,10 @@ public class IdentityRoleValidRequestSchedulerTest extends AbstractIntegrationTe
 		// create test mapping
 		systemMapping = new SysSystemMappingDto();
 		systemMapping.setName("default_" + System.currentTimeMillis());
-		systemMapping.setEntityType(SystemEntityType.IDENTITY);
+		systemMapping.setEntityType(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE);
 		systemMapping.setOperationType(SystemOperationType.PROVISIONING);
 		systemMapping.setObjectClass(objectClasses.get(0).getId());
+		systemMapping.setAccountType(AccountType.PERSONAL);
 		systemMapping = mappingService.save(systemMapping);
 		
 		SysSchemaAttributeFilter schemaAttributeFilter = new SysSchemaAttributeFilter();

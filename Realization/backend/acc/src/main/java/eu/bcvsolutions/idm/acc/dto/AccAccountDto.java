@@ -1,36 +1,45 @@
 package eu.bcvsolutions.idm.acc.dto;
 
+import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
-import java.time.ZonedDateTime;
+import javax.validation.constraints.Size;
+
 import org.springframework.hateoas.core.Relation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.google.common.annotations.Beta;
 
-import eu.bcvsolutions.idm.acc.domain.AccountType;
-import eu.bcvsolutions.idm.acc.domain.SystemEntityType;
+import eu.bcvsolutions.idm.core.api.domain.DefaultFieldLengths;
 import eu.bcvsolutions.idm.core.api.domain.Embedded;
-import eu.bcvsolutions.idm.core.api.dto.AbstractDto;
+import eu.bcvsolutions.idm.core.api.domain.ExternalIdentifiable;
+import eu.bcvsolutions.idm.core.api.dto.FormableDto;
+import eu.bcvsolutions.idm.core.eav.api.dto.IdmFormDefinitionDto;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Account on target system DTO
  * 
  * @author Svanda
+ * @author Roman Kucera
+ * @author Tomáš Doischer
  *
  */
 
 @Relation(collectionRelation = "accounts")
-public class AccAccountDto extends AbstractDto {
+public class AccAccountDto extends FormableDto implements ExternalIdentifiable, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	public static final String PROPERTY_END_OF_PROTECTION = "endOfProtection";
 	public static final String PROPERTY_ECHO = "echo";
 
+	@Size(max = DefaultFieldLengths.NAME)
+	@ApiModelProperty(notes = "Unique external identifier.")
+	private String externalId;
 	private String uid;
-	private AccountType accountType;
 	@Embedded(dtoClass = SysSystemDto.class)
 	private UUID system;
 	@Embedded(dtoClass = SysSystemEntityDto.class)
@@ -39,11 +48,15 @@ public class AccAccountDto extends AbstractDto {
 	private boolean inProtection;
 	private ZonedDateTime endOfProtection;
 	private String realUid;
-	private SystemEntityType entityType;
+	private String entityType;
 	@Beta
 	private UUID targetEntityId;
 	@Beta
 	private String targetEntityType;
+	@Embedded(dtoClass = SysSystemMappingDto.class)
+	private UUID systemMapping;
+	@Embedded(dtoClass = IdmFormDefinitionDto.class)
+	private UUID formDefinition;
 
 	public String getUid() {
 		return uid;
@@ -51,14 +64,6 @@ public class AccAccountDto extends AbstractDto {
 
 	public void setUid(String uid) {
 		this.uid = uid;
-	}
-
-	public AccountType getAccountType() {
-		return accountType;
-	}
-
-	public void setAccountType(AccountType accountType) {
-		this.accountType = accountType;
 	}
 
 	public UUID getSystem() {
@@ -120,11 +125,11 @@ public class AccAccountDto extends AbstractDto {
 		this.realUid = realUid;
 	}
 	
-	public SystemEntityType getEntityType() {
+	public String getEntityType() {
 		return entityType;
 	}
 	
-	public void setEntityType(SystemEntityType entityType) {
+	public void setEntityType(String entityType) {
 		this.entityType = entityType;
 	}
 
@@ -146,5 +151,31 @@ public class AccAccountDto extends AbstractDto {
 	@Beta
 	public void setTargetEntityType(String targetEntityType) {
 		this.targetEntityType = targetEntityType;
+	}
+
+	public UUID getSystemMapping() {
+		return systemMapping;
+	}
+
+	public void setSystemMapping(UUID systemMapping) {
+		this.systemMapping = systemMapping;
+	}
+
+	public UUID getFormDefinition() {
+		return formDefinition;
+	}
+
+	public void setFormDefinition(UUID formDefinition) {
+		this.formDefinition = formDefinition;
+	}
+
+	@Override
+	public void setExternalId(String externalId) {
+		this.externalId = externalId;
+	}
+
+	@Override
+	public String getExternalId() {
+		return externalId;
 	}
 }

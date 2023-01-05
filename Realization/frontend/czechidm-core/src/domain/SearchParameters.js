@@ -172,7 +172,6 @@ export default class SearchParameters {
     if (!filters) {
       newState.clearFilter();
     } else if (!(filters instanceof Immutable.Map)) {
-      // console.log('#setFilters supports immutable maps only');
       newState.clearFilter();
     } else {
       newState.filters = filters;
@@ -373,6 +372,7 @@ export default class SearchParameters {
   static getFilterData(filterForm) {
     const filters = {};
     const filterValues = filterForm.getData();
+
     for (const property in filterValues) {
       if (!filterValues.hasOwnProperty(property)) {
         continue;

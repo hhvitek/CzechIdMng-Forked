@@ -27,6 +27,10 @@ import UniformPasswordSystemManager from './UniformPasswordSystemManager';
 import RemoteServerManager from './RemoteServerManager';
 import SystemGroupManager from './SystemGroupManager';
 import SystemGroupSystemManager from './SystemGroupSystemManager';
+import SystemOwnerRoleManager from './SystemOwnerRoleManager';
+import SystemOwnerManager from './SystemOwnerManager';
+import SystemEntityTypeManager from './SystemEntityTypeManager';
+import RequestAccountRoleManager from "./RequestAccountRoleManager";
 
 const ManagerRoot = {
   SystemManager,
@@ -57,7 +61,11 @@ const ManagerRoot = {
   UniformPasswordSystemManager,
   RemoteServerManager,
   SystemGroupManager,
-  SystemGroupSystemManager
+  RequestAccountRoleManager,
+  SystemGroupSystemManager,
+  SystemOwnerRoleManager,
+  SystemOwnerManager,
+  SystemEntityTypeManager
 };
 
 ManagerRoot.version = '0.0.1';

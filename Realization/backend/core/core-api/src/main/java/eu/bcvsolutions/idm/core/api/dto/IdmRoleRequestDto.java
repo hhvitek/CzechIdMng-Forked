@@ -7,6 +7,8 @@ import java.util.UUID;
 
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import eu.bcvsolutions.idm.core.api.dto.ApplicantImplDto.Converter;
 import org.springframework.hateoas.core.Relation;
 
 import eu.bcvsolutions.idm.core.api.domain.DefaultFieldLengths;
@@ -25,15 +27,18 @@ public class IdmRoleRequestDto extends AbstractDto implements Loggable {
 
     private static final long serialVersionUID = 1L;
     public static final String WF_PROCESS_FIELD = "wfProcessId";
+    public static final String APPLICANT_INFO_FIELD = "applicantInfo";
 
-    @Embedded(dtoClass = IdmIdentityDto.class)
     private UUID applicant;
+
+    @JsonDeserialize(converter = Converter.class)
+    private ApplicantDto applicantInfo;
     private RoleRequestState state;
     private RoleRequestedByType requestedByType;
     //In embedded map, is under wfProcessId key actual task - WorkflowProcessInstanceDto.class
     private String wfProcessId;
     private String originalRequest;
-    private List<IdmConceptRoleRequestDto> conceptRoles;
+    private List<AbstractConceptRoleRequestDto> conceptRoles;
     private boolean executeImmediately = false;
     @Embedded(dtoClass = IdmRoleRequestDto.class)
     private UUID duplicatedToRequest;
@@ -75,14 +80,26 @@ public class IdmRoleRequestDto extends AbstractDto implements Loggable {
         this.applicant = applicant;
     }
 
-    public List<IdmConceptRoleRequestDto> getConceptRoles() {
+    public ApplicantDto getApplicantInfo() {
+        if (applicantInfo == null && applicant != null) {
+            // fallback for backwards compatibility
+            applicantInfo = new ApplicantImplDto(applicant, IdmIdentityDto.class.getCanonicalName());
+        }
+        return applicantInfo;
+    }
+
+    public void setApplicantInfo(ApplicantDto applicantInfo) {
+        this.applicantInfo = applicantInfo;
+    }
+
+    public List<AbstractConceptRoleRequestDto> getConceptRoles() {
         if (conceptRoles == null) {
             conceptRoles = new ArrayList<>();
         }
         return conceptRoles;
     }
 
-    public void setConceptRoles(List<IdmConceptRoleRequestDto> conceptRoles) {
+    public void setConceptRoles(List<AbstractConceptRoleRequestDto> conceptRoles) {
         this.conceptRoles = conceptRoles;
     }
 

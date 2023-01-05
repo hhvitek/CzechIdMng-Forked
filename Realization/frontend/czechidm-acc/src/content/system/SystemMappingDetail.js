@@ -8,25 +8,27 @@ import _ from 'lodash';
 import uuid from 'uuid';
 import { Advanced, Basic, Domain, Enums, Managers, Utils } from 'czechidm-core';
 import MappingContextCompleters from 'czechidm-core/src/content/script/completers/MappingContextCompleters';
-import { SchemaObjectClassManager, SystemAttributeMappingManager, SystemManager, SystemMappingManager } from '../../redux';
-import SystemEntityTypeEnum from '../../domain/SystemEntityTypeEnum';
+import { SchemaObjectClassManager, SystemAttributeMappingManager, SystemManager, SystemMappingManager, SystemEntityTypeManager } from '../../redux';
 import SystemOperationTypeEnum from '../../domain/SystemOperationTypeEnum';
 import ValidationMessageSystemMapping from './ValidationMessageSystemMapping';
+import AccountTypeEnum from '../../domain/AccountTypeEnum';
 
 const uiKey = 'system-mappings';
 const uiKeyAttributes = 'system-attribute-mappings';
+const SYSTEM_MAPPING_VALIDATION = 'SYSTEM_MAPPING_VALIDATION';
 const systemAttributeMappingManager = new SystemAttributeMappingManager();
 const systemManager = new SystemManager();
 const treeTypeManager = new Managers.TreeTypeManager();
 const systemMappingManager = new SystemMappingManager();
 const schemaObjectClassManager = new SchemaObjectClassManager();
-const SYSTEM_MAPPING_VALIDATION = 'SYSTEM_MAPPING_VALIDATION';
 const scriptManager = new Managers.ScriptManager();
+const systemEntityTypeManager = new SystemEntityTypeManager();
 
 /**
  * System mapping detail.
  *
  * @author Vít Švanda
+ * @author Roman Kucera
  */
 class SystemMappingDetail extends Advanced.AbstractTableContent {
 
@@ -133,8 +135,9 @@ class SystemMappingDetail extends Advanced.AbstractTableContent {
         mapping: {
           name: 'Mapping',
           system: entityId,
-          entityType: SystemEntityTypeEnum.findKeyBySymbol(SystemEntityTypeEnum.IDENTITY),
-          operationType: SystemOperationTypeEnum.findKeyBySymbol(SystemOperationTypeEnum.PROVISIONING)
+          entityType: 'IDENTITY',
+          operationType: SystemOperationTypeEnum.findKeyBySymbol(SystemOperationTypeEnum.PROVISIONING),
+          accountType: AccountTypeEnum.findKeyBySymbol(AccountTypeEnum.PERSONAL)
         }
       });
     } else {
@@ -272,6 +275,10 @@ class SystemMappingDetail extends Advanced.AbstractTableContent {
 
   _onChangeEntityType(entity) {
     this.setState({_entityType: entity.value});
+  }
+
+  _onChangeOperationType(entity) {
+    this.setState({_operationType: entity.value});
   }
 
   _showValidateSystemMessage(mappingId) {
@@ -421,37 +428,48 @@ class SystemMappingDetail extends Advanced.AbstractTableContent {
 
   render() {
     const { _showLoading, _mapping, showOnlyAttributes, showOnlyMapping } = this.props;
-    const { _entityType, activeKey, validationError} = this.state;
+    const { _entityType, activeKey, validationError, _operationType} = this.state;
     const isNew = this._getIsNew();
     const mapping = isNew ? this.state.mapping : _mapping;
-
+    
     let isSelectedTree = false;
     if (_entityType !== undefined) {
-      if (_entityType === SystemEntityTypeEnum.findKeyBySymbol(SystemEntityTypeEnum.TREE)) {
+      if (_entityType === 'TREE') {
         isSelectedTree = true;
       }
-    } else if (mapping && mapping.entityType === SystemEntityTypeEnum.findKeyBySymbol(SystemEntityTypeEnum.TREE)) {
+    } else if (mapping && mapping.entityType === 'TREE') {
       isSelectedTree = true;
     }
 
     let isSelectedIdentity = false;
     if (_entityType !== undefined) {
-      if (_entityType === SystemEntityTypeEnum.findKeyBySymbol(SystemEntityTypeEnum.IDENTITY)) {
+      if (_entityType === 'IDENTITY') {
         isSelectedIdentity = true;
       }
-    } else if (mapping && mapping.entityType === SystemEntityTypeEnum.findKeyBySymbol(SystemEntityTypeEnum.IDENTITY)) {
+    } else if (mapping && mapping.entityType === 'IDENTITY') {
       isSelectedIdentity = true;
     }
 
+    let operationTypeToFilter = SystemOperationTypeEnum.findKeyBySymbol(SystemOperationTypeEnum.SYNCHRONIZATION);
     let isSelectedProvisioning = false;
     if (mapping && mapping.operationType === 'PROVISIONING') {
       isSelectedProvisioning = true;
+      operationTypeToFilter = SystemOperationTypeEnum.findKeyBySymbol(SystemOperationTypeEnum.PROVISIONING);
+    }
+
+    if (_operationType !== undefined) {
+      operationTypeToFilter = _operationType;
     }
 
     const systemId = this.props.match.params.entityId;
     const forceSearchParameters = new Domain.SearchParameters()
       .setFilter('systemMappingId', _mapping ? _mapping.id : Domain.SearchParameters.BLANK_UUID);
     const objectClassSearchParameters = new Domain.SearchParameters().setFilter('systemId', systemId || Domain.SearchParameters.BLANK_UUID);
+    const forceSearchMappings = new Domain.SearchParameters()
+    .setFilter('operationType', operationTypeToFilter === SystemOperationTypeEnum.findKeyBySymbol(SystemOperationTypeEnum.PROVISIONING) ? 
+    SystemOperationTypeEnum.findKeyBySymbol(SystemOperationTypeEnum.SYNCHRONIZATION) : SystemOperationTypeEnum.findKeyBySymbol(SystemOperationTypeEnum.PROVISIONING))
+    .setFilter('systemId', systemId || Domain.SearchParameters.BLANK_UUID);
+    
     return (
       <div>
         <Helmet title={this.i18n('title')}/>
@@ -482,9 +500,16 @@ class SystemMappingDetail extends Advanced.AbstractTableContent {
                   <Basic.EnumSelectBox
                     ref="operationType"
                     enum={SystemOperationTypeEnum}
+                    onChange={this._onChangeOperationType.bind(this)}
                     label={this.i18n('acc:entity.SystemMapping.operationType')}
                     required
                     clearable={false}/>
+                  <Basic.SelectBox
+                    ref="connectedSystemMappingId"
+                    manager={systemMappingManager}
+                    forceSearchParameters={forceSearchMappings}
+                    label={this.i18n('acc:entity.SystemMapping.connectedMapping')}
+                    placeholder={systemId ? null : this.i18n('systemMapping.systemPlaceholder')} />
                   <Basic.TextField
                     ref="name"
                     label={this.i18n('acc:entity.SystemMapping.name')}
@@ -498,12 +523,11 @@ class SystemMappingDetail extends Advanced.AbstractTableContent {
                     readOnly={!Utils.Entity.isNew(mapping)}
                     required
                     clearable={false}/>
-                  <Basic.EnumSelectBox
+                  <Basic.SelectBox
                     ref="entityType"
-                    enum={SystemEntityTypeEnum}
+                    manager={ systemEntityTypeManager }
                     onChange={this._onChangeEntityType.bind(this)}
                     label={this.i18n('acc:entity.SystemMapping.entityType')}
-                    readOnly={!Utils.Entity.isNew(mapping)}
                     required
                     clearable={false}/>
                   <Basic.SelectBox
@@ -513,6 +537,12 @@ class SystemMappingDetail extends Advanced.AbstractTableContent {
                     required={isSelectedTree}
                     manager={treeTypeManager}
                   />
+                  <Basic.EnumSelectBox
+                    ref="accountType"
+                    enum={AccountTypeEnum}
+                    label={this.i18n('acc:entity.Account.accountType')}
+                    hidden={!isSelectedIdentity}
+                    required={isSelectedIdentity} />
                   <Basic.Checkbox
                     ref="protectionEnabled"
                     label={this.i18n('acc:entity.SystemMapping.protectionEnabled')}

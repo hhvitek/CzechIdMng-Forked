@@ -1,12 +1,15 @@
 package eu.bcvsolutions.idm.acc;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
+import eu.bcvsolutions.idm.acc.domain.AccountType;
 import eu.bcvsolutions.idm.acc.domain.OperationResultType;
 import eu.bcvsolutions.idm.acc.domain.SynchronizationActionType;
-import eu.bcvsolutions.idm.acc.domain.SystemEntityType;
 import eu.bcvsolutions.idm.acc.dto.AbstractSysSyncConfigDto;
+import eu.bcvsolutions.idm.acc.dto.AccAccountConceptRoleRequestDto;
 import eu.bcvsolutions.idm.acc.dto.AccAccountDto;
+import eu.bcvsolutions.idm.acc.dto.AccAccountRoleAssignmentDto;
 import eu.bcvsolutions.idm.acc.dto.AccIdentityAccountDto;
 import eu.bcvsolutions.idm.acc.dto.SysRoleSystemDto;
 import eu.bcvsolutions.idm.acc.dto.SysSchemaObjectClassDto;
@@ -14,10 +17,16 @@ import eu.bcvsolutions.idm.acc.dto.SysSyncLogDto;
 import eu.bcvsolutions.idm.acc.dto.SysSystemDto;
 import eu.bcvsolutions.idm.acc.dto.SysSystemEntityDto;
 import eu.bcvsolutions.idm.acc.dto.SysSystemMappingDto;
+import eu.bcvsolutions.idm.acc.dto.SysSystemOwnerDto;
+import eu.bcvsolutions.idm.acc.dto.SysSystemOwnerRoleDto;
 import eu.bcvsolutions.idm.acc.entity.SysSystem;
 import eu.bcvsolutions.idm.acc.entity.TestResource;
+import eu.bcvsolutions.idm.core.api.domain.ConceptRoleRequestOperation;
+import eu.bcvsolutions.idm.core.api.dto.AbstractDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmIdentityDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmRoleDto;
+import eu.bcvsolutions.idm.core.api.dto.IdmRoleRequestDto;
+import eu.bcvsolutions.idm.core.security.api.domain.GuardedString;
 import eu.bcvsolutions.idm.ic.service.api.IcConnectorFacade;
 
 /**
@@ -91,12 +100,36 @@ public interface TestHelper extends eu.bcvsolutions.idm.test.api.TestHelper {
 	SysSystemDto createTestResourceSystem(boolean withMapping, String systemName);
 	
 	/**
+	 * Creates default provisioning mapping for the given system and entity type
+	 * 
+	 * @param system
+	 * @return
+	 */
+	SysSystemMappingDto createMapping(SysSystemDto system, String entityType);
+
+	/**
 	 * Creates default provisioning mapping for the given system
 	 * 
 	 * @param system
 	 * @return
 	 */
 	SysSystemMappingDto createMapping(SysSystemDto system);
+
+	/**
+	 * Creates default provisioning mapping for the given system, entity type, account type
+	 * @param system
+	 * @param accountType
+	 * @return
+	 */
+	SysSystemMappingDto createMapping(SysSystemDto system, String entityType, AccountType accountType);
+
+	/**
+	 * reates default provisioning mapping for the given system, account type
+	 * @param system
+	 * @param accountType
+	 * @return
+	 */
+	SysSystemMappingDto createMapping(SysSystemDto system, AccountType accountType);
 
 	/**
 	 * Returns default mapping - provisioning, identity
@@ -125,6 +158,25 @@ public interface TestHelper extends eu.bcvsolutions.idm.test.api.TestHelper {
 	 * @return
 	 */
 	SysRoleSystemDto createRoleSystem(IdmRoleDto role, SysSystemDto system);
+
+	/**
+	 * Assing system to given role with mapping (provisioning, identity)
+	 * @param role
+	 * @param system
+	 * @param accountType
+	 * @return
+	 */
+	SysRoleSystemDto createRoleSystem(IdmRoleDto role, SysSystemDto system, AccountType accountType);
+
+	/**
+	 * Assing system to given role with mapping (provisioning, identity)
+	 * @param role
+	 * @param system
+	 * @param accountType
+	 * @return
+	 */
+	SysRoleSystemDto createRoleSystem(IdmRoleDto role, SysSystemDto system, AccountType accountType,
+			boolean createAccountByDefault);
 
 	/**
 	 * Find account on target system
@@ -171,11 +223,11 @@ public interface TestHelper extends eu.bcvsolutions.idm.test.api.TestHelper {
 	 * Create {@link AccAccountDto} and {@link AccIdentityAccountDto} for given
 	 * system and identity.
 	 *
-	 * @param type
+	 * @param systemEntityType
 	 * @param objectClass
 	 * @return
 	 */
-	SysSystemMappingDto createMappingSystem(SystemEntityType type, SysSchemaObjectClassDto objectClass);
+	SysSystemMappingDto createMappingSystem(String systemEntityType, SysSchemaObjectClassDto objectClass);
 
 	/**
 	 * Start synchronization by given sync config
@@ -210,4 +262,191 @@ public interface TestHelper extends eu.bcvsolutions.idm.test.api.TestHelper {
 	 * Manual delete. Because previous tests didn't make a delete well.
 	 */
 	void cleaner();
+
+	/**
+	 * Create system owner by identity
+	 * @param system
+	 * @param owner
+	 * @return
+	 */
+	SysSystemOwnerDto createSystemOwner(SysSystemDto system, IdmIdentityDto owner);
+
+	/**
+	 * Create system owner by role
+	 * @param system
+	 * @param owner
+	 * @return
+	 */
+	SysSystemOwnerRoleDto createSystemOwnerRole(SysSystemDto system, IdmRoleDto owner);
+
+	/**
+	 * Create direct (without role request) account role assignment.
+	 *
+	 * @param accountId
+	 * @param roleId
+	 * @return
+	 */
+    AccAccountRoleAssignmentDto createAccountRoleAssignment(UUID accountId, UUID roleId);
+
+	void deleteSystem(UUID systemId);
+
+	/**
+	 * Create direct (without role request) account role assignment
+	 * @param accAccountDto {@link AccAccountDto} to assign role to
+	 * @param role {@link IdmRoleDto} to assign
+	 * @return saved AccAccountRoleAssignmentDto
+	 */
+    AccAccountRoleAssignmentDto createAccountRoleAssignment(AccAccountDto accAccountDto, IdmRoleDto role);
+
+    /**
+     * Create direct (without role request) account role assignment with validity.
+     *
+     * @param accountId
+     * @param roleId
+     * @param from
+     * @param to
+     * @return
+     */
+    AccAccountRoleAssignmentDto createAccountRoleAssignment(UUID accountId, UUID roleId, LocalDate from, LocalDate to);
+
+    /**
+     * Directly (without role request) remove assigned account role.
+     *
+     * @param roleAssignment
+     */
+    void removeAccountRoleAssignment(AccAccountRoleAssignmentDto roleAssignment);
+
+    /**
+     * Creates an account. It will create a corresponding system with mapping and roles
+     * and an identity with a contract.
+     *
+     * @return
+     */
+    AccAccountDto createAccount();
+
+	AbstractDto createAccount(GuardedString password);
+
+    /**
+     * Assignes a role to an account via a role request.
+     *
+     * @param accAccountDto
+     * @param waitTillRequestExecuted - will wait for 150 ms up to 5 times till the role request is executed
+     * @param roleIds
+     */
+    void assignRoleToAccountViaRequest(AccAccountDto accAccountDto, boolean waitTillRequestExecuted, UUID... roleIds);
+
+    /**
+     * Assignes a role to an account via a role request.
+     *
+     * @param accAccountDto
+     * @param validFrom
+     * @param validTill
+     * @param waitTillRequestExecuted - will wait for 150 ms up to 5 times till the role request is executed
+     * @param roleIds
+     */
+    void assignRoleToAccountViaRequest(AccAccountDto accAccountDto, LocalDate validFrom, LocalDate validTill, boolean waitTillRequestExecuted, UUID... roleIds);
+
+    /**
+     * Updates an assigned role via a role request.
+     *
+     * @param accAccountDto
+     * @param validFrom
+     * @param validTill
+     * @param waitTillRequestExecuted - will wait for 150 ms up to 5 times till the role request is executed
+     * @param roleAssignment
+     */
+    void updateAssignedAccountRoleViaRequest(AccAccountDto accAccountDto, LocalDate validFrom, LocalDate validTill, boolean waitTillRequestExecuted, AccAccountRoleAssignmentDto roleAssignment);
+
+    /**
+     * Updates an assigned role via a role request.
+     *
+     * @param accAccountDto
+     * @param validFrom
+     * @param validTill
+     * @param waitTillRequestExecuted - will wait for 150 ms up to 5 times till the role request is executed
+     * @param roleId
+     */
+    void updateAssignedAccountRoleViaRequest(AccAccountDto accAccountDto, LocalDate validFrom, LocalDate validTill, boolean waitTillRequestExecuted, UUID roleId);
+
+    /**
+     * Removes an assigned account role.
+     *
+     * @param accAccountDto
+     * @param waitTillRequestExecuted - will wait for 150 ms up to 5 times till the role request is executed
+     * @param roleIds
+     */
+    void removeRoleFromAccountViaRequest(AccAccountDto accAccountDto, boolean waitTillRequestExecuted, UUID... roleIds);
+
+    /**
+     * Returns the id of the identity which is the owner of the account.
+     *
+     * @param accountId
+     * @return identityId
+     */
+    UUID getAccountOwner(UUID accountId);
+
+    /**
+     * Creates a concept role request for an account.
+     *
+     * @param requestId
+     * @param roleId
+     * @param accountId
+     * @param roleAssignmentId
+     * @param operationType
+     * @param validFrom
+     * @param validTill
+     * @return
+     */
+    AccAccountConceptRoleRequestDto createAccountConceptRoleRequest(UUID requestId, UUID roleId, UUID accountId,
+			UUID roleAssignmentId, ConceptRoleRequestOperation operationType, LocalDate validFrom, LocalDate validTill);
+
+    /**
+     * Creates a concept role request for an account.
+     *
+     * @param requestId
+     * @param roleId
+     * @param accountId
+     * @param roleAssignmentId
+     * @param operationType
+     * @return
+     */
+    AccAccountConceptRoleRequestDto createAccountConceptRoleRequest(UUID requestId, UUID roleId, UUID accountId,
+			UUID roleAssignmentId, ConceptRoleRequestOperation operationType);
+
+    /**
+     * Creates a concept role request for an account with ADD type.
+     *
+     * @param requestId
+     * @param roleId
+     * @param accountId
+     * @return
+     */
+    AccAccountConceptRoleRequestDto createAccountConceptRoleRequest(UUID requestId, UUID roleId, UUID accountId);
+
+    /**
+     * Creates a role request for identity.
+     *
+     * @param identityId
+     * @param executeImmediately
+     * @return
+     */
+    IdmRoleRequestDto createRoleRequest(UUID identityId, boolean executeImmediately);
+
+    /**
+     * Creates a role request for identity which will be executed immediately.
+     *
+     * @param identityId
+     * @return
+     */
+    IdmRoleRequestDto createRoleRequest(UUID identityId);
+
+	AccAccountRoleAssignmentDto createAccountRoleAssignment(AccAccountDto accAccountDto, IdmRoleDto role, LocalDate from, LocalDate to);
+
+	/**
+	 * Rename an account. Override the value of the UID attribute.
+	 *
+	 * @param account
+	 * @param newAccountUid
+	 */
+	void changeAccountUid(AccAccountDto account, String newAccountUid);
 }

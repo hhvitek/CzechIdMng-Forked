@@ -742,7 +742,12 @@
         "result": {
           "header": "Výsledek",
           "code": "Kód"
-        }
+        },
+        "button": "Kopírovat",
+        "textCopy": "Text byl zkopírován do schránky",
+        "copyClipboard": "Zkopírovat do schránky",
+        "wrapOn": "Zapnout zalamování řádku",
+        "wrapOff": "Vypnout zalamování řádku"
       },
       "CreatableSelectBox": {
         "textCreator": "Vytvořit novou filtrovací hodnotu: [{{value}}]?",
@@ -1216,6 +1221,7 @@
     "group": {
       "AUTHORIZATIONPOLICY": "Oprávnění",
       "APP": "Správa aplikace",
+      "APPSKIPCAS": "Přihlášení bez CAS",
       "AUDIT": "Audit",
       "CONFIGURATION": "Konfigurace aplikace",
       "IDENTITY": "Uživatelé",
@@ -2601,8 +2607,8 @@
           }
       },
       "references": {
-        "header" : "Použití skriptu",
-        "title" : "Použití skriptu"
+        "header" : "Použití ve skriptech",
+        "title" : "Použití ve skriptech"
       },
       "dropzone": {
         "infoText": "Přetáhněte skripty v archivu (ZIP) nebo jednotlivé skripty (XML) na tuto plochu a nebo na ní klikněte pro výběr souborů."
@@ -2763,6 +2769,10 @@
         "saveConcept":{
           "label": "Uložit koncept",
           "tooltip": "Uloží koncept žádosti. Žádost nebude podána."
+        },
+        "addRole":{
+          "title": "Přidat novou roli",
+          "text": "Přidat do žádosti novou roli."
         }
       },
       "confirm-incompatible-role": {
@@ -3307,6 +3317,9 @@
           },
           "identity": {
             "placeholder": "$t(entity.Identity._type)"
+          },
+          "ownerSelect": {
+            "placeholder": "Přiřazeno na"
           }
         },
         "changePermissions": "Žádost o změnu rolí",
@@ -4898,9 +4911,19 @@
         "help": "Oprávnění, které budou přidělena pro vybraný typ entity dle nastaveného vyhodnocení"
       }
     },
+    "RequestIdentityRole": {
+      "directRole": {
+        "label": "Přiděleno díky roli",
+        "title": "Napřímo přidělená role, díky které je přidělena i tato role. Napřímo přidělená role zahrnuje tuto roli.",
+        "help": "$t(entity.IdentityRole.directRole.title)"
+      }
+    },
     "IdentityRole": {
       "_type": "Přiřazená role",
       "role" : "Název role",
+      "owner": {
+        "title": "Přiřazeno na"
+      },
       "identityContract": {
         "label": "PPV",
         "title": "Pracovně právní vztah",
@@ -5011,6 +5034,12 @@
         "label": "Hlavní pozice",
         "help": "Hlavní / primární pracovní pozice. Bude použita například pro zobrazení pozice uživatele.",
         "title": "Hlavní pozice"
+      },
+      "select": {
+        "label": "Pracovní pozice",
+        "help": "Pracovní pozice",
+        "title": "Pracovní pozice",
+        "placeholder": "Vyberte pracovní pozici"
       },
       "state": {
         "label": "Stav",
@@ -7873,6 +7902,10 @@
     "LONG_RUNNING_TASK_NOT_RECOVERABLE": {
       "title": "Úlohu nelze spustit",
       "message": "Úlohu [{{taskType}}] nelze spustit znovu,tuto funkci úloha nepodporuje."
+    },
+    "LONG_RUNNING_TASK_WRONG_CONFIGURATION": {
+      "title": "Úlohu nelze spustit",
+      "message": "Konfigurace úlohy selhala. Chyba během čtení [{{attribute}}] atributu."
     },
     "FOREST_INDEX_DISABLED": {
       "title": "Index je vypnutý",

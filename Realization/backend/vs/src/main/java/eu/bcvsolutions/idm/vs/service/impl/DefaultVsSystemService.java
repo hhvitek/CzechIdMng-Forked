@@ -20,11 +20,11 @@ import org.springframework.util.CollectionUtils;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
+import eu.bcvsolutions.idm.acc.domain.AccountType;
 import eu.bcvsolutions.idm.acc.domain.AttributeMappingStrategyType;
 import eu.bcvsolutions.idm.acc.domain.SynchronizationLinkedActionType;
 import eu.bcvsolutions.idm.acc.domain.SynchronizationMissingEntityActionType;
 import eu.bcvsolutions.idm.acc.domain.SynchronizationUnlinkedActionType;
-import eu.bcvsolutions.idm.acc.domain.SystemEntityType;
 import eu.bcvsolutions.idm.acc.domain.SystemOperationType;
 import eu.bcvsolutions.idm.acc.dto.AbstractSysSyncConfigDto;
 import eu.bcvsolutions.idm.acc.dto.SysConnectorKeyDto;
@@ -44,6 +44,7 @@ import eu.bcvsolutions.idm.acc.service.api.SysSyncConfigService;
 import eu.bcvsolutions.idm.acc.service.api.SysSystemAttributeMappingService;
 import eu.bcvsolutions.idm.acc.service.api.SysSystemMappingService;
 import eu.bcvsolutions.idm.acc.service.api.SysSystemService;
+import eu.bcvsolutions.idm.acc.service.impl.IdentitySynchronizationExecutor;
 import eu.bcvsolutions.idm.core.api.dto.IdmExportImportDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmIdentityDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmRoleDto;
@@ -510,7 +511,7 @@ public class DefaultVsSystemService implements VsSystemService {
 		boolean alreadyExists = false;
 		SysSystemMappingDto foundMapping = null;
 		List<SysSystemMappingDto> mappings = systemMappingService.findBySystem(system,
-				SystemOperationType.SYNCHRONIZATION, SystemEntityType.IDENTITY);
+				SystemOperationType.SYNCHRONIZATION, IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE);
 		for (SysSystemMappingDto mapping : mappings) {
 			if (mapping.getName().equals(NAME_OF_SYNC)) {
 				alreadyExists = true;
@@ -522,10 +523,11 @@ public class DefaultVsSystemService implements VsSystemService {
 		if (!alreadyExists) {
 			newMapping = new SysSystemMappingDto();
 			newMapping.setName(NAME_OF_SYNC);
-			newMapping.setEntityType(SystemEntityType.IDENTITY);
+			newMapping.setEntityType(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE);
 			newMapping.setOperationType(SystemOperationType.SYNCHRONIZATION);
 			newMapping.setObjectClass(schemaId);
 			newMapping.setProtectionEnabled(true);
+			newMapping.setAccountType(AccountType.PERSONAL);
 			newMapping = systemMappingService.save(newMapping);
 		} else {
 			newMapping = foundMapping;
@@ -546,9 +548,10 @@ public class DefaultVsSystemService implements VsSystemService {
 	private SysSystemMappingDto createDefaultMapping(SysSystemDto system, SysSchemaObjectClassDto schema, VsSystemDto vsSystem) {
 		SysSystemMappingDto systemMapping = new SysSystemMappingDto();
 		systemMapping.setName("Default provisioning");
-		systemMapping.setEntityType(SystemEntityType.IDENTITY);
+		systemMapping.setEntityType(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE);
 		systemMapping.setOperationType(SystemOperationType.PROVISIONING);
 		systemMapping.setObjectClass(schema.getId());
+		systemMapping.setAccountType(AccountType.PERSONAL);
 		systemMapping = systemMappingService.save(systemMapping);
 
 		SysSchemaAttributeFilter schemaAttributeFilter = new SysSchemaAttributeFilter();

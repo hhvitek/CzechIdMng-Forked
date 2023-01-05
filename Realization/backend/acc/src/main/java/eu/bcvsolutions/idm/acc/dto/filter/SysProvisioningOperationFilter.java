@@ -9,7 +9,6 @@ import org.springframework.util.MultiValueMap;
 
 import eu.bcvsolutions.idm.acc.domain.EmptyProvisioningType;
 import eu.bcvsolutions.idm.acc.domain.ProvisioningEventType;
-import eu.bcvsolutions.idm.acc.domain.SystemEntityType;
 import eu.bcvsolutions.idm.core.api.domain.OperationState;
 import eu.bcvsolutions.idm.core.api.dto.filter.DataFilter;
 import eu.bcvsolutions.idm.core.api.utils.ParameterConverter;
@@ -27,6 +26,7 @@ public class SysProvisioningOperationFilter
 	public static final String PARAMETER_FROM = "from"; // created from
 	public static final String PARAMETER_TILL = "till"; // created till
 	public static final String PARAMETER_SYSTEM_ID = "systemId";
+	public static final String PARAMETER_ACCOUNT_ID = "accountId";
 	public static final String PARAMETER_OPERATION_TYPE = "operationType";
 	public static final String PARAMETER_ENTITY_TYPE = "entityType";
 	public static final String PARAMETER_RESULT_STATE = "resultState";
@@ -76,7 +76,15 @@ public class SysProvisioningOperationFilter
 	public void setSystemId(UUID systemId) {
 		set(PARAMETER_SYSTEM_ID, systemId);
 	}
-	
+
+	public UUID getAccountId() {
+		return getParameterConverter().toUuid(getData(), PARAMETER_ACCOUNT_ID);
+	}
+
+	public void setAccountId(UUID accountId) {
+		set(PARAMETER_ACCOUNT_ID, accountId);
+	}
+
 	public ProvisioningEventType getOperationType() {
 		return getParameterConverter().toEnum(getData(), PARAMETER_OPERATION_TYPE, ProvisioningEventType.class);
 	}
@@ -85,11 +93,11 @@ public class SysProvisioningOperationFilter
 		set(PARAMETER_OPERATION_TYPE, operationType);
 	}
 
-	public SystemEntityType getEntityType() {
-		return getParameterConverter().toEnum(getData(), PARAMETER_ENTITY_TYPE, SystemEntityType.class);
+	public String getEntityType() {
+		return getParameterConverter().toString(getData(), PARAMETER_ENTITY_TYPE);
 	}
 
-	public void setEntityType(SystemEntityType entityType) {
+	public void setEntityType(String entityType) {
 		set(PARAMETER_ENTITY_TYPE, entityType);
 	}
 

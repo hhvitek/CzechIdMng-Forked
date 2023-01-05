@@ -3,6 +3,7 @@ package eu.bcvsolutions.idm.acc.service.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -18,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.collect.ImmutableMap;
 
 import eu.bcvsolutions.idm.acc.TestHelper;
-import eu.bcvsolutions.idm.acc.domain.SystemEntityType;
+import eu.bcvsolutions.idm.acc.domain.AccountType;
 import eu.bcvsolutions.idm.acc.domain.SystemOperationType;
 import eu.bcvsolutions.idm.acc.dto.SysSchemaAttributeDto;
 import eu.bcvsolutions.idm.acc.dto.SysSchemaObjectClassDto;
@@ -48,6 +49,7 @@ import eu.bcvsolutions.idm.test.api.AbstractIntegrationTest;
  *
  * @author Petr Hanák
  * @author Vít Švanda
+ * @author Roman Kucera
  */
 @Transactional
 public class DefaultSysSystemMappingServiceIntegrationTest extends AbstractIntegrationTest {
@@ -70,18 +72,17 @@ public class DefaultSysSystemMappingServiceIntegrationTest extends AbstractInteg
 	@Test
 	public void textFilterTest() {
 		IdmBasePermission permission = IdmBasePermission.ADMIN;
-		SystemEntityType entityType = SystemEntityType.IDENTITY;
 
 		SysSystemDto system = createSystem();
 		SysSchemaObjectClassDto objectClass = createObjectClass(system);
 
-		SysSystemMappingDto mappingSystem1 = testHelper.createMappingSystem(entityType, objectClass);
+		SysSystemMappingDto mappingSystem1 = testHelper.createMappingSystem(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE, objectClass);
 		mappingSystem1.setName("SomeName01");
 		mappingService.save(mappingSystem1);
-		SysSystemMappingDto mappingSystem2 = testHelper.createMappingSystem(entityType, objectClass);
+		SysSystemMappingDto mappingSystem2 = testHelper.createMappingSystem(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE, objectClass);
 		mappingSystem2.setName("SomeName02");
 		mappingService.save(mappingSystem2);
-		SysSystemMappingDto mappingSystem3 = testHelper.createMappingSystem(entityType, objectClass);
+		SysSystemMappingDto mappingSystem3 = testHelper.createMappingSystem(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE, objectClass);
 		mappingSystem3.setName("SomeName22");
 		mappingService.save(mappingSystem3);
 
@@ -101,13 +102,13 @@ public class DefaultSysSystemMappingServiceIntegrationTest extends AbstractInteg
 		SysSystemDto system = createSystem();
 		SysSchemaObjectClassDto objectClass = createObjectClass(system);
 
-		SysSystemMappingDto mappingSystem1 = testHelper.createMappingSystem(SystemEntityType.CONTRACT, objectClass);
-		SysSystemMappingDto mappingSystem2 = testHelper.createMappingSystem(SystemEntityType.CONTRACT, objectClass);
-		SysSystemMappingDto mappingSystem3 = testHelper.createMappingSystem(SystemEntityType.TREE, objectClass);
+		SysSystemMappingDto mappingSystem1 = testHelper.createMappingSystem(ContractSynchronizationExecutor.SYSTEM_ENTITY_TYPE, objectClass);
+		SysSystemMappingDto mappingSystem2 = testHelper.createMappingSystem(ContractSynchronizationExecutor.SYSTEM_ENTITY_TYPE, objectClass);
+		SysSystemMappingDto mappingSystem3 = testHelper.createMappingSystem(TreeSynchronizationExecutor.SYSTEM_ENTITY_TYPE, objectClass);
 
 		SysSystemMappingFilter filter = new SysSystemMappingFilter();
 		filter.setSystemId(system.getId());
-		filter.setEntityType(SystemEntityType.CONTRACT);
+		filter.setEntityType(ContractSynchronizationExecutor.SYSTEM_ENTITY_TYPE);
 
 		Page<SysSystemMappingDto> result = mappingService.find(filter, null, permission);
 		assertEquals(2, result.getTotalElements());
@@ -119,14 +120,13 @@ public class DefaultSysSystemMappingServiceIntegrationTest extends AbstractInteg
 	@Test
 	public void operationTypeFilterTest() {
 		IdmBasePermission permission = IdmBasePermission.ADMIN;
-		SystemEntityType entityType = SystemEntityType.IDENTITY;
 
 		SysSystemDto system = createSystem();
 		SysSchemaObjectClassDto objectClass = createObjectClass(system);
 
-		SysSystemMappingDto mappingSystem1 = testHelper.createMappingSystem(entityType, objectClass);
-		createProvisioningMappingSystem(SystemEntityType.TREE, objectClass);
-		SysSystemMappingDto mappingSystem3 = createProvisioningMappingSystem(entityType, objectClass);
+		SysSystemMappingDto mappingSystem1 = testHelper.createMappingSystem(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE, objectClass);
+		createProvisioningMappingSystem(TreeSynchronizationExecutor.SYSTEM_ENTITY_TYPE, objectClass);
+		SysSystemMappingDto mappingSystem3 = createProvisioningMappingSystem(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE, objectClass);
 
 		SysSystemMappingFilter filter = new SysSystemMappingFilter();
 		filter.setOperationType(SystemOperationType.PROVISIONING);
@@ -141,15 +141,14 @@ public class DefaultSysSystemMappingServiceIntegrationTest extends AbstractInteg
 	@Test
 	public void systemIdFilterTest() {
 		IdmBasePermission permission = IdmBasePermission.ADMIN;
-		SystemEntityType entityType = SystemEntityType.IDENTITY;
 
 		SysSystemDto system = createSystem();
 		SysSchemaObjectClassDto objectClass = createObjectClass(system);
 		SysSystemDto system2 = createSystem();
 		SysSchemaObjectClassDto objectClass2 = createObjectClass(system2);
 
-		SysSystemMappingDto mappingSystem1 = testHelper.createMappingSystem(entityType, objectClass);
-		SysSystemMappingDto mappingSystem2 = testHelper.createMappingSystem(entityType, objectClass2);
+		SysSystemMappingDto mappingSystem1 = testHelper.createMappingSystem(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE, objectClass);
+		SysSystemMappingDto mappingSystem2 = testHelper.createMappingSystem(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE, objectClass2);
 
 		SysSystemMappingFilter filter = new SysSystemMappingFilter();
 		filter.setSystemId(system.getId());
@@ -162,7 +161,6 @@ public class DefaultSysSystemMappingServiceIntegrationTest extends AbstractInteg
 	@Test
 	public void objectClassFilterTest() {
 		IdmBasePermission permission = IdmBasePermission.ADMIN;
-		SystemEntityType entityType = SystemEntityType.IDENTITY;
 
 		SysSystemDto system = createSystem();
 		SysSystemDto system2 = createSystem();
@@ -170,8 +168,8 @@ public class DefaultSysSystemMappingServiceIntegrationTest extends AbstractInteg
 		SysSchemaObjectClassDto objectClass = createObjectClass(system);
 		SysSchemaObjectClassDto objectClass2 = createObjectClass(system2);
 
-		SysSystemMappingDto mappingSystem1 = testHelper.createMappingSystem(entityType, objectClass);
-		SysSystemMappingDto mappingSystem2 = testHelper.createMappingSystem(entityType, objectClass2);
+		SysSystemMappingDto mappingSystem1 = testHelper.createMappingSystem(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE, objectClass);
+		SysSystemMappingDto mappingSystem2 = testHelper.createMappingSystem(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE, objectClass2);
 
 		SysSystemMappingFilter filter = new SysSystemMappingFilter();
 		filter.setObjectClassId(mappingSystem1.getObjectClass());
@@ -184,7 +182,6 @@ public class DefaultSysSystemMappingServiceIntegrationTest extends AbstractInteg
 	@Test
 	public void treeTypeIdFilterTest() {
 		IdmBasePermission permission = IdmBasePermission.ADMIN;
-		SystemEntityType entityType = SystemEntityType.IDENTITY;
 
 		IdmTreeTypeDto treeType = new IdmTreeTypeDto();
 		treeType.setName("SomeTreeTypeName");
@@ -199,10 +196,10 @@ public class DefaultSysSystemMappingServiceIntegrationTest extends AbstractInteg
 		SysSystemDto system = createSystem();
 		SysSchemaObjectClassDto objectClass = createObjectClass(system);
 
-		SysSystemMappingDto mappingSystem1 = testHelper.createMappingSystem(entityType, objectClass);
+		SysSystemMappingDto mappingSystem1 = testHelper.createMappingSystem(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE, objectClass);
 		mappingSystem1.setTreeType(treeType.getId());
 		mappingSystem1 = mappingService.save(mappingSystem1);
-		SysSystemMappingDto mappingSystem2 = testHelper.createMappingSystem(entityType, objectClass);
+		SysSystemMappingDto mappingSystem2 = testHelper.createMappingSystem(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE, objectClass);
 		mappingSystem2.setTreeType(treeType2.getId());
 		mappingSystem2 = mappingService.save(mappingSystem2);
 
@@ -229,7 +226,7 @@ public class DefaultSysSystemMappingServiceIntegrationTest extends AbstractInteg
 		createSchemaAttribute("title_after", schema);
 
 
-		SysSystemMappingDto mappingDto = this.createProvisioningMappingSystem(SystemEntityType.IDENTITY, schema);
+		SysSystemMappingDto mappingDto = this.createProvisioningMappingSystem(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE, schema);
 		SysSystemAttributeMappingFilter attributeMappingFilter = new SysSystemAttributeMappingFilter();
 		attributeMappingFilter.setSystemMappingId(mappingDto.getId());
 
@@ -256,10 +253,10 @@ public class DefaultSysSystemMappingServiceIntegrationTest extends AbstractInteg
 
 		SysSystemMappingDto mappingDto = new SysSystemMappingDto();
 		mappingDto.setName(testHelper.createName());
-		mappingDto.setEntityType(SystemEntityType.IDENTITY);
+		mappingDto.setEntityType(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE);
 		mappingDto.setObjectClass(schema.getId());
 		mappingDto.setOperationType(SystemOperationType.PROVISIONING);
-
+		mappingDto.setAccountType(AccountType.PERSONAL);
 		mappingDto = mappingService.publish(
 				new SystemMappingEvent(
 						SystemMappingEvent.SystemMappingEventType.CREATE,
@@ -358,10 +355,10 @@ public class DefaultSysSystemMappingServiceIntegrationTest extends AbstractInteg
 
 		SysSystemMappingDto mappingDto = new SysSystemMappingDto();
 		mappingDto.setName(testHelper.createName());
-		mappingDto.setEntityType(SystemEntityType.TREE);
+		mappingDto.setEntityType(TreeSynchronizationExecutor.SYSTEM_ENTITY_TYPE);
 		mappingDto.setObjectClass(schema.getId());
 		mappingDto.setOperationType(SystemOperationType.PROVISIONING);
-
+		mappingDto.setAccountType(AccountType.PERSONAL);
 		mappingDto = mappingService.publish(
 				new SystemMappingEvent(
 						SystemMappingEvent.SystemMappingEventType.CREATE,
@@ -421,10 +418,10 @@ public class DefaultSysSystemMappingServiceIntegrationTest extends AbstractInteg
 
 		SysSystemMappingDto mappingDto = new SysSystemMappingDto();
 		mappingDto.setName(testHelper.createName());
-		mappingDto.setEntityType(SystemEntityType.ROLE_CATALOGUE);
+		mappingDto.setEntityType(RoleCatalogueSynchronizationExecutor.SYSTEM_ENTITY_TYPE);
 		mappingDto.setObjectClass(schema.getId());
 		mappingDto.setOperationType(SystemOperationType.PROVISIONING);
-
+		mappingDto.setAccountType(AccountType.PERSONAL);
 		mappingDto = mappingService.publish(
 				new SystemMappingEvent(
 						SystemMappingEvent.SystemMappingEventType.CREATE,
@@ -488,7 +485,7 @@ public class DefaultSysSystemMappingServiceIntegrationTest extends AbstractInteg
 		SysSchemaAttributeDto nameSchemaAttr = createSchemaAttribute("name", schema);
 		SysSchemaAttributeDto stateSchemaAttr = createSchemaAttribute("state", schema);
 		SysSchemaAttributeDto disabledSchemaAttr = createSchemaAttribute("disabled", schema);
-		SysSystemMappingDto mappingDto = this.createProvisioningMappingSystem(SystemEntityType.IDENTITY, schema);
+		SysSystemMappingDto mappingDto = this.createProvisioningMappingSystem(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE, schema);
 
 		SysSystemAttributeMappingDto nameAttrMap = new SysSystemAttributeMappingDto();
 		nameAttrMap.setUid(true);
@@ -533,6 +530,80 @@ public class DefaultSysSystemMappingServiceIntegrationTest extends AbstractInteg
 		mappingService.validate(mappingDto.getId());
 	}
 
+	@Test
+	public void testConnectedMapping() {
+		SysSystemDto system = testHelper.createTestResourceSystem(false, testHelper.createName());
+		SysSystemMappingDto syncMapping = testHelper.createMapping(system);
+		SysSystemMappingDto provMapping = testHelper.createMapping(system);
+		SysSystemMappingDto provMapping1 = testHelper.createMapping(system);
+
+		syncMapping.setOperationType(SystemOperationType.SYNCHRONIZATION);
+		syncMapping = mappingService.save(syncMapping);
+		assertEquals(SystemOperationType.SYNCHRONIZATION , syncMapping.getOperationType());
+
+		// connected mapping is saved
+		provMapping.setConnectedSystemMappingId(syncMapping.getId());
+		provMapping = mappingService.save(provMapping);
+		assertEquals(syncMapping.getId(), provMapping.getConnectedSystemMappingId());
+
+		// connected mapping is saved from the other side
+		syncMapping = mappingService.get(syncMapping.getId());
+		assertEquals(provMapping.getId(), syncMapping.getConnectedSystemMappingId());
+
+		// other mapping is unchanged
+		provMapping1 = mappingService.get(provMapping1.getId());
+		assertNull(provMapping1.getConnectedSystemMappingId());
+
+		// change connected mapping to other provisioning mapping
+		syncMapping.setConnectedSystemMappingId(provMapping1.getId());
+		syncMapping = mappingService.save(syncMapping);
+		assertEquals(provMapping1.getId(), syncMapping.getConnectedSystemMappingId());
+
+		// previous connected mapping is now null
+		provMapping = mappingService.get(provMapping.getId());
+		assertNull(provMapping.getConnectedSystemMappingId());
+
+		// new connected mapping has the relation saved
+		provMapping1 = mappingService.get(provMapping1.getId());
+		assertEquals(syncMapping.getId(), provMapping1.getConnectedSystemMappingId());
+
+		// delete mapping
+		mappingService.delete(syncMapping);
+		SysSystemMappingFilter mappingFilter = new SysSystemMappingFilter();
+		mappingFilter.setId(syncMapping.getId());
+		long count = mappingService.count(mappingFilter);
+		assertEquals(0, count);
+
+		// connected mapping has null relation now
+		provMapping1 = mappingService.get(provMapping1.getId());
+		assertNull(provMapping1.getConnectedSystemMappingId());
+
+		// previous connected mapping is still null
+		provMapping = mappingService.get(provMapping.getId());
+		assertNull(provMapping.getConnectedSystemMappingId());
+	}
+
+	@Test(expected = ResultCodeException.class)
+	public void testConnectedMappingAlreadyMapped() {
+		SysSystemDto system = testHelper.createTestResourceSystem(false, testHelper.createName());
+		SysSystemMappingDto syncMappping = testHelper.createMapping(system);
+		SysSystemMappingDto provMapping = testHelper.createMapping(system);
+		SysSystemMappingDto provMapping1 = testHelper.createMapping(system);
+
+		syncMappping.setOperationType(SystemOperationType.SYNCHRONIZATION);
+		syncMappping = mappingService.save(syncMappping);
+		assertEquals(SystemOperationType.SYNCHRONIZATION , syncMappping.getOperationType());
+
+		// connected mapping is saved
+		provMapping.setConnectedSystemMappingId(syncMappping.getId());
+		provMapping = mappingService.save(provMapping);
+		assertEquals(syncMappping.getId(), provMapping.getConnectedSystemMappingId());
+
+		// save same connected mapping to other mapping should throw exception
+		provMapping1.setConnectedSystemMappingId(syncMappping.getId());
+		mappingService.save(provMapping1);
+	}
+
 	private SysSchemaAttributeDto createSchemaAttribute(String name, SysSchemaObjectClassDto schema) {
 		SysSchemaAttributeDto attributeDto = new SysSchemaAttributeDto();
 		attributeDto.setObjectClass(schema.getId());
@@ -563,13 +634,14 @@ public class DefaultSysSystemMappingServiceIntegrationTest extends AbstractInteg
 		return schemaObjectClassService.save(objectClass);
 	}
 
-	private SysSystemMappingDto createProvisioningMappingSystem(SystemEntityType type, SysSchemaObjectClassDto objectClass) {
+	private SysSystemMappingDto createProvisioningMappingSystem(String type, SysSchemaObjectClassDto objectClass) {
 		// system mapping
 		SysSystemMappingDto mapping = new SysSystemMappingDto();
 		mapping.setName("Name" + UUID.randomUUID());
 		mapping.setEntityType(type);
 		mapping.setObjectClass(objectClass.getId());
 		mapping.setOperationType(SystemOperationType.PROVISIONING);
+		mapping.setAccountType(AccountType.PERSONAL);
 		return mappingService.save(mapping);
 	}
 }

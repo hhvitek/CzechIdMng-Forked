@@ -672,6 +672,18 @@ module.exports = {
       component: 'fa:user-slash'
     },
     {
+      id: 'enabled-system-icon',
+      type: 'icon',
+      entityType: ['enabled-system'],
+      component: 'fa:cog'
+    },
+    {
+      id: 'disabled-system-icon',
+      type: 'icon',
+      entityType: ['disabled-system'],
+      component: 'fa:cog'
+    },
+    {
       id: 'deleted-identity-icon',
       type: 'icon',
       entityType: ['deleted-identity'],
@@ -990,6 +1002,26 @@ module.exports = {
       type: 'universal-search-type',
       entityType: ['role-universal-search-type'],
       component: require('./src/content/unisearch/RoleUniversalSearchType').default
+    },
+    {
+      id: 'identity-role-manager',
+      type: 'role-concept-manager',
+      priority: 0,
+      entityType: [require('./src/redux').ConceptRoleRequestManager.ENTITY_TYPE],
+      manager: require('./src/redux').ConceptRoleRequestManager,
+      ownerType: require('./src/redux').IdentityContractManager.ENTITY_TYPE,
+      ownerManager: require('./src/redux').IdentityContractManager,
+      ownerSelectComponent: require('./src/components/advanced/IdentityContractSelect/IdentityContractSelect').default,
+      ownerInfoComponent: require('./src/components/advanced/IdentityContractInfo/IdentityContractInfo').default,
+      locale: "core:entity.IdentityContract.select",
+      filterCode: "identityContractId"
+    },
+    {
+      id: "identity-applicant-info",
+      type: 'applicant-info',
+      entityType: "eu.bcvsolutions.idm.core.api.dto.IdmIdentityDto",
+      component: require('./src/components/advanced/IdentityInfo/IdentityInfo').default,
+      manager: require('./src/redux').IdentityManager
     }
   ]
 };

@@ -1,11 +1,16 @@
 import { Services, Domain, Utils } from 'czechidm-core';
 //
-import SystemEntityTypeEnum from '../domain/SystemEntityTypeEnum';
+import SystemEntityTypeService from './SystemEntityTypeService';
 
 /**
  * @author Svanda
  */
 export default class SystemEntityService extends Services.AbstractService {
+
+  constructor() {
+    super();
+    this.systemEntityTypeService = new SystemEntityTypeService();
+  }
 
   // dto
   supportsPatch() {
@@ -16,7 +21,7 @@ export default class SystemEntityService extends Services.AbstractService {
     if (!entity) {
       return '';
     }
-    return `${entity._embedded.system.name}:${SystemEntityTypeEnum.getNiceLabel(entity.entityType)}:${entity.uid}`;
+    return `${entity._embedded.system.name}:${this.systemEntityTypeService.getNiceLabelForEntityType(entity)}:${entity.uid}`;
   }
 
   getApiPath() {

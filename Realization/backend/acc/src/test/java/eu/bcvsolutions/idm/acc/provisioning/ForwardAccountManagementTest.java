@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import eu.bcvsolutions.idm.acc.domain.AccountType;
 import eu.bcvsolutions.idm.core.api.config.datasource.CoreEntityManager;
 import org.junit.After;
 import org.junit.Assert;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.bcvsolutions.idm.acc.TestHelper;
-import eu.bcvsolutions.idm.acc.domain.SystemEntityType;
 import eu.bcvsolutions.idm.acc.domain.SystemOperationType;
 import eu.bcvsolutions.idm.acc.dto.AccIdentityAccountDto;
 import eu.bcvsolutions.idm.acc.dto.SysRoleSystemDto;
@@ -35,6 +35,7 @@ import eu.bcvsolutions.idm.acc.service.api.SysSchemaAttributeService;
 import eu.bcvsolutions.idm.acc.service.api.SysSystemAttributeMappingService;
 import eu.bcvsolutions.idm.acc.service.api.SysSystemMappingService;
 import eu.bcvsolutions.idm.acc.service.api.SysSystemService;
+import eu.bcvsolutions.idm.acc.service.impl.IdentitySynchronizationExecutor;
 import eu.bcvsolutions.idm.core.api.dto.IdmIdentityDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmIdentityRoleDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmRoleDto;
@@ -98,8 +99,8 @@ public class ForwardAccountManagementTest extends AbstractIntegrationTest {
 	public void forwardAcmDisabledTest() {
 		SysSystemDto system = initIdentityData();
 		Assert.assertNotNull(system);
-		
-		SysSystemMappingDto mapping = systemMappingService.findProvisioningMapping(system.getId(), SystemEntityType.IDENTITY);
+		SysSystemMappingDto mapping = createMapping(system);
+
 		Assert.assertNotNull(mapping);
 		IdmIdentityDto identity = helper.createIdentity();
 		
@@ -140,8 +141,8 @@ public class ForwardAccountManagementTest extends AbstractIntegrationTest {
 	public void forwardAcmEnabledTest() {
 		SysSystemDto system = initIdentityData();
 		Assert.assertNotNull(system);
-		
-		SysSystemMappingDto mapping = systemMappingService.findProvisioningMapping(system.getId(), SystemEntityType.IDENTITY);
+		SysSystemMappingDto mapping = createMapping(system);
+
 		Assert.assertNotNull(mapping);
 		IdmIdentityDto identity = helper.createIdentity();
 		
@@ -182,8 +183,8 @@ public class ForwardAccountManagementTest extends AbstractIntegrationTest {
 	public void identityRoleIsValidInPastTest() {
 		SysSystemDto system = initIdentityData();
 		Assert.assertNotNull(system);
-		
-		SysSystemMappingDto mapping = systemMappingService.findProvisioningMapping(system.getId(), SystemEntityType.IDENTITY);
+		SysSystemMappingDto mapping = createMapping(system);
+
 		Assert.assertNotNull(mapping);
 		IdmIdentityDto identity = helper.createIdentity();
 		
@@ -237,21 +238,24 @@ public class ForwardAccountManagementTest extends AbstractIntegrationTest {
 		SysSystemDto system = helper.createSystem(TestResource.TABLE_NAME);
 		Assert.assertNotNull(system);
 
+		return system;
+	}
+
+	private SysSystemMappingDto createMapping(SysSystemDto system) {
 		// generate schema for system
 		List<SysSchemaObjectClassDto> objectClasses = systemService.generateSchema(system);
-
 		// Create mapping
 		SysSystemMappingDto syncSystemMapping = new SysSystemMappingDto();
 		syncSystemMapping.setName("default_" + System.currentTimeMillis());
-		syncSystemMapping.setEntityType(SystemEntityType.IDENTITY);
+		syncSystemMapping.setEntityType(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE);
 		syncSystemMapping.setOperationType(SystemOperationType.PROVISIONING);
 		syncSystemMapping.setObjectClass(objectClasses.get(0).getId());
+		syncSystemMapping.setAccountType(AccountType.PERSONAL);
 		final SysSystemMappingDto syncMapping = systemMappingService.save(syncSystemMapping);
 		createIdentityMapping(system, syncMapping);
-		return system;
-
+		return syncMapping;
 	}
-	
+
 	private void createIdentityMapping(SysSystemDto system, final SysSystemMappingDto entityHandlingResult) {
 		SysSchemaAttributeFilter schemaAttributeFilter = new SysSchemaAttributeFilter();
 		schemaAttributeFilter.setSystemId(system.getId());

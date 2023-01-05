@@ -1,5 +1,6 @@
 	package eu.bcvsolutions.idm.acc.entity;
 
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -18,11 +19,8 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
-import java.time.ZonedDateTime;
-
 import eu.bcvsolutions.idm.acc.domain.ProvisioningContext;
 import eu.bcvsolutions.idm.acc.domain.ProvisioningEventType;
-import eu.bcvsolutions.idm.acc.domain.SystemEntityType;
 import eu.bcvsolutions.idm.core.api.entity.AbstractEntity;
 import eu.bcvsolutions.idm.core.api.entity.OperationResult;
 
@@ -41,7 +39,8 @@ import eu.bcvsolutions.idm.core.api.entity.OperationResult;
 		@Index(name = "idx_sys_p_o_sys_entity", columnList = "system_entity_id"),
 		@Index(name = "idx_sys_p_o_entity_identifier", columnList = "entity_identifier"),
 		@Index(name = "idx_sys_pro_oper_batch_id", columnList = "provisioning_batch_id"),
-		@Index(name = "idx_sys_p_o_role_request_id", columnList = "role_request_id")
+		@Index(name = "idx_sys_p_o_role_request_id", columnList = "role_request_id"),
+		@Index(name = "idx_sys_p_o_account_id", columnList = "account_id")
 		})
 public class SysProvisioningOperation extends AbstractEntity {
 
@@ -62,9 +61,8 @@ public class SysProvisioningOperation extends AbstractEntity {
 	private SysSystem system;
 	
 	@NotNull
-	@Enumerated(EnumType.STRING)
 	@Column(name = "entity_type", nullable = false)
-	private SystemEntityType entityType;
+	private String entityType;
 	
 	@NotFound(action = NotFoundAction.IGNORE) // system entity can be deleted in the meantime
 	@ManyToOne(optional = true)
@@ -91,7 +89,13 @@ public class SysProvisioningOperation extends AbstractEntity {
 	// ID of request, without DB relation on the request -> Request can be null or doesn't have to exist! 
 	@Column(name = "role_request_id")
     private UUID roleRequestId;
-	
+
+	@ManyToOne
+	@NotFound(action = NotFoundAction.IGNORE)
+	@JoinColumn(name = "account_id", referencedColumnName = "id", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
+	private AccAccount account;
+
+
 	public SysProvisioningOperation() {
 	}
 	
@@ -115,11 +119,11 @@ public class SysProvisioningOperation extends AbstractEntity {
 		this.system = system;
 	}
 
-	public SystemEntityType getEntityType() {
+	public String getEntityType() {
 		return entityType;
 	}	
 	
-	public void setEntityType(SystemEntityType entityType) {
+	public void setEntityType(String entityType) {
 		this.entityType = entityType;
 	}
 	
@@ -203,5 +207,17 @@ public class SysProvisioningOperation extends AbstractEntity {
 
 	public void setRoleRequestId(UUID roleRequestId) {
 		this.roleRequestId = roleRequestId;
+	}
+
+	/**
+	 * Account
+	 * @return
+	 */
+	public AccAccount getAccount() {
+		return account;
+	}
+
+	public void setAccount(AccAccount account) {
+		this.account = account;
 	}
 }

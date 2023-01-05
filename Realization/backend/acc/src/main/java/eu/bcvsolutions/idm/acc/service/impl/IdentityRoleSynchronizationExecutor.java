@@ -2,13 +2,13 @@ package eu.bcvsolutions.idm.acc.service.impl;
 
 import java.text.MessageFormat;
 
+import eu.bcvsolutions.idm.core.model.event.AbstractRoleAssignmentEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.common.collect.ImmutableMap;
 
 import eu.bcvsolutions.idm.acc.domain.SynchronizationContext;
-import eu.bcvsolutions.idm.acc.domain.SystemEntityType;
 import eu.bcvsolutions.idm.acc.dto.AccRoleAccountDto;
 import eu.bcvsolutions.idm.acc.dto.EntityAccountDto;
 import eu.bcvsolutions.idm.acc.dto.SysSyncItemLogDto;
@@ -24,7 +24,6 @@ import eu.bcvsolutions.idm.core.api.dto.filter.IdmIdentityRoleFilter;
 import eu.bcvsolutions.idm.core.api.event.EntityEvent;
 import eu.bcvsolutions.idm.core.api.service.IdmIdentityRoleService;
 import eu.bcvsolutions.idm.core.model.event.IdentityRoleEvent;
-import eu.bcvsolutions.idm.core.model.event.IdentityRoleEvent.IdentityRoleEventType;
 
 @Component
 public class IdentityRoleSynchronizationExecutor extends AbstractSynchronizationExecutor<IdmIdentityRoleDto>
@@ -35,6 +34,8 @@ public class IdentityRoleSynchronizationExecutor extends AbstractSynchronization
 	@Autowired
 	private AccRoleAccountService identityRoleAccountService;
 
+	public static final String SYSTEM_ENTITY_TYPE = "IDENTITY_ROLE";
+	
 	/**
 	 * Call provisioning for given account
 	 * 
@@ -43,12 +44,12 @@ public class IdentityRoleSynchronizationExecutor extends AbstractSynchronization
 	 * @param logItem
 	 */
 	@Override
-	protected void callProvisioningForEntity(IdmIdentityRoleDto entity, SystemEntityType entityType, SysSyncItemLogDto logItem) {
+	protected void callProvisioningForEntity(IdmIdentityRoleDto entity, String entityType, SysSyncItemLogDto logItem) {
 		addToItemLog(logItem,
 				MessageFormat.format(
 						"Call provisioning (process IdentityRoleEvent.UPDATE) for identity-role ({0}).",
 						entity.getId()));
-		entityEventManager.process(new IdentityRoleEvent(IdentityRoleEventType.UPDATE, entity)).getContent();
+		entityEventManager.process(new IdentityRoleEvent(AbstractRoleAssignmentEvent.RoleAssignmentEventType.UPDATE, entity)).getContent();
 	}
 	
 	/**
@@ -62,7 +63,7 @@ public class IdentityRoleSynchronizationExecutor extends AbstractSynchronization
 		// Content will be set in service (we need do transform entity to DTO). 
 		// Here we set only dummy DTO (null content is not allowed)
 		EntityEvent<IdmIdentityRoleDto> event = new IdentityRoleEvent(
-				service.isNew(entity) ? IdentityRoleEventType.CREATE : IdentityRoleEventType.UPDATE, 
+				service.isNew(entity) ? AbstractRoleAssignmentEvent.RoleAssignmentEventType.CREATE : AbstractRoleAssignmentEvent.RoleAssignmentEventType.UPDATE,
 				entity, 
 				ImmutableMap.of(ProvisioningService.SKIP_PROVISIONING, skipProvisioning));
 		
@@ -98,5 +99,10 @@ public class IdentityRoleSynchronizationExecutor extends AbstractSynchronization
 	@Override
 	protected IdmIdentityRoleDto createEntityDto() {
 		return new IdmIdentityRoleDto();
+	}
+	
+	@Override
+	public String getSystemEntityType() {
+		return SYSTEM_ENTITY_TYPE;
 	}
 }

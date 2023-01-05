@@ -10,16 +10,16 @@ import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import javax.validation.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import eu.bcvsolutions.idm.acc.domain.SystemEntityType;
+import eu.bcvsolutions.idm.acc.domain.AccountType;
 import eu.bcvsolutions.idm.acc.domain.SystemOperationType;
 import eu.bcvsolutions.idm.core.api.domain.DefaultFieldLengths;
 import eu.bcvsolutions.idm.core.api.entity.AbstractEntity;
@@ -31,6 +31,7 @@ import eu.bcvsolutions.idm.core.model.entity.IdmTreeType;
  * entity
  * 
  * @author svandav
+ * @author Roman Kucera
  *
  */
 @Entity
@@ -38,7 +39,8 @@ import eu.bcvsolutions.idm.core.model.entity.IdmTreeType;
 		@Index(name = "ux_sys_s_mapping_name", columnList = "name, object_class_id", unique = true),
 		@Index(name = "idx_sys_s_mapping_o_c_id", columnList = "object_class_id"),
 		@Index(name = "idx_sys_s_mapping_o_type", columnList = "operation_type"),
-		@Index(name = "idx_sys_s_mapping_e_type", columnList = "entity_type")
+		@Index(name = "idx_sys_s_mapping_e_type", columnList = "entity_type"),
+		@Index(name = "idx_sys_s_mapping_c_s_mapping", columnList = "connected_system_mapping_id")
 		})
 public class SysSystemMapping extends AbstractEntity {
 
@@ -51,9 +53,8 @@ public class SysSystemMapping extends AbstractEntity {
 	private String name;
 	@Audited
 	@NotNull
-	@Enumerated(EnumType.STRING)
 	@Column(name = "entity_type", nullable = false)
-	private SystemEntityType entityType;
+	private String entityType;
 	@Audited
 	@NotNull
 	@ManyToOne(optional = false)
@@ -98,6 +99,16 @@ public class SysSystemMapping extends AbstractEntity {
 	@Column(name = "add_context_con_obj", nullable = false)
 	// Add all connector object (calls connector).
 	private boolean addContextConnectorObject = false;
+	@Audited
+	@ManyToOne
+	@JoinColumn(name = "connected_system_mapping_id", referencedColumnName = "id", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
+	private SysSystemMapping connectedSystemMappingId;
+
+	@Audited
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	@Column(name = "account_type", nullable = false)
+	private AccountType accountType;
 
 	public void setName(String name) {
 		this.name = name;
@@ -107,11 +118,11 @@ public class SysSystemMapping extends AbstractEntity {
 		return name;
 	}
 
-	public SystemEntityType getEntityType() {
+	public String getEntityType() {
 		return entityType;
 	}
 
-	public void setEntityType(SystemEntityType entityType) {
+	public void setEntityType(String entityType) {
 		this.entityType = entityType;
 	}
 
@@ -209,5 +220,21 @@ public class SysSystemMapping extends AbstractEntity {
 
 	public void setAddContextConnectorObject(boolean addContextConnectorObject) {
 		this.addContextConnectorObject = addContextConnectorObject;
+	}
+
+	public SysSystemMapping getConnectedSystemMappingId() {
+		return connectedSystemMappingId;
+	}
+
+	public void setConnectedSystemMappingId(SysSystemMapping connectedSystemMappingId) {
+		this.connectedSystemMappingId = connectedSystemMappingId;
+	}
+
+	public AccountType getAccountType() {
+		return accountType;
+	}
+
+	public void setAccountType(AccountType accountType) {
+		this.accountType = accountType;
 	}
 }

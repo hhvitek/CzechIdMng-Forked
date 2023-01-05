@@ -1,19 +1,33 @@
 package eu.bcvsolutions.idm.acc.service.impl;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+import eu.bcvsolutions.idm.acc.domain.AccResultCode;
+import eu.bcvsolutions.idm.acc.domain.AccountType;
+import eu.bcvsolutions.idm.acc.domain.MappingContext;
+import eu.bcvsolutions.idm.acc.domain.SystemOperationType;
+import eu.bcvsolutions.idm.acc.dto.*;
+import eu.bcvsolutions.idm.acc.dto.filter.AccIdentityAccountFilter;
+import eu.bcvsolutions.idm.acc.dto.filter.SysSystemAttributeMappingFilter;
+import eu.bcvsolutions.idm.acc.dto.filter.SysSystemMappingFilter;
+import eu.bcvsolutions.idm.acc.entity.*;
+import eu.bcvsolutions.idm.acc.exception.ProvisioningException;
+import eu.bcvsolutions.idm.acc.repository.SysSystemMappingRepository;
+import eu.bcvsolutions.idm.acc.service.api.*;
+import eu.bcvsolutions.idm.acc.system.entity.SystemEntityTypeRegistrable;
+import eu.bcvsolutions.idm.core.api.domain.IdmScriptCategory;
+import eu.bcvsolutions.idm.core.api.dto.*;
+import eu.bcvsolutions.idm.core.api.dto.filter.IdmIdentityRoleFilter;
+import eu.bcvsolutions.idm.core.api.dto.filter.IdmRequestIdentityRoleFilter;
+import eu.bcvsolutions.idm.core.api.entity.AbstractEntity_;
+import eu.bcvsolutions.idm.core.api.exception.ResultCodeException;
+import eu.bcvsolutions.idm.core.api.service.*;
+import eu.bcvsolutions.idm.core.api.utils.DtoUtils;
+import eu.bcvsolutions.idm.core.api.utils.EntityUtils;
+import eu.bcvsolutions.idm.core.model.entity.IdmIdentityRole_;
+import eu.bcvsolutions.idm.core.model.entity.IdmTreeType_;
+import eu.bcvsolutions.idm.core.script.evaluator.AbstractScriptEvaluator;
+import eu.bcvsolutions.idm.ic.api.IcConnectorObject;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -26,59 +40,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-
-import eu.bcvsolutions.idm.acc.domain.AccResultCode;
-import eu.bcvsolutions.idm.acc.domain.MappingContext;
-import eu.bcvsolutions.idm.acc.domain.SystemEntityType;
-import eu.bcvsolutions.idm.acc.domain.SystemOperationType;
-import eu.bcvsolutions.idm.acc.dto.AccAccountDto;
-import eu.bcvsolutions.idm.acc.dto.AccIdentityAccountDto;
-import eu.bcvsolutions.idm.acc.dto.SysSchemaAttributeDto;
-import eu.bcvsolutions.idm.acc.dto.SysSchemaObjectClassDto;
-import eu.bcvsolutions.idm.acc.dto.SysSystemAttributeMappingDto;
-import eu.bcvsolutions.idm.acc.dto.SysSystemDto;
-import eu.bcvsolutions.idm.acc.dto.SysSystemEntityDto;
-import eu.bcvsolutions.idm.acc.dto.SysSystemMappingDto;
-import eu.bcvsolutions.idm.acc.dto.filter.AccIdentityAccountFilter;
-import eu.bcvsolutions.idm.acc.dto.filter.SysSystemAttributeMappingFilter;
-import eu.bcvsolutions.idm.acc.dto.filter.SysSystemMappingFilter;
-import eu.bcvsolutions.idm.acc.entity.AccAccount_;
-import eu.bcvsolutions.idm.acc.entity.SysSchemaObjectClass_;
-import eu.bcvsolutions.idm.acc.entity.SysSystemAttributeMapping_;
-import eu.bcvsolutions.idm.acc.entity.SysSystemMapping;
-import eu.bcvsolutions.idm.acc.entity.SysSystemMapping_;
-import eu.bcvsolutions.idm.acc.entity.SysSystem_;
-import eu.bcvsolutions.idm.acc.exception.ProvisioningException;
-import eu.bcvsolutions.idm.acc.repository.SysSystemMappingRepository;
-import eu.bcvsolutions.idm.acc.service.api.AccIdentityAccountService;
-import eu.bcvsolutions.idm.acc.service.api.SysSchemaAttributeService;
-import eu.bcvsolutions.idm.acc.service.api.SysSystemAttributeMappingService;
-import eu.bcvsolutions.idm.acc.service.api.SysSystemEntityService;
-import eu.bcvsolutions.idm.acc.service.api.SysSystemMappingService;
-import eu.bcvsolutions.idm.core.api.domain.IdmScriptCategory;
-import eu.bcvsolutions.idm.core.api.dto.AbstractDto;
-import eu.bcvsolutions.idm.core.api.dto.BaseDto;
-import eu.bcvsolutions.idm.core.api.dto.ExportDescriptorDto;
-import eu.bcvsolutions.idm.core.api.dto.IdmExportImportDto;
-import eu.bcvsolutions.idm.core.api.dto.IdmIdentityDto;
-import eu.bcvsolutions.idm.core.api.dto.IdmIdentityRoleDto;
-import eu.bcvsolutions.idm.core.api.dto.filter.IdmIdentityRoleFilter;
-import eu.bcvsolutions.idm.core.api.exception.ResultCodeException;
-import eu.bcvsolutions.idm.core.api.service.AbstractEventableDtoService;
-import eu.bcvsolutions.idm.core.api.service.EntityEventManager;
-import eu.bcvsolutions.idm.core.api.service.ExportManager;
-import eu.bcvsolutions.idm.core.api.service.GroovyScriptService;
-import eu.bcvsolutions.idm.core.api.service.IdmIdentityContractService;
-import eu.bcvsolutions.idm.core.api.service.IdmIdentityRoleService;
-import eu.bcvsolutions.idm.core.api.service.IdmTreeTypeService;
-import eu.bcvsolutions.idm.core.api.utils.DtoUtils;
-import eu.bcvsolutions.idm.core.api.utils.EntityUtils;
-import eu.bcvsolutions.idm.core.model.entity.IdmIdentityRole_;
-import eu.bcvsolutions.idm.core.model.entity.IdmTreeType_;
-import eu.bcvsolutions.idm.core.script.evaluator.AbstractScriptEvaluator;
-import eu.bcvsolutions.idm.ic.api.IcConnectorObject;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.text.MessageFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Default system entity handling.
@@ -86,6 +54,7 @@ import eu.bcvsolutions.idm.ic.api.IcConnectorObject;
  * @author svandav
  * @author Ondrej Husnik
  * @author Radek Tomiška
+ * @author Roman Kucera
  */
 @Service
 public class DefaultSysSystemMappingService
@@ -107,10 +76,8 @@ public class DefaultSysSystemMappingService
 	private SysSchemaAttributeService attributeService;
 	@Lazy
 	@Autowired
-	private IdmIdentityRoleService identityRoleService;
-	@Lazy
-	@Autowired
-	private IdmIdentityContractService identityContractService;
+	private IdmRoleAssignmentManager roleAssignmentManager;
+
 	@Lazy
 	@Autowired
 	private IdmTreeTypeService treeTypeService;
@@ -120,6 +87,12 @@ public class DefaultSysSystemMappingService
 	@Lazy
 	@Autowired
 	private SysSystemEntityService systemEntityService;
+	@Autowired
+	private SysSystemEntityTypeManager systemEntityManager;
+
+	@Lazy
+	@Autowired
+	private IdmIdentityContractService identityContractService;
 
 	@Autowired
 	public DefaultSysSystemMappingService(
@@ -142,9 +115,25 @@ public class DefaultSysSystemMappingService
 	@Override
 	@Transactional
 	public SysSystemMappingDto saveInternal(SysSystemMappingDto dto) {
-		SystemEntityType entityType = dto.getEntityType();
-		if (SystemOperationType.PROVISIONING == dto.getOperationType() && !entityType.isSupportsProvisioning()) {
+		String entityType = dto.getEntityType();
+		SystemEntityTypeRegistrable systemEntityType = systemEntityManager.getSystemEntityByCode(entityType);
+		if (SystemOperationType.PROVISIONING == dto.getOperationType() && !systemEntityType.isSupportsProvisioning()) {
 			throw new ResultCodeException(AccResultCode.PROVISIONING_NOT_SUPPORTS_ENTITY_TYPE, ImmutableMap.of("entityType", entityType));
+		}
+
+		if (dto.getConnectedSystemMappingId() != null) {
+			SysSystemMappingDto connectedSystemMappingDto = this.get(dto.getConnectedSystemMappingId());
+			if (dto.getOperationType().equals(connectedSystemMappingDto.getOperationType())) {
+				throw new ResultCodeException(AccResultCode.SYSTEM_MAPPING_CONNECTED_MAPPING_SAME_TYPE, ImmutableMap.of("mapping", connectedSystemMappingDto.getName()));
+			}
+			SysSystemMappingFilter systemMappingFilter = new SysSystemMappingFilter();
+			systemMappingFilter.setConnectedSystemMappingId(connectedSystemMappingDto.getId());
+			List<UUID> connectedMappingsIds = this.findIds(systemMappingFilter, null).getContent();
+			connectedMappingsIds.forEach(uuid -> {
+				if (!uuid.equals(dto.getId())) {
+					throw new ResultCodeException(AccResultCode.SYSTEM_MAPPING_CONNECTED_MAPPING_ALREADY_MAPPED, ImmutableMap.of("mapping", connectedSystemMappingDto.getName()));
+				}
+			});
 		}
 
 		// Validate all sub attributes
@@ -157,7 +146,7 @@ public class DefaultSysSystemMappingService
 
 	@Override
 	public List<SysSystemMappingDto> findBySystem(SysSystemDto system, SystemOperationType operation,
-			SystemEntityType entityType) {
+			String entityType) {
 		Assert.notNull(system, "System is required.");
 		//
 		return findBySystemId(system.getId(), operation, entityType);
@@ -167,7 +156,7 @@ public class DefaultSysSystemMappingService
 	public List<SysSystemMappingDto> findBySystemId(
 			UUID systemId, 
 			SystemOperationType operation,
-			SystemEntityType entityType) {
+			String entityType) {
 		Assert.notNull(systemId, "System identifier is required.");
 		//
 		SysSystemMappingFilter filter = new SysSystemMappingFilter();
@@ -182,7 +171,7 @@ public class DefaultSysSystemMappingService
 	public List<SysSystemMappingDto> findByObjectClass(
 			SysSchemaObjectClassDto objectClass,
 			SystemOperationType operation, 
-			SystemEntityType entityType) {
+			String entityType) {
 		Assert.notNull(objectClass, "Object class is required.");
 		//
 		SysSystemMappingFilter filter = new SysSystemMappingFilter();
@@ -326,7 +315,7 @@ public class DefaultSysSystemMappingService
 		final String idmProperty = "identity";
 		boolean isError = true;
 		if (systemMapping.getOperationType() == SystemOperationType.SYNCHRONIZATION
-				&& systemMapping.getEntityType() == SystemEntityType.CONTRACT) {
+				&& systemMapping.getEntityType().equals(ContractSynchronizationExecutor.SYSTEM_ENTITY_TYPE)) {
 			for (SysSystemAttributeMappingDto attribute : attributesList) {
 				if (attribute.isEntityAttribute() && attribute.getIdmPropertyName().equals(idmProperty)) {
 					isError = false;
@@ -352,7 +341,7 @@ public class DefaultSysSystemMappingService
 	private Map<String, Object> validateIdentityStateAndDisabled(Map<String, Object> errors,
 			SysSystemMappingDto systemMapping, List<SysSystemAttributeMappingDto> attributesList) {
 		
-		if (SystemEntityType.IDENTITY == systemMapping.getEntityType()) {
+		if (IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE == systemMapping.getEntityType()) {
 			Set<String> attrs = attributesList
 					.stream()
 					.map(SysSystemAttributeMappingDto::getIdmPropertyName)
@@ -401,9 +390,14 @@ public class DefaultSysSystemMappingService
 	}
 
 	@Override
-	public SysSystemMappingDto findProvisioningMapping(UUID systemId, SystemEntityType entityType) {
+	public SysSystemMappingDto findProvisioningMapping(UUID systemId, String entityType, UUID mappingId) {
 		Assert.notNull(systemId, "System identifier is required.");
 		Assert.notNull(entityType, "Entity type is required.");
+
+		if (mappingId != null) {
+			return this.get(mappingId);
+		}
+
 		SysSystemMappingFilter mappingFilter = new SysSystemMappingFilter();
 		mappingFilter.setSystemId(systemId);
 		mappingFilter.setEntityType(entityType);
@@ -447,19 +441,18 @@ public class DefaultSysSystemMappingService
 		}
 
 		if ((mapping.isAddContextIdentityRoles() || mapping.isAddContextIdentityRolesForSystem()) &&  dto instanceof IdmIdentityDto) {
-			IdmIdentityRoleFilter identityRoleFilter = new IdmIdentityRoleFilter();
+			IdmRequestIdentityRoleFilter identityRoleFilter = new IdmRequestIdentityRoleFilter();
 			identityRoleFilter.setIdentityId(dto.getId());
-			List<IdmIdentityRoleDto> identityRoles = identityRoleService
+			List<AbstractRoleAssignmentDto> identityRoles = roleAssignmentManager
 					.find(identityRoleFilter,
-							PageRequest.of(0, Integer.MAX_VALUE, Sort.by(IdmIdentityRole_.created.getName())))
-					.getContent();
+							PageRequest.of(0, Integer.MAX_VALUE, Sort.by(AbstractEntity_.created.getName())), (a,b) -> {});
 			if (mapping.isAddContextIdentityRoles()) {
 				// Set all identity-roles to the context.
 				mappingContext.setIdentityRoles(identityRoles);
 			}
 			if (mapping.isAddContextIdentityRolesForSystem()) {
 				Assert.notNull(system.getId(), "System identifier is required.");
-				List<IdmIdentityRoleDto> identityRolesForSystem = Lists.newArrayList();
+				List<AbstractRoleAssignmentDto> identityRolesForSystem = Lists.newArrayList();
 				AccIdentityAccountFilter identityAccountFilter = new AccIdentityAccountFilter();
 				identityAccountFilter.setIdentityId(dto.getId());
 				identityAccountFilter.setSystemId(system.getId());
@@ -530,7 +523,6 @@ public class DefaultSysSystemMappingService
 		if (usedInSameSystem) {
 			String newName = duplicateName(clonedMapping.getName());
 			clonedMapping.setName(newName);
-			clonedMapping.setOperationType(SystemOperationType.SYNCHRONIZATION);
 		}
 		SysSystemMappingDto mapping = this.save(clonedMapping);
 
@@ -625,9 +617,22 @@ public class DefaultSysSystemMappingService
 			);
 		}
 		//
-		SystemEntityType entityType = filter.getEntityType();
+		String entityType = filter.getEntityType();
 		if (entityType != null) {
 			predicates.add(builder.equal(root.get(SysSystemMapping_.entityType), entityType));
+		}
+		UUID connectedSystemMappingId = filter.getConnectedSystemMappingId();
+		if (connectedSystemMappingId != null) {
+			predicates.add(
+					builder.equal(
+							root.get(SysSystemMapping_.connectedSystemMappingId).get(SysSystemMapping_.id),
+							connectedSystemMappingId
+					)
+			);
+		}
+		AccountType accountType = filter.getAccountType();
+		if (accountType != null) {
+			predicates.add(builder.equal(root.get(SysSystemMapping_.accountType), accountType));
 		}
 		//
 		return predicates;

@@ -1,18 +1,21 @@
 package eu.bcvsolutions.idm.acc.dto;
 
-import eu.bcvsolutions.idm.acc.domain.SystemEntityType;
+import eu.bcvsolutions.idm.acc.domain.AccountType;
+import java.util.UUID;
+
+import org.springframework.hateoas.core.Relation;
+
 import eu.bcvsolutions.idm.acc.domain.SystemOperationType;
 import eu.bcvsolutions.idm.acc.entity.SysSystemMapping;
 import eu.bcvsolutions.idm.core.api.domain.Embedded;
 import eu.bcvsolutions.idm.core.api.dto.AbstractDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmTreeTypeDto;
-import java.util.UUID;
-import org.springframework.hateoas.core.Relation;
 
 /**
  * DTO for entity {@link SysSystemMapping}
  *
  * @author Ondrej Kopr <kopr@xyxy.cz>
+ * @author Roman Kucera
  */
 
 @Relation(collectionRelation = "systemMappings")
@@ -21,7 +24,7 @@ public class SysSystemMappingDto extends AbstractDto {
 	private static final long serialVersionUID = -3263064824050858302L;
 
 	private String name;
-	private SystemEntityType entityType;
+	private String entityType;
 	@Embedded(dtoClass = SysSchemaObjectClassDto.class)
 	private UUID objectClass;
 	private SystemOperationType operationType;
@@ -35,6 +38,10 @@ public class SysSystemMappingDto extends AbstractDto {
 	private boolean addContextIdentityRoles = false;
 	private boolean addContextIdentityRolesForSystem = false;
 	private boolean addContextConnectorObject = false;
+	@Embedded(dtoClass = SysSystemMappingDto.class)
+	private UUID connectedSystemMappingId;
+
+	private AccountType accountType;
 
 	public String getName() {
 		return name;
@@ -44,11 +51,11 @@ public class SysSystemMappingDto extends AbstractDto {
 		this.name = name;
 	}
 
-	public SystemEntityType getEntityType() {
+	public String getEntityType() {
 		return entityType;
 	}
 
-	public void setEntityType(SystemEntityType entityType) {
+	public void setEntityType(String entityType) {
 		this.entityType = entityType;
 	}
 
@@ -138,5 +145,21 @@ public class SysSystemMappingDto extends AbstractDto {
 
 	public void setAddContextConnectorObject(boolean addContextConnectorObject) {
 		this.addContextConnectorObject = addContextConnectorObject;
+	}
+
+	public UUID getConnectedSystemMappingId() {
+		return connectedSystemMappingId;
+	}
+
+	public void setConnectedSystemMappingId(UUID connectedSystemMappingId) {
+		this.connectedSystemMappingId = connectedSystemMappingId;
+	}
+
+	public AccountType getAccountType() {
+		return accountType;
+	}
+
+	public void setAccountType(AccountType accountType) {
+		this.accountType = accountType;
 	}
 }

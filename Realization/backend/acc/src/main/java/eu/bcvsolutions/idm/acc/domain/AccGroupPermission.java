@@ -7,6 +7,7 @@ import eu.bcvsolutions.idm.acc.AccModuleDescriptor;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
 import eu.bcvsolutions.idm.core.security.api.domain.GroupPermission;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
+import eu.bcvsolutions.idm.core.security.api.domain.RoleBasePermission;
 
 /**
  * Aggregate base permission. Name can't contain character '_' - its used for joining to authority name.
@@ -84,7 +85,40 @@ public enum AccGroupPermission implements GroupPermission {
 			IdmBasePermission.READ,
 			IdmBasePermission.CREATE,
 			IdmBasePermission.UPDATE,
-			IdmBasePermission.DELETE);
+			IdmBasePermission.DELETE),
+	SYSTEMOWNER(
+			IdmBasePermission.ADMIN,
+			IdmBasePermission.COUNT,
+			IdmBasePermission.AUTOCOMPLETE,
+			IdmBasePermission.READ,
+			IdmBasePermission.CREATE,
+			IdmBasePermission.UPDATE,
+			IdmBasePermission.DELETE),
+	SYSTEMOWNERROLE(
+			IdmBasePermission.ADMIN,
+			IdmBasePermission.COUNT,
+			IdmBasePermission.AUTOCOMPLETE,
+			IdmBasePermission.READ,
+			IdmBasePermission.CREATE,
+			IdmBasePermission.UPDATE,
+			IdmBasePermission.DELETE),
+	ACCOUNTFORMVALUE(
+			IdmBasePermission.ADMIN,
+			IdmBasePermission.READ, 
+			IdmBasePermission.CREATE, 
+			IdmBasePermission.UPDATE, 
+			IdmBasePermission.DELETE),
+	ACCOUNTROLEASSIGNMENT(
+			IdmBasePermission.ADMIN,
+			IdmBasePermission.READ,
+			IdmBasePermission.CREATE,
+			IdmBasePermission.UPDATE,
+			IdmBasePermission.DELETE,
+			IdmBasePermission.COUNT,
+			IdmBasePermission.AUTOCOMPLETE,
+			RoleBasePermission.CANBEREQUESTED
+	);
+			
 	
 	// String constants could be used in pre / post authotize SpEl expressions
 	
@@ -196,7 +230,36 @@ public enum AccGroupPermission implements GroupPermission {
 	public static final String SYSTEM_GROUP_SYSTEM_CREATE = "SYSTEMGROUPSYSTEM" + BasePermission.SEPARATOR + "CREATE";
 	public static final String SYSTEM_GROUP_SYSTEM_UPDATE = "SYSTEMGROUPSYSTEM" + BasePermission.SEPARATOR + "UPDATE";
 	public static final String SYSTEM_GROUP_SYSTEM_DELETE = "SYSTEMGROUPSYSTEM" + BasePermission.SEPARATOR + "DELETE";
-	
+	//
+	public static final String SYSTEMOWNER_COUNT = "SYSTEMOWNER" + BasePermission.SEPARATOR + "COUNT";
+	public static final String SYSTEMOWNER_AUTOCOMPLETE = "SYSTEMOWNER" + BasePermission.SEPARATOR + "AUTOCOMPLETE";
+	public static final String SYSTEMOWNER_READ = "SYSTEMOWNER" + BasePermission.SEPARATOR + "READ";
+	public static final String SYSTEMOWNER_CREATE = "SYSTEMOWNER" + BasePermission.SEPARATOR + "CREATE";
+	public static final String SYSTEMOWNER_UPDATE = "SYSTEMOWNER" + BasePermission.SEPARATOR + "UPDATE";
+	public static final String SYSTEMOWNER_DELETE = "SYSTEMOWNER" + BasePermission.SEPARATOR + "DELETE";
+	//
+	public static final String SYSTEMOWNERROLE_COUNT = "SYSTEMOWNERROLE" + BasePermission.SEPARATOR + "COUNT";
+	public static final String SYSTEMOWNERROLE_AUTOCOMPLETE = "SYSTEMOWNERROLE" + BasePermission.SEPARATOR + "AUTOCOMPLETE";
+	public static final String SYSTEMOWNERROLE_READ = "SYSTEMOWNERROLE" + BasePermission.SEPARATOR + "READ";
+	public static final String SYSTEMOWNERROLE_CREATE = "SYSTEMOWNERROLE" + BasePermission.SEPARATOR + "CREATE";
+	public static final String SYSTEMOWNERROLE_UPDATE = "SYSTEMOWNERROLE" + BasePermission.SEPARATOR + "UPDATE";
+	public static final String SYSTEMOWNERROLE_DELETE = "SYSTEMOWNERROLE" + BasePermission.SEPARATOR + "DELETE";
+
+	public static final String ACCOUNT_FORM_VALUE_ADMIN = "ACCOUNTFORMVALUE" + BasePermission.SEPARATOR + "ADMIN";
+	public static final String ACCOUNT_FORM_VALUE_READ = "ACCOUNTFORMVALUE" + BasePermission.SEPARATOR + "READ";
+	public static final String ACCOUNT_FORM_VALUE_CREATE = "ACCOUNTFORMVALUE" + BasePermission.SEPARATOR + "CREATE";
+	public static final String ACCOUNT_FORM_VALUE_UPDATE = "ACCOUNTFORMVALUE" + BasePermission.SEPARATOR + "UPDATE";
+	public static final String ACCOUNT_FORM_VALUE_DELETE = "ACCOUNTFORMVALUE" + BasePermission.SEPARATOR + "DELETE";
+
+	public static final String ACCOUNTROLEASSIGNMENT_ADMIN = "ACCOUNTFORMVALUE" + BasePermission.SEPARATOR + "ADMIN";
+	public static final String ACCOUNTROLEASSIGNMENT_READ = "ACCOUNTROLEASSIGNMENT" + BasePermission.SEPARATOR + "READ";
+	public static final String ACCOUNTROLEASSIGNMENT_AUTOCOMPLETE = "ACCOUNTROLEASSIGNMENT" + BasePermission.SEPARATOR + "AUTOCOMPLETE";
+	public static final String ACCOUNTROLEASSIGNMENT_COUNT = "ACCOUNTROLEASSIGNMENT" + BasePermission.SEPARATOR + "COUNT";
+	public static final String ACCOUNTROLEASSIGNMENT_CREATE = "ACCOUNTROLEASSIGNMENT" + BasePermission.SEPARATOR + "CREATE";
+	public static final String ACCOUNTROLEASSIGNMENT_UPDATE = "ACCOUNTROLEASSIGNMENT" + BasePermission.SEPARATOR + "UPDATE";
+	public static final String ACCOUNTROLEASSIGNMENT_DELETE = "ACCOUNTROLEASSIGNMENT" + BasePermission.SEPARATOR + "DELETE";
+	public static final String ACCOUNTROLEASSIGNMENT_CANBEREQUESTED = "ACCOUNTROLEASSIGNMENT" + BasePermission.SEPARATOR + "CANBEREQUESTED";
+
 	private final List<BasePermission> permissions;
 
 	private AccGroupPermission(BasePermission... permissions) {

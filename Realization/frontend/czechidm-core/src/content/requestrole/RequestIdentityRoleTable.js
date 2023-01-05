@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { connect } from 'react-redux';
 import _ from 'lodash';
 //
 import * as Basic from '../../components/basic';
@@ -13,11 +14,16 @@ import FormInstance from '../../domain/FormInstance';
 import ConfigLoader from '../../utils/ConfigLoader';
 import IncompatibleRoleWarning from '../role/IncompatibleRoleWarning';
 import IdentitiesInfo from '../identity/IdentitiesInfo';
+import ComponentService from "../../services/ComponentService";
 
+import { ConfigurationManager } from '../../redux';
+import {IdentityRoleTableFilter} from "../identity/IdentityRoleTableFilter";
+import OwnerCell from "./OwnerCell";
+import {data} from "../../redux/data/reducer";
 const uiKeyIncompatibleRoles = 'request-incompatible-roles-';
 const requestIdentityRoleManager = new RequestIdentityRoleManager();
 const roleRequestManager = new RoleRequestManager();
-const identityContractManager = new IdentityContractManager();
+const componentService = new ComponentService();
 
 /**
  * Table for keep identity role concepts.
@@ -85,14 +91,14 @@ export class RequestIdentityRoleTable extends Advanced.AbstractTableContent {
     if (event) {
       event.preventDefault();
     }
-    this.refs.table.useFilterForm(this.refs.filterForm);
+    this.refs.table.useFilterForm(this.refs.filterForm.getFilterForm());
   }
 
   cancelFilter(event) {
     if (event) {
       event.preventDefault();
     }
-    this.refs.table.cancelFilter(this.refs.filterForm);
+    this.refs.table.cancelFilter(this.refs.filterForm.getFilterForm());
   }
 
   /**
@@ -216,39 +222,18 @@ export class RequestIdentityRoleTable extends Advanced.AbstractTableContent {
       event.preventDefault();
     }
 
-    const form = this.refs.roleConceptDetail.getForm();
-    const eavForm = this.refs.roleConceptDetail.getEavForm();
-    if (!form.isFormValid()) {
-      return;
-    }
-    if (eavForm && !eavForm.isValid()) {
+    if(!this.refs.roleConceptDetail.isValid()) {
       return;
     }
     //
     this.setState({
       showLoading: true
     }, () => {
-      const { request, putRequestToRedux} = this.props;
+      const { request, requestId, putRequestToRedux} = this.props;
 
-      const entity = form.getData();
-      entity.roleRequest = request.id;
-      let eavValues = null;
-      if (eavForm) {
-        eavValues = {values: eavForm.getValues()};
-      }
 
-      // Conversions
-      if (entity.identityContract && _.isObject(entity.identityContract)) {
-        entity.identityContract = entity.identityContract.id;
-      }
-      if (entity.role && _.isArray(entity.role)) {
-        entity.roles = entity.role;
-        entity.role = null;
-      }
-      // Add EAV to entity
-      entity._eav = [eavValues];
       // Save entity
-      this.context.store.dispatch(requestIdentityRoleManager.createEntity(entity, null, (createdEntity, error) => {
+      this.refs.roleConceptDetail.save(requestId, (createdEntity, error) => {
         if (error) {
           // If error contains parameters with attributes, then is it validation error
           if (error.parameters && error.parameters.attributes) {
@@ -278,7 +263,7 @@ export class RequestIdentityRoleTable extends Advanced.AbstractTableContent {
             this.reload();
           });
         }
-      }));
+      });
     });
   }
 
@@ -326,6 +311,16 @@ export class RequestIdentityRoleTable extends Advanced.AbstractTableContent {
     if (this.refs.table) {
       this.refs.table.reload();
     }
+  }
+
+  getOwnerTypeOptions() {
+    const roleAssignmentComponents = componentService.getRoleAssignmentComponents();
+    return [...roleAssignmentComponents].map(([key,value]) => {
+      return {
+        value: value.ownerType,
+        niceLabel: this.i18n(value.locale + '.ownerType')
+      }
+    });
   }
 
   /**
@@ -398,7 +393,7 @@ export class RequestIdentityRoleTable extends Advanced.AbstractTableContent {
    * Generate cell with actions (buttons)
    */
   renderConceptActionsCell({rowIndex, data}) {
-    const { readOnly } = this.props;
+    const { readOnly, requestId } = this.props;
     const { showLoadingActions } = this.state;
 
     const actions = [];
@@ -406,10 +401,12 @@ export class RequestIdentityRoleTable extends Advanced.AbstractTableContent {
     const manualRole = !value.automaticRole && !value.directRole;
     const operation = value.operation;
     //
+    const item = {...data[rowIndex], roleRequest: requestId}
+
     actions.push(
       <Basic.Button
         level="danger"
-        onClick={ this._internalDelete.bind(this, data[rowIndex]) }
+        onClick={ this._internalDelete.bind(this, item) }
         className="btn-xs"
         disabled={ readOnly || !manualRole || !this._canChangePermissions(value) }
         showLoading={ showLoadingActions }
@@ -419,17 +416,18 @@ export class RequestIdentityRoleTable extends Advanced.AbstractTableContent {
         icon="trash"/>
     );
     if (operation !== 'REMOVE') {
+
       actions.push(
         <Basic.Button
           level="warning"
           showLoading={ showLoadingActions }
-          onClick={ this._showDetail.bind(this, data[rowIndex], true, false) }
+          onClick={ this._showDetail.bind(this, item, true, false) }
           className="btn-xs"
           disabled={
             readOnly
               || !manualRole
               || !value.role
-              || !value.identityContract
+              || !value.ownerUuid
               || !this._canChangePermissions(value)
           }
           role="group"
@@ -481,6 +479,10 @@ export class RequestIdentityRoleTable extends Advanced.AbstractTableContent {
       identityId,
       showRowSelection,
       showEnvironment,
+      requestId,
+      columns,
+      isAccount,
+      accountId
     } = this.props;
     const {
       showChangesOnly,
@@ -489,20 +491,31 @@ export class RequestIdentityRoleTable extends Advanced.AbstractTableContent {
       validationErrors
     } = this.state;
 
-    const identityUsername = request && request.applicant;
+    const identityUsername = request && request.applicantInfo.id;
     let forceSearchParameters = new SearchParameters();
     if (request) {
       forceSearchParameters = forceSearchParameters.setFilter('roleRequestId', request.id);
     }
-    if (identityId) {
+    if (requestId) {
+      forceSearchParameters = forceSearchParameters.setFilter('roleRequestId', requestId);
+    }
+    if (identityId && !isAccount) {
       forceSearchParameters = forceSearchParameters.setFilter('identityId', identityId);
+      forceSearchParameters = forceSearchParameters.setFilter('accountId', null);
+      forceSearchParameters = forceSearchParameters.setFilter('loadAssignments', null);
+    }
+    if (isAccount && accountId) {
+      forceSearchParameters = forceSearchParameters.setFilter('identityId', null);
+      forceSearchParameters = forceSearchParameters.setFilter('accountId', accountId);
+      forceSearchParameters = forceSearchParameters.setFilter('ownerType', 'eu.bcvsolutions.idm.acc.dto.AccAccountDto');
+      forceSearchParameters = forceSearchParameters.setFilter('loadAssignments', true);
     }
     forceSearchParameters = forceSearchParameters.setFilter('onlyChanges', showChangesOnly);
     forceSearchParameters = forceSearchParameters.setFilter('includeCandidates', true);
     forceSearchParameters = forceSearchParameters.setFilter('includeCrossDomainsSystemsCount', true);
     //
     const showLoading = this.props.showLoading || this.state.showLoading;
-    const contractForceSearchparameters = new SearchParameters().setFilter('identity', identityUsername);
+    const contractForceSearchParameters = new SearchParameters().setFilter('identity', identityUsername);
     //
     return (
       <Basic.Div>
@@ -547,6 +560,7 @@ export class RequestIdentityRoleTable extends Advanced.AbstractTableContent {
           </Basic.Toolbar>
           <Advanced.Table
             ref="table"
+            columns={ this.props.columns }
             uiKey="request-identity-role-table"
             hover={ false }
             manager={ requestIdentityRoleManager }
@@ -563,49 +577,14 @@ export class RequestIdentityRoleTable extends Advanced.AbstractTableContent {
             rowClass={this._getRowClass}
             forceSearchParameters={forceSearchParameters}
             filter={
-              <Advanced.Filter onSubmit={ this.useFilter.bind(this) }>
-                <Basic.AbstractForm ref="filterForm">
-                  <Basic.Row className="last">
-                    <Basic.Col lg={ 3 }>
-                      <Advanced.Filter.TextField
-                        ref="roleText"
-                        placeholder={ this.i18n('content.identity.roles.filter.role.placeholder') }
-                        header={ this.i18n('content.identity.roles.filter.role.placeholder') }
-                        help={ Advanced.Filter.getTextHelp() }
-                        onKeyPress={ (event) => {
-                          // Filter is embedded in request form => onEnter on input only.
-                          if (event.key === 'Enter') {
-                            this.useFilter();
-                          }
-                        }}/>
-                    </Basic.Col>
-                    <Basic.Col lg={ 3 } className={ showEnvironment ? '' : 'hidden'}>
-                      <Advanced.CodeListSelect
-                        ref="roleEnvironment"
-                        code="environment"
-                        label={ null }
-                        placeholder={ this.i18n('entity.Role.environment.label') }
-                        multiSelect/>
-                    </Basic.Col>
-                    <Basic.Col lg={ showEnvironment ? 3 : 6 }>
-                      <Advanced.Filter.SelectBox
-                        ref="identityContractId"
-                        placeholder={ this.i18n('entity.IdentityRole.identityContract.title') }
-                        manager={ identityContractManager }
-                        forceSearchParameters={ contractForceSearchparameters }
-                        niceLabel={ (entity) => identityContractManager.getNiceLabel(entity, false) }/>
-                    </Basic.Col>
-                    <Basic.Col lg={ 3 } className="text-right">
-                      <Basic.Button onClick={ this.cancelFilter.bind(this) } style={{ marginRight: 5 }}>
-                        { this.i18n('button.filter.cancel') }
-                      </Basic.Button>
-                      <Basic.Button level="primary" onClick={ this.useFilter.bind(this) } >
-                        { this.i18n('button.filter.use') }
-                      </Basic.Button>
-                    </Basic.Col>
-                  </Basic.Row>
-                </Basic.AbstractForm>
-              </Advanced.Filter>
+              <IdentityRoleTableFilter ref="filterForm"
+                                       showEnvironment={showEnvironment}
+                                       hasRoleForceFilter={false}
+                                       hasIdentityForceFilter={true}
+                                       contractForceSearchParameters={contractForceSearchParameters}
+                                       useFilter={this.useFilter.bind(this)}
+                                       cancelFilter={this.cancelFilter.bind(this)}
+              />
             }
             _searchParameters={ this.getSearchParameters() }>
             <Advanced.Column
@@ -613,7 +592,7 @@ export class RequestIdentityRoleTable extends Advanced.AbstractTableContent {
               className="detail-button"
               cell={ this.renderDetailCell.bind(this) }/>
             <Advanced.Column
-              property="role.name"
+              property="name"
               title={ this.i18n('entity.Role.name') }
               sort
               header={ this.i18n('entity.IdentityRole.role') }
@@ -642,15 +621,18 @@ export class RequestIdentityRoleTable extends Advanced.AbstractTableContent {
                 }
               }/>
             <Advanced.Column
-              property="_embedded.role.baseCode"
+              property="baseCode"
               sortProperty="role.baseCode"
               rendered={showEnvironment}
               face="text"
               header={ this.i18n('entity.Role.baseCode.label') }
+              cell={
+                ({ rowIndex, data }) =>
+                  data[rowIndex]._embedded.role.baseCode
+              }
               sort/>
             <Advanced.Column
               property="systemState"
-              width={75}
               face="text"
               header={this.i18n('systemState')}
               rendered={showChangesOnly}
@@ -663,42 +645,30 @@ export class RequestIdentityRoleTable extends Advanced.AbstractTableContent {
                 }
               }/>
             <Advanced.Column
-              property="_embedded.role.environment"
+              property="environment"
               rendered={showEnvironment}
               sortProperty="role.environment"
               face="text"
               header={ this.i18n('entity.Role.environment.label') }
+              cell={
+                ({ rowIndex, data }) =>
+                  data[rowIndex]._embedded.role.environment
+              }
               sort/>
             <Advanced.Column
+              property="roleAttributes"
               header={this.i18n('content.task.IdentityRoleConceptTable.identityRoleAttributes.header')}
               cell={
                 ({rowIndex, data}) => this.renderConceptAttributesCell({ rowIndex, data })
               }/>
             <Advanced.Column
-              header={ this.i18n('entity.IdentityRole.identityContract.title') }
-              cell={
-                ({rowIndex, data}) => {
-                  const contract = data[rowIndex]._embedded.identityContract;
-                  if (!contract) {
-                    return (
-                      <Basic.Label
-                        level="default"
-                        value={ this.i18n('label.removed') }
-                        title={ this.i18n('content.audit.revision.deleted') }/>
-                    );
-                  }
-                  return (
-                    <Advanced.IdentityContractInfo
-                      entityIdentifier={ contract.id }
-                      entity={ contract }
-                      showIdentity={ false }
-                      showIcon
-                      face="popover" />
-                  );
-                }
-              }/>
+              property="contractPosition"
+              header={ this.i18n('entity.IdentityRole.owner.title')}
+              cell={ ({rowIndex, data}) => <OwnerCell entity={ data[rowIndex]}/> }
+              />
             <Advanced.Column
               header={ this.i18n('entity.RoleRequest.candicateUsers') }
+              property="candicateUsers"
               cell={
                 ({rowIndex, data}) => {
                   const candidates = data[rowIndex].candidates;
@@ -722,6 +692,23 @@ export class RequestIdentityRoleTable extends Advanced.AbstractTableContent {
               face="date"
               header={this.i18n('entity.ConceptRoleRequest.validTill')}/>
             <Advanced.Column
+              property="description"
+              header={this.i18n('entity.Role.description')}
+              face="text"
+              className='descriptionColumn'
+              cell={
+                ({ rowIndex, data }) =>
+                  data[rowIndex]._embedded.role.description
+              }/>
+            <Advanced.Column
+              property="priority"
+              header={this.i18n('entity.Role.priority')}
+              face="text"
+              cell={
+                ({ rowIndex, data }) =>
+                  data[rowIndex]._embedded.role.priority
+              }/>
+            <Advanced.Column
               property="directRole"
               header={ this.i18n('entity.IdentityRole.directRole.label') }
               cell={
@@ -740,8 +727,7 @@ export class RequestIdentityRoleTable extends Advanced.AbstractTableContent {
                       face="popover" />
                   );
                 }
-              }
-              width={ 150 }/>
+              }/>
             <Advanced.Column
               sort
               property="automaticRole"
@@ -753,6 +739,7 @@ export class RequestIdentityRoleTable extends Advanced.AbstractTableContent {
                   className="column-face-bool"/>
               }/>
             <Advanced.Column
+              property="action"
               header={ this.i18n('label.action') }
               className="action"
               cell={ this.renderConceptActionsCell.bind(this) }/>
@@ -818,7 +805,10 @@ export class RequestIdentityRoleTable extends Advanced.AbstractTableContent {
               entity={detail.entity}
               isEdit={detail.edit}
               multiAdd={detail.add}
-              validationErrors={ validationErrors }/>
+              requestId={requestId}
+              validationErrors={ validationErrors }
+              isAccount={isAccount}
+              accountId={accountId}/>
           </Basic.Modal.Body>
           <Basic.Modal.Footer>
             <Basic.Button
@@ -841,6 +831,8 @@ export class RequestIdentityRoleTable extends Advanced.AbstractTableContent {
       </Basic.Div>
     );
   }
+
+
 }
 
 RequestIdentityRoleTable.propTypes = {
@@ -850,14 +842,42 @@ RequestIdentityRoleTable.propTypes = {
   request: PropTypes.object,
   readOnly: PropTypes.bool,
   showEnvironment: PropTypes.bool,
-  putRequestToRedux: PropTypes.func
+  putRequestToRedux: PropTypes.func,
+  isAccount: PropTypes.bool,
+  accountId: PropTypes.string
 };
 
 RequestIdentityRoleTable.defaultProps = {
+  columns: ConfigLoader.getConfig('RequestIdentityRoleTable.table.columns', [
+    'name',
+    'baseCode',
+    'systemState',
+    'environment',
+    'roleAttributes',
+    'contractPosition',
+    'validFrom',
+    'validTill',
+    'description',
+    'priority',
+    'directRole',
+    'automaticRole',
+    'candicateUsers',
+    'action'
+  ]),
   showLoading: false,
   showRowSelection: true,
   readOnly: false,
-  showEnvironment: true
+  showEnvironment: true,
+  isAccount: false
 };
 
-export default RequestIdentityRoleTable;
+function select(state, component) {
+  return {
+    columns: component.columns || ConfigurationManager.getPublicValueAsArray(
+      state,
+      'idm.pub.app.show.role.request.table.columns',
+      RequestIdentityRoleTable.defaultProps.columns
+    )
+  };
+}
+export default connect(select, null, null, { forwardRef: true })(RequestIdentityRoleTable);

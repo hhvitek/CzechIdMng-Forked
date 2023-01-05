@@ -53,6 +53,8 @@ public enum AccResultCode implements ResultCode {
 	SYSTEM_MAPPING_VALIDATION(HttpStatus.BAD_REQUEST, "System mapping's validation failed."),
 	SYSTEM_MAPPING_PASSWORD_OVERRIDE(HttpStatus.BAD_REQUEST, "Password can't be overridden."),
 	SYSTEM_MAPPING_PASSWORD_EXITS_OVERRIDDEN(HttpStatus.CONFLICT, "The attribute can't be mapped as password. Exists overridden attribute in role: [%s]."),
+	SYSTEM_MAPPING_CONNECTED_MAPPING_SAME_TYPE(HttpStatus.BAD_REQUEST, "Connected mapping [%s] has the same operation type as the one, that should be created. Only mappings with opposite types can be connected!"),
+	SYSTEM_MAPPING_CONNECTED_MAPPING_ALREADY_MAPPED(HttpStatus.BAD_REQUEST, "Connected mapping [%s] is already set in some other mapping!"),
 	//
 	// system entity
 	SYSTEM_ENTITY_DELETE_FAILED_HAS_OPERATIONS(HttpStatus.BAD_REQUEST, "System entity [%s] on system [%s] cannot be deleted. It is used in active provisioning operations!"),
@@ -105,6 +107,7 @@ public enum AccResultCode implements ResultCode {
 	PROVISIONING_EX_ATTR_CONTROLED_VALUE_RECALC(HttpStatus.BAD_REQUEST, "Error occured durring recalculation controlled value of attribute [%s] on system [%s]!"),
 	PROVISONING_OPERATION_RETRY_CANCEL_NOT_FOUND(HttpStatus.NO_CONTENT, "Provisioning operation [%s] not found - was processed in batch."),
 	MAPPING_CONTEXT_SCRIPT_RETURNS_WRONG_TYPE(HttpStatus.BAD_REQUEST, "Script 'get mapping context' on the system [%s] must return 'MappingContext' type!"),
+	PROVISIONING_ACCOUNT_UID_ALREADY_EXISTS(HttpStatus.INTERNAL_SERVER_ERROR, "Uid [%] already exists. Change uid for account [%s] for system [%s] in mapping [%s]"),
 	//
 	// Synchronization,
 	SYNCHRONIZATION_NOT_FOUND(HttpStatus.NOT_FOUND, "Synchronization [%s] not found!"),
@@ -186,6 +189,8 @@ public enum AccResultCode implements ResultCode {
 	WIZARD_AD_GROUP_NOT_FOUND(HttpStatus.NOT_FOUND, "The group [%s] wasn't found!"),
 	WIZARD_AD_CONNECTOR_DN_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "Entry with DN [%s] already exists!"),
 	WIZARD_AD_CREATED_TEST_USER_DN(HttpStatus.CREATED, "Test user with DN [%s] created."),
+	// Account wizard
+	WIZARD_ACCOUNT_NO_LOGIN_ROLE(HttpStatus.BAD_REQUEST, "No login role found"),
 	//
 	WIZARD_AD_GROUP_WRONG_MEMBER_CONNECTOR_TYPE(HttpStatus.BAD_REQUEST, "Member system have to use AD connector, but using [%s]!"),
 	//
@@ -201,8 +206,10 @@ public enum AccResultCode implements ResultCode {
 	MONITORING_PROVISIONING_OPERATION_ERROR(HttpStatus.CONFLICT, "Provisioning queue contains [%s] errors.", NotificationLevel.ERROR),
 	SYSTEM_GROUP_SCRIPT_RESULT_IS_NOT_LIST(HttpStatus.BAD_REQUEST, "System group - Result of script for find connector values from system [%s] have to return List!"),
 	// Identity-role
-	ROLE_SYSTEM_IS_USE_IN_IDENTITY_ROLE(HttpStatus.FOUND, "Role system [%s] is used [%s] in identity-roles!");
-	
+	ROLE_SYSTEM_IS_USE_IN_IDENTITY_ROLE(HttpStatus.FOUND, "Role system [%s] is used [%s] in identity-roles!"),
+	SYSTEM_ATTRIBUTE_MAPPING_RECALCULATION_EXECUTED(HttpStatus.OK, "%s"),
+	SYSTEM_ATTRIBUTE_MAPPING_RECALCULATION_NOT_EXECUTED(HttpStatus.CONFLICT, "%s");
+
 	private final HttpStatus status;
 	private final String message;
 	private final NotificationLevel level;

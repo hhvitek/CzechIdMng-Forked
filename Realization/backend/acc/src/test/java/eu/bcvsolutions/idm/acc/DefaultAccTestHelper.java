@@ -1,16 +1,6 @@
 package eu.bcvsolutions.idm.acc;
 
-import eu.bcvsolutions.idm.acc.dto.filter.AccUniformPasswordFilter;
-import eu.bcvsolutions.idm.acc.dto.filter.SysSystemGroupFilter;
-import eu.bcvsolutions.idm.acc.dto.filter.SysSystemMappingFilter;
-import eu.bcvsolutions.idm.acc.service.api.AccUniformPasswordService;
-import eu.bcvsolutions.idm.acc.service.api.SysSystemGroupService;
-import eu.bcvsolutions.idm.core.api.config.datasource.CoreEntityManager;
-import eu.bcvsolutions.idm.core.api.dto.filter.IdmRoleTreeNodeFilter;
-import eu.bcvsolutions.idm.core.api.service.IdmAutomaticRoleAttributeService;
-import eu.bcvsolutions.idm.core.api.service.IdmRoleTreeNodeService;
-import static org.junit.Assert.assertEquals;
-
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -34,10 +24,11 @@ import com.zaxxer.hikari.HikariDataSource;
 import eu.bcvsolutions.idm.acc.domain.AccountType;
 import eu.bcvsolutions.idm.acc.domain.OperationResultType;
 import eu.bcvsolutions.idm.acc.domain.SynchronizationActionType;
-import eu.bcvsolutions.idm.acc.domain.SystemEntityType;
 import eu.bcvsolutions.idm.acc.domain.SystemOperationType;
 import eu.bcvsolutions.idm.acc.dto.AbstractSysSyncConfigDto;
+import eu.bcvsolutions.idm.acc.dto.AccAccountConceptRoleRequestDto;
 import eu.bcvsolutions.idm.acc.dto.AccAccountDto;
+import eu.bcvsolutions.idm.acc.dto.AccAccountRoleAssignmentDto;
 import eu.bcvsolutions.idm.acc.dto.AccIdentityAccountDto;
 import eu.bcvsolutions.idm.acc.dto.SysConnectorKeyDto;
 import eu.bcvsolutions.idm.acc.dto.SysRoleSystemDto;
@@ -50,14 +41,27 @@ import eu.bcvsolutions.idm.acc.dto.SysSystemAttributeMappingDto;
 import eu.bcvsolutions.idm.acc.dto.SysSystemDto;
 import eu.bcvsolutions.idm.acc.dto.SysSystemEntityDto;
 import eu.bcvsolutions.idm.acc.dto.SysSystemMappingDto;
+import eu.bcvsolutions.idm.acc.dto.SysSystemOwnerDto;
+import eu.bcvsolutions.idm.acc.dto.SysSystemOwnerRoleDto;
+import eu.bcvsolutions.idm.acc.dto.filter.AccAccountFilter;
+import eu.bcvsolutions.idm.acc.dto.filter.AccAccountRoleAssignmentFilter;
+import eu.bcvsolutions.idm.acc.dto.filter.AccIdentityAccountFilter;
+import eu.bcvsolutions.idm.acc.dto.filter.AccUniformPasswordFilter;
 import eu.bcvsolutions.idm.acc.dto.filter.SysSchemaAttributeFilter;
 import eu.bcvsolutions.idm.acc.dto.filter.SysSyncActionLogFilter;
 import eu.bcvsolutions.idm.acc.dto.filter.SysSyncConfigFilter;
 import eu.bcvsolutions.idm.acc.dto.filter.SysSyncItemLogFilter;
+import eu.bcvsolutions.idm.acc.dto.filter.SysSystemGroupFilter;
+import eu.bcvsolutions.idm.acc.dto.filter.SysSystemMappingFilter;
+import eu.bcvsolutions.idm.acc.entity.AccAccount;
+import eu.bcvsolutions.idm.acc.entity.AccAccount_;
 import eu.bcvsolutions.idm.acc.entity.TestResource;
 import eu.bcvsolutions.idm.acc.scheduler.task.impl.SynchronizationSchedulableTaskExecutor;
+import eu.bcvsolutions.idm.acc.service.api.AccAccountConceptRoleRequestService;
+import eu.bcvsolutions.idm.acc.service.api.AccAccountRoleAssignmentService;
 import eu.bcvsolutions.idm.acc.service.api.AccAccountService;
 import eu.bcvsolutions.idm.acc.service.api.AccIdentityAccountService;
+import eu.bcvsolutions.idm.acc.service.api.AccUniformPasswordService;
 import eu.bcvsolutions.idm.acc.service.api.SynchronizationService;
 import eu.bcvsolutions.idm.acc.service.api.SysRoleSystemService;
 import eu.bcvsolutions.idm.acc.service.api.SysSchemaAttributeService;
@@ -66,18 +70,39 @@ import eu.bcvsolutions.idm.acc.service.api.SysSyncConfigService;
 import eu.bcvsolutions.idm.acc.service.api.SysSyncItemLogService;
 import eu.bcvsolutions.idm.acc.service.api.SysSystemAttributeMappingService;
 import eu.bcvsolutions.idm.acc.service.api.SysSystemEntityService;
+import eu.bcvsolutions.idm.acc.service.api.SysSystemGroupService;
 import eu.bcvsolutions.idm.acc.service.api.SysSystemMappingService;
+import eu.bcvsolutions.idm.acc.service.api.SysSystemOwnerRoleService;
+import eu.bcvsolutions.idm.acc.service.api.SysSystemOwnerService;
 import eu.bcvsolutions.idm.acc.service.api.SysSystemService;
 import eu.bcvsolutions.idm.acc.service.impl.DefaultSysSystemMappingService;
+import eu.bcvsolutions.idm.acc.service.impl.IdentitySynchronizationExecutor;
+import eu.bcvsolutions.idm.core.api.config.datasource.CoreEntityManager;
 import eu.bcvsolutions.idm.core.api.config.flyway.IdmFlywayMigrationStrategy;
+import eu.bcvsolutions.idm.core.api.domain.ConceptRoleRequestOperation;
+import eu.bcvsolutions.idm.core.api.domain.RoleRequestState;
+import eu.bcvsolutions.idm.core.api.domain.RoleRequestedByType;
+import eu.bcvsolutions.idm.core.api.dto.ApplicantImplDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmIdentityDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmRoleDto;
+import eu.bcvsolutions.idm.core.api.dto.IdmRoleRequestDto;
+import eu.bcvsolutions.idm.core.api.dto.filter.IdmRoleTreeNodeFilter;
 import eu.bcvsolutions.idm.core.api.exception.CoreException;
+import eu.bcvsolutions.idm.core.api.service.IdmAutomaticRoleAttributeService;
+import eu.bcvsolutions.idm.core.api.service.IdmRoleRequestService;
+import eu.bcvsolutions.idm.core.api.service.IdmRoleTreeNodeService;
+import eu.bcvsolutions.idm.core.api.utils.DtoUtils;
+import eu.bcvsolutions.idm.core.eav.api.domain.PersistentType;
+import eu.bcvsolutions.idm.core.eav.api.dto.IdmFormAttributeDto;
 import eu.bcvsolutions.idm.core.eav.api.dto.IdmFormDefinitionDto;
 import eu.bcvsolutions.idm.core.eav.api.dto.IdmFormValueDto;
+import eu.bcvsolutions.idm.core.eav.api.dto.filter.IdmFormAttributeFilter;
 import eu.bcvsolutions.idm.core.eav.api.service.FormService;
+import eu.bcvsolutions.idm.core.eav.api.service.IdmFormAttributeService;
 import eu.bcvsolutions.idm.core.model.entity.IdmIdentity_;
+import eu.bcvsolutions.idm.core.security.api.domain.GuardedString;
 import joptsimple.internal.Strings;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Acc / Provisioning test helper
@@ -111,7 +136,13 @@ public class DefaultAccTestHelper extends eu.bcvsolutions.idm.test.api.DefaultTe
 	@Autowired private IdmAutomaticRoleAttributeService automaticRoleAttributeService;
 	@Autowired private AccUniformPasswordService uniformPasswordService;
 	@Autowired private SysSystemGroupService systemGroupService;
-	
+	@Autowired private SysSystemOwnerService systemOwnerService;
+	@Autowired private SysSystemOwnerRoleService systemOwnerRoleService;
+	@Autowired private AccAccountRoleAssignmentService accAccountRoleAssignmentService;
+	@Autowired private IdmRoleRequestService roleRequestService;
+	@Autowired private AccAccountConceptRoleRequestService accountConceptRoleRequestService;
+	@Autowired private IdmFormAttributeService formAttributeService;
+
 	@Override
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public TestResource findResource(String uid) {
@@ -255,23 +286,24 @@ public class DefaultAccTestHelper extends eu.bcvsolutions.idm.test.api.DefaultTe
 		//
 		return system;
 	}
-	
+
 	@Override
-	public SysSystemMappingDto createMapping(SysSystemDto system) {
+	public SysSystemMappingDto createMapping(SysSystemDto system, String entityType, AccountType accountType) {
 		//
 		// generate schema for system
 		List<SysSchemaObjectClassDto> objectClasses = systemService.generateSchema(system);
 		//
 		SysSystemMappingDto systemMapping = new SysSystemMappingDto();
 		systemMapping.setName("default_" + System.currentTimeMillis());
-		systemMapping.setEntityType(SystemEntityType.IDENTITY);
+		systemMapping.setEntityType(entityType);
 		systemMapping.setOperationType(SystemOperationType.PROVISIONING);
 		systemMapping.setObjectClass(objectClasses.get(0).getId());
+		systemMapping.setAccountType(accountType);
 		systemMapping = systemMappingService.save(systemMapping);
 
 		SysSchemaAttributeFilter schemaAttributeFilter = new SysSchemaAttributeFilter();
 		schemaAttributeFilter.setSystemId(system.getId());
-		
+
 		Page<SysSchemaAttributeDto> schemaAttributesPage = schemaAttributeService.find(schemaAttributeFilter, null);
 		for(SysSchemaAttributeDto schemaAttr : schemaAttributesPage) {
 			if (ATTRIBUTE_MAPPING_NAME.equals(schemaAttr.getName())) {
@@ -327,7 +359,22 @@ public class DefaultAccTestHelper extends eu.bcvsolutions.idm.test.api.DefaultTe
 		}
 		return systemMapping;
 	}
-	
+
+	@Override
+	public SysSystemMappingDto createMapping(SysSystemDto system, AccountType accountType) {
+		return createMapping(system, IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE, accountType);
+	}
+
+	@Override
+	public SysSystemMappingDto createMapping(SysSystemDto system, String entityType) {
+		return createMapping(system, entityType, AccountType.PERSONAL);
+	}
+
+	@Override
+	public SysSystemMappingDto createMapping(SysSystemDto system) {
+		return createMapping(system, IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE, AccountType.PERSONAL);
+	}
+
 	@Override
 	public SysSystemMappingDto getDefaultMapping(SysSystemDto system) {
 		Assert.notNull(system, "System is required to get mapping.");
@@ -337,7 +384,7 @@ public class DefaultAccTestHelper extends eu.bcvsolutions.idm.test.api.DefaultTe
 	
 	@Override
 	public SysSystemMappingDto getDefaultMapping(UUID systemId) {
-		List<SysSystemMappingDto> mappings = systemMappingService.findBySystemId(systemId, SystemOperationType.PROVISIONING, SystemEntityType.IDENTITY);
+		List<SysSystemMappingDto> mappings = systemMappingService.findBySystemId(systemId, SystemOperationType.PROVISIONING, IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE);
 		if(mappings.isEmpty()) {
 			throw new CoreException(String.format("Default mapping for system[%s] not found", systemId));
 		}
@@ -347,20 +394,37 @@ public class DefaultAccTestHelper extends eu.bcvsolutions.idm.test.api.DefaultTe
 	
 	@Override
 	public SysRoleSystemDto createRoleSystem(IdmRoleDto role, SysSystemDto system) {
+		return createRoleSystem(role, system, AccountType.PERSONAL);
+	}
+
+	@Override
+	public SysRoleSystemDto createRoleSystem(IdmRoleDto role, SysSystemDto system, AccountType accountType) {
+		return createRoleSystem(role, system, accountType, true);
+	}
+
+	@Override
+	public SysRoleSystemDto createRoleSystem(IdmRoleDto role, SysSystemDto system, AccountType accountType,
+				boolean createAccountByDefault) {
 		SysRoleSystemDto roleSystem = new SysRoleSystemDto();
 		roleSystem.setRole(role.getId());
 		roleSystem.setSystem(system.getId());
+		roleSystem.setCreateAccountByDefault(createAccountByDefault);
 		// default mapping
-		List<SysSystemMappingDto> mappings = systemMappingService.findBySystem(system, SystemOperationType.PROVISIONING, SystemEntityType.IDENTITY);
+		SysSystemMappingFilter systemMappingFilter = new SysSystemMappingFilter();
+		systemMappingFilter.setSystemId(system.getId());
+		systemMappingFilter.setEntityType(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE);
+		systemMappingFilter.setOperationType(SystemOperationType.PROVISIONING);
+		systemMappingFilter.setAccountType(accountType);
+		List<SysSystemMappingDto> mappings = systemMappingService.find(systemMappingFilter, null).getContent();
 		// required ...
 		roleSystem.setSystemMapping(mappings.get(0).getId());
 		//
 		return roleSystemService.save(roleSystem);
 	}
-	
+
 	@Override
 	public SysSystemEntityDto createSystemEntity(SysSystemDto system) {
-		SysSystemEntityDto systemEntity = new SysSystemEntityDto(createName(), SystemEntityType.IDENTITY);
+		SysSystemEntityDto systemEntity = new SysSystemEntityDto(createName(), IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE);
 		systemEntity.setSystem(system.getId());
 		systemEntity.setWish(true);
 		return systemEntityService.save(systemEntity);
@@ -371,8 +435,7 @@ public class DefaultAccTestHelper extends eu.bcvsolutions.idm.test.api.DefaultTe
 		AccAccountDto account = new AccAccountDto();
 		account.setSystem(system.getId());
 		account.setUid(identity.getUsername());
-		account.setAccountType(AccountType.PERSONAL);
-		account.setEntityType(SystemEntityType.IDENTITY);
+		account.setEntityType(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE);
 		account = accountService.save(account);
 
 		AccIdentityAccountDto accountIdentity = new AccIdentityAccountDto();
@@ -384,13 +447,14 @@ public class DefaultAccTestHelper extends eu.bcvsolutions.idm.test.api.DefaultTe
 	}
 
 	@Override
-	public SysSystemMappingDto createMappingSystem(SystemEntityType type, SysSchemaObjectClassDto objectClass) {
+	public SysSystemMappingDto createMappingSystem(String systemEntityType, SysSchemaObjectClassDto objectClass) {
 		// system mapping
 		SysSystemMappingDto mapping = new SysSystemMappingDto();
 		mapping.setName(createName());
-		mapping.setEntityType(type);
+		mapping.setEntityType(systemEntityType);
 		mapping.setObjectClass(objectClass.getId());
 		mapping.setOperationType(SystemOperationType.SYNCHRONIZATION);
+		mapping.setAccountType(AccountType.PERSONAL);
 		//
 		return mappingService.save(mapping);
 	}
@@ -476,9 +540,233 @@ public class DefaultAccTestHelper extends eu.bcvsolutions.idm.test.api.DefaultTe
 		// Delete all groups.
 		systemGroupService.deleteAll(systemGroupService.find(new SysSystemGroupFilter(), null));
 		// Delete all mappings.
-		systemMappingService.deleteAll(systemMappingService.find(new SysSystemMappingFilter(), null).getContent());
+		systemMappingService.find(new SysSystemMappingFilter(), null).getContent().forEach(sysSystemMappingDto -> {
+			try {
+				systemMappingService.delete(sysSystemMappingDto);
+			} catch (Exception e) {
+				// we don't care about exception, because some test broke some data, continue with next record
+			}
+		});
 		// Delete all uniform password definitions.
 		uniformPasswordService.deleteAll(uniformPasswordService.find(new AccUniformPasswordFilter(), null).getContent());
+	}
 
+	/**
+	 * create system owner by identity
+	 * @param system
+	 * @param owner
+	 * @return
+	 */
+	@Override
+	public SysSystemOwnerDto createSystemOwner(SysSystemDto system, IdmIdentityDto owner) {
+		SysSystemOwnerDto dto = new SysSystemOwnerDto();
+		dto.setSystem(system.getId());
+		dto.setOwner(owner.getId());
+		return systemOwnerService.save(dto);
+	}
+
+	/**
+	 * create system owner by role
+	 * @param system
+	 * @param owner
+	 * @return
+	 */
+	@Override
+	public SysSystemOwnerRoleDto createSystemOwnerRole(SysSystemDto system, IdmRoleDto owner) {
+		SysSystemOwnerRoleDto dto = new SysSystemOwnerRoleDto();
+		dto.setSystem(system.getId());
+		dto.setOwnerRole(owner.getId());
+		//
+		return systemOwnerRoleService.save(dto);
+	}
+
+	@Override
+	public void deleteSystem(UUID systemId) {
+		systemService.deleteById(systemId);
+	}
+
+	@Override
+	public AccAccountRoleAssignmentDto createAccountRoleAssignment(UUID accountId, UUID roleId) {
+		return createAccountRoleAssignment(accountId, roleId, null, null);
+	}
+
+	@Override
+	public AccAccountRoleAssignmentDto createAccountRoleAssignment(UUID accountId, UUID roleId, LocalDate from, LocalDate to) {
+		AccAccountRoleAssignmentDto roleAssignmentDto = new AccAccountRoleAssignmentDto();
+		roleAssignmentDto.setAccount(accountId);
+		roleAssignmentDto.setRole(roleId);
+		roleAssignmentDto.setValidFrom(from);
+		roleAssignmentDto.setValidTill(to);
+		return accAccountRoleAssignmentService.save(roleAssignmentDto);
+	}
+
+	@Override
+	public void removeAccountRoleAssignment(AccAccountRoleAssignmentDto roleAssignment) {
+		accAccountRoleAssignmentService.delete(roleAssignment);
+	}
+
+	@Override
+	public AccAccountDto createAccount() {
+		return createAccount(null);
+	}
+	@Override
+	public AccAccountDto createAccount(GuardedString password){
+		IdmIdentityDto identity = this.createIdentity(password);
+		//
+		SysSystemDto system = this.createSystem("test_resource");
+		this.createMapping(system);
+		IdmRoleDto roleOne = this.createRole();
+		this.createRoleSystem(roleOne, system);
+		//
+		this.createIdentityRole(identity, roleOne);
+		//
+			AccAccountFilter accountFilter = new AccAccountFilter();
+			accountFilter.setUid(identity.getUsername());
+			AccAccountDto account = accountService.find(accountFilter, null).stream().findFirst().orElse(null);
+		return account;
+	}
+
+	@Override
+	public void assignRoleToAccountViaRequest(AccAccountDto accAccountDto, boolean waitTillRequestExecuted, UUID... roleIds) {
+		this.assignRoleToAccountViaRequest(accAccountDto, null, null, waitTillRequestExecuted, roleIds);
+	}
+
+	@Override
+	public void assignRoleToAccountViaRequest(AccAccountDto accAccountDto, LocalDate validFrom, LocalDate validTill, boolean waitTillRequestExecuted, UUID... roleIds) {
+		IdmRoleRequestDto roleRequest = createRoleRequest(getAccountOwner(accAccountDto.getId()));
+		final UUID roleRequestId = roleRequest.getId();
+		for (UUID roleId : roleIds) {
+			createAccountConceptRoleRequest(roleRequestId, roleId, accAccountDto.getId(), null, ConceptRoleRequestOperation.ADD, validFrom, validTill);
+		}
+		IdmRoleRequestDto processedRoleRequest = this.executeRequest(roleRequest, false, true);
+
+		if (waitTillRequestExecuted) {
+			this.waitForResult(res -> {
+				return roleRequestService.get(processedRoleRequest.getId()).getState() != RoleRequestState.EXECUTED;
+			}, 150, 5);
+		}
+	}
+
+	@Override
+	public void updateAssignedAccountRoleViaRequest(AccAccountDto accAccountDto, LocalDate validFrom, LocalDate validTill, boolean waitTillRequestExecuted, AccAccountRoleAssignmentDto roleAssignment) {
+		IdmRoleRequestDto roleRequest = createRoleRequest(getAccountOwner(accAccountDto.getId()));
+		final UUID roleRequestId = roleRequest.getId();
+		createAccountConceptRoleRequest(roleRequestId, roleAssignment.getRole(), accAccountDto.getId(), roleAssignment.getId(), ConceptRoleRequestOperation.UPDATE, validFrom, validTill);
+		IdmRoleRequestDto processedRoleRequest = this.executeRequest(roleRequest, false, true);
+
+		if (waitTillRequestExecuted) {
+			this.waitForResult(res -> {
+				return roleRequestService.get(processedRoleRequest.getId()).getState() != RoleRequestState.EXECUTED;
+			}, 150, 5);
+		}
+	}
+
+	@Override
+	public void updateAssignedAccountRoleViaRequest(AccAccountDto accAccountDto, LocalDate validFrom, LocalDate validTill, boolean waitTillRequestExecuted, UUID roleId) {
+		AccAccountRoleAssignmentFilter accountRoleFilter = new AccAccountRoleAssignmentFilter();
+		accountRoleFilter.setAccountId(accAccountDto.getId());
+		accountRoleFilter.setRoleId(roleId);
+		List<AccAccountRoleAssignmentDto> accountRoles = accAccountRoleAssignmentService.find(accountRoleFilter, null).getContent();
+		accountRoles.forEach(aR -> this.updateAssignedAccountRoleViaRequest(accAccountDto, validFrom, validTill, waitTillRequestExecuted, aR));
+	}
+
+	@Override
+	public void removeRoleFromAccountViaRequest(AccAccountDto accAccountDto, boolean waitTillRequestExecuted, UUID... roleIds) {
+		IdmRoleRequestDto roleRequest = createRoleRequest(getAccountOwner(accAccountDto.getId()));
+		final UUID roleRequestId = roleRequest.getId();
+		for (UUID roleId : roleIds) {
+			AccAccountRoleAssignmentFilter accountRoleFilter = new AccAccountRoleAssignmentFilter();
+			accountRoleFilter.setAccountId(accAccountDto.getId());
+			accountRoleFilter.setRoleId(roleId);
+			List<AccAccountRoleAssignmentDto> roleAssignments = accAccountRoleAssignmentService.find(accountRoleFilter, null).getContent();
+			roleAssignments.forEach(rA ->
+				createAccountConceptRoleRequest(roleRequestId, roleId, accAccountDto.getId(), rA.getId(), ConceptRoleRequestOperation.REMOVE)
+			);
+		}
+		IdmRoleRequestDto processedRoleRequest = this.executeRequest(roleRequest, false, true);
+
+		if (waitTillRequestExecuted) {
+			this.waitForResult(res -> {
+				return roleRequestService.get(processedRoleRequest.getId()).getState() != RoleRequestState.EXECUTED;
+			}, 150, 5);
+		}
+	}
+
+	@Override
+	public UUID getAccountOwner(UUID accountId) {
+		AccIdentityAccountFilter iaFilter = new AccIdentityAccountFilter();
+		iaFilter.setAccountId(accountId);
+		return identityAccountService.find(iaFilter, null).stream().findFirst().orElseThrow().getIdentity();
+	}
+
+	@Override
+	public AccAccountConceptRoleRequestDto createAccountConceptRoleRequest(UUID requestId, UUID roleId,
+			UUID accountId, UUID roleAssignmentId, ConceptRoleRequestOperation operationType, LocalDate validFrom,
+			LocalDate validTill) {
+		AccAccountConceptRoleRequestDto concept = new AccAccountConceptRoleRequestDto();
+		concept.setAccount(accountId);
+		concept.setRole(roleId);
+		concept.setOperation(operationType);
+		concept.setRoleAssignmentUuid(roleAssignmentId);
+		concept.setValidFrom(validFrom);
+		concept.setValidTill(validTill);
+		concept.setRoleRequest(requestId);
+		return accountConceptRoleRequestService.save(concept);
+	}
+
+	@Override
+	public AccAccountConceptRoleRequestDto createAccountConceptRoleRequest(UUID requestId, UUID roleId,
+			UUID accountId, UUID roleAssignmentId, ConceptRoleRequestOperation operationType) {
+		return this.createAccountConceptRoleRequest(requestId, roleId, accountId, roleAssignmentId, operationType, null, null);
+	}
+
+	@Override
+	public AccAccountConceptRoleRequestDto createAccountConceptRoleRequest(UUID requestId, UUID roleId,
+			UUID accountId) {
+		return this.createAccountConceptRoleRequest(requestId, roleId, accountId, null, ConceptRoleRequestOperation.ADD, null, null);
+	}
+
+	@Override
+	public IdmRoleRequestDto createRoleRequest(UUID identityId, boolean executeImmediately) {
+		IdmRoleRequestDto roleRequest = new IdmRoleRequestDto();
+		roleRequest.setApplicantInfo(new ApplicantImplDto(identityId, IdmIdentityDto.class.getCanonicalName()));
+		roleRequest.setRequestedByType(RoleRequestedByType.MANUALLY);
+		roleRequest.setExecuteImmediately(executeImmediately);
+		return roleRequestService.save(roleRequest);
+	}
+
+	@Override
+	public IdmRoleRequestDto createRoleRequest(UUID identityId) {
+		return this.createRoleRequest(identityId, true);
+	}
+
+	@Override
+	public AccAccountRoleAssignmentDto createAccountRoleAssignment(AccAccountDto accAccountDto, IdmRoleDto roleA) {
+		return createAccountRoleAssignment(accAccountDto.getId(), roleA.getId());
+	}
+
+	public AccAccountRoleAssignmentDto createAccountRoleAssignment(AccAccountDto accAccountDto, IdmRoleDto role, LocalDate from, LocalDate to) {
+		return createAccountRoleAssignment(accAccountDto.getId(), role.getId(), from, to);
+	}
+
+	@Override
+	public void changeAccountUid(AccAccountDto account, String newAccountUid) {
+		SysSystemEntityDto sysSystemEntityDto = systemEntityService.get(account.getSystemEntity());
+		sysSystemEntityDto.setUid(newAccountUid);
+		systemEntityService.save(sysSystemEntityDto);
+		account.setUid(newAccountUid);
+		accountService.save(account);
+		// set the eav value as well
+		IdmFormDefinitionDto formDefinitionDto = DtoUtils.getEmbedded(account, AccAccount_.formDefinition, IdmFormDefinitionDto.class, null);
+		IdmFormAttributeFilter formAttributeFilter = new IdmFormAttributeFilter();
+		formAttributeFilter.setDefinitionId(formDefinitionDto.getId());
+		formAttributeFilter.setCode(TestHelper.ATTRIBUTE_MAPPING_NAME);
+		List<IdmFormAttributeDto> formAttributes = formAttributeService.find(formAttributeFilter, null).getContent();
+		IdmFormAttributeDto uidFormAttribute = formAttributes
+				.stream()
+				.filter(formAttribute -> formAttribute.getCode().equals(TestHelper.ATTRIBUTE_MAPPING_NAME))
+				.findFirst()
+				.orElse(null);
+		this.setEavValue(account, uidFormAttribute, AccAccount.class, newAccountUid, PersistentType.SHORTTEXT, formDefinitionDto);
 	}
 }

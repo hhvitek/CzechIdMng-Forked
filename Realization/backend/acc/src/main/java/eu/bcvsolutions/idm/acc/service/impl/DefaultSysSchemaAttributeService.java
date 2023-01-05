@@ -3,6 +3,7 @@ package eu.bcvsolutions.idm.acc.service.impl;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import eu.bcvsolutions.idm.acc.entity.SysSchemaAttribute;
 import eu.bcvsolutions.idm.acc.event.SchemaAttributeEvent;
 import eu.bcvsolutions.idm.acc.event.SchemaAttributeEvent.SchemaAttributeEventType;
 import eu.bcvsolutions.idm.acc.repository.SysSchemaAttributeRepository;
+import eu.bcvsolutions.idm.acc.service.api.AccSchemaFormAttributeService;
 import eu.bcvsolutions.idm.acc.service.api.SysSchemaAttributeService;
 import eu.bcvsolutions.idm.core.api.service.AbstractReadWriteDtoService;
 import eu.bcvsolutions.idm.core.api.service.EntityEventManager;
@@ -25,6 +27,7 @@ import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
  * Default schema attributes
  * 
  * @author svandav
+ * @author Tomáš Doischer
  *
  */
 @Service
@@ -33,6 +36,10 @@ public class DefaultSysSchemaAttributeService extends AbstractReadWriteDtoServic
 
 	private final SysSchemaAttributeRepository repository;
 	private final EntityEventManager entityEventManager;
+	
+	@Autowired
+	@Lazy
+	private AccSchemaFormAttributeService schemaFormAttributeService;
 	
 	@Autowired
 	public DefaultSysSchemaAttributeService(
@@ -72,5 +79,21 @@ public class DefaultSysSchemaAttributeService extends AbstractReadWriteDtoServic
 		original.setId(null);
 		EntityUtils.clearAuditFields(original);
 		return original;
+	}
+	
+	@Override
+	@Transactional
+	public SysSchemaAttributeDto save(SysSchemaAttributeDto dto, BasePermission... permission) {
+		schemaFormAttributeService.createSchemaFormAttribute(dto);
+		
+		return super.save(dto, permission);
+	}
+	
+
+	@Override
+	public Iterable<SysSchemaAttributeDto> saveAll(Iterable<SysSchemaAttributeDto> dtos, BasePermission... permission) {
+		dtos.forEach(dto -> schemaFormAttributeService.createSchemaFormAttribute(dto));
+		
+		return super.saveAll(dtos, permission);
 	}
 }

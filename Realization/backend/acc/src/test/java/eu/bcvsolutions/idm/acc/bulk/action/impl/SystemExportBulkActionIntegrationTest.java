@@ -38,6 +38,7 @@ import eu.bcvsolutions.idm.acc.entity.SysSystem;
 import eu.bcvsolutions.idm.acc.entity.TestResource;
 import eu.bcvsolutions.idm.acc.service.api.SysProvisioningBreakConfigService;
 import eu.bcvsolutions.idm.acc.service.api.SysProvisioningBreakRecipientService;
+import eu.bcvsolutions.idm.acc.service.api.SysProvisioningOperationService;
 import eu.bcvsolutions.idm.acc.service.api.SysRemoteServerService;
 import eu.bcvsolutions.idm.acc.service.api.SysRoleSystemService;
 import eu.bcvsolutions.idm.acc.service.api.SysSchemaObjectClassService;
@@ -45,6 +46,7 @@ import eu.bcvsolutions.idm.acc.service.api.SysSyncConfigService;
 import eu.bcvsolutions.idm.acc.service.api.SysSystemAttributeMappingService;
 import eu.bcvsolutions.idm.acc.service.api.SysSystemMappingService;
 import eu.bcvsolutions.idm.acc.service.api.SysSystemService;
+import eu.bcvsolutions.idm.acc.service.impl.RoleSynchronizationExecutor;
 import eu.bcvsolutions.idm.core.api.domain.CoreResultCode;
 import eu.bcvsolutions.idm.core.api.domain.ExportImportType;
 import eu.bcvsolutions.idm.core.api.domain.OperationState;
@@ -109,7 +111,9 @@ public class SystemExportBulkActionIntegrationTest extends AbstractExportBulkAct
 	private SysRemoteServerService remoteServerService;
 	@Autowired 
 	private ConfidentialStorage confidentialStorage;
-	
+	@Autowired
+	private SysProvisioningOperationService provisioningOperationService;
+
 	@Before
 	public void login() {
 		loginAsAdmin();
@@ -467,7 +471,7 @@ public class SystemExportBulkActionIntegrationTest extends AbstractExportBulkAct
 
 		SysSchemaObjectClassDto objectClassDto = new SysSchemaObjectClassDto();
 		objectClassDto.setId(mapping.getObjectClass());
-		helper.createMappingSystem(SystemEntityType.ROLE, objectClassDto);
+		helper.createMappingSystem(RoleSynchronizationExecutor.SYSTEM_ENTITY_TYPE, objectClassDto);
 		mappings = findMappings(system);
 		Assert.assertEquals(2, mappings.size());
 
@@ -509,7 +513,7 @@ public class SystemExportBulkActionIntegrationTest extends AbstractExportBulkAct
 
 		SysSchemaObjectClassDto objectClassDto = new SysSchemaObjectClassDto();
 		objectClassDto.setId(mapping.getObjectClass());
-		helper.createMappingSystem(SystemEntityType.ROLE, objectClassDto);
+		helper.createMappingSystem(RoleSynchronizationExecutor.SYSTEM_ENTITY_TYPE, objectClassDto);
 		mappings = findMappings(system);
 		Assert.assertEquals(2, mappings.size());
 
@@ -720,6 +724,12 @@ public class SystemExportBulkActionIntegrationTest extends AbstractExportBulkAct
 		Assert.assertNotNull(originalSync);
 		Assert.assertEquals(treeTypeNew.getId(), originalSync.getDefaultTreeType());
 		Assert.assertEquals(treeNodeNew.getId(), originalSync.getDefaultTreeNode());
+
+		getHelper().deleteTreeNode(treeNodeNew.getId());
+		getHelper().deleteTreeType(treeTypeNew.getId());
+		provisioningOperationService.deleteAllOperations();
+		synchronizationConfigService.delete(originalSync);
+		systemService.delete(system);
 	}
 
 	@Test

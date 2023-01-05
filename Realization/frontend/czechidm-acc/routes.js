@@ -37,6 +37,11 @@ module.exports = {
           access: [ { type: 'HAS_ALL_AUTHORITIES', authorities: ['SYSTEM_READ', 'ACCOUNT_READ'] } ]
         },
         {
+          path: 'owner',
+          component: require('./src/content/system/SystemOwners'),
+          access: [ { type: 'HAS_ANY_AUTHORITY', authorities: ['SYSTEMOWNER_READ', 'SYSTEMOWNERROLE_READ'] } ]
+        },
+        {
           path: 'connector',
           component: require('./src/content/system/SystemConnector'),
           access: [ { type: 'HAS_ANY_AUTHORITY', authorities: ['SYSTEM_READ'] } ]
@@ -167,6 +172,55 @@ module.exports = {
       path: 'system/:entityId/new',
       component: require('./src/content/system/SystemContent'),
       access: [ { type: 'HAS_ANY_AUTHORITY', authorities: ['SYSTEM_CREATE'] } ]
+    },
+    {
+      path: 'accounts/',
+      component: require('./src/content/account/AccountRoutes'),
+      access: [ { type: 'HAS_ANY_AUTHORITY', authorities: ['ACCOUNT_READ'] } ],
+      childRoutes: [
+        {
+          path: 'accounts-all',
+          component: require('./src/content/account/Accounts'),
+          access: [ { type: 'HAS_ANY_AUTHORITY', authorities: ['ACCOUNT_READ'] } ]
+        },
+        {
+          path: 'accounts-personal',
+          component: require('./src/content/account/AccountsPersonal'),
+          access: [ { type: 'HAS_ANY_AUTHORITY', authorities: ['ACCOUNT_READ'] } ]
+        }
+      ]
+    },
+    {
+      path: 'account/:entityId',
+      component: require('./src/content/account/AccountDetailRoutes'),
+      access: [ { type: 'HAS_ANY_AUTHORITY', authorities: ['ACCOUNT_READ'] } ],
+      childRoutes: [
+        {
+          path: 'detail',
+          component: require('./src/content/account/AccountDetail'),
+          access: [ { type: 'HAS_ANY_AUTHORITY', authorities: ['ACCOUNT_READ'] } ]
+        },
+        {
+          path: 'roles',
+          component: require('./src/content/account/AccountRoles'),
+          access: [ { type: 'HAS_ANY_AUTHORITY', authorities: ['ACCOUNT_READ'] } ]
+        },
+        {
+          path: 'audit',
+          component: require('./src/content/account/AccountAudit'),
+          access: [ { type: 'HAS_ANY_AUTHORITY', authorities: ['ACCOUNT_READ'] } ]
+        },
+        {
+          path: 'provisioning',
+          component: require('./src/content/account/AccountProvisioning'),
+          access: [ { type: 'HAS_ANY_AUTHORITY', authorities: ['ACCOUNT_READ'] } ]
+        },
+        {
+          path: 'other',
+          component: require('./src/content/account/AccountOtherSetting'),
+          access: [ { type: 'HAS_ANY_AUTHORITY', authorities: ['ACCOUNT_READ'] } ]
+        }
+      ]
     },
     {
       path: 'connector-servers/',
@@ -411,6 +465,17 @@ module.exports = {
           path: 'systems',
           component: require('./src/content/systemgroup/SystemGroupSystems'),
           access: [ { type: 'HAS_ANY_AUTHORITY', authorities: ['SYSTEM_GROUP_READ'] } ]
+        }
+      ]
+    },
+    {
+      path: 'scripts/:entityId/',
+      component: require('czechidm-core/src/content/script/Script'),
+      childRoutes: [
+        {
+          path: 'references-mapping',
+          component: require('./src/content/script/ScriptReferencesMapping'),
+          access: [ { type: 'HAS_ANY_AUTHORITY', authorities: ['SCRIPT_READ'] } ]
         }
       ]
     }

@@ -22,6 +22,7 @@ import eu.bcvsolutions.idm.acc.dto.filter.SysSystemMappingFilter;
 import eu.bcvsolutions.idm.acc.service.api.SysSyncConfigService;
 import eu.bcvsolutions.idm.acc.service.api.SysSystemAttributeMappingService;
 import eu.bcvsolutions.idm.acc.service.api.SysSystemMappingService;
+import eu.bcvsolutions.idm.acc.service.impl.TreeSynchronizationExecutor;
 import eu.bcvsolutions.idm.core.api.bulk.action.dto.IdmBulkActionDto;
 import eu.bcvsolutions.idm.core.api.domain.RecursionType;
 import eu.bcvsolutions.idm.core.api.dto.IdmContractPositionDto;
@@ -85,24 +86,11 @@ public class TreeTypeDeleteBulkActionIntegrationTest extends AbstractBulkActionT
 		loginAsAdmin();
 		// create sub tree nodes, automatic roles, contract, contract positions, system mapping and sync
 		IdmTreeTypeDto treeType = getHelper().createTreeType();
-		SysSystemDto system = getHelper().createTestResourceSystem(true, getHelper().createName());
-		SysSystemMappingFilter filter = new SysSystemMappingFilter();
-		filter.setSystemId(system.getId());
-		SysSystemMappingDto mapping = systemMappingService.find(filter, null).getContent().get(0);
-		mapping.setTreeType(treeType.getId());
-		mapping = systemMappingService.save(mapping);
-		SysSyncConfigDto syncConfig = new SysSyncConfigDto();
-		syncConfig.setName(getHelper().createName());
-		syncConfig.setSystemMapping(mapping.getId());
-		// finds mapped attributes in existing system
-		SysSystemAttributeMappingFilter attributeFilter = new SysSystemAttributeMappingFilter();
-		attributeFilter.setSystemId(system.getId());
-		attributeFilter.setName(TestHelper.ATTRIBUTE_MAPPING_NAME);
-		SysSystemAttributeMappingDto attribute = attributeMappingService.find(attributeFilter, null).getContent().get(0);
-		syncConfig.setCorrelationAttribute(attribute.getId());		
-		syncConfig = (SysSyncConfigDto) syncService.save(syncConfig);
+		SysSystemDto system = getHelper().createTestResourceSystem(false, getHelper().createName());
+		SysSystemDto systemIdentity = getHelper().createTestResourceSystem(true, getHelper().createName());
+		//
 		IdmRoleDto role = getHelper().createRole();
-		getHelper().createRoleSystem(role, system);
+		getHelper().createRoleSystem(role, systemIdentity);
 		//
 		IdmTreeNodeDto treeNode = getHelper().createTreeNode(treeType, null, null);
 		IdmTreeNodeDto subTreeNode = getHelper().createTreeNode(treeType, (String) null, treeNode);
@@ -118,7 +106,23 @@ public class TreeTypeDeleteBulkActionIntegrationTest extends AbstractBulkActionT
 		//
 		Assert.assertEquals(5, identityRoleService.findAllByIdentity(identity.getId()).size()); // 3 manual, 2 automatic
 		//
-		// remove tree type	
+		getHelper().createMapping(system, TreeSynchronizationExecutor.SYSTEM_ENTITY_TYPE);
+		SysSystemMappingFilter filter = new SysSystemMappingFilter();
+		filter.setSystemId(system.getId());
+		SysSystemMappingDto mapping = systemMappingService.find(filter, null).getContent().get(0);
+		mapping.setTreeType(treeType.getId());
+		mapping = systemMappingService.save(mapping);
+		SysSyncConfigDto syncConfig = new SysSyncConfigDto();
+		syncConfig.setName(getHelper().createName());
+		syncConfig.setSystemMapping(mapping.getId());
+		// finds mapped attributes in existing system
+		SysSystemAttributeMappingFilter attributeFilter = new SysSystemAttributeMappingFilter();
+		attributeFilter.setSystemId(system.getId());
+		attributeFilter.setName(TestHelper.ATTRIBUTE_MAPPING_NAME);
+		SysSystemAttributeMappingDto attribute = attributeMappingService.find(attributeFilter, null).getContent().get(0);
+		syncConfig.setCorrelationAttribute(attribute.getId());
+		syncConfig = (SysSyncConfigDto) syncService.save(syncConfig);
+		// remove tree type
 		Map<String, Object> properties = new HashMap<>();
 		properties.put(EntityEventProcessor.PROPERTY_FORCE_DELETE, Boolean.TRUE);
 		// delete by bulk action

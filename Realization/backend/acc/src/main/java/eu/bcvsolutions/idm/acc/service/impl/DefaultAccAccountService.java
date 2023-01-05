@@ -1,9 +1,37 @@
 package eu.bcvsolutions.idm.acc.service.impl;
 
+import java.text.MessageFormat;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.plugin.core.OrderAwarePluginRegistry;
+import org.springframework.plugin.core.PluginRegistry;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
+
 import com.google.common.collect.ImmutableMap;
+
 import eu.bcvsolutions.idm.acc.domain.AccGroupPermission;
 import eu.bcvsolutions.idm.acc.domain.AccResultCode;
-import eu.bcvsolutions.idm.acc.domain.SystemEntityType;
 import eu.bcvsolutions.idm.acc.domain.SystemOperationType;
 import eu.bcvsolutions.idm.acc.dto.AccAccountDto;
 import eu.bcvsolutions.idm.acc.dto.AccIdentityAccountDto;
@@ -43,15 +71,22 @@ import eu.bcvsolutions.idm.acc.service.api.ProvisioningService;
 import eu.bcvsolutions.idm.acc.service.api.SynchronizationEntityExecutor;
 import eu.bcvsolutions.idm.acc.service.api.SysSchemaAttributeService;
 import eu.bcvsolutions.idm.acc.service.api.SysSchemaObjectClassService;
+import eu.bcvsolutions.idm.acc.service.api.SysSystemEntityTypeManager;
 import eu.bcvsolutions.idm.acc.service.api.SysSystemService;
+import eu.bcvsolutions.idm.acc.system.entity.SystemEntityTypeRegistrable;
 import eu.bcvsolutions.idm.core.api.dto.BaseDto;
 import eu.bcvsolutions.idm.core.api.entity.AbstractEntity_;
 import eu.bcvsolutions.idm.core.api.exception.ResultCodeException;
-import eu.bcvsolutions.idm.core.api.service.AbstractEventableDtoService;
 import eu.bcvsolutions.idm.core.api.service.EntityEventManager;
 import eu.bcvsolutions.idm.core.api.service.LookupService;
 import eu.bcvsolutions.idm.core.api.utils.DtoUtils;
+import eu.bcvsolutions.idm.core.eav.api.service.AbstractFormableService;
+import eu.bcvsolutions.idm.core.eav.api.service.FormService;
+import eu.bcvsolutions.idm.core.eav.entity.IdmFormDefinition_;
+import eu.bcvsolutions.idm.core.model.entity.IdmIdentityRole;
+import eu.bcvsolutions.idm.core.model.entity.IdmIdentityRole_;
 import eu.bcvsolutions.idm.core.model.entity.IdmIdentity_;
+import eu.bcvsolutions.idm.core.model.entity.IdmRole_;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
 import eu.bcvsolutions.idm.core.security.api.dto.AuthorizableType;
 import eu.bcvsolutions.idm.ic.api.IcAttribute;
@@ -59,39 +94,18 @@ import eu.bcvsolutions.idm.ic.api.IcConnectorObject;
 import eu.bcvsolutions.idm.ic.api.IcObjectClass;
 import eu.bcvsolutions.idm.ic.api.IcObjectClassInfo;
 import eu.bcvsolutions.idm.ic.impl.IcConnectorObjectImpl;
-import java.text.MessageFormat;
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Subquery;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.plugin.core.OrderAwarePluginRegistry;
-import org.springframework.plugin.core.PluginRegistry;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
 /**
  * Accounts on target system.
  *
  * @author Radek Tomiška
  * @author svandav
+ * @author Roman Kucera
+ * @author Tomáš Doischer
  *
  */
 @Service("accAccountService")
-public class DefaultAccAccountService extends AbstractEventableDtoService<AccAccountDto, AccAccount, AccAccountFilter>
+public class DefaultAccAccountService extends AbstractFormableService<AccAccountDto, AccAccount, AccAccountFilter>
 		implements AccAccountService {
 
 	private final AccAccountRepository accountRepository;
@@ -101,7 +115,7 @@ public class DefaultAccAccountService extends AbstractEventableDtoService<AccAcc
 	private final SysSchemaAttributeService schemaAttributeService;
 	@Autowired
 	private List<SynchronizationEntityExecutor> executors;
-	private PluginRegistry<SynchronizationEntityExecutor, SystemEntityType> pluginExecutors;
+	private PluginRegistry<SynchronizationEntityExecutor, SystemEntityTypeRegistrable> pluginExecutors;
 	@Lazy
 	@Autowired
 	private PasswordFilterManager passwordFilterManager;
@@ -109,13 +123,15 @@ public class DefaultAccAccountService extends AbstractEventableDtoService<AccAcc
 	private LookupService lookupService;
 	@Autowired
 	private ConnectorManager connectorManager;
+	@Autowired
+	private SysSystemEntityTypeManager systemEntityManager;
 
 	@Autowired
 	public DefaultAccAccountService(AccAccountRepository accountRepository,
 			AccIdentityAccountService identityAccountService, SysSystemService systemService,
 			SysSchemaObjectClassService schemaObjectClassService, SysSchemaAttributeService schemaAttributeService,
-			EntityEventManager entityEventManager) {
-		super(accountRepository, entityEventManager);
+			FormService formService, EntityEventManager entityEventManager) {
+		super(accountRepository, entityEventManager, formService);
 		//
 		Assert.notNull(identityAccountService, "Service is required.");
 		Assert.notNull(accountRepository, "Repository is required.");
@@ -151,11 +167,12 @@ public class DefaultAccAccountService extends AbstractEventableDtoService<AccAcc
 			}
 			// Load and set target entity. For loading a target entity is using sync
 			// executor.
-			SystemEntityType entityType = newDto.getEntityType();
-			if (entityType != null && entityType.isSupportsSync()) {
+			String entityType = newDto.getEntityType();
+			SystemEntityTypeRegistrable systemEntityType = systemEntityManager.getSystemEntityByCode(entityType);
+			if (systemEntityType != null && systemEntityType.isSupportsSync()) {
 				SynchronizationEntityExecutor executor = this.getSyncExecutor(entityType);
 				UUID targetEntity = executor.getEntityByAccount(newDto.getId());
-				newDto.setTargetEntityType(entityType.getEntityType().getName());
+				newDto.setTargetEntityType(systemEntityType.getSystemEntityCode());
 				newDto.setTargetEntityId(targetEntity);
 			}
 		}
@@ -276,7 +293,7 @@ public class DefaultAccAccountService extends AbstractEventableDtoService<AccAcc
 		if (accountDto == null) {
 			return null;
 		}
-		if (context != null && accountDto.getEntityType() == SystemEntityType.IDENTITY && BooleanUtils.isTrue(context.getIncludeEcho())) {
+		if (context != null && IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE.equals(accountDto.getEntityType()) && BooleanUtils.isTrue(context.getIncludeEcho())) {
 			Map<String, BaseDto> embedded = accountDto.getEmbedded();
 			embedded.put(AccAccountDto.PROPERTY_ECHO, passwordFilterManager.getEcho(accountDto.getId()));
 		}
@@ -320,9 +337,27 @@ public class DefaultAccAccountService extends AbstractEventableDtoService<AccAcc
 		if (filter.getSystemId() != null) {
 			predicates.add(builder.equal(root.get(AccAccount_.system).get(SysSystem_.id), filter.getSystemId()));
 		}
+		if (filter.getSystems() != null && !filter.getSystems().isEmpty()) {
+			predicates.add(root.get(AccAccount_.system).get(SysSystem_.id).in(filter.getSystems()));
+		}
 		if (filter.getSystemEntityId() != null) {
 			predicates.add(builder.equal(root.get(AccAccount_.systemEntity).get(SysSystemEntity_.id),
 					filter.getSystemEntityId()));
+		}
+		if (filter.getFormDefinitionId() != null) {
+			predicates.add(builder.equal(root.get(AccAccount_.formDefinition).get(IdmFormDefinition_.id),
+					filter.getFormDefinitionId()));
+		}
+		if (filter.getHasFormDefinition() != null) {
+			if (BooleanUtils.isTrue(filter.getHasFormDefinition())) {
+				predicates.add(builder.isNotNull(root.get(AccAccount_.formDefinition)));
+			} else {
+				predicates.add(builder.isNull(root.get(AccAccount_.formDefinition)));
+			}
+		}
+		if (filter.getSystemMapping() != null) {
+			predicates.add(builder.equal(root.get(AccAccount_.systemMapping).get(SysSystemMapping_.id),
+					filter.getSystemMapping()));
 		}
 		if (filter.getUid() != null) {
 			predicates.add(builder.equal(root.get(AccAccount_.uid), filter.getUid()));
@@ -351,8 +386,47 @@ public class DefaultAccAccountService extends AbstractEventableDtoService<AccAcc
 			identityAccountSubquery.where(predicate);
 			predicates.add(builder.exists(identityAccountSubquery));
 		}
+		if (filter.getRoleIds() != null && !filter.getRoleIds().isEmpty()) {
+			Subquery<AccIdentityAccount> identityAccountSubquery = query.subquery(AccIdentityAccount.class);
+			Root<AccIdentityAccount> subRootIdentityAccount = identityAccountSubquery.from(AccIdentityAccount.class);
+			
+			Subquery<IdmIdentityRole> identityRoleSubquery = query.subquery(IdmIdentityRole.class);
+			Root<IdmIdentityRole> subRootIdentityRole = identityRoleSubquery.from(IdmIdentityRole.class);
+			
+			identityRoleSubquery.select(subRootIdentityRole);
+			
+			Join<AccIdentityAccount, IdmIdentityRole> identityRole = subRootIdentityAccount.join(AccIdentityAccount_.identityRole, JoinType.LEFT);
+			identityRoleSubquery.where(
+					builder.and(identityRole.get(IdmIdentityRole_.role).get(IdmRole_.id).in(filter.getRoleIds()),
+							builder.equal(subRootIdentityAccount.get(AccIdentityAccount_.identityRole), identityRole))
+			);
+			
+			identityAccountSubquery.select(subRootIdentityAccount);
+			identityAccountSubquery.where(
+                    builder.and(
+                    		builder.equal(subRootIdentityAccount.get(AccIdentityAccount_.account), root), // correlation attr
+                    		builder.exists(identityRoleSubquery))
+            );			
+			predicates.add(builder.exists(identityAccountSubquery));
+		}
+		if (filter.getIdentities() != null && !filter.getIdentities().isEmpty()) {
+			Subquery<AccIdentityAccount> identityAccountSubquery = query.subquery(AccIdentityAccount.class);
+			Root<AccIdentityAccount> subRootIdentityAccount = identityAccountSubquery.from(AccIdentityAccount.class);
+			identityAccountSubquery.select(subRootIdentityAccount);
+
+			Predicate predicate = builder
+					.and(builder.equal(subRootIdentityAccount.get(AccIdentityAccount_.account), root));
+			Predicate identityPredicate = 
+					subRootIdentityAccount.get(AccIdentityAccount_.identity).get(IdmIdentity_.id).in(filter.getIdentities());
+
+			predicate = builder.and(predicate, identityPredicate);
+
+			identityAccountSubquery.where(predicate);
+			predicates.add(builder.exists(identityAccountSubquery));
+		}
 		if (filter.getAccountType() != null) {
-			predicates.add(builder.equal(root.get(AccAccount_.accountType), filter.getAccountType()));
+			Join<AccAccount, SysSystemMapping> accountMapping = root.join(AccAccount_.systemMapping);
+			predicates.add(builder.equal(accountMapping.get(SysSystemMapping_.accountType), filter.getAccountType()));
 		}
 
 		if (filter.getSupportChangePassword() != null && filter.getSupportChangePassword()) {
@@ -454,7 +528,7 @@ public class DefaultAccAccountService extends AbstractEventableDtoService<AccAcc
 											builder.and(
 												builder.equal(subRootMapping.get(SysSystemMapping_.objectClass), subRootSchema), // Correlation attribute - connection to mapping
 												builder.equal(subRootMapping.get(SysSystemMapping_.operationType), SystemOperationType.PROVISIONING), // System mapping must be provisioning
-												builder.equal(subRootMapping.get(SysSystemMapping_.entityType), SystemEntityType.IDENTITY), // Password change is now allowed only for identities
+												builder.equal(subRootMapping.get(SysSystemMapping_.entityType), IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE), // Password change is now allowed only for identities
 												builder.exists(
 													subqueryAttributeMapping.where(
 														builder.and(
@@ -484,12 +558,13 @@ public class DefaultAccAccountService extends AbstractEventableDtoService<AccAcc
 	}
 
 	@Override
-	public SynchronizationEntityExecutor getSyncExecutor(SystemEntityType entityType) {
+	public SynchronizationEntityExecutor getSyncExecutor(String entityType) {
 
 		if (this.pluginExecutors == null) {
 			this.pluginExecutors = OrderAwarePluginRegistry.create(executors);
 		}
-		SynchronizationEntityExecutor executor = this.pluginExecutors.getPluginFor(entityType);
+		SystemEntityTypeRegistrable systemEntityType = systemEntityManager.getSystemEntityByCode(entityType);
+		SynchronizationEntityExecutor executor = this.pluginExecutors.getPluginFor(systemEntityType);
 		if (executor == null) {
 			throw new UnsupportedOperationException(MessageFormat
 					.format("Synchronization executor for SystemEntityType {0} is not supported!", entityType));

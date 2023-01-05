@@ -1,8 +1,5 @@
 package eu.bcvsolutions.idm.core.model.service.impl;
 
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -47,6 +44,8 @@ import eu.bcvsolutions.idm.core.security.api.domain.GuardedString;
 import eu.bcvsolutions.idm.core.security.api.service.CryptService;
 import eu.bcvsolutions.idm.core.security.service.impl.DefaultCryptService;
 import eu.bcvsolutions.idm.test.api.AbstractIntegrationTest;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests for "naive" confidential storage (values are persisted in standard database).
@@ -388,7 +387,7 @@ public class DefaultIdmConfidentialStorageIntegrationTest extends AbstractIntegr
 		
 		confidentalStorage.saveGuardedString(identityOne.getId(), IdmIdentity.class, identityOne.getUsername(), new GuardedString(passwordOne));
 		confidentalStorage.saveGuardedString(identityTwo.getId(), IdmIdentity.class, identityTwo.getUsername(), new GuardedString(passwordTwo));
-		confidentalStorage.saveGuardedString(identityThree, identityThree.getUsername(), new GuardedString(passwordThree));
+		confidentalStorage.saveGuardedString(identityThree.getId(), IdmIdentity.class, identityThree.getUsername(), new GuardedString(passwordThree));
 
 		Serializable serializable = confidentalStorage.get(identityOne.getId(), IdmIdentity.class, identityOne.getUsername());
 		Assert.assertEquals(passwordOne, serializable);
@@ -418,7 +417,7 @@ public class DefaultIdmConfidentialStorageIntegrationTest extends AbstractIntegr
 		}
 
 		try {
-			confidentalStorage.get(identityThree, identityThree.getUsername());
+			confidentalStorage.get(identityThree.getId(), IdmIdentity.class, identityThree.getUsername());
 			Assert.fail();
 		} catch (Exception e) {
 			Assert.assertTrue(e.getCause() instanceof BadPaddingException);
@@ -651,7 +650,7 @@ public class DefaultIdmConfidentialStorageIntegrationTest extends AbstractIntegr
 	
 	/**
 	 * Create and run task for generating a new initialization vector for values in the confidential storage.
-	 * Task {@link GenerateConfidentialStorageInitializationVectorTaskExecutor}
+	 * Task {@link GenerateConfidentialStorageInitializationVectorsTaskExecutor}
 	 */
 	private void runGenerateInitializationVectorsTask() {
 		GenerateConfidentialStorageInitializationVectorsTaskExecutor task = new GenerateConfidentialStorageInitializationVectorsTaskExecutor();

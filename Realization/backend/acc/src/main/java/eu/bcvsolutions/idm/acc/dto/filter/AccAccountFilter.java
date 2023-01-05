@@ -1,24 +1,31 @@
 package eu.bcvsolutions.idm.acc.dto.filter;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import eu.bcvsolutions.idm.acc.domain.AccountType;
-import eu.bcvsolutions.idm.acc.domain.SystemEntityType;
 import eu.bcvsolutions.idm.acc.dto.AccAccountDto;
 import eu.bcvsolutions.idm.core.api.dto.filter.DataFilter;
+import eu.bcvsolutions.idm.core.api.dto.filter.ExternalIdentifiableFilter;
+import eu.bcvsolutions.idm.core.api.dto.filter.FormableFilter;
 
 /**
  * Filter for accounts
  * 
  * @author Radek Tomiška
+ * @author Roman Kucera
+ * @author Tomáš Doischer
  *
  */
-public class AccAccountFilter extends DataFilter {
+public class AccAccountFilter extends DataFilter implements ExternalIdentifiableFilter, FormableFilter {
 	
 	public static final String PARAMETER_IDENTITY_ID = "identity";
+	public static final String PARAMETER_IDENTITY_IDS = "identities";
+	public static final String PARAMETER_ROLE_IDS = "roles";
+	public static final String PARAMETER_SYSTEM_IDS = "systems";
 	//
 	private UUID systemEntityId;	
 	private UUID systemId;	
@@ -27,11 +34,26 @@ public class AccAccountFilter extends DataFilter {
 	private AccountType accountType;
 	private Boolean ownership;
 	private Boolean supportChangePassword;
-	private SystemEntityType entityType;
+	private String entityType;
 	private Boolean inProtection;
 	private UUID uniformPasswordId; // Used for unite password change and validate
 	private Boolean supportPasswordFilter;
 	private Boolean includeEcho; // Returned account will contains echo record in embedded
+	private UUID systemMapping;
+	private UUID formDefinitionId;
+	private String externalId;
+	private Boolean hasFormDefinition;
+
+	// Not used at the moment, but needed in order to prevent error when searching from general role request page
+	private boolean validNowOrInFuture;
+
+	public boolean isValidNowOrInFuture() {
+		return validNowOrInFuture;
+	}
+
+	public void setValidNowOrInFuture(boolean validNowOrInFuture) {
+		this.validNowOrInFuture = validNowOrInFuture;
+	}
 	
 	public AccAccountFilter() {
 		this(new LinkedMultiValueMap<>());
@@ -55,6 +77,14 @@ public class AccAccountFilter extends DataFilter {
 
 	public void setSystemId(UUID systemId) {
 		this.systemId = systemId;
+	}
+	
+	public List<UUID> getSystems() {
+		return getParameterConverter().toUuids(getData(), PARAMETER_SYSTEM_IDS);
+	}
+
+	public void setSystems(List<UUID> systemIds) {
+		put(PARAMETER_SYSTEM_IDS, systemIds);
 	}
 
 	public UUID getIdentityId() {
@@ -97,11 +127,11 @@ public class AccAccountFilter extends DataFilter {
 		this.supportChangePassword = supportChangePassword;
 	}
 	
-	public void setEntityType(SystemEntityType entityType) {
+	public void setEntityType(String entityType) {
 		this.entityType = entityType;
 	}
 	
-	public SystemEntityType getEntityType() {
+	public String getEntityType() {
 		return entityType;
 	}
 
@@ -137,4 +167,51 @@ public class AccAccountFilter extends DataFilter {
 		this.includeEcho = includeEcho;
 	}
 
+	public UUID getSystemMapping() {
+		return systemMapping;
+	}
+
+	public void setSystemMapping(UUID systemMapping) {
+		this.systemMapping = systemMapping;
+	}
+
+	public UUID getFormDefinitionId() {
+		return formDefinitionId;
+	}
+
+	public void setFormDefinitionId(UUID formDefinitionId) {
+		this.formDefinitionId = formDefinitionId;
+	}
+
+	public String getExternalId() {
+		return externalId;
+	}
+
+	public void setExternalId(String externalId) {
+		this.externalId = externalId;
+	}
+
+	public Boolean getHasFormDefinition() {
+		return hasFormDefinition;
+	}
+
+	public void setHasFormDefinition(Boolean hasFormDefinition) {
+		this.hasFormDefinition = hasFormDefinition;
+	}
+	
+	public List<UUID> getRoleIds() {
+		return getParameterConverter().toUuids(getData(), PARAMETER_ROLE_IDS);
+	}
+
+	public void setRoleIds(List<UUID> roleIds) {
+		put(PARAMETER_ROLE_IDS, roleIds);
+	}
+	
+	public List<UUID> getIdentities() {
+		return getParameterConverter().toUuids(getData(), PARAMETER_IDENTITY_IDS);
+	}
+
+	public void setIdentities(List<UUID> identityIds) {
+		put(PARAMETER_IDENTITY_IDS, identityIds);
+	}
 }

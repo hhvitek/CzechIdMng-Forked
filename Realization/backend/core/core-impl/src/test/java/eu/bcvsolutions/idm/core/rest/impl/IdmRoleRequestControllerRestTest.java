@@ -1,14 +1,10 @@
 package eu.bcvsolutions.idm.core.rest.impl;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.junit.Assert;
@@ -23,6 +19,7 @@ import eu.bcvsolutions.idm.core.api.domain.ConceptRoleRequestOperation;
 import eu.bcvsolutions.idm.core.api.domain.OperationState;
 import eu.bcvsolutions.idm.core.api.domain.RoleRequestState;
 import eu.bcvsolutions.idm.core.api.domain.RoleRequestedByType;
+import eu.bcvsolutions.idm.core.api.dto.ApplicantImplDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmConceptRoleRequestDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmIdentityDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmIdentityRoleDto;
@@ -38,6 +35,10 @@ import eu.bcvsolutions.idm.core.api.service.IdmIdentityService;
 import eu.bcvsolutions.idm.core.api.service.IdmRoleRequestService;
 import eu.bcvsolutions.idm.core.security.api.domain.GuardedString;
 import eu.bcvsolutions.idm.test.api.TestHelper;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Controller tests
@@ -73,6 +74,7 @@ public class IdmRoleRequestControllerRestTest extends AbstractReadWriteDtoContro
 	protected IdmRoleRequestDto prepareDto() {
 		IdmIdentityDto applicant = getHelper().createIdentity((GuardedString) null);
 		IdmRoleRequestDto dto = new IdmRoleRequestDto();
+		dto.setApplicantInfo(new ApplicantImplDto(applicant.getId(), IdmIdentityDto.class.getCanonicalName()));
 		dto.setApplicant(applicant.getId());
 		dto.setState(RoleRequestState.CONCEPT);
 		dto.setRequestedByType(RoleRequestedByType.MANUALLY);
@@ -90,7 +92,7 @@ public class IdmRoleRequestControllerRestTest extends AbstractReadWriteDtoContro
 		IdmRoleDto roleFive = getHelper().createRole();
 		IdmRoleDto roleSix = getHelper().createRole();
 		// assign roles
-		IdmIdentityDto applicant = identityService.get(roleRequest.getApplicant());
+		IdmIdentityDto applicant = identityService.get(roleRequest.getApplicantInfo());
 		getHelper().createIdentityRole(applicant, roleOne);
 		getHelper().createIdentityRole(applicant, roleTwo);
 		getHelper().createIdentityRole(applicant, roleThree);
@@ -144,7 +146,7 @@ public class IdmRoleRequestControllerRestTest extends AbstractReadWriteDtoContro
 		IdmRoleDto roleFive = getHelper().createRole();
 		IdmRoleDto roleSix = getHelper().createRole();
 		// assign roles
-		IdmIdentityDto applicant = identityService.get(roleRequest.getApplicant());
+		IdmIdentityDto applicant = identityService.get(roleRequest.getApplicantInfo());
 		getHelper().createIdentityRole(applicant, roleOne);
 		getHelper().createIdentityRole(applicant, roleTwo);
 		IdmIdentityRoleDto identityRole = getHelper().createIdentityRole(applicant, roleThree);
@@ -223,12 +225,12 @@ public class IdmRoleRequestControllerRestTest extends AbstractReadWriteDtoContro
 		IdmRoleRequestDto roleRequesttwo = createDto();
 		//
 		MultiValueMap<String, String> filter = new LinkedMultiValueMap<>();
-		filter.set("applicantId", roleRequestOne.getApplicant().toString());
+		filter.set("applicantId", roleRequestOne.getApplicantInfo().getId().toString());
 		List<IdmRoleRequestDto> requests = find(filter);
 		Assert.assertEquals(1, requests.size());
 		Assert.assertEquals(roleRequestOne.getId(), requests.get(0).getId());
 		//
-		filter.set("applicantId", roleRequesttwo.getApplicant().toString());
+		filter.set("applicantId", roleRequesttwo.getApplicantInfo().getId().toString());
 		requests = find(filter);
 		Assert.assertEquals(1, requests.size());
 		Assert.assertEquals(roleRequesttwo.getId(), requests.get(0).getId());
@@ -237,7 +239,7 @@ public class IdmRoleRequestControllerRestTest extends AbstractReadWriteDtoContro
 	@Test
 	public void testFindByWrongApplicant() throws Exception {
 		MultiValueMap<String, String> filter = new LinkedMultiValueMap<>();
-		filter.set("applicant", "not-exist-name");
+		filter.set("applicantId", UUID.randomUUID().toString());
 		List<IdmRoleRequestDto> results = find(filter);
 		//
 		Assert.assertTrue(results.isEmpty());
@@ -255,7 +257,7 @@ public class IdmRoleRequestControllerRestTest extends AbstractReadWriteDtoContro
 		//
 		MultiValueMap<String, String> filter = new LinkedMultiValueMap<>();
 		filter.set("state", RoleRequestState.EXECUTED.name());
-		filter.set("applicant", requestOne.getApplicant().toString());
+		filter.set("applicantId", requestOne.getApplicantInfo().getId().toString());
 		//
 		List<IdmRoleRequestDto> results = find(filter);
 		Assert.assertEquals(1, results.size());
@@ -271,7 +273,7 @@ public class IdmRoleRequestControllerRestTest extends AbstractReadWriteDtoContro
 		MultiValueMap<String, String> filter = new LinkedMultiValueMap<>();
 		filter.set("createdFrom", requestTwo.getCreated().truncatedTo(ChronoUnit.MILLIS).toString());
 		filter.set("createdTill", ZonedDateTime.now().truncatedTo(ChronoUnit.MILLIS).plus(1, ChronoUnit.MILLIS).toString());
-		filter.put("applicants", Lists.newArrayList(requestOne.getApplicant().toString(), requestTwo.getApplicant().toString()));
+		filter.put("applicants", Lists.newArrayList(requestOne.getApplicantInfo().getId().toString(), requestTwo.getApplicantInfo().getId().toString()));
 
 		List<IdmRoleRequestDto> results = find(filter);
 		Assert.assertEquals(1, results.size());
@@ -284,14 +286,14 @@ public class IdmRoleRequestControllerRestTest extends AbstractReadWriteDtoContro
 		IdmIdentityDto applicantTwo = getHelper().createIdentity((GuardedString) null);
 
 		IdmRoleRequestDto request = this.createDto();
-		request.setApplicant(applicantOne.getId());
+		request.setApplicantInfo(new ApplicantImplDto(applicantOne.getId(), IdmIdentityDto.class.getCanonicalName()));
 		IdmRoleRequestDto requestOne = createDto(request);
 		request = this.createDto();
-		request.setApplicant(applicantTwo.getId());
+		request.setApplicantInfo(new ApplicantImplDto(applicantTwo.getId(), IdmIdentityDto.class.getCanonicalName()));
 		IdmRoleRequestDto requestTwo = createDto(request);
 
 		MultiValueMap<String, String> filter = new LinkedMultiValueMap<>();
-		filter.put("applicants", Lists.newArrayList(requestOne.getApplicant().toString(), requestTwo.getApplicant().toString()));
+		filter.put("applicants", Lists.newArrayList(requestOne.getApplicantInfo().getId().toString(), requestTwo.getApplicantInfo().getId().toString()));
 
 		List<IdmRoleRequestDto> results = find(filter);
 		
@@ -299,7 +301,7 @@ public class IdmRoleRequestControllerRestTest extends AbstractReadWriteDtoContro
 		Assert.assertTrue(results.stream().anyMatch(r -> r.getId().equals(requestOne.getId())));
 		Assert.assertTrue(results.stream().anyMatch(r -> r.getId().equals(requestTwo.getId())));
 
-		filter.put("applicants", Lists.newArrayList(requestOne.getApplicant().toString()));
+		filter.put("applicants", Lists.newArrayList(requestOne.getApplicantInfo().getId().toString()));
 		results = find(filter);
 		Assert.assertEquals(requestOne.getId(), results.get(0).getId());
 	}
@@ -311,16 +313,18 @@ public class IdmRoleRequestControllerRestTest extends AbstractReadWriteDtoContro
 		IdmRoleRequestDto requestOne = createDto(request);
 		request = this.createDto();
 		request.setState(RoleRequestState.CANCELED);
+		request.setApplicantInfo(requestOne.getApplicantInfo());
 		request.setApplicant(requestOne.getApplicant());
 		IdmRoleRequestDto requestTwo = createDto(request);
 		request = this.createDto();
 		request.setState(RoleRequestState.APPROVED);
+		request.setApplicantInfo(requestOne.getApplicantInfo());
 		request.setApplicant(requestOne.getApplicant());
 		createDto(request); // other state
 		//
 		MultiValueMap<String, String> filter = new LinkedMultiValueMap<>();
 		filter.put("states", Lists.newArrayList(RoleRequestState.EXECUTED.name(), RoleRequestState.CANCELED.name()));
-		filter.set("applicant", requestOne.getApplicant().toString());
+		filter.set("applicantId", requestOne.getApplicant().toString());
 		//
 		List<IdmRoleRequestDto> results = find(filter);
 		Assert.assertEquals(2, results.size());
@@ -335,16 +339,16 @@ public class IdmRoleRequestControllerRestTest extends AbstractReadWriteDtoContro
 		IdmRoleRequestDto requestOne = createDto(request);
 		request = this.createDto();
 		request.setSystemState(new OperationResultDto(OperationState.CANCELED));
-		request.setApplicant(requestOne.getApplicant());
+		request.setApplicantInfo(requestOne.getApplicantInfo());
 		IdmRoleRequestDto requestTwo = createDto(request);
 		request = this.createDto();
 		request.setSystemState(new OperationResultDto(OperationState.EXCEPTION));
-		request.setApplicant(requestOne.getApplicant());
+		request.setApplicantInfo(requestOne.getApplicantInfo());
 		createDto(request); // other state
 		//
 		MultiValueMap<String, String> filter = new LinkedMultiValueMap<>();
 		filter.put("systemStates", Lists.newArrayList(OperationState.RUNNING.name(), OperationState.CANCELED.name()));
-		filter.set("applicant", requestOne.getApplicant().toString());
+		filter.set("applicant", requestOne.getApplicantInfo().toString());
 		//
 		List<IdmRoleRequestDto> results = find(filter);
 		Assert.assertEquals(2, results.size());

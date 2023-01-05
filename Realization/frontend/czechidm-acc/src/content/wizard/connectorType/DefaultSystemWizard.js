@@ -3,11 +3,12 @@ import React from 'react';
 import _ from 'lodash';
 import {SystemManager} from '../../../redux';
 import AbstractWizardStep from '../AbstractWizardStep';
-import SystemEntityTypeEnum from '../../../domain/SystemEntityTypeEnum';
+import SystemEntityTypeManager from '../../../redux/SystemEntityTypeManager';
 
 const systemManager = new SystemManager();
 const roleManager = new Managers.RoleManager();
 const treeTypeManager = new Managers.TreeTypeManager();
+const systemEntityTypeManager = new SystemEntityTypeManager();
 
 /**
  * Wizard for create a universal system.
@@ -830,9 +831,10 @@ class SimpleMapping extends AbstractWizardStep {
           </Basic.ContentHeader>
           <Basic.Div
             style={{marginLeft: 15, maxWidth: 340}}>
-            <Basic.EnumSelectBox
+            <Basic.SelectBox
               ref="entityType"
-              enum={SystemEntityTypeEnum}
+              multiSelect={ false }
+              manager={ systemEntityTypeManager }
               onChange={this._onChangeEntityType.bind(this)}
               required
               clearable={false}/>

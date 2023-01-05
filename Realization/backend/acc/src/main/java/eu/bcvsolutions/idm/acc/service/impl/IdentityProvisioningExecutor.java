@@ -1,6 +1,5 @@
 package eu.bcvsolutions.idm.acc.service.impl;
 
-import eu.bcvsolutions.idm.acc.domain.MappingContext;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
@@ -8,6 +7,14 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import eu.bcvsolutions.idm.acc.domain.AccountType;
+import eu.bcvsolutions.idm.acc.dto.SysSystemMappingDto;
+import eu.bcvsolutions.idm.core.api.dto.AbstractRoleAssignmentDto;
+import eu.bcvsolutions.idm.core.api.dto.filter.IdmRequestIdentityRoleFilter;
+import eu.bcvsolutions.idm.core.api.entity.AbstractEntity_;
+import eu.bcvsolutions.idm.core.api.service.IdmRoleAssignmentManager;
+import eu.bcvsolutions.idm.core.eav.entity.AbstractFormValue_;
+import eu.bcvsolutions.idm.core.model.entity.AbstractRoleAssignment_;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.PageRequest;
@@ -21,14 +28,13 @@ import com.google.common.collect.Lists;
 import eu.bcvsolutions.idm.acc.domain.AssignedRoleDto;
 import eu.bcvsolutions.idm.acc.domain.AttributeMapping;
 import eu.bcvsolutions.idm.acc.domain.AttributeMappingStrategyType;
-import eu.bcvsolutions.idm.acc.domain.SystemEntityType;
+import eu.bcvsolutions.idm.acc.domain.MappingContext;
 import eu.bcvsolutions.idm.acc.dto.AccAccountDto;
 import eu.bcvsolutions.idm.acc.dto.AccIdentityAccountDto;
 import eu.bcvsolutions.idm.acc.dto.EntityAccountDto;
 import eu.bcvsolutions.idm.acc.dto.SysRoleSystemAttributeDto;
 import eu.bcvsolutions.idm.acc.dto.SysRoleSystemDto;
 import eu.bcvsolutions.idm.acc.dto.SysSystemDto;
-import eu.bcvsolutions.idm.acc.dto.SysSystemMappingDto;
 import eu.bcvsolutions.idm.acc.dto.filter.AccIdentityAccountFilter;
 import eu.bcvsolutions.idm.acc.dto.filter.SysRoleSystemAttributeFilter;
 import eu.bcvsolutions.idm.acc.entity.AccIdentityAccount_;
@@ -42,9 +48,11 @@ import eu.bcvsolutions.idm.acc.service.api.SysRoleSystemService;
 import eu.bcvsolutions.idm.acc.service.api.SysSchemaAttributeService;
 import eu.bcvsolutions.idm.acc.service.api.SysSchemaObjectClassService;
 import eu.bcvsolutions.idm.acc.service.api.SysSystemAttributeMappingService;
+import eu.bcvsolutions.idm.acc.service.api.SysSystemEntityTypeManager;
 import eu.bcvsolutions.idm.acc.service.api.SysSystemEntityService;
 import eu.bcvsolutions.idm.acc.service.api.SysSystemMappingService;
 import eu.bcvsolutions.idm.acc.service.api.SysSystemService;
+import eu.bcvsolutions.idm.acc.system.entity.SystemEntityTypeRegistrable;
 import eu.bcvsolutions.idm.core.api.dto.AbstractIdmAutomaticRoleDto;
 import eu.bcvsolutions.idm.core.api.dto.BaseDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmContractPositionDto;
@@ -76,6 +84,7 @@ import eu.bcvsolutions.idm.ic.service.api.IcConnectorFacade;
  * 
  * @author Vít Švanda
  * @author Radek Tomiška
+ * @author Roman Kucera
  */
 @Service
 @Qualifier(value = IdentityProvisioningExecutor.NAME)
@@ -85,12 +94,13 @@ public class IdentityProvisioningExecutor extends AbstractProvisioningExecutor<I
 	public final static String ASSIGNED_ROLES_FIELD = "assignedRoles";
 	public final static String ASSIGNED_ROLES_FOR_SYSTEM_FIELD = "assignedRolesForSystem";
 	public static final String IDENTITY_STATE_IDM_NAME = "state";
+	public static final String SYSTEM_ENTITY_TYPE = "IDENTITY";
 
 	private final AccIdentityAccountService identityAccountService;
 	private final IdmIdentityService identityService;
 	private final AccAccountManagementService accountManagementService;
 	@Autowired
-	private IdmIdentityRoleService identityRoleService;
+	private IdmRoleAssignmentManager roleAssignmentManager;
 	@Autowired
 	private IdmIdentityContractService identityContractService;
 	@Autowired
@@ -106,12 +116,12 @@ public class IdentityProvisioningExecutor extends AbstractProvisioningExecutor<I
 			ProvisioningExecutor provisioningExecutor, EntityEventManager entityEventManager,
 			SysSchemaObjectClassService schemaObjectClassService, SysSchemaAttributeService schemaAttributeService,
 			SysSystemAttributeMappingService systemAttributeMappingService, IdmRoleService roleService,
-			IdmIdentityService identityService) {
+			IdmIdentityService identityService, SysSystemEntityTypeManager systemEntityManager) {
 
 		super(systemMappingService, attributeMappingService, connectorFacade, systemService, roleSystemService,
 				roleSystemAttributeService, systemEntityService, accountService, provisioningExecutor,
 				entityEventManager, schemaAttributeService, schemaObjectClassService, systemAttributeMappingService,
-				roleService);
+				roleService, systemEntityManager);
 		//
 		Assert.notNull(identityAccountService, "Service is required.");
 		Assert.notNull(roleSystemService, "Service is required.");
@@ -130,25 +140,25 @@ public class IdentityProvisioningExecutor extends AbstractProvisioningExecutor<I
 		//
 		AccIdentityAccountFilter filter = new AccIdentityAccountFilter();
 		filter.setAccountId(account.getId());
-		identityAccountService.find(filter, null).getContent().stream().filter(identityAccount -> {
-			return identityAccount.isOwnership();
-		}).forEach((identityAccount) -> {
+		filter.setOwnership(Boolean.TRUE);
+		AccIdentityAccountDto identityAccount = identityAccountService.find(filter, null).stream().findFirst().orElse(null);
+		if (identityAccount != null) {
 			doProvisioning(account,
 					DtoUtils.getEmbedded(identityAccount, AccIdentityAccount_.identity, IdmIdentityDto.class));
-		});
+		}
 	}
 
-	@Override
 	/**
 	 * Identities have own implementation of ACM
 	 */
+	@Override
 	public boolean accountManagement(IdmIdentityDto dto) {
 		return accountManagementService.resolveIdentityAccounts(dto);
 	}
 
 	/**
 	 * Return list of all overloading attributes for given identity, system and uid
-	 * 
+	 *
 	 * @param entity
 	 * @param system
 	 * @param entityType
@@ -157,18 +167,16 @@ public class IdentityProvisioningExecutor extends AbstractProvisioningExecutor<I
 	 */
 	@Override
 	protected List<SysRoleSystemAttributeDto> findOverloadingAttributes(IdmIdentityDto entity, SysSystemDto system,
-			AccAccountDto account, SystemEntityType entityType) {
-		
-		SysSystemMappingDto mapping = getMapping(system, entityType);
+			AccAccountDto account, String entityType) {
 		
 		List<SysRoleSystemAttributeDto> roleSystemAttributesAll = new ArrayList<>();
-
-		if(mapping == null) {
+		UUID mapping = account.getSystemMapping();
+		if (mapping == null) {
 			return roleSystemAttributesAll;
 		}
 		// Search overridden attributes for this account.
 		SysRoleSystemAttributeFilter roleSystemAttributeFilter = new SysRoleSystemAttributeFilter();
-		roleSystemAttributeFilter.setSystemMappingId(mapping.getId());
+		roleSystemAttributeFilter.setSystemMappingId(mapping);
 		// Filtering by identity-account relation.
 		roleSystemAttributeFilter.setAccountId(account.getId());
 		roleSystemAttributeFilter.setIdentityId(entity.getId());
@@ -181,14 +189,16 @@ public class IdentityProvisioningExecutor extends AbstractProvisioningExecutor<I
 		// Cross-domains attributes and no-login attributes will be added only for default UID.
 		// It means, if some attributes override an UID attribute, then no additional attribute will be used!
 		boolean uidIsOverridden = roleSystemAttributesAll.stream().anyMatch(SysRoleSystemAttributeDto::isUid);
+		final SysSystemMappingDto sysSystemMappingDto = systemMappingService.get(mapping);
 
-		if (!uidIsOverridden) {
+		if (!uidIsOverridden && !sysSystemMappingDto.getAccountType().equals(AccountType.PERSONAL_OTHER)) {
 			// Add overridden attributes which are in a cross-domain group or is in no-login role.
 			// Beware - these attributes are added for every account (overridden attributes are not supported)
 			roleSystemAttributeFilter = new SysRoleSystemAttributeFilter();
 			roleSystemAttributeFilter.setRoleSystemRelationForIdentityId(entity.getId());
-			roleSystemAttributeFilter.setSystemMappingId(mapping.getId());
+			roleSystemAttributeFilter.setSystemMappingId(mapping);
 			roleSystemAttributeFilter.setInCrossDomainGroupOrIsNoLogin(Boolean.TRUE);
+			roleSystemAttributeFilter.setAccountId(account.getId());
 
 			List<SysRoleSystemAttributeDto> roleAttributesInCrossGroup = roleSystemAttributeService
 					.find(roleSystemAttributeFilter, null).getContent();
@@ -197,13 +207,12 @@ public class IdentityProvisioningExecutor extends AbstractProvisioningExecutor<I
 				roleSystemAttributesAll.addAll(roleAttributesInCrossGroup);
 			}
 		}
-		
 		return roleSystemAttributesAll;
 	}
 
 	@Override
 	protected Object getAttributeValue(String uid, IdmIdentityDto dto, AttributeMapping attribute,
-			SysSystemDto system, MappingContext mappingContext) {
+			SysSystemDto system, MappingContext mappingContext, AccAccountDto accountDto) {
 		
 		if (attribute instanceof SysRoleSystemAttributeDto) {
 			SysRoleSystemAttributeDto roleSystemAttributeDto = (SysRoleSystemAttributeDto) attribute;
@@ -249,21 +258,20 @@ public class IdentityProvisioningExecutor extends AbstractProvisioningExecutor<I
 				)) { //
 			assertNotNull(dto.getId());
 
-			IdmIdentityRoleFilter identityRoleFilter = new IdmIdentityRoleFilter();
+			IdmRequestIdentityRoleFilter identityRoleFilter = new IdmRequestIdentityRoleFilter();
 			identityRoleFilter.setIdentityId(dto.getId());
 			identityRoleFilter.setValid(Boolean.TRUE);
-			List<IdmIdentityRoleDto> identityRoles = identityRoleService
+			List<AbstractRoleAssignmentDto> identityRoles = roleAssignmentManager
 					.find(identityRoleFilter,
-							PageRequest.of(0, Integer.MAX_VALUE, Sort.by(IdmIdentityRole_.created.getName())))
-					.getContent();
-			List<IdmIdentityRoleDto> identityRolesToProcess;
+							PageRequest.of(0, Integer.MAX_VALUE, Sort.by(AbstractEntity_.created.getName())), (a, b) -> {});
+			List<AbstractRoleAssignmentDto> identityRolesToProcess;
 
 			if (ASSIGNED_ROLES_FOR_SYSTEM_FIELD.equals(attribute.getIdmPropertyName())) {
 				// For ASSIGNED_ROLES_FOR_SYSTEM_FIELD we will convert only identity-roles for
 				// that identity and given system
 				assertNotNull(system.getId());
 
-				List<IdmIdentityRoleDto> identityRolesForSystem = Lists.newArrayList();
+				List<AbstractRoleAssignmentDto> identityRolesForSystem = Lists.newArrayList();
 				AccIdentityAccountFilter identityAccountFilter = new AccIdentityAccountFilter();
 				identityAccountFilter.setIdentityId(dto.getId());
 				identityAccountFilter.setSystemId(system.getId());
@@ -271,12 +279,10 @@ public class IdentityProvisioningExecutor extends AbstractProvisioningExecutor<I
 						.getContent();
 
 				// Filtering only identity-roles for that system
-				identityAccounts.forEach(identityAccount -> {
-					identityRolesForSystem.addAll(identityRoles.stream() //
-							.filter(identityRole -> identityRole.getId().equals(identityAccount.getIdentityRole())) //
-							.collect(Collectors.toList()) //
-					);
-				});
+				identityAccounts.forEach(identityAccount -> identityRolesForSystem.addAll(identityRoles.stream()
+						.filter(identityRole -> identityRole.getId().equals(identityAccount.getIdentityRole()))
+						.collect(Collectors.toList())
+				));
 
 				identityRolesToProcess = identityRolesForSystem;
 			} else {
@@ -286,7 +292,7 @@ public class IdentityProvisioningExecutor extends AbstractProvisioningExecutor<I
 
 			List<AssignedRoleDto> assignedRoles = new ArrayList<>();
 			identityRolesToProcess.forEach(identityRole -> {
-				IdmFormInstanceDto formInstanceDto = identityRoleService.getRoleAttributeValues(identityRole);
+				IdmFormInstanceDto formInstanceDto = roleAssignmentManager.getServiceForAssignment(identityRole).getRoleAttributeValues(identityRole);
 				identityRole.getEavs().clear();
 				identityRole.getEavs().add(formInstanceDto);
 				// Convert identityRole to AssignedRoleDto
@@ -311,10 +317,10 @@ public class IdentityProvisioningExecutor extends AbstractProvisioningExecutor<I
 			return attributeMappingService.transformValueToResource(uid, state, attribute, dto);
 		}
 		
-		return super.getAttributeValue(uid, dto, attribute, system, mappingContext);
+		return super.getAttributeValue(uid, dto, attribute, system, mappingContext, accountDto);
 	}
 
-	public static AssignedRoleDto convertToAssignedRoleDto(IdmIdentityRoleDto identityRole) {
+	public static AssignedRoleDto convertToAssignedRoleDto(AbstractRoleAssignmentDto identityRole) {
 		if (identityRole == null) {
 			return null;
 		}
@@ -324,7 +330,7 @@ public class IdentityProvisioningExecutor extends AbstractProvisioningExecutor<I
 		dto.setExternalId(identityRole.getExternalId());
 		dto.setValidFrom(identityRole.getValidFrom());
 		dto.setValidTill(identityRole.getValidTill());
-		dto.setRole(DtoUtils.getEmbedded(identityRole, IdmIdentityRole_.role, IdmRoleDto.class, null));
+		dto.setRole(DtoUtils.getEmbedded(identityRole, AbstractRoleAssignment_.role, IdmRoleDto.class, null));
 		dto.setIdentityContract(DtoUtils.getEmbedded(identityRole, IdmIdentityRole_.identityContract,
 				IdmIdentityContractDto.class, null));
 		dto.setContractPosition(DtoUtils.getEmbedded(identityRole, IdmIdentityRole_.contractPosition,
@@ -333,7 +339,7 @@ public class IdentityProvisioningExecutor extends AbstractProvisioningExecutor<I
 				DtoUtils.getEmbedded(identityRole, IdmIdentityRole_.directRole, IdmIdentityRoleDto.class, null));
 		dto.setRoleTreeNode(DtoUtils.getEmbedded(identityRole, IdmIdentityRoleDto.PROPERTY_ROLE_TREE_NODE,
 				AbstractIdmAutomaticRoleDto.class, null));
-		dto.setRoleComposition(DtoUtils.getEmbedded(identityRole, IdmIdentityRole_.roleComposition,
+		dto.setRoleComposition(DtoUtils.getEmbedded(identityRole, AbstractRoleAssignment_.roleComposition,
 				IdmRoleCompositionDto.class, null));
 
 		UUID definition = dto.getRole().getIdentityRoleAttributeDefinition();
@@ -355,8 +361,7 @@ public class IdentityProvisioningExecutor extends AbstractProvisioningExecutor<I
 							List<IdmFormValueDto> formValues = values.stream() // Search all values for one attribute
 									.filter(value -> attribute.equals(value.getFormAttribute())) //
 									.collect(Collectors.toList()); //
-							IdmFormAttributeDto formAttributeDto = DtoUtils.getEmbedded(formValues.get(0),
-									IdmFormValue_.formAttribute, IdmFormAttributeDto.class);
+							IdmFormAttributeDto formAttributeDto = DtoUtils.getEmbedded(formValues.get(0), AbstractFormValue_.formAttribute, IdmFormAttributeDto.class);
 
 							dto.getAttributes().put(formAttributeDto.getCode(), formValues.stream() //
 									.map(IdmFormValueDto::getValue) // Value is always list
@@ -390,5 +395,15 @@ public class IdentityProvisioningExecutor extends AbstractProvisioningExecutor<I
 	@Override
 	protected ReadWriteDtoService<IdmIdentityDto, ?> getService() {
 		return identityService;
+	}
+
+	@Override
+	public String getSystemEntityType() {
+		return SYSTEM_ENTITY_TYPE;
+	}
+
+	@Override
+	public boolean supports(SystemEntityTypeRegistrable delimiter) {
+		return delimiter.getSystemEntityCode().equals(SYSTEM_ENTITY_TYPE) && delimiter.isSupportsProvisioning();
 	}
 }

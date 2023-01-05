@@ -253,7 +253,7 @@ public class DefaultIdmAutomaticRoleRequestService extends
 			variables.put("approvalForAutomaticRole", Boolean.TRUE);
 
 			ProcessInstance processInstance = workflowProcessInstanceService.startProcess(wfDefinition,
-					IdmRoleDto.class.getSimpleName(), request.getCreator(), request.getCreatorId().toString(),
+					IdmRoleDto.class.getSimpleName(), request.getCreatorId().toString(),
 					variables);
 			// We have to refresh request (maybe was changed in wf process)
 			request = this.get(request.getId());
@@ -445,7 +445,7 @@ public class DefaultIdmAutomaticRoleRequestService extends
 		}
 		return requestEntity;
 	}
-	
+
 	@Override
 	public void deleteAutomaticRole(AbstractIdmAutomaticRoleDto automaticRole, AutomaticRoleRequestType type) {
 		Assert.notNull(automaticRole, "Automatic role is required.");
@@ -462,7 +462,7 @@ public class DefaultIdmAutomaticRoleRequestService extends
 
 		this.getIdmAutomaticRoleRequestService().startRequest(request.getId(), true);
 	}
-	
+
 	@Override
 	public IdmRoleTreeNodeDto createTreeAutomaticRole(IdmRoleTreeNodeDto automaticRole) {
 		Assert.notNull(automaticRole, "Automatic role is required.");

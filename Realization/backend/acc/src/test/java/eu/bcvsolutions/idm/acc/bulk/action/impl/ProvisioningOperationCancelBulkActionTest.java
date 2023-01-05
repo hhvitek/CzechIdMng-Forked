@@ -19,7 +19,6 @@ import com.google.common.collect.Sets;
 
 import eu.bcvsolutions.idm.InitApplicationData;
 import eu.bcvsolutions.idm.acc.TestHelper;
-import eu.bcvsolutions.idm.acc.domain.SystemEntityType;
 import eu.bcvsolutions.idm.acc.dto.SysProvisioningOperationDto;
 import eu.bcvsolutions.idm.acc.dto.SysSystemDto;
 import eu.bcvsolutions.idm.acc.dto.filter.SysProvisioningOperationFilter;
@@ -27,6 +26,7 @@ import eu.bcvsolutions.idm.acc.entity.SysProvisioningOperation;
 import eu.bcvsolutions.idm.acc.rest.impl.SysProvisioningOperationController;
 import eu.bcvsolutions.idm.acc.service.api.SysProvisioningOperationService;
 import eu.bcvsolutions.idm.acc.service.api.SysSystemService;
+import eu.bcvsolutions.idm.acc.service.impl.IdentitySynchronizationExecutor;
 import eu.bcvsolutions.idm.core.api.bulk.action.dto.IdmBulkActionDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmIdentityDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmRoleDto;
@@ -82,7 +82,7 @@ public class ProvisioningOperationCancelBulkActionTest extends AbstractBulkActio
 
 		SysProvisioningOperationFilter filter = new SysProvisioningOperationFilter();
 		filter.setEntityIdentifier(identity.getId());
-		filter.setEntityType(SystemEntityType.IDENTITY);
+		filter.setEntityType(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE);
 		List<SysProvisioningOperationDto> operations = provisioningOperationService.find(filter, null).getContent();
 		assertFalse(operations.isEmpty());
 		assertTrue(operations.size() > 1);
@@ -107,6 +107,12 @@ public class ProvisioningOperationCancelBulkActionTest extends AbstractBulkActio
 			return opr.getId().equals(provisioningOperationDto.getId());
 		}).findAny().orElse(null);
 		assertNull(orElse);
+
+		getHelper().deleteIdentity(identity.getId());
+		getHelper().deleteRole(role.getId());
+		helper.deleteAllResourceData();
+		provisioningOperationService.deleteAllOperations();
+		systemService.delete(system);
 	}
 
 	@Test
@@ -128,7 +134,7 @@ public class ProvisioningOperationCancelBulkActionTest extends AbstractBulkActio
 
 		SysProvisioningOperationFilter filter = new SysProvisioningOperationFilter();
 		filter.setEntityIdentifier(identity.getId());
-		filter.setEntityType(SystemEntityType.IDENTITY);
+		filter.setEntityType(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE);
 		List<SysProvisioningOperationDto> operations = provisioningOperationService.find(filter, null).getContent();
 		assertFalse(operations.isEmpty());
 		assertTrue(operations.size() > 1);
@@ -147,6 +153,12 @@ public class ProvisioningOperationCancelBulkActionTest extends AbstractBulkActio
 
 		List<SysProvisioningOperationDto> newOperations = provisioningOperationService.find(filter, null).getContent();
 		assertEquals(0, newOperations.size());
+
+		getHelper().deleteIdentity(identity.getId());
+		getHelper().deleteRole(role.getId());
+		helper.deleteAllResourceData();
+		provisioningOperationService.deleteAllOperations();
+		systemService.delete(system);
 	}
 
 	@Test
@@ -170,7 +182,7 @@ public class ProvisioningOperationCancelBulkActionTest extends AbstractBulkActio
 
 		SysProvisioningOperationFilter filter = new SysProvisioningOperationFilter();
 		filter.setEntityIdentifier(identity.getId());
-		filter.setEntityType(SystemEntityType.IDENTITY);
+		filter.setEntityType(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE);
 		List<SysProvisioningOperationDto> operations = provisioningOperationService.find(filter, null).getContent();
 		assertFalse(operations.isEmpty());
 		assertTrue(operations.size() > 1);
@@ -190,6 +202,12 @@ public class ProvisioningOperationCancelBulkActionTest extends AbstractBulkActio
 
 		List<SysProvisioningOperationDto> newOperations = provisioningOperationService.find(filter, null).getContent();
 		assertEquals(0, newOperations.size()); // Must be zero
+
+		getHelper().deleteIdentity(identity.getId());
+		getHelper().deleteRole(role.getId());
+		helper.deleteAllResourceData();
+		provisioningOperationService.deleteAllOperations();
+		systemService.delete(system);
 	}
 
 	@Test
@@ -214,7 +232,7 @@ public class ProvisioningOperationCancelBulkActionTest extends AbstractBulkActio
 
 		SysProvisioningOperationFilter filter = new SysProvisioningOperationFilter();
 		filter.setEntityIdentifier(identity.getId());
-		filter.setEntityType(SystemEntityType.IDENTITY);
+		filter.setEntityType(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE);
 		List<SysProvisioningOperationDto> operations = provisioningOperationService.find(filter, null).getContent();
 		assertFalse(operations.isEmpty());
 		assertTrue(operations.size() > 1);
@@ -236,6 +254,12 @@ public class ProvisioningOperationCancelBulkActionTest extends AbstractBulkActio
 
 		List<SysProvisioningOperationDto> newOperations = provisioningOperationService.find(filter, null).getContent();
 		assertEquals(0, newOperations.size()); // Must be zero
+
+		getHelper().deleteIdentity(identity.getId());
+		getHelper().deleteRole(role.getId());
+		helper.deleteAllResourceData();
+		provisioningOperationService.deleteAllOperations();
+		systemService.delete(system);
 	}
 
 	@Test
@@ -268,7 +292,7 @@ public class ProvisioningOperationCancelBulkActionTest extends AbstractBulkActio
 
 		SysProvisioningOperationFilter filter = new SysProvisioningOperationFilter();
 		filter.setSystemId(system.getId());
-		filter.setEntityType(SystemEntityType.IDENTITY);
+		filter.setEntityType(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE);
 		List<SysProvisioningOperationDto> operations = provisioningOperationService.find(filter, null).getContent();
 		assertFalse(operations.isEmpty());
 		assertTrue(operations.size() > 1);
@@ -290,6 +314,13 @@ public class ProvisioningOperationCancelBulkActionTest extends AbstractBulkActio
 
 		List<SysProvisioningOperationDto> newOperations = provisioningOperationService.find(filter, null).getContent();
 		assertEquals(0, newOperations.size()); // Must be zero
+
+		getHelper().deleteIdentity(identity.getId());
+		getHelper().deleteIdentity(identityTwo.getId());
+		getHelper().deleteRole(role.getId());
+		helper.deleteAllResourceData();
+		provisioningOperationService.deleteAllOperations();
+		systemService.delete(system);
 	}
 
 	@Test
@@ -320,7 +351,7 @@ public class ProvisioningOperationCancelBulkActionTest extends AbstractBulkActio
 
 		SysProvisioningOperationFilter filter = new SysProvisioningOperationFilter();
 		filter.setSystemId(system.getId());
-		filter.setEntityType(SystemEntityType.IDENTITY);
+		filter.setEntityType(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE);
 		List<SysProvisioningOperationDto> operations = provisioningOperationService.find(filter, null).getContent();
 		assertFalse(operations.isEmpty());
 		assertTrue(operations.size() > 1);
@@ -341,6 +372,13 @@ public class ProvisioningOperationCancelBulkActionTest extends AbstractBulkActio
 
 		List<SysProvisioningOperationDto> newOperations = provisioningOperationService.find(filter, null).getContent();
 		assertEquals(0, newOperations.size()); // Must be zero
+
+		getHelper().deleteIdentity(identity.getId());
+		getHelper().deleteIdentity(identityTwo.getId());
+		getHelper().deleteRole(role.getId());
+		helper.deleteAllResourceData();
+		provisioningOperationService.deleteAllOperations();
+		systemService.delete(system);
 	}
 
 	@Test
@@ -359,7 +397,7 @@ public class ProvisioningOperationCancelBulkActionTest extends AbstractBulkActio
 
 		SysProvisioningOperationFilter filter = new SysProvisioningOperationFilter();
 		filter.setEntityIdentifier(identity.getId());
-		filter.setEntityType(SystemEntityType.IDENTITY);
+		filter.setEntityType(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE);
 		List<SysProvisioningOperationDto> operations = provisioningOperationService.find(filter, null).getContent();
 		assertFalse(operations.isEmpty());
 		assertTrue(operations.size() > 1);
@@ -380,6 +418,12 @@ public class ProvisioningOperationCancelBulkActionTest extends AbstractBulkActio
 
 		List<SysProvisioningOperationDto> newOperations = provisioningOperationService.find(filter, null).getContent();
 		assertEquals(allOperations, newOperations.size()); // Must be same
+
+		getHelper().deleteIdentity(identity.getId());
+		getHelper().deleteRole(role.getId());
+		helper.deleteAllResourceData();
+		provisioningOperationService.deleteAllOperations();
+		systemService.delete(system);
 	}
 
 	@Test
@@ -420,5 +464,11 @@ public class ProvisioningOperationCancelBulkActionTest extends AbstractBulkActio
 
 		operations = provisioningOperationService.find(filter, null).getContent();
 		assertTrue(operations.isEmpty());
+
+		getHelper().deleteIdentity(identity.getId());
+		getHelper().deleteRole(role.getId());
+		helper.deleteAllResourceData();
+		provisioningOperationService.deleteAllOperations();
+		systemService.delete(system);
 	}
 }

@@ -22,7 +22,7 @@ import eu.bcvsolutions.idm.acc.connector.AbstractConnectorType;
 import eu.bcvsolutions.idm.acc.connector.CsvConnectorType;
 import eu.bcvsolutions.idm.acc.connector.DefaultConnectorType;
 import eu.bcvsolutions.idm.acc.connector.PostgresqlConnectorType;
-import eu.bcvsolutions.idm.acc.domain.SystemEntityType;
+import eu.bcvsolutions.idm.acc.domain.AccountType;
 import eu.bcvsolutions.idm.acc.domain.SystemOperationType;
 import eu.bcvsolutions.idm.acc.dto.ConnectorTypeDto;
 import eu.bcvsolutions.idm.acc.dto.SysRoleSystemDto;
@@ -118,7 +118,7 @@ public class DefaultConnectorManagerTest extends AbstractIntegrationTest {
 		ConnectorTypeDto mockCsvConnectorTypeDto = new ConnectorTypeDto();
 		mockCsvConnectorTypeDto.setReopened(false);
 		mockCsvConnectorTypeDto.setId(CsvConnectorType.NAME);
-		ResponseEntity<ConnectorTypeDto> responseEntity = systemController.loadConnectorType(mockCsvConnectorTypeDto);
+		ResponseEntity<ConnectorTypeDto> responseEntity = systemController.loadWizardType(mockCsvConnectorTypeDto);
 		ConnectorTypeDto csvConnectorTypeDto = responseEntity.getBody();
 		assertNotNull(csvConnectorTypeDto);
 
@@ -152,8 +152,8 @@ public class DefaultConnectorManagerTest extends AbstractIntegrationTest {
 		connectorTypeDto.setWizardStepName(AbstractConnectorType.STEP_MAPPING);
 		connectorTypeDto.getMetadata().put(AbstractConnectorType.SCHEMA_ID, ((SysSystemMappingDto) mapping).getObjectClass().toString());
 		connectorTypeDto.getMetadata().put(AbstractConnectorType.OPERATION_TYPE, SystemOperationType.SYNCHRONIZATION.name());
-		connectorTypeDto.getMetadata().put(AbstractConnectorType.ENTITY_TYPE, SystemEntityType.IDENTITY.name());
-		systemController.executeConnectorType(connectorTypeDto);
+		connectorTypeDto.getMetadata().put(AbstractConnectorType.ENTITY_TYPE, IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE);
+		systemController.executeWizardType(connectorTypeDto);
 
 		ConnectorTypeDto connectorTypeDtoAfterMappingStep = connectorManager.convertTypeToDto(connectorType);
 		connectorTypeDtoAfterMappingStep.getEmbedded().put(AbstractConnectorType.SYSTEM_DTO_KEY, systemDto);
@@ -189,8 +189,8 @@ public class DefaultConnectorManagerTest extends AbstractIntegrationTest {
 		connectorTypeDto.setWizardStepName(AbstractConnectorType.STEP_MAPPING);
 		connectorTypeDto.getMetadata().put(AbstractConnectorType.SYSTEM_DTO_KEY, systemDto.getId().toString());
 		connectorTypeDto.getMetadata().put(AbstractConnectorType.OPERATION_TYPE, SystemOperationType.SYNCHRONIZATION.name());
-		connectorTypeDto.getMetadata().put(AbstractConnectorType.ENTITY_TYPE, SystemEntityType.IDENTITY.name());
-		systemController.executeConnectorType(connectorTypeDto);
+		connectorTypeDto.getMetadata().put(AbstractConnectorType.ENTITY_TYPE, IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE);
+		systemController.executeWizardType(connectorTypeDto);
 
 		ConnectorTypeDto connectorTypeDtoAfterMappingStep = connectorManager.convertTypeToDto(connectorType);
 		connectorTypeDtoAfterMappingStep.getEmbedded().put(AbstractConnectorType.SYSTEM_DTO_KEY, systemDto);
@@ -228,8 +228,9 @@ public class DefaultConnectorManagerTest extends AbstractIntegrationTest {
 		SysSystemMappingDto syncMapping = new SysSystemMappingDto();
 		syncMapping.setObjectClass(sysSystemMappingDto.getObjectClass());
 		syncMapping.setName("Mapping");
-		syncMapping.setEntityType(SystemEntityType.IDENTITY);
+		syncMapping.setEntityType(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE);
 		syncMapping.setOperationType(SystemOperationType.SYNCHRONIZATION);
+		syncMapping.setAccountType(AccountType.PERSONAL);
 		syncMapping = mappingService.publish(
 				new SystemMappingEvent(
 						SystemMappingEvent.SystemMappingEventType.CREATE,
@@ -263,8 +264,9 @@ public class DefaultConnectorManagerTest extends AbstractIntegrationTest {
 		SysSystemMappingDto mappingDto = new SysSystemMappingDto();
 		mappingDto.setObjectClass(sysSystemMappingDto.getObjectClass());
 		mappingDto.setName("Mapping");
-		mappingDto.setEntityType(SystemEntityType.IDENTITY);
+		mappingDto.setEntityType(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE);
 		mappingDto.setOperationType(SystemOperationType.PROVISIONING);
+		mappingDto.setAccountType(AccountType.PERSONAL);
 		mappingDto = mappingService.publish(
 				new SystemMappingEvent(
 						SystemMappingEvent.SystemMappingEventType.CREATE,
@@ -304,8 +306,8 @@ public class DefaultConnectorManagerTest extends AbstractIntegrationTest {
 		connectorTypeDto.setWizardStepName(AbstractConnectorType.STEP_MAPPING);
 		connectorTypeDto.getMetadata().put(AbstractConnectorType.SYSTEM_DTO_KEY, systemDto.getId().toString());
 		connectorTypeDto.getMetadata().put(AbstractConnectorType.OPERATION_TYPE, SystemOperationType.PROVISIONING.name());
-		connectorTypeDto.getMetadata().put(AbstractConnectorType.ENTITY_TYPE, SystemEntityType.IDENTITY.name());
-		systemController.executeConnectorType(connectorTypeDto);
+		connectorTypeDto.getMetadata().put(AbstractConnectorType.ENTITY_TYPE, IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE);
+		systemController.executeWizardType(connectorTypeDto);
 
 		ConnectorTypeDto connectorTypeDtoAfterMappingStep = connectorManager.convertTypeToDto(connectorType);
 		connectorTypeDtoAfterMappingStep.getEmbedded().put(AbstractConnectorType.SYSTEM_DTO_KEY, systemDto);
@@ -347,7 +349,7 @@ public class DefaultConnectorManagerTest extends AbstractIntegrationTest {
 		connectorTypeDto.setWizardStepName(AbstractConnectorType.STEP_FINISH);
 		connectorTypeDto.getMetadata().put(AbstractConnectorType.NEW_ROLE_WITH_SYSTEM_CODE, roleName);
 		connectorTypeDto.getMetadata().put(AbstractConnectorType.CREATES_ROLE_WITH_SYSTEM, Boolean.TRUE.toString());
-		systemController.executeConnectorType(connectorTypeDto);
+		systemController.executeWizardType(connectorTypeDto);
 
 		// A new role-system was to be created.
 		SysRoleSystemFilter roleSystemFilter = new SysRoleSystemFilter();

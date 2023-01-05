@@ -1,6 +1,5 @@
 package eu.bcvsolutions.idm.acc.service.api;
 
-import eu.bcvsolutions.idm.acc.domain.MappingContext;
 import java.beans.IntrospectionException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -8,7 +7,8 @@ import java.util.List;
 import java.util.UUID;
 
 import eu.bcvsolutions.idm.acc.domain.AttributeMapping;
-import eu.bcvsolutions.idm.acc.domain.SystemEntityType;
+import eu.bcvsolutions.idm.acc.domain.MappingContext;
+import eu.bcvsolutions.idm.acc.dto.AccAccountDto;
 import eu.bcvsolutions.idm.acc.dto.SysSchemaAttributeDto;
 import eu.bcvsolutions.idm.acc.dto.SysSystemAttributeMappingDto;
 import eu.bcvsolutions.idm.acc.dto.SysSystemDto;
@@ -17,7 +17,7 @@ import eu.bcvsolutions.idm.acc.dto.filter.SysSystemAttributeMappingFilter;
 import eu.bcvsolutions.idm.core.api.domain.Identifiable;
 import eu.bcvsolutions.idm.core.api.dto.AbstractDto;
 import eu.bcvsolutions.idm.core.api.service.CloneableService;
-import eu.bcvsolutions.idm.core.api.service.ReadWriteDtoService;
+import eu.bcvsolutions.idm.core.api.service.EventableDtoService;
 import eu.bcvsolutions.idm.core.security.api.service.AuthorizableService;
 import eu.bcvsolutions.idm.ic.api.IcAttribute;
 
@@ -25,10 +25,11 @@ import eu.bcvsolutions.idm.ic.api.IcAttribute;
  * Schema attribute handling service
  * 
  * @author svandav
+ * @author Roman Kucera
  *
  */
 public interface SysSystemAttributeMappingService
-		extends ReadWriteDtoService<SysSystemAttributeMappingDto, SysSystemAttributeMappingFilter>,
+		extends EventableDtoService<SysSystemAttributeMappingDto, SysSystemAttributeMappingFilter>,
 		CloneableService<SysSystemAttributeMappingDto>,
 		AuthorizableService<SysSystemAttributeMappingDto> {
 
@@ -156,7 +157,7 @@ public interface SysSystemAttributeMappingService
 	 * @param entityType
 	 * @return
 	 */
-	SysSystemAttributeMappingDto getAuthenticationAttribute(UUID systemId, SystemEntityType entityType);
+	SysSystemAttributeMappingDto getAuthenticationAttribute(UUID systemId, String entityType);
 
 	/**
 	 * Find value for this mapped attribute by property name. Returned value can be
@@ -183,6 +184,19 @@ public interface SysSystemAttributeMappingService
 	 * @return
 	 */
 	Object getAttributeValue(String uid, AbstractDto entity, AttributeMapping attributeHandling, MappingContext mappingContext);
+
+	/**
+	 * Find value for this mapped attribute by property name. Returned value can be
+	 * list of objects. Returns transformed value.
+	 *
+	 * @param uid
+	 * @param entity
+	 * @param attributeHandling
+	 * @param mappingContext
+	 * @param accountDto
+	 * @return
+	 */
+	Object getAttributeValue(String uid, AbstractDto entity, AttributeMapping attributeHandling, MappingContext mappingContext, AccAccountDto accountDto);
 
 	/**
 	 * Generate UID from UID attribute
@@ -242,21 +256,22 @@ public interface SysSystemAttributeMappingService
 	 * @param schemaAttributeName
 	 * @return
 	 */
-	List<Serializable> getControlledAttributeValues(UUID system, SystemEntityType entityType,
-			String schemaAttributeName);
+	List<Serializable> getControlledAttributeValues(UUID system, String entityType,
+			String schemaAttributeName, UUID mappingId);
 
 	/**
 	 * Get currently controlled and historic values for given attribute. If is
 	 * attribute sets as evicted, then are current values recalculated (calls
 	 * getControlledAttributeValues).
-	 * 
+	 *
 	 * @param systemId
 	 * @param entityType
 	 * @param schemaAttributeName
+	 * @param account
 	 * @return
 	 */
-	List<Serializable> getCachedControlledAndHistoricAttributeValues(UUID systemId, SystemEntityType entityType,
-			String schemaAttributeName);
+	List<Serializable> getCachedControlledAndHistoricAttributeValues(UUID systemId, String entityType,
+																	 String schemaAttributeName, UUID account);
 
 	/**
 	 * Recalculation of controlled values for given attribute. First calls
@@ -268,8 +283,8 @@ public interface SysSystemAttributeMappingService
 	 * @param attributeMapping
 	 * @return
 	 */
-	List<Serializable> recalculateAttributeControlledValues(UUID systemId, SystemEntityType entityType,
-			String schemaAttributeName, SysSystemAttributeMappingDto attributeMapping);
+	List<Serializable> recalculateAttributeControlledValues(UUID systemId, String entityType,
+			String schemaAttributeName, SysSystemAttributeMappingDto attributeMapping, UUID mappingId);
 
 	/**
 	 * Return all mapped attributes as password for given system id and mapping.
@@ -279,4 +294,37 @@ public interface SysSystemAttributeMappingService
 	 * @return
 	 */
 	List<SysSystemAttributeMappingDto> getAllPasswordAttributes(UUID systemId, UUID systemMappingId);
+
+	/**
+	 * Returns a list of attributes in which a script is used in transformation to.
+	 *
+	 * @param scriptCode
+	 * @return
+	 */
+	List<SysSystemAttributeMappingDto> getScriptTransformToUsage(String scriptCode);
+
+	/**
+	 * Returns a list of attributes in which a script is used in transformation from.
+	 *
+	 * @param scriptCode
+	 * @return
+	 */
+	List<SysSystemAttributeMappingDto> getScriptTransformFromUsage(String scriptCode);
+
+	/**
+	 * Returns a list of attributes in which a script is used in transformation.
+	 * Both in transformation to and from.
+	 *
+	 * @param scriptCode
+	 * @return
+	 */
+	List<SysSystemAttributeMappingDto> getScriptUsage(String scriptCode);
+
+	/**
+	 * Get value for account and attribute
+	 * @param accountId
+	 * @param schemaAttrName
+	 * @return
+	 */
+	Object getTransformedValueForAttributeAndAccount(String accountId, String schemaAttrName);
 }

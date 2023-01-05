@@ -7,6 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import eu.bcvsolutions.idm.acc.dto.AccAccountConceptRoleRequestDto;
+import eu.bcvsolutions.idm.acc.dto.AccAccountRoleAssignmentDto;
+import eu.bcvsolutions.idm.acc.dto.filter.AccAccountConceptRoleRequestFilter;
+import eu.bcvsolutions.idm.acc.service.api.AccAccountConceptRoleRequestService;
+import eu.bcvsolutions.idm.acc.service.api.AccAccountRoleAssignmentService;
+import eu.bcvsolutions.idm.core.model.event.processor.ConceptCancellingProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +23,9 @@ import org.springframework.util.Assert;
 import com.google.common.collect.ImmutableMap;
 
 import eu.bcvsolutions.idm.acc.domain.AccResultCode;
-import eu.bcvsolutions.idm.acc.domain.SystemEntityType;
 import eu.bcvsolutions.idm.acc.dto.AccAccountDto;
 import eu.bcvsolutions.idm.acc.dto.AccContractAccountDto;
+import eu.bcvsolutions.idm.acc.dto.AccContractSliceAccountDto;
 import eu.bcvsolutions.idm.acc.dto.AccIdentityAccountDto;
 import eu.bcvsolutions.idm.acc.dto.AccRoleAccountDto;
 import eu.bcvsolutions.idm.acc.dto.AccRoleCatalogueAccountDto;
@@ -41,6 +47,8 @@ import eu.bcvsolutions.idm.acc.service.api.AccRoleAccountService;
 import eu.bcvsolutions.idm.acc.service.api.AccRoleCatalogueAccountService;
 import eu.bcvsolutions.idm.acc.service.api.AccTreeAccountService;
 import eu.bcvsolutions.idm.acc.service.api.ProvisioningService;
+import eu.bcvsolutions.idm.acc.service.api.SysSystemEntityTypeManager;
+import eu.bcvsolutions.idm.acc.system.entity.SystemEntityTypeRegistrable;
 import eu.bcvsolutions.idm.core.api.event.CoreEvent;
 import eu.bcvsolutions.idm.core.api.event.CoreEventProcessor;
 import eu.bcvsolutions.idm.core.api.event.DefaultEventResult;
@@ -58,7 +66,9 @@ import eu.bcvsolutions.idm.core.api.utils.DtoUtils;
  */
 @Component("accAccountDeleteProcessor")
 @Description("Ensures referential integrity. Cannot be disabled.")
-public class AccountDeleteProcessor extends CoreEventProcessor<AccAccountDto> implements AccountProcessor {
+public class AccountDeleteProcessor
+		extends ConceptCancellingProcessor<AccAccountDto, AccAccountConceptRoleRequestDto, AccAccountConceptRoleRequestFilter, AccAccountRoleAssignmentDto>
+		implements AccountProcessor {
 
 	private static final String PROCESSOR_NAME = "account-delete-processor";
 	private final AccAccountService accountService;
@@ -70,6 +80,7 @@ public class AccountDeleteProcessor extends CoreEventProcessor<AccAccountDto> im
 	private final ProvisioningService provisioningService;
 	@Autowired
 	private AccContractSliceAccountService contractAccountSliceService;
+	@Autowired private SysSystemEntityTypeManager systemEntityManager;
 
 	private static final Logger LOG = LoggerFactory.getLogger(AccountDeleteProcessor.class);
 
@@ -78,8 +89,9 @@ public class AccountDeleteProcessor extends CoreEventProcessor<AccAccountDto> im
 			AccRoleAccountService roleAccountService, AccTreeAccountService treeAccountService,
 			AccContractAccountService contractAccountService,
 			AccRoleCatalogueAccountService roleCatalogueAccountService,
-			AccIdentityAccountService identityAccountService, ProvisioningService provisioningService) {
-		super(AccountEventType.DELETE);
+			AccIdentityAccountService identityAccountService, ProvisioningService provisioningService, AccAccountConceptRoleRequestService accountConceptRoleRequestService,
+			AccAccountRoleAssignmentService accountRoleAssignmentService, IdmRoleRequestService roleRequestService) {
+		super(accountConceptRoleRequestService, accountRoleAssignmentService, roleRequestService,AccountEventType.DELETE);
 		//
 		Assert.notNull(accountService, "Service is required.");
 		Assert.notNull(entityEventManager, "Manager is required.");
@@ -125,55 +137,64 @@ public class AccountDeleteProcessor extends CoreEventProcessor<AccAccountDto> im
 					ImmutableMap.of("uid", account.getUid()));
 		}
 
+		// Find all concepts and remove relation on contract
+		removeRelatedConcepts(account.getId());
+		//
+
+
 		// delete all identity accounts
 		AccIdentityAccountFilter identityAccountFilter = new AccIdentityAccountFilter();
 		identityAccountFilter.setAccountId(account.getId());
 		List<AccIdentityAccountDto> identityAccounts = identityAccountService.find(identityAccountFilter, null)
 				.getContent();
-		identityAccounts.forEach(identityAccount -> {
-			identityAccountService.delete(identityAccount);
-		});
+		for (AccIdentityAccountDto identityAccount : identityAccounts) {
+			// delete referenced role assignment
+			removeRelatedAssignedRoles(event, identityAccount.getIdentity(), account.getId(), false);
+			identityAccountService.delete(identityAccount, deleteTargetAccount);
+		}
 
 		// delete all role accounts
 		AccRoleAccountFilter roleAccountFilter = new AccRoleAccountFilter();
 		roleAccountFilter.setAccountId(account.getId());
 		List<AccRoleAccountDto> roleAccounts = roleAccountService.find(roleAccountFilter, null).getContent();
-		roleAccounts.forEach(roleAccount -> {
-			roleAccountService.delete(roleAccount);
-		});
+		for (AccRoleAccountDto roleAccount : roleAccounts) {
+			roleAccountService.delete(roleAccount, deleteTargetAccount);
+		}
 
 		// delete all roleCatalogue accounts
 		AccRoleCatalogueAccountFilter roleCatalogueAccountFilter = new AccRoleCatalogueAccountFilter();
 		roleCatalogueAccountFilter.setAccountId(account.getId());
 		List<AccRoleCatalogueAccountDto> roleCatalogueAccounts = roleCatalogueAccountService
 				.find(roleCatalogueAccountFilter, null).getContent();
-		roleCatalogueAccounts.forEach(roleCatalogueAccount -> {
-			roleCatalogueAccountService.delete(roleCatalogueAccount);
-		});
+		for (AccRoleCatalogueAccountDto roleCatalogueAccount : roleCatalogueAccounts) {
+			roleCatalogueAccountService.delete(roleCatalogueAccount, deleteTargetAccount);
+		}
 
 		// delete all tree accounts
 		AccTreeAccountFilter treeAccountFilter = new AccTreeAccountFilter();
 		treeAccountFilter.setAccountId(account.getId());
 		List<AccTreeAccountDto> treeAccounts = treeAccountService.find(treeAccountFilter, null).getContent();
-		treeAccounts.forEach(treeAccount -> {
-			treeAccountService.delete(treeAccount);
-		});
+		for (AccTreeAccountDto treeAccount : treeAccounts) {
+			treeAccountService.delete(treeAccount, deleteTargetAccount);
+		}
 
 		// delete all contract accounts
 		AccContractAccountFilter contractAccountFilter = new AccContractAccountFilter();
 		contractAccountFilter.setAccountId(account.getId());
 		List<AccContractAccountDto> contractAccounts = contractAccountService.find(contractAccountFilter, null)
 				.getContent();
-		contractAccounts.forEach(contractAccount -> {
-			contractAccountService.delete(contractAccount);
-		});
+		for (AccContractAccountDto contractAccount : contractAccounts) {
+			contractAccountService.delete(contractAccount, deleteTargetAccount);
+		}
 
 		// delete all contract slice accounts
 		AccContractSliceAccountFilter contractSliceAccountFilter = new AccContractSliceAccountFilter();
 		contractSliceAccountFilter.setAccountId(account.getId());
-		contractAccountSliceService.find(contractSliceAccountFilter, null).forEach(contractAccount -> {
-			contractAccountSliceService.delete(contractAccount);
-		});
+		List<AccContractSliceAccountDto> contractSliceAccounts = contractAccountSliceService.find(contractSliceAccountFilter, null)
+				.getContent();
+		for (AccContractSliceAccountDto contractSliceAccount : contractSliceAccounts) {
+			contractAccountSliceService.delete(contractSliceAccount, deleteTargetAccount);
+		}
 
 		//
 		AccAccountDto refreshAccount = accountService.get(account.getId());
@@ -183,8 +204,9 @@ public class AccountDeleteProcessor extends CoreEventProcessor<AccAccountDto> im
 			accountService.deleteInternal(refreshAccount);
 		}
 		if (deleteTargetAccount && account.getEntityType() != null) {
-			SystemEntityType entityType = account.getEntityType();
-			if (!entityType.isSupportsProvisioning()) {
+			String entityType = account.getEntityType();
+			SystemEntityTypeRegistrable systemEntityType = systemEntityManager.getSystemEntityByCode(entityType);
+			if (!systemEntityType.isSupportsProvisioning()) {
 				LOG.warn(MessageFormat.format("Provisioning is not supported for [{1}] now [{0}]!", account.getUid(),
 						entityType));
 				return new DefaultEventResult<>(event, this);
