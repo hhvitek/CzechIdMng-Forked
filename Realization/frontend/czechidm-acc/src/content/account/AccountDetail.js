@@ -360,6 +360,12 @@ class AccountDetail extends Basic.AbstractContent {
                         values[key] = valuetoInsert;
                         key++;
                       });
+                    } else {
+                      this.addMessage({
+                        title: this.i18n('acc:error.ACCOUNT_CANNOT_BE_READ_FROM_TARGET.title'),
+                        message: this.i18n('acc:error.ACCOUNT_CANNOT_BE_READ_FROM_TARGET.message', {account: entity.uid, system: entity._embedded.system.name}),
+                        level: 'error'
+                      });
                     }
 
                     this.setState({
@@ -408,6 +414,12 @@ class AccountDetail extends Basic.AbstractContent {
                         }
                         values[key] = valuetoInsert;
                         key++;
+                      });
+                    } else {
+                      this.addMessage({
+                        title: this.i18n('acc:error.ACCOUNT_CANNOT_BE_READ_FROM_TARGET.title'),
+                        message: this.i18n('acc:error.ACCOUNT_CANNOT_BE_READ_FROM_TARGET.message', {account: entity.uid, system: entity._embedded.system.name}),
+                        level: 'error'
                       });
                     }
 
@@ -489,6 +501,14 @@ class AccountDetail extends Basic.AbstractContent {
     this.setState({
       showModal: false
     });
+  }
+
+  formatMultivalued(value) {
+    if (!value) {
+      return null;
+    }
+
+    return "🔑 " + value.replaceAll("\n","\n🔑 ");
   }
 
   render() {
@@ -635,8 +655,8 @@ class AccountDetail extends Basic.AbstractContent {
           }>
           <Basic.Div style={{ paddingTop: 10 }}>
             <Grid container spacing={1}>
-              <Grid container item xs={12} spacing={3}>
-                <Grid item xs={1} >
+              <Grid container item spacing={3}>
+                <Grid item>
                   <Basic.Button
                     level="link"
                     key="edit_button"
@@ -650,7 +670,7 @@ class AccountDetail extends Basic.AbstractContent {
                     }
                   </Basic.Button>
                 </Grid>
-                <Grid item xs={1}>
+                <Grid item>
                   <Basic.Button
                     level="link"
                     key="refresh_button"
@@ -671,7 +691,7 @@ class AccountDetail extends Basic.AbstractContent {
                     {this.i18n('control.save')}
                   </Basic.Button>
                 </Grid>
-                <Grid item xs={1}>
+                <Grid item>
                   <Basic.Button
                     level="link"
                     key="discard_button"
@@ -683,19 +703,19 @@ class AccountDetail extends Basic.AbstractContent {
                     {this.i18n('control.discard')}
                   </Basic.Button>
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item>
                   <TextField id="outlined-basic" label={this.i18n('control.attr-name')}
                     variant="outlined" size="small"
                     autoComplete='off' onChange={this.filterNameChanged.bind(this)}
                     value={attrName ? attrName : ''} />
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item>
                   <TextField id="outlined-basic" label={this.i18n('control.attr-value')}
                     variant="outlined" size="small"
                     autoComplete='off' onChange={this.filterValueChanged.bind(this)}
                     value={attrValue ? attrValue : ''} />
                 </Grid>
-                <Grid item xs={1}>
+                <Grid item>
                   <Basic.Button
                     level="link"
                     key="cancel_button"
@@ -721,12 +741,12 @@ class AccountDetail extends Basic.AbstractContent {
                           {item.multiValue
                             ?
                             <Basic.Div>
-                              <p style={{ display: 'inline-block', marginRight: 10, minWidth: '200px' }}>{item.name}</p>
+                              <p style={{ display: 'inline-block', marginRight: 10, minWidth: 300 }}>{item.name}</p>
                               <TextField disabled={item.isRole} onBlur={this.focusLost.bind(this)}
                                 onChange={(e) => this.valueChange(e, item.key)} maxRows={4}
                                 autoComplete='off' multiline id="outlined-basic"
                                 value={(item.overridenValue != undefined ? item.overridenValue : item.value)}
-                                size="small" style={{ marginTop: -10, minWidth: 400 }} />
+                                size="small" style={{ marginTop: -10, minWidth: 800 }} />
                               <Basic.Div rendered={item.overridenValue != undefined ? true : false} style={{ display: 'inline-block', marginTop: -10, marginLeft: 10 }}>
                                 <Chip color="secondary" size="small" onDelete={(e) => this.stopOverride(e, item.key)} label={this.i18n('control.manually')} />
                               </Basic.Div>
@@ -736,12 +756,12 @@ class AccountDetail extends Basic.AbstractContent {
                             </Basic.Div>
                             :
                             <Basic.Div>
-                              <p style={{ display: 'inline-block', marginRight: 10, minWidth: '200px' }}>{item.name}</p>
+                              <p style={{ display: 'inline-block', marginRight: 10, minWidth: 300 }}>{item.name}</p>
                               <TextField onBlur={this.focusLost.bind(this)}
                                 onChange={(e) => this.valueChange(e, item.key)} id="outlined-basic"
                                 autoComplete='off'
                                 value={(item.overridenValue != undefined ? item.overridenValue : item.value)}
-                                size="small" style={{ marginTop: -10, minWidth: 400 }} />
+                                size="small" style={{ marginTop: -10, minWidth: 800 }} />
                               <Basic.Div rendered={item.overridenValue != undefined ? true : false} style={{ display: 'inline-block', marginTop: -10, marginLeft: 10 }}>
                                 <Chip color="secondary" size="small" onDelete={(e) => this.stopOverride(e, item.key)} label={this.i18n('control.manually')} />
                               </Basic.Div>
@@ -753,20 +773,20 @@ class AccountDetail extends Basic.AbstractContent {
                           {item.multiValue
                             ?
                             <Basic.Div>
-                              <p style={{ display: 'inline-block', marginRight: 10, minWidth: '200px' }}>{item.name}</p>
+                              <p style={{ display: 'inline-block', marginRight: 10, minWidth: 300 }}>{item.name}</p>
                               <TextField disabled maxRows={4} multiline id="outlined-basic"
-                                value={(item.overridenValue != undefined ? item.overridenValue : item.value)}
-                                size="small" style={{ marginTop: -10, minWidth: 400 }} />
+                                value={(item.overridenValue != undefined ? this.formatMultivalued(item.overridenValue) : (this.formatMultivalued(item.value)))}
+                                size="small" style={{ marginTop: -10, minWidth: 800 }} />
                               <Basic.Div rendered={item.overridenValue != undefined ? true : false} style={{ display: 'inline-block', marginTop: -10, marginLeft: 10 }}>
                                 <Chip color="secondary" size="small" label={this.i18n('control.manually')} />
                               </Basic.Div>
                             </Basic.Div>
                             :
                             <Basic.Div>
-                              <p style={{ display: 'inline-block', marginRight: 10, minWidth: '200px' }}>{item.name}</p>
+                              <p style={{ display: 'inline-block', marginRight: 10, minWidth: 300 }}>{item.name}</p>
                               <TextField disabled id="outlined-basic"
                                 value={(item.overridenValue != undefined ? item.overridenValue : (item.value ? item.value : ''))}
-                                size="small" style={{ marginTop: -10, minWidth: 400 }} />
+                                size="small" style={{ marginTop: -10, minWidth: 800 }} />
                               <Basic.Div rendered={item.overridenValue != undefined ? true : false} style={{ display: 'inline-block', marginTop: -10, marginLeft: 10 }}>
                                 <Chip color="secondary" size="small" label={this.i18n('control.manually')} />
                               </Basic.Div>
