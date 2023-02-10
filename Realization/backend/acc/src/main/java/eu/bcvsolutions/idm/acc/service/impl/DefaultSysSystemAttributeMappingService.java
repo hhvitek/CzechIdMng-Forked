@@ -26,9 +26,12 @@ import javax.persistence.criteria.Subquery;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.plugin.core.OrderAwarePluginRegistry;
 import org.springframework.plugin.core.PluginRegistry;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -149,6 +152,7 @@ public class DefaultSysSystemAttributeMappingService
 	private SysSyncConfigService syncConfigService;
 	@Autowired
 	private SysSystemGroupSystemService systemGroupSystemService;
+	private final ApplicationContext applicationContext;
 
 
 	@Autowired
@@ -157,7 +161,7 @@ public class DefaultSysSystemAttributeMappingService
 			SysRoleSystemAttributeRepository roleSystemAttributeRepository, FormPropertyManager formPropertyManager,
 			SysSyncConfigRepository syncConfigRepository, List<AbstractScriptEvaluator> evaluators,
 			ConfidentialStorage confidentialStorage, SysSchemaAttributeService schemaAttributeService,
-			SysSchemaObjectClassService schemaObjectClassService, SysSystemMappingService systemMappingService) {
+			SysSchemaObjectClassService schemaObjectClassService, SysSystemMappingService systemMappingService, ApplicationContext applicationContext) {
 		super(repository);
 		//
 		Assert.notNull(groovyScriptService, "Groovy script service is required.");
@@ -182,6 +186,7 @@ public class DefaultSysSystemAttributeMappingService
 		this.systemMappingService = systemMappingService;
 		//
 		this.pluginExecutors = OrderAwarePluginRegistry.create(evaluators);
+		this.applicationContext = applicationContext;
 	}
 
 	@Override
@@ -1045,7 +1050,6 @@ public class DefaultSysSystemAttributeMappingService
 				.stream() //
 				.map(SysAttributeControlledValueDto::getValue) //
 				.collect(Collectors.toList());
-
 		if (attributeMapping.isEvictControlledValuesCache()) {
 			List<Serializable> controlledAttributeValues = recalculateAttributeControlledValues(systemId, entityType,
 					schemaAttributeName, attributeMapping);
@@ -1073,7 +1077,13 @@ public class DefaultSysSystemAttributeMappingService
 	@Override
 	public synchronized List<Serializable> recalculateAttributeControlledValues(UUID systemId, SystemEntityType entityType,
 			String schemaAttributeName, SysSystemAttributeMappingDto attributeMapping) {
-		
+		// This is needed so that the transaction has bigger context than synchronized block. This will prevent deadlocks
+		return applicationContext.getBean(DefaultSysSystemAttributeMappingService.class).recalculateAttributeControlledValuesInternal(systemId, entityType, schemaAttributeName, attributeMapping);
+	}
+
+	@Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRES_NEW)
+	public List<Serializable>  recalculateAttributeControlledValuesInternal(UUID systemId, SystemEntityType entityType,
+			String schemaAttributeName, SysSystemAttributeMappingDto attributeMapping) {
 		// Computes values
 		List<Serializable> controlledAttributeValues = this.getControlledAttributeValues(systemId, entityType,
 				schemaAttributeName);
