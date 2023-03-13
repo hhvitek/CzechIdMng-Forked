@@ -14,8 +14,8 @@ import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.ResourceSupport;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -101,7 +101,7 @@ public class IdmRoleRequestController extends AbstractReadWriteDtoController<Idm
 							@AuthorizationScope(scope = CoreGroupPermission.ROLE_REQUEST_READ, description = "") }),
 					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							@AuthorizationScope(scope = CoreGroupPermission.ROLE_REQUEST_READ, description = "") }) })
-	public Resources<?> find(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+	public CollectionModel<?> find(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -116,7 +116,7 @@ public class IdmRoleRequestController extends AbstractReadWriteDtoController<Idm
 							@AuthorizationScope(scope = CoreGroupPermission.ROLE_REQUEST_READ, description = "") }),
 					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							@AuthorizationScope(scope = CoreGroupPermission.ROLE_REQUEST_READ, description = "") }) })
-	public Resources<?> findQuick(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+	public CollectionModel<?> findQuick(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -161,7 +161,7 @@ public class IdmRoleRequestController extends AbstractReadWriteDtoController<Idm
 			throw new EntityNotFoundException(getService().getEntityClass(), backendId);
 		}
 
-		ResourceSupport resource = toResource(requestDto);
+		RepresentationModel resource = toModel(requestDto);
 		if (resource == null) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
@@ -322,8 +322,8 @@ public class IdmRoleRequestController extends AbstractReadWriteDtoController<Idm
 		if(!requestDto.getState().isTerminatedState()) {
 			throw new AcceptedException();
 		}
-		ResourceSupport resource = toResource(requestDto);
-		ResponseEntity<ResourceSupport> response = new ResponseEntity<>(resource, HttpStatus.OK);
+		RepresentationModel resource = toModel(requestDto);
+		ResponseEntity<RepresentationModel> response = new ResponseEntity<>(resource, HttpStatus.OK);
 		
 		return response;
 	}
@@ -343,7 +343,7 @@ public class IdmRoleRequestController extends AbstractReadWriteDtoController<Idm
 			@ApiImplicitParam(name = "size", dataType = "string", paramType = "query", value = "Number of records per page."),
 			@ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
 					+ "Default sort order is ascending. " + "Multiple sort criteria are supported.") })
-	public Resources<?> getConcepts(
+	public CollectionModel<?> getConcepts(
 			@ApiParam(value = "Role request's uuid identifier.", required = true) @PathVariable String backendId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
@@ -355,7 +355,7 @@ public class IdmRoleRequestController extends AbstractReadWriteDtoController<Idm
 		IdmConceptRoleRequestFilter filter = conceptRoleRequestController.toFilter(parameters);
 		filter.setRoleRequestId(entity.getId());
 		//
-		return toResources(conceptRoleRequestController.find(filter, pageable, IdmBasePermission.READ),
+		return toCollectionModel(conceptRoleRequestController.find(filter, pageable, IdmBasePermission.READ),
 				IdmRoleRequestDto.class);
 	}
 	
@@ -373,7 +373,7 @@ public class IdmRoleRequestController extends AbstractReadWriteDtoController<Idm
 						@AuthorizationScope(scope = CoreGroupPermission.ROLE_REQUEST_READ, description = "") })
 				},
 			notes = "Incompatible roles are resolved from currently assigned identity roles (which can logged used read) and the current request concepts.")
-	public Resources<?> getIncompatibleRoles(
+	public CollectionModel<?> getIncompatibleRoles(
 			@ApiParam(value = "Role request's uuid identifier.", required = true)
 			@PathVariable String backendId) {	
 		IdmRoleRequestDto entity = getDto(backendId);
@@ -382,7 +382,7 @@ public class IdmRoleRequestController extends AbstractReadWriteDtoController<Idm
 		}
 		Set<ResolvedIncompatibleRoleDto> incompatibleRoles = service.getIncompatibleRoles(entity, IdmBasePermission.READ);
 		//
-		return toResources(incompatibleRoles, ResolvedIncompatibleRoleDto.class);
+		return toCollectionModel(incompatibleRoles, ResolvedIncompatibleRoleDto.class);
 	}
 	
 	/**

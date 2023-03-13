@@ -1,6 +1,6 @@
 package eu.bcvsolutions.idm.acc.dto;
 
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 /**
  * <i>SysSyncTreeConfig</i> is responsible for keep specific information about

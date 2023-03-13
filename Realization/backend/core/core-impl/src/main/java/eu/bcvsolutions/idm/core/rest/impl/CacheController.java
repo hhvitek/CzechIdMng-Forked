@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -72,13 +72,13 @@ public class CacheController {
 						@AuthorizationScope(scope = APP_ADMIN, description = "") })
 				})
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public Resources<?> getAvailableCaches() {
+	public CollectionModel<?> getAvailableCaches() {
 		List<IdmCacheDto> records = cacheManager.getAllAvailableCaches();
 		PageImpl page = new PageImpl(records, PageRequest.of(0, records.size() == 0 ? 10 : records.size()), records.size());
 		if (page.getContent().isEmpty()) {
 			return pagedResourcesAssembler.toEmptyResource(page, IdmCacheDto.class);
 		}
-		return pagedResourcesAssembler.toResource(page);
+		return pagedResourcesAssembler.toModel(page);
 	}
 
 

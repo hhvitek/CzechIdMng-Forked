@@ -25,7 +25,7 @@ import org.dom4j.CDATA;
 import org.dom4j.DocumentHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.Resource;
+import org.springframework.core.io.EntityModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -458,7 +458,7 @@ public class DefaultIdmNotificationTemplateService
 				if (ArrayUtils.isEmpty(resources)) {
 					continue;
 				}
-				for (Resource resource : resources) {
+				for (EntityModel resource : resources) {
 					try {
 						IdmNotificationTemplateType templateType = readType(resource.getFilename(), resource.getInputStream());
 						//

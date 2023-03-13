@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.MediaType;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -61,14 +61,14 @@ public class AvailableServiceController  {
 				},
 			notes = "Returns all available services.")
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Resources<?> find(
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 	List<AvailableServiceDto> serviceDtos = availableServiceService.findServices(toFilter(parameters));
 		PageImpl page = new PageImpl(serviceDtos, PageRequest.of(0, serviceDtos.size() == 0 ? 10 : serviceDtos.size()), serviceDtos.size());
 		if (page.getContent().isEmpty()) {
 			return pagedResourcesAssembler.toEmptyResource(page, AvailableServiceDto.class);
 		}
-		return pagedResourcesAssembler.toResource(page);
+		return pagedResourcesAssembler.toModel(page);
 	}
 	
 	

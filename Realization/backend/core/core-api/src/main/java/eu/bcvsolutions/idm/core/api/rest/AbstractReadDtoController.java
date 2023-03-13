@@ -20,10 +20,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.ResourceSupport;
-import org.springframework.hateoas.Resources;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
@@ -132,7 +132,7 @@ public abstract class AbstractReadDtoController<DTO extends BaseDto, F extends B
 		if (dto == null) {
 			throw new EntityNotFoundException(getService().getEntityClass(), backendId);
 		}
-		ResourceSupport resource = toResource(dto);
+		RepresentationModel resource = toModel(dto);
 		if (resource == null) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
@@ -206,15 +206,15 @@ public abstract class AbstractReadDtoController<DTO extends BaseDto, F extends B
                         "Default sort order is ascending. " +
                         "Multiple sort criteria are supported.")
 	})
-	public Resources<?> find(
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		BasePermission[] evaluatePermissions = evaluatePermissions(parameters, IdmBasePermission.READ);
 		if (evaluatePermissions.length > 1) {
-			return toResources(findWithOperator(toFilter(parameters), pageable, evaluatePermissions), getDtoClass());
+			return toCollectionModel(findWithOperator(toFilter(parameters), pageable, evaluatePermissions), getDtoClass());
 		}
 		//
-		return toResources(find(toFilter(parameters), pageable, evaluatePermissions[0]), getDtoClass());
+		return toCollectionModel(find(toFilter(parameters), pageable, evaluatePermissions[0]), getDtoClass());
 	}
 	
 	/**
@@ -239,7 +239,7 @@ public abstract class AbstractReadDtoController<DTO extends BaseDto, F extends B
                         "Default sort order is ascending. " +
                         "Multiple sort criteria are supported.")
 	})
-	public Resources<?> findQuick(
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return find(parameters, pageable);
@@ -267,15 +267,15 @@ public abstract class AbstractReadDtoController<DTO extends BaseDto, F extends B
                         "Default sort order is ascending. " +
                         "Multiple sort criteria are supported.")
 	})
-	public Resources<?> autocomplete(
+	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		BasePermission[] evaluatePermissions = evaluatePermissions(parameters, IdmBasePermission.AUTOCOMPLETE);
 		if (evaluatePermissions.length > 1) {
-			return toResources(findWithOperator(toFilter(parameters), pageable, evaluatePermissions), getDtoClass());
+			return toCollectionModel(findWithOperator(toFilter(parameters), pageable, evaluatePermissions), getDtoClass());
 		}
 		//
-		return toResources(find(toFilter(parameters), pageable, evaluatePermissions[0]), getDtoClass());
+		return toCollectionModel(find(toFilter(parameters), pageable, evaluatePermissions[0]), getDtoClass());
 	}
 	
 	/**
@@ -372,20 +372,20 @@ public abstract class AbstractReadDtoController<DTO extends BaseDto, F extends B
 	 * @param dto
 	 * @return
 	 */
-	public ResourceSupport toResource(DTO dto) {
+	public RepresentationModel toModel(DTO dto) {
 		if (dto == null) { 
 			return null;
 		} 
-		Link selfLink = ControllerLinkBuilder.linkTo(this.getClass()).slash(dto.getId()).withSelfRel();
-		Resource<DTO> resourceSupport = new Resource<DTO>(dto, selfLink);
+		Link selfLink = WebMvcLinkBuilder.linkTo(this.getClass()).slash(dto.getId()).withSelfRel();
+		EntityModel<DTO> resourceSupport = new EntityModel<DTO>(dto, selfLink);
 		//
 		return resourceSupport;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	protected Resources<?> toResources(Iterable<?> source, Class<?> domainType) {
+	protected CollectionModel<?> toCollectionModel(Iterable<?> source, Class<?> domainType) {
 		if (source == null) {
-			return new Resources(Collections.emptyList());
+			return new CollectionModel(Collections.emptyList());
 		}
 		Page<Object> page;
 		if (source instanceof Page) {
@@ -399,24 +399,24 @@ public abstract class AbstractReadDtoController<DTO extends BaseDto, F extends B
 	}
 
 	@SuppressWarnings("unchecked")
-	protected Resources<?> pageToResources(Page<Object> page, Class<?> domainType) {
-		Assert.notNull(page, "Resource page (content) is required.");
+	protected CollectionModel<?> pageToResources(Page<Object> page, Class<?> domainType) {
+		Assert.notNull(page, "EntityModel page (content) is required.");
 		//
 		if (page.getContent().isEmpty()) {
 			return pagedResourcesAssembler.toEmptyResource(page, domainType);
 		}
 		//
-		return pagedResourcesAssembler.toResource(page, it -> {
+		return pagedResourcesAssembler.toModel(page, it -> {
 			if (!(it instanceof Identifiable)) {
 				// just for sure - if some response with different dto is returned manually
-				return new Resource<>(it);
+				return new EntityModel<>(it);
 			}
 			if (!getDtoClass().isAssignableFrom(it.getClass())) {
 				// not controlled dto => self link is not correct
-				return new Resource<>(it);
+				return new EntityModel<>(it);
 			}
 			// controlled dto
-			return toResource((DTO) it);
+			return toModel((DTO) it);
 		});
 	}
 

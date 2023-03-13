@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -85,7 +85,7 @@ public class AccUniformPasswordController extends AbstractReadWriteDtoController
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = AccGroupPermission.UNIFORM_PASSWORD_READ, description = "") })
 				})
-	public Resources<?> find(
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -104,7 +104,7 @@ public class AccUniformPasswordController extends AbstractReadWriteDtoController
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = AccGroupPermission.UNIFORM_PASSWORD_READ, description = "") })
 				})
-	public Resources<?> findQuick(
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -124,7 +124,7 @@ public class AccUniformPasswordController extends AbstractReadWriteDtoController
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = AccGroupPermission.UNIFORM_PASSWORD_AUTOCOMPLETE, description = "") })
 				})
-	public Resources<?> autocomplete(
+	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
@@ -278,11 +278,11 @@ public class AccUniformPasswordController extends AbstractReadWriteDtoController
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "") })
 				})
-	public Resources<?> findPasswordChangeOptions(@PathVariable @NotNull String identityIdentifier) {
+	public CollectionModel<?> findPasswordChangeOptions(@PathVariable @NotNull String identityIdentifier) {
 
 		BaseDto identityDto = getLookupService().lookupDto(IdmIdentityDto.class, identityIdentifier);
 		
-		return toResources(uniformPasswordService.findOptionsForPasswordChange((IdmIdentityDto)identityDto, IdmBasePermission.READ), AccPasswordChangeOptionDto.class);
+		return toCollectionModel(uniformPasswordService.findOptionsForPasswordChange((IdmIdentityDto)identityDto, IdmBasePermission.READ), AccPasswordChangeOptionDto.class);
 	}
 
 	@Override

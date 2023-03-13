@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 import org.springframework.util.Assert;
 
 import eu.bcvsolutions.idm.core.api.entity.ValidableEntity;

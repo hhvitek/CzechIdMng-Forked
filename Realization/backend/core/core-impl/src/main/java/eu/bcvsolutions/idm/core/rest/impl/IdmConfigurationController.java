@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -106,7 +106,7 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.CONFIGURATION_READ, description = "") })
 				})
-	public Resources<?> find(
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -126,7 +126,7 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
 						@AuthorizationScope(scope = CoreGroupPermission.CONFIGURATION_READ, description = "") })
 				})
 	@Override
-	public Resources<?> findQuick(
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -442,7 +442,7 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
 			tags = { IdmConfigurationController.TAG },
 			notes = "Returns all registered read dto services."
 	)
-	public Resources<AvailableServiceDto> getRegisteredReadDtoServices() {
+	public CollectionModel<AvailableServiceDto> getRegisteredReadDtoServices() {
 		List<AvailableServiceDto> results = context
 			.getBeansOfType(ReadDtoService.class)
 			.entrySet()
@@ -476,7 +476,7 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
 			})
 			.collect(Collectors.toList());
 		//
-		return new Resources<>(results);
+		return new CollectionModel<>(results);
 	}
 	
 	@ResponseBody

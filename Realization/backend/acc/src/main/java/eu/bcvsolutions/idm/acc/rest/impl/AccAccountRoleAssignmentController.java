@@ -31,8 +31,8 @@ import io.swagger.annotations.AuthorizationScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -90,7 +90,7 @@ public class AccAccountRoleAssignmentController extends AbstractReadWriteDtoCont
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ, description = "") })
 				})
-	public Resources<?> find(
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -109,7 +109,7 @@ public class AccAccountRoleAssignmentController extends AbstractReadWriteDtoCont
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ, description = "") })
 				})
-	public Resources<?> findQuick(
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -128,7 +128,7 @@ public class AccAccountRoleAssignmentController extends AbstractReadWriteDtoCont
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = AccGroupPermission.ACCOUNTROLEASSIGNMENT_AUTOCOMPLETE, description = "") })
 				})
-	public Resources<?> autocomplete(
+	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
@@ -147,10 +147,10 @@ public class AccAccountRoleAssignmentController extends AbstractReadWriteDtoCont
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = AccGroupPermission.ACCOUNTROLEASSIGNMENT_CANBEREQUESTED, description = "") })
 				})
-	public Resources<?> findCanBeRequested(
+	public CollectionModel<?> findCanBeRequested(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
-		return toResources(find(toFilter(parameters), pageable, RoleBasePermission.CANBEREQUESTED), getDtoClass());
+		return toCollectionModel(find(toFilter(parameters), pageable, RoleBasePermission.CANBEREQUESTED), getDtoClass());
 	}
 	
 	@Override
@@ -244,7 +244,7 @@ public class AccAccountRoleAssignmentController extends AbstractReadWriteDtoCont
 		IdmRoleDto roleDto = DtoUtils.getEmbedded(dto, AbstractRoleAssignment_.role, IdmRoleDto.class);
 		if (roleDto != null && roleDto.getIdentityRoleAttributeDefinition() != null) {
 			IdmFormDefinitionDto definition = roleService.getFormAttributeSubdefinition(roleDto);
-			return formDefinitionController.toResources(Lists.newArrayList(definition));
+			return formDefinitionController.toCollectionModel(Lists.newArrayList(definition));
 		}
 		
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -271,7 +271,7 @@ public class AccAccountRoleAssignmentController extends AbstractReadWriteDtoCont
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ, description = "") })
 				})
-	public Resource<?> getFormValues(
+	public EntityModel<?> getFormValues(
 			@ApiParam(value = "Account role assignment's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@ApiParam(value = "Code of form definition (default will be used if no code is given)."
@@ -286,7 +286,7 @@ public class AccAccountRoleAssignmentController extends AbstractReadWriteDtoCont
 		IdmRoleDto roleDto = DtoUtils.getEmbedded(dto, AbstractRoleAssignment_.role, IdmRoleDto.class);
 		IdmFormDefinitionDto definition = roleService.getFormAttributeSubdefinition(roleDto);
 		//
-		return new Resource<>(formService.getFormInstance(dto, definition));
+		return new EntityModel<>(formService.getFormInstance(dto, definition));
 	}
 	
 	@Override

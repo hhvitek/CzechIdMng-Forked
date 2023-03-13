@@ -2,7 +2,7 @@ package eu.bcvsolutions.idm.acc.system.entity;
 
 import java.util.List;
 
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 import org.springframework.stereotype.Component;
 
 import com.beust.jcommander.internal.Lists;

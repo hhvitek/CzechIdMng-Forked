@@ -11,10 +11,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.ResourceSupport;
-import org.springframework.hateoas.Resources;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
@@ -78,7 +78,7 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
 			@ApiParam(value = "Record (dto).", required = true) DTO dto) { //
 		Requestable resultDto = requestManager.post(requestId, dto, IdmBasePermission.CREATE);
 		@SuppressWarnings("unchecked")
-		ResourceSupport resource = toResource(requestId, (DTO) resultDto);
+		RepresentationModel resource = toModel(requestId, (DTO) resultDto);
 		if (resource == null) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
@@ -106,7 +106,7 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
 
 		Requestable resultDto = requestManager.post(requestId, dto, IdmBasePermission.UPDATE);
 		@SuppressWarnings("unchecked")
-		ResourceSupport resource = toResource(requestId, (DTO) resultDto);
+		RepresentationModel resource = toModel(requestId, (DTO) resultDto);
 		if (resource == null) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
@@ -130,7 +130,7 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
 		}
 		Requestable resultDto = requestManager.delete(requestId, dto, IdmBasePermission.DELETE);
 		@SuppressWarnings("unchecked")
-		ResourceSupport resource = toResource(requestId, (DTO) resultDto);
+		RepresentationModel resource = toModel(requestId, (DTO) resultDto);
 		if (resource == null) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
@@ -156,7 +156,7 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
 			throw new EntityNotFoundException(getService().getEntityClass(), backendId);
 		}
 		
-		ResourceSupport resource = toResource(requestId, dto);
+		RepresentationModel resource = toModel(requestId, dto);
 		if (resource == null) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
@@ -170,8 +170,8 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
 	})
 	public ResponseEntity<?> createRequest(@ApiParam(value = "Record (dto).", required = true) DTO dto) {
 		IdmRequestDto request = requestManager.createRequest(dto, IdmBasePermission.CREATE);
-		Link selfLink = ControllerLinkBuilder.linkTo(IdmRequestController.class).slash(request.getId()).withSelfRel();
-		Resource<IdmRequestDto> resource = new Resource<IdmRequestDto>(request, selfLink);
+		Link selfLink = WebMvcLinkBuilder.linkTo(IdmRequestController.class).slash(request.getId()).withSelfRel();
+		EntityModel<IdmRequestDto> resource = new EntityModel<IdmRequestDto>(request, selfLink);
 		return new ResponseEntity<>(resource, HttpStatus.CREATED);
 	}
 
@@ -197,14 +197,14 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
 							"Default sort order is ascending. " + //
 							"Multiple sort criteria are supported.") //
 	})
-	public Resources<?> find( //
+	public CollectionModel<?> find( //
 			@ApiParam(value = "Request ID", required = true) String requestId, //
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, //
 			@PageableDefault Pageable pageable) { //
 		Page<DTO> page = (Page<DTO>) requestManager.find(getDtoClass(), requestId, toFilter(parameters), pageable,
 				IdmBasePermission.READ);
 
-		return toResources(page, getDtoClass());
+		return toCollectionModel(page, getDtoClass());
 	}
 
 	/**
@@ -222,7 +222,7 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
 			@ApiImplicitParam(name = "size", dataType = "string", paramType = "query", value = "Number of records per page."),
 			@ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
 					+ "Default sort order is ascending. " + "Multiple sort criteria are supported.") })
-	public Resources<?> findQuick(@ApiParam(value = "Request ID", required = true) String requestId,
+	public CollectionModel<?> findQuick(@ApiParam(value = "Request ID", required = true) String requestId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return find(requestId, parameters, pageable);
@@ -250,13 +250,13 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
 					value = "Sorting criteria in the format: property(,asc|desc). " + //
 							"Default sort order is ascending. " + //
 							"Multiple sort criteria are supported.") }) //
-	public Resources<?> autocomplete( //
+	public CollectionModel<?> autocomplete( //
 			@ApiParam(value = "Request ID", required = true) String requestId, //
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, //
 			@PageableDefault Pageable pageable) { //
 		Page<DTO> page = (Page<DTO>) requestManager.find(getDtoClass(), requestId, toFilter(parameters), pageable,
 				IdmBasePermission.AUTOCOMPLETE);
-		return toResources(page, getDtoClass());
+		return toCollectionModel(page, getDtoClass());
 	}
 
 	/**
@@ -299,17 +299,17 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
 		return count(toFilter(parameters), IdmBasePermission.COUNT);
 	}
 	
-	public Resource<?> saveFormValues(String requestId, DTO dto, IdmFormDefinitionDto formDefinition,
+	public EntityModel<?> saveFormValues(String requestId, DTO dto, IdmFormDefinitionDto formDefinition,
 			List<IdmFormValueDto> formValues, BasePermission... permission) {
 		Assert.notNull(dto, "DTO is required.");
 		Assert.notNull(requestId, "Request identifier is required.");
 
 		IdmFormInstanceDto formInstance = requestManager.saveFormInstance(UUID.fromString(requestId), dto,
 				formDefinition, formValues, permission);
-		return new Resource<>(formInstance);
+		return new EntityModel<>(formInstance);
 	}
 
-	public Resource<IdmFormInstanceDto> getFormValues(String requestId, Identifiable owner,
+	public EntityModel<IdmFormInstanceDto> getFormValues(String requestId, Identifiable owner,
 			IdmFormDefinitionDto formDefinition, BasePermission... permission) {
 		Assert.notNull(owner, "Owner is required.");
 		Assert.notNull(requestId, "Request identifier is required.");
@@ -317,7 +317,7 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
 		@SuppressWarnings("unchecked")
 		IdmFormInstanceDto formInstance = requestManager.getFormInstance(UUID.fromString(requestId), (DTO) owner,
 				formDefinition, permission);
-		return new Resource<>(formInstance);
+		return new EntityModel<>(formInstance);
 	}
 	
 	/**
@@ -326,15 +326,15 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
 	 * @param dto
 	 * @return
 	 */
-	protected ResourceSupport toResource(String requestId, DTO dto) {
+	protected RepresentationModel toModel(String requestId, DTO dto) {
 		if (dto == null) {
 			return null;
 		}
-		Link selfLink = ControllerLinkBuilder.linkTo(this.getClass()) //
+		Link selfLink = WebMvcLinkBuilder.linkTo(this.getClass()) //
 				.slash(requestId) //
 				.slash(this.getRequestSubPath()) //
 				.slash(dto.getId()).withSelfRel(); //
-		Resource<DTO> resourceSupport = new Resource<DTO>(dto, selfLink);
+		EntityModel<DTO> resourceSupport = new EntityModel<DTO>(dto, selfLink);
 		return resourceSupport;
 	}
 

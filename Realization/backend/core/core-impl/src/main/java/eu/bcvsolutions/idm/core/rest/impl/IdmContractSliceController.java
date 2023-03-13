@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -90,7 +90,7 @@ public class IdmContractSliceController
 							@AuthorizationScope(scope = CoreGroupPermission.CONTRACTSLICE_READ, description = "") }),
 					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							@AuthorizationScope(scope = CoreGroupPermission.CONTRACTSLICE_READ, description = "") }) })
-	public Resources<?> find(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+	public CollectionModel<?> find(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -104,7 +104,7 @@ public class IdmContractSliceController
 							@AuthorizationScope(scope = CoreGroupPermission.CONTRACTSLICE_READ, description = "") }),
 					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							@AuthorizationScope(scope = CoreGroupPermission.CONTRACTSLICE_READ, description = "") }) })
-	public Resources<?> findQuick(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+	public CollectionModel<?> findQuick(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -118,7 +118,7 @@ public class IdmContractSliceController
 							@AuthorizationScope(scope = CoreGroupPermission.CONTRACTSLICE_AUTOCOMPLETE, description = "") }),
 					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							@AuthorizationScope(scope = CoreGroupPermission.CONTRACTSLICE_AUTOCOMPLETE, description = "") }) })
-	public Resources<?> autocomplete(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+	public CollectionModel<?> autocomplete(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -254,7 +254,7 @@ public class IdmContractSliceController
 							@AuthorizationScope(scope = CoreGroupPermission.CONTRACTSLICE_READ, description = "") }),
 					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							@AuthorizationScope(scope = CoreGroupPermission.CONTRACTSLICE_READ, description = "") }) })
-	public Resource<?> getFormValues(
+	public EntityModel<?> getFormValues(
 			@ApiParam(value = "Identity's uuid identifier or username.", required = true) @PathVariable @NotNull String backendId,
 			@ApiParam(value = "Code of form definition (default will be used if no code is given).", required = false, defaultValue = FormService.DEFAULT_DEFINITION_CODE) @RequestParam(name = "definitionCode", required = false) String definitionCode) {
 		IdmContractSliceDto dto = getDto(backendId);
@@ -286,7 +286,7 @@ public class IdmContractSliceController
 							@AuthorizationScope(scope = CoreGroupPermission.CONTRACTSLICE_UPDATE, description = "") }),
 					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							@AuthorizationScope(scope = CoreGroupPermission.CONTRACTSLICE_UPDATE, description = "") }) })
-	public Resource<?> saveFormValues(
+	public EntityModel<?> saveFormValues(
 			@ApiParam(value = "Identity's uuid identifier or username.", required = true) @PathVariable @NotNull String backendId,
 			@ApiParam(value = "Code of form definition (default will be used if no code is given).", required = false, defaultValue = FormService.DEFAULT_DEFINITION_CODE) @RequestParam(name = "definitionCode", required = false) String definitionCode,
 			@ApiParam(value = "Filled form data.", required = true) @RequestBody @Valid List<IdmFormValueDto> formValues) {
@@ -324,7 +324,7 @@ public class IdmContractSliceController
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTSLICE_UPDATE, description = "") })
 				})
-	public Resource<?> saveFormValue(
+	public EntityModel<?> saveFormValue(
 			@ApiParam(value = "Slice's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @Valid IdmFormValueDto formValue) {		

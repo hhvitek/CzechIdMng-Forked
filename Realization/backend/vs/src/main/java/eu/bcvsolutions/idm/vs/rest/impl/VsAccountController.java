@@ -9,8 +9,8 @@ import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -93,7 +93,7 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_ACCOUNT_READ, description = "") })
 				})
-	public Resources<?> find(
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -113,7 +113,7 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_ACCOUNT_READ, description = "") })
 				})
-	public Resources<?> findQuick(
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
@@ -133,7 +133,7 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_ACCOUNT_AUTOCOMPLETE, description = "") })
 				})
-	public Resources<?> autocomplete(
+	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
@@ -291,7 +291,7 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_ACCOUNT_READ, description = "") })
 				})
-	public Resource<?> getFormValues(
+	public EntityModel<?> getFormValues(
 			@ApiParam(value = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@ApiParam(value = "Code of form definition (default will be used if no code is given).", required = false, defaultValue = FormService.DEFAULT_DEFINITION_CODE)
@@ -326,7 +326,7 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_ACCOUNT_UPDATE, description = "") })
 				})
-	public Resource<?> saveFormValues(
+	public EntityModel<?> saveFormValues(
 			@ApiParam(value = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			@ApiParam(value = "Code of form definition (default will be used if no code is given).", required = false, defaultValue = FormService.DEFAULT_DEFINITION_CODE)

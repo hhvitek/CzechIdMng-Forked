@@ -3,7 +3,7 @@ package eu.bcvsolutions.idm.core.workflow.model.dto;
 import java.util.Date;
 
 import org.activiti.engine.IdentityService;
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 /**
  * DTO for historic workflow task

@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -91,7 +91,7 @@ public class LoginController implements BaseController {
 			response = LoginDto.class,
 			tags = { LoginController.TAG } )
 	@RequestMapping(method = RequestMethod.POST)
-	public Resource<LoginDto> login(
+	public EntityModel<LoginDto> login(
 			@ApiParam(value = "Identity credentials.", required = true)
 			@Valid @RequestBody(required = true) LoginRequestDto loginDto) {
 		if (loginDto == null || loginDto.getUsername() == null || loginDto.getPassword() == null){
@@ -104,7 +104,7 @@ public class LoginController implements BaseController {
 			throw new ResultCodeException(CoreResultCode.CAS_IDM_LOGIN_ADMIN_ONLY);
 		}
 		//
-		return new Resource<LoginDto>(authenticate);
+		return new EntityModel<LoginDto>(authenticate);
 	}
 	
 	/**
@@ -121,7 +121,7 @@ public class LoginController implements BaseController {
 			response = LoginDto.class,
 			tags = { LoginController.TAG } )
 	@RequestMapping(path = "/two-factor", method = RequestMethod.POST)
-	public Resource<LoginDto> twoFactor(
+	public EntityModel<LoginDto> twoFactor(
 			@ApiParam(value = "Token and verification code.", required = true)
 			@Valid @RequestBody(required = true) TwoFactorRequestDto twoFactorDto) {
 		if (twoFactorDto == null 
@@ -134,7 +134,7 @@ public class LoginController implements BaseController {
 		loginDto.setPassword(twoFactorDto.getVerificationCode());
 		loginDto.setToken(twoFactorDto.getToken().asString());
 		//
-		return new Resource<LoginDto>(twoFactorAuthenticationManager.authenticate(loginDto));
+		return new EntityModel<LoginDto>(twoFactorAuthenticationManager.authenticate(loginDto));
 	}
 	
 	@ApiOperation(
@@ -143,8 +143,8 @@ public class LoginController implements BaseController {
 			response = LoginDto.class,
 			tags = { LoginController.TAG })
 	@RequestMapping(path = REMOTE_AUTH_PATH, method = RequestMethod.GET)
-	public Resource<LoginDto> loginWithRemoteToken() {
-		return new Resource<LoginDto>(loginService.loginAuthenticatedUser());
+	public EntityModel<LoginDto> loginWithRemoteToken() {
+		return new EntityModel<LoginDto>(loginService.loginAuthenticatedUser());
 	}
 	
 	/**
@@ -163,7 +163,7 @@ public class LoginController implements BaseController {
 			tags = { LoginController.TAG } )
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_SWITCHUSER + "')")
 	@RequestMapping(path = "/switch-user", method = RequestMethod.PUT)
-	public Resource<LoginDto> switchUser(
+	public EntityModel<LoginDto> switchUser(
 			@ApiParam(value = "Switch to user by given username.", required = true)
 			@RequestParam @NotNull String username) {
 		// change logged token authorities
@@ -171,7 +171,7 @@ public class LoginController implements BaseController {
 		if (identity == null) {
 			throw new EntityNotFoundException(IdmIdentity.class, username);
 		}
-		return new Resource<LoginDto>(loginService.switchUser(identity, IdentityBasePermission.SWITCHUSER));
+		return new EntityModel<LoginDto>(loginService.switchUser(identity, IdentityBasePermission.SWITCHUSER));
 	}
 	
 	/**
@@ -188,8 +188,8 @@ public class LoginController implements BaseController {
 			response = LoginDto.class,
 			tags = { LoginController.TAG } )
 	@RequestMapping(path = "/switch-user", method = RequestMethod.DELETE)
-	public Resource<LoginDto> switchUserLogout() {
-		return new Resource<LoginDto>(loginService.switchUserLogout());
+	public EntityModel<LoginDto> switchUserLogout() {
+		return new EntityModel<LoginDto>(loginService.switchUserLogout());
 	}
 	
 	/**

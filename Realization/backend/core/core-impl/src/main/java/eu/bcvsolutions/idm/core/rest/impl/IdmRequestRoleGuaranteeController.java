@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -78,7 +78,7 @@ public class IdmRequestRoleGuaranteeController extends AbstractRequestDtoControl
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.ROLEGUARANTEE_READ, description = "") })
 				})
-	public Resources<?> find(
+	public CollectionModel<?> find(
 			@PathVariable @NotNull String requestId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
@@ -98,7 +98,7 @@ public class IdmRequestRoleGuaranteeController extends AbstractRequestDtoControl
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.ROLEGUARANTEE_READ, description = "") })
 				})
-	public Resources<?> findQuick(
+	public CollectionModel<?> findQuick(
 			@PathVariable @NotNull String requestId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
@@ -118,7 +118,7 @@ public class IdmRequestRoleGuaranteeController extends AbstractRequestDtoControl
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.ROLEGUARANTEE_AUTOCOMPLETE, description = "") })
 				})
-	public Resources<?> autocomplete(
+	public CollectionModel<?> autocomplete(
 			@PathVariable @NotNull String requestId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {

@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -817,7 +817,7 @@ public class LoginControllerRestTest extends AbstractRestTest {
 		LoginDto loginDto = new LoginDto();
 		loginDto.setUsername(TestHelper.ADMIN_USERNAME);
 		loginDto.setPassword(new GuardedString(TestHelper.ADMIN_PASSWORD));
-		Resource<LoginDto> response = loginController.login(loginDto);
+		EntityModel<LoginDto> response = loginController.login(loginDto);
 		
 		IdmJwtAuthenticationDto authentication = response.getContent().getAuthentication();
 		
@@ -831,7 +831,7 @@ public class LoginControllerRestTest extends AbstractRestTest {
 		LoginDto loginDto = new LoginDto();
 		loginDto.setUsername(TestHelper.ADMIN_USERNAME);
 		loginDto.setPassword(new GuardedString(TestHelper.ADMIN_PASSWORD));
-		Resource<LoginDto> response = loginController.login(loginDto);
+		EntityModel<LoginDto> response = loginController.login(loginDto);
 		
 		IdmJwtAuthenticationDto authentication = response.getContent().getAuthentication();
 		
@@ -879,7 +879,7 @@ public class LoginControllerRestTest extends AbstractRestTest {
 			LoginDto loginDto = new LoginDto();
 			loginDto.setUsername(TestHelper.ADMIN_USERNAME);
 			loginDto.setPassword(new GuardedString(TestHelper.ADMIN_PASSWORD));
-			Resource<LoginDto> response = loginController.login(loginDto);
+			EntityModel<LoginDto> response = loginController.login(loginDto);
 			
 			IdmJwtAuthenticationDto authentication = response.getContent().getAuthentication();
 			
@@ -909,7 +909,7 @@ public class LoginControllerRestTest extends AbstractRestTest {
 			LoginDto loginDto = new LoginDto();
 			loginDto.setUsername(user.getUsername());
 			loginDto.setPassword(pass);
-			Resource<LoginDto> response = loginController.login(loginDto);
+			EntityModel<LoginDto> response = loginController.login(loginDto);
 
 			IdmJwtAuthenticationDto authentication = response.getContent().getAuthentication();
 

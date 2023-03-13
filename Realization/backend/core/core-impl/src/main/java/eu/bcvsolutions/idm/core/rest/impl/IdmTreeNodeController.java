@@ -15,8 +15,8 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -121,7 +121,7 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_READ, description = "") })
 				})
-	public Resources<?> find(
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -140,7 +140,7 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_READ, description = "") })
 				})
-	public Resources<?> findQuick(
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
@@ -159,7 +159,7 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_AUTOCOMPLETE, description = "") })
 				})
-	public Resources<?> autocomplete(
+	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
@@ -413,7 +413,7 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.AUDIT_READ, description = "") })
 				})
-	public Resources<?> findRevisions(
+	public CollectionModel<?> findRevisions(
 			@ApiParam(value = "Node's uuid identifier.", required = true)
 			@PathVariable("backendId") String backendId, 
 			Pageable pageable) {
@@ -422,7 +422,7 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 			throw new ResultCodeException(CoreResultCode.NOT_FOUND, ImmutableMap.of("treeNode", backendId));
 		}
 		Page<IdmAuditDto> results = this.auditService.findRevisionsForEntity(IdmTreeNode.class.getSimpleName(), DtoUtils.toUuid(backendId), pageable);
-		return toResources(results, IdmTreeNode.class);
+		return toCollectionModel(results, IdmTreeNode.class);
 	}
 	
 	@ResponseBody
@@ -444,7 +444,7 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
                         "Default sort order is ascending. " +
                         "Multiple sort criteria are supported.")
 	})
-	public Resources<?> findRoots(
+	public CollectionModel<?> findRoots(
 			@ApiParam(value = "Tree type uuid identifier.", required = false)
 			@RequestParam(value = "treeTypeId", required = false) String treeTypeId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -465,7 +465,7 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 		}
 		//
 		Page<IdmTreeNodeDto> roots = find(filter, pageable, IdmBasePermission.AUTOCOMPLETE);
-		return toResources(roots, IdmTreeNode.class);
+		return toCollectionModel(roots, IdmTreeNode.class);
 	}
 	
 	@ResponseBody
@@ -486,13 +486,13 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
                         "Default sort order is ascending. " +
                         "Multiple sort criteria are supported.")
 	})
-	public Resources<?> findChildren(
+	public CollectionModel<?> findChildren(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		IdmTreeNodeFilter filter = toFilter(parameters);
 		filter.setRecursively(false);
 		//
-		return toResources(find(filter, pageable, IdmBasePermission.AUTOCOMPLETE), IdmTreeNode.class);
+		return toCollectionModel(find(filter, pageable, IdmBasePermission.AUTOCOMPLETE), IdmTreeNode.class);
 	}
 	
 	/**
@@ -532,7 +532,7 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 			value = "Tree node form definition - read values", 
 			nickname = "getTreeNodeFormValues", 
 			tags = { IdmTreeNodeController.TAG })
-	public Resource<?> getFormValues(
+	public EntityModel<?> getFormValues(
 			@ApiParam(value = "Node's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@ApiParam(value = "Code of form definition (default will be used if no code is given).", required = false, defaultValue = FormService.DEFAULT_DEFINITION_CODE)
@@ -561,7 +561,7 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 			value = "Tree node form definition - save values", 
 			nickname = "postTreeNodeFormValues", 
 			tags = { IdmTreeNodeController.TAG })
-	public Resource<?> saveFormValues(
+	public EntityModel<?> saveFormValues(
 			@ApiParam(value = "Node's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			@ApiParam(value = "Code of form definition (default will be used if no code is given).", required = false, defaultValue = FormService.DEFAULT_DEFINITION_CODE)
@@ -598,7 +598,7 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_UPDATE, description = "") })
 				})
-	public Resource<?> saveFormValue(
+	public EntityModel<?> saveFormValue(
 			@ApiParam(value = "Node's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @Valid IdmFormValueDto formValue) {		
@@ -718,7 +718,7 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 		if (!PermissionUtils.hasAnyPermission(permissions, IdmBasePermission.AUTOCOMPLETE, IdmBasePermission.READ)) {
 			throw new ForbiddenEntityException(defaultTreeNode.getId(), IdmBasePermission.AUTOCOMPLETE, IdmBasePermission.READ);
 		}
-		return new ResponseEntity<>(toResource(defaultTreeNode), HttpStatus.OK);
+		return new ResponseEntity<>(toModel(defaultTreeNode), HttpStatus.OK);
 	}
 	
 	@Override

@@ -92,7 +92,7 @@ public class ModuleController {
 		return moduleService.getInstalledModules() //
 				.stream() //
 				.map(moduleDescriptor -> { //
-					return toResource(moduleDescriptor);
+					return toModel(moduleDescriptor);
 				}) //
 				.collect(Collectors.toList());
 	}
@@ -123,7 +123,7 @@ public class ModuleController {
 		if (moduleDescriptor == null) {
 			throw new ResultCodeException(CoreResultCode.NOT_FOUND, ImmutableMap.of("entity", moduleId));
 		}
-		return toResource(moduleDescriptor);
+		return toModel(moduleDescriptor);
 
 	}
 
@@ -295,7 +295,7 @@ public class ModuleController {
 	 * @param moduleDescriptor
 	 * @return
 	 */
-	protected ModuleDescriptorDto toResource(ModuleDescriptor moduleDescriptor) {
+	protected ModuleDescriptorDto toModel(ModuleDescriptor moduleDescriptor) {
 		ModuleDescriptorDto dto = mapper.map(moduleDescriptor,  ModuleDescriptorDto.class);
 		//
 		dto.setId(moduleDescriptor.getId());

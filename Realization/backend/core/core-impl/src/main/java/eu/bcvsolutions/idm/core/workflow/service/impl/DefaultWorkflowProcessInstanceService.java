@@ -224,7 +224,7 @@ public class DefaultWorkflowProcessInstanceService
 
 		if (processInstances != null) {
 			for (ProcessInstance instance : processInstances) {
-				dtos.add(toResource(instance));
+				dtos.add(toModel(instance));
 			}
 		}
 
@@ -369,7 +369,7 @@ public class DefaultWorkflowProcessInstanceService
 		return historicProcess != null;
 	}
 
-	private WorkflowProcessInstanceDto toResource(ProcessInstance instance) {
+	private WorkflowProcessInstanceDto toModel(ProcessInstance instance) {
 		if (instance == null) {
 			return null;
 		}

@@ -19,7 +19,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;

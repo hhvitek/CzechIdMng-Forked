@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -86,7 +86,7 @@ public class IdmGenerateValueController extends AbstractReadWriteDtoController<I
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.GENERATE_VALUE_READ, description = "") })
 				})
-	public Resources<?> find(
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -105,7 +105,7 @@ public class IdmGenerateValueController extends AbstractReadWriteDtoController<I
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.GENERATE_VALUE_READ, description = "") })
 				})
-	public Resources<?> findQuick(
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -253,7 +253,7 @@ public class IdmGenerateValueController extends AbstractReadWriteDtoController<I
 						@AuthorizationScope(scope = CoreGroupPermission.GENERATE_VALUE_READ, description = "") })
 				})
 	public ResponseEntity<?> getSupportedTypes() {
-		return new ResponseEntity<>(toResources(valueGeneratorManager.getSupportedTypes(), null), HttpStatus.OK);
+		return new ResponseEntity<>(toCollectionModel(valueGeneratorManager.getSupportedTypes(), null), HttpStatus.OK);
 	}
 	
 	/**
@@ -275,8 +275,8 @@ public class IdmGenerateValueController extends AbstractReadWriteDtoController<I
 						@AuthorizationScope(scope = CoreGroupPermission.GENERATE_VALUE_READ, description = "") })
 				},
 			notes = "Returns all registered and enabled generators.")
-	public Resources<ValueGeneratorDto> getAvailableGenerators() {
-		return new Resources<>(valueGeneratorManager.getAvailableGenerators(null));
+	public CollectionModel<ValueGeneratorDto> getAvailableGenerators() {
+		return new CollectionModel<>(valueGeneratorManager.getAvailableGenerators(null));
 	}
 	
 	@Override

@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -111,7 +111,7 @@ public class SysProvisioningOperationController
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = AccGroupPermission.PROVISIONING_OPERATION_READ, description = "") })
 				})
-	public Resources<?> find(
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -154,7 +154,7 @@ public class SysProvisioningOperationController
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = AccGroupPermission.PROVISIONING_OPERATION_READ, description = "") })
 				})
-	public Resources<?> findQuick(
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -241,7 +241,7 @@ public class SysProvisioningOperationController
 			throw new ResultCodeException(CoreResultCode.NOT_FOUND, ImmutableMap.of("entity", backendId));
 		}
 		provisioningOperation = provisioningExecutor.executeSync(provisioningOperation);
-		return new ResponseEntity<>(toResource(provisioningOperation), HttpStatus.OK);
+		return new ResponseEntity<>(toModel(provisioningOperation), HttpStatus.OK);
 	}
 
 	@ResponseBody
@@ -266,7 +266,7 @@ public class SysProvisioningOperationController
 			throw new ResultCodeException(CoreResultCode.NOT_FOUND, ImmutableMap.of("entity", backendId));
 		}
 		provisioningOperation = provisioningExecutor.cancel(provisioningOperation);
-		return new ResponseEntity<>(toResource(provisioningOperation), HttpStatus.OK);
+		return new ResponseEntity<>(toModel(provisioningOperation), HttpStatus.OK);
 	}
 	
 	@ResponseBody

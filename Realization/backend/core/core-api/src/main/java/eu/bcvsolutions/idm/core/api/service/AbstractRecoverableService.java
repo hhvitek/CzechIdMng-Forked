@@ -274,7 +274,7 @@ public abstract class AbstractRecoverableService<T extends Codeable, DTO extends
 			return save(toDto(type, null), PermissionUtils.isEmpty(permission) ? null : IdmBasePermission.CREATE);
 		}
 		//
-		LOG.info("Resource with code [{}] will be updated.", type.getCode());
+		LOG.info("EntityModel with code [{}] will be updated.", type.getCode());
 		// backup
 		backup(resource);
 		// deploy

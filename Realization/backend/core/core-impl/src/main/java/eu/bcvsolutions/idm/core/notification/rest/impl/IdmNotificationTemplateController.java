@@ -10,7 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -89,7 +89,7 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ, description = "") })
 				})
-	public Resources<?> find(
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -109,7 +109,7 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ, description = "") })
 				})
-	public Resources<?> findQuick(
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
 		return this.find(parameters, pageable);
@@ -129,7 +129,7 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATIONTEMPLATE_AUTOCOMPLETE, description = "") })
 				})
-	public Resources<?> autocomplete(
+	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
@@ -304,7 +304,7 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
 		}
 		//
 		template = notificationTemplateService.redeploy(template, IdmBasePermission.UPDATE);
-		return new ResponseEntity<>(toResource(template), HttpStatus.OK);
+		return new ResponseEntity<>(toModel(template), HttpStatus.OK);
 	}
 	
 	@ResponseBody
@@ -330,7 +330,7 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
 			throw new ResultCodeException(CoreResultCode.NOT_FOUND, backendId);
 		}
 		notificationTemplateService.backup(template);
-		return new ResponseEntity<>(toResource(template), HttpStatus.OK);
+		return new ResponseEntity<>(toModel(template), HttpStatus.OK);
 	}
 	
 	/**

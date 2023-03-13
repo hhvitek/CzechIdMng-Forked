@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 import com.google.common.annotations.Beta;
 import com.google.common.collect.Lists;

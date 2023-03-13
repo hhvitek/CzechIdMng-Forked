@@ -14,7 +14,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -106,7 +106,7 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = RptGroupPermission.REPORT_READ, description = "") })
 				})
-	public Resources<?> find(
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -126,7 +126,7 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = RptGroupPermission.REPORT_READ, description = "") })
 				})
-	public Resources<?> findQuick(
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
@@ -146,7 +146,7 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = RptGroupPermission.REPORT_AUTOCOMPLETE, description = "") })
 				})
-	public Resources<?> autocomplete(
+	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
@@ -208,7 +208,7 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 	public ResponseEntity<?> createReport(@Valid @RequestBody RptReportDto report) {
 		checkAccess(report, IdmBasePermission.CREATE);
 		//
-		return new ResponseEntity<>(toResource(reportManager.generate(report)), HttpStatus.ACCEPTED);
+		return new ResponseEntity<>(toModel(reportManager.generate(report)), HttpStatus.ACCEPTED);
 	}
 	
 	@Override
@@ -384,8 +384,8 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = RptGroupPermission.REPORT_CREATE, description = "") })
 				})
-	public Resources<RptReportExecutorDto> find() {
-		return new Resources<>(reportManager.getExecutors());
+	public CollectionModel<RptReportExecutorDto> find() {
+		return new CollectionModel<>(reportManager.getExecutors());
 	}
 	
 	@Override

@@ -4,7 +4,7 @@ import eu.bcvsolutions.idm.acc.domain.SystemGroupType;
 import eu.bcvsolutions.idm.core.api.domain.Codeable;
 import eu.bcvsolutions.idm.core.api.domain.Disableable;
 import eu.bcvsolutions.idm.core.api.dto.AbstractDto;
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 /**
  * System groups (cross-domain)

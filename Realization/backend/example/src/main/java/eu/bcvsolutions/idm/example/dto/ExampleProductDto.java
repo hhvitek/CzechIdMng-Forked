@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import javax.validation.constraints.Size;
 
 import javax.validation.constraints.NotEmpty;
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 import eu.bcvsolutions.idm.core.api.domain.Codeable;
 import eu.bcvsolutions.idm.core.api.domain.DefaultFieldLengths;

@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -89,14 +89,14 @@ public class EntityEventProcessorController {
 				},
 			notes = "Returns all registered entity event processors with state properties (disabled, order).")
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Resources<?> find(
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		List<EntityEventProcessorDto> records = entityEventManager.find(toFilter(parameters));
 		PageImpl page = new PageImpl(records, PageRequest.of(0, records.size() == 0 ? 10 : records.size()), records.size());
 		if (page.getContent().isEmpty()) {
 			return pagedResourcesAssembler.toEmptyResource(page, EntityEventProcessorDto.class);
 		}
-		return pagedResourcesAssembler.toResource(page);
+		return pagedResourcesAssembler.toModel(page);
 	}
 
 	/**

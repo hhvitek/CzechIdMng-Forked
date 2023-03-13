@@ -35,7 +35,7 @@ public class AccPasswordFilterRequestDto implements Serializable {
 	private String username;
 
 	@NotEmpty
-	@ApiModelProperty(notes = "Resource system identifier.", dataType = "string")
+	@ApiModelProperty(notes = "EntityModel system identifier.", dataType = "string")
 	private String resource;
 
 	@ApiModelProperty(notes = "Log identifier that connect request from end system to IdM.", dataType = "string")

@@ -12,7 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -94,7 +94,7 @@ public class IdmMonitoringController extends AbstractEventableDtoController<IdmM
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORING_READ, description = "") })
 				})
-	public Resources<?> find(
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -114,7 +114,7 @@ public class IdmMonitoringController extends AbstractEventableDtoController<IdmM
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORING_READ, description = "") })
 				})
-	public Resources<?> findQuick(
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
@@ -134,7 +134,7 @@ public class IdmMonitoringController extends AbstractEventableDtoController<IdmM
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORING_AUTOCOMPLETE, description = "") })
 				})
-	public Resources<?> autocomplete(
+	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
@@ -366,8 +366,8 @@ public class IdmMonitoringController extends AbstractEventableDtoController<IdmM
 						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORING_AUTOCOMPLETE, description = ""),
 						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORING_READ, description = "")})
 				})
-	public Resources<MonitoringEvaluatorDto> getSupportedEvaluators() {
-		return new Resources<>(monitoringManager.getSupportedEvaluators());
+	public CollectionModel<MonitoringEvaluatorDto> getSupportedEvaluators() {
+		return new CollectionModel<>(monitoringManager.getSupportedEvaluators());
 	}
 	
 	/**
@@ -402,7 +402,7 @@ public class IdmMonitoringController extends AbstractEventableDtoController<IdmM
 			new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 		// return current result
-		return new ResponseEntity<>(monitoringResultController.toResource(monitoringResult), HttpStatus.CREATED);
+		return new ResponseEntity<>(monitoringResultController.toModel(monitoringResult), HttpStatus.CREATED);
 	}
 	
 	/**
@@ -442,7 +442,7 @@ public class IdmMonitoringController extends AbstractEventableDtoController<IdmM
 			new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 		// return last result
-		return new ResponseEntity<>(monitoringResultController.toResource(lastResults.get(0)), HttpStatus.OK);
+		return new ResponseEntity<>(monitoringResultController.toModel(lastResults.get(0)), HttpStatus.OK);
 	}
 
 	@Override

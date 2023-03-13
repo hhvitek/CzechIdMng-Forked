@@ -2,7 +2,7 @@ package eu.bcvsolutions.idm.core.api.dto;
 
 import java.util.List;
 
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 /**
  * DTO with information about available service that can be used for example in scripts.

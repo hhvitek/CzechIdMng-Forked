@@ -2,7 +2,7 @@ package eu.bcvsolutions.idm.core.api.dto;
 
 import eu.bcvsolutions.idm.core.api.domain.Embedded;
 import eu.bcvsolutions.idm.core.api.domain.RecursionType;
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 import javax.validation.constraints.NotNull;
 import java.util.UUID;

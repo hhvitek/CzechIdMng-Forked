@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -80,7 +80,7 @@ public class IdmRequestIdentityRoleController
 					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							@AuthorizationScope(scope = CoreGroupPermission.ROLE_REQUEST_READ, description = ""),
 							@AuthorizationScope(scope = CoreGroupPermission.ROLE_REQUEST_ADMIN, description = "") }) })
-	public Resources<?> find(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+	public CollectionModel<?> find(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -97,7 +97,7 @@ public class IdmRequestIdentityRoleController
 					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							@AuthorizationScope(scope = CoreGroupPermission.ROLE_REQUEST_READ, description = ""),
 							@AuthorizationScope(scope = CoreGroupPermission.ROLE_REQUEST_ADMIN, description = "") }) })
-	public Resources<?> findQuick(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+	public CollectionModel<?> findQuick(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -182,7 +182,7 @@ public class IdmRequestIdentityRoleController
 			@RequestBody @NotNull IdmRequestIdentityRoleDto dto) {
 		dto.setId(UUID.fromString(backendId));
 		IdmRequestIdentityRoleDto deletedRequestIdentityRole = service.deleteRequestIdentityRole(dto, IdmBasePermission.DELETE);
-		return new ResponseEntity<>(toResource(deletedRequestIdentityRole), HttpStatus.OK);
+		return new ResponseEntity<>(toModel(deletedRequestIdentityRole), HttpStatus.OK);
 	}
 
 }

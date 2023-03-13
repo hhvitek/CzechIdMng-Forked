@@ -14,8 +14,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -114,7 +114,7 @@ public class IdmConceptRoleRequestController
 					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							@AuthorizationScope(scope = CoreGroupPermission.ROLE_REQUEST_READ, description = ""),
 							@AuthorizationScope(scope = CoreGroupPermission.ROLE_REQUEST_ADMIN, description = "") }) })
-	public Resources<?> find(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+	public CollectionModel<?> find(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -131,7 +131,7 @@ public class IdmConceptRoleRequestController
 					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							@AuthorizationScope(scope = CoreGroupPermission.ROLE_REQUEST_READ, description = ""),
 							@AuthorizationScope(scope = CoreGroupPermission.ROLE_REQUEST_ADMIN, description = "") }) })
-	public Resources<?> findQuick(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+	public CollectionModel<?> findQuick(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -310,7 +310,7 @@ public class IdmConceptRoleRequestController
 							@AuthorizationScope(scope = CoreGroupPermission.ROLE_REQUEST_READ, description = "") }),
 					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							@AuthorizationScope(scope = CoreGroupPermission.ROLE_REQUEST_READ, description = "") }) })
-	public Resource<?> getFormValues(
+	public EntityModel<?> getFormValues(
 			@ApiParam(value = "Concept's uuid identifier or code.", required = true) @PathVariable @NotNull String backendId,
 			@ApiParam(value = "Code of form definition (default will be used if no code is given).", required = false, defaultValue = FormService.DEFAULT_DEFINITION_CODE) @RequestParam(name = "definitionCode", required = false) String definitionCode) {
 		IdmConceptRoleRequestDto dto = getDto(backendId);
@@ -340,7 +340,7 @@ public class IdmConceptRoleRequestController
 							@AuthorizationScope(scope = CoreGroupPermission.ROLE_REQUEST_UPDATE, description = "") }),
 					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							@AuthorizationScope(scope = CoreGroupPermission.ROLE_REQUEST_UPDATE, description = "") }) })
-	public Resource<?> saveFormValues(
+	public EntityModel<?> saveFormValues(
 			@ApiParam(value = "Concept's uuid identifier or code.", required = true) @PathVariable @NotNull String backendId,
 			@ApiParam(value = "Code of form definition (default will be used if no code is given).", required = false, defaultValue = FormService.DEFAULT_DEFINITION_CODE) @RequestParam(name = "definitionCode", required = false) String definitionCode,
 			@RequestBody @Valid List<IdmFormValueDto> formValues) {

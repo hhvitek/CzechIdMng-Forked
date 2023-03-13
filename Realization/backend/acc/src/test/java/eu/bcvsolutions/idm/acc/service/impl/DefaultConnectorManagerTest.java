@@ -11,7 +11,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -82,7 +82,7 @@ public class DefaultConnectorManagerTest extends AbstractIntegrationTest {
 	public void testSupportsConnectorTypes() {
 		String defaultTableConnectorName = "net.tirasa.connid.bundles.db.table.DatabaseTableConnector";
 
-		Resources<ConnectorTypeDto> supportedTypes = systemController.getSupportedTypes();
+		CollectionModel<ConnectorTypeDto> supportedTypes = systemController.getSupportedTypes();
 
 		// Find connector without connector type (it is default table connector
 		// = table connector has tree connector types and one default connector type).

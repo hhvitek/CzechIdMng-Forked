@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.IdentityService;
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 import org.springframework.util.Assert;
 
 import com.fasterxml.jackson.annotation.JsonProperty;

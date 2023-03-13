@@ -2,7 +2,7 @@ package eu.bcvsolutions.idm.core.api.audit.dto;
 
 import java.util.Map;
 
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 import eu.bcvsolutions.idm.core.api.dto.BaseDto;
 

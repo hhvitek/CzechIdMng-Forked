@@ -19,8 +19,8 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -170,7 +170,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")})
 				})
-	public Resources<?> find(
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -189,7 +189,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")})
 				})
-	public Resources<?> findQuick(
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -209,7 +209,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_AUTOCOMPLETE, description = "") })
 				})
-	public Resources<?> autocomplete(
+	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
@@ -385,7 +385,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 			throw new ResultCodeException(CoreResultCode.NOT_FOUND, ImmutableMap.of("entity", backendId));
 		}
 		systemService.generateSchema(system);
-		return new ResponseEntity<>(toResource(system), HttpStatus.OK);
+		return new ResponseEntity<>(toModel(system), HttpStatus.OK);
 	}
 
 	@ResponseBody
@@ -411,7 +411,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 		}
 		EntityEvent<SysSystemDto> event = new SystemEvent(SystemEventType.DUPLICATE, system);
 		SysSystemDto duplicate = systemService.publish(event, IdmBasePermission.UPDATE).getContent();
-		return new ResponseEntity<>(toResource(duplicate), HttpStatus.OK);
+		return new ResponseEntity<>(toModel(duplicate), HttpStatus.OK);
 	}
 
 	/**
@@ -468,7 +468,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 		}
 		IdmFormDefinitionDto formDefinition = getConnectorFormDefinition(system);
 		//
-		return new ResponseEntity<>(new Resource<>(formDefinition), HttpStatus.OK);
+		return new ResponseEntity<>(new EntityModel<>(formDefinition), HttpStatus.OK);
 	}
 
 	@ResponseBody
@@ -493,7 +493,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 		}
 		IdmFormDefinitionDto formDefinition = getPoolingConnectorFormDefinition(system);
 		//
-		return new ResponseEntity<>(new Resource<>(formDefinition), HttpStatus.OK);
+		return new ResponseEntity<>(new EntityModel<>(formDefinition), HttpStatus.OK);
 	}
 
 	@ResponseBody
@@ -518,7 +518,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 		}
 		IdmFormDefinitionDto formDefinition = getOperationOptionsConnectorFormDefinition(system);
 		//
-		return new ResponseEntity<>(new Resource<>(formDefinition), HttpStatus.OK);
+		return new ResponseEntity<>(new EntityModel<>(formDefinition), HttpStatus.OK);
 	}
 
 	/**
@@ -541,7 +541,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "") })
 				})
-	public Resource<?> getConnectorFormValues(
+	public EntityModel<?> getConnectorFormValues(
 			@ApiParam(value = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysSystemDto entity = getDto(backendId);
@@ -573,7 +573,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "") })
 				})
-	public Resource<?> getPoolingConnectorFormValues(
+	public EntityModel<?> getPoolingConnectorFormValues(
 			@ApiParam(value = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysSystemDto entity = getDto(backendId);
@@ -604,7 +604,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "") })
 			})
-	public Resource<?> getOperationOptionsConnectorFormValues(
+	public EntityModel<?> getOperationOptionsConnectorFormValues(
 			@ApiParam(value = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysSystemDto entity = getDto(backendId);
@@ -637,7 +637,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "") })
 				})
-	public Resource<?> saveConnectorFormValues(
+	public EntityModel<?> saveConnectorFormValues(
 			@ApiParam(value = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @Valid List<IdmFormValueDto> formValues) {
@@ -671,7 +671,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "") })
 				})
-	public Resource<?> savePoolingConnectorFormValues(
+	public EntityModel<?> savePoolingConnectorFormValues(
 			@ApiParam(value = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @Valid List<IdmFormValueDto> formValues) {
@@ -704,7 +704,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "") })
 			})
-	public Resource<?> saveOperationOptionsConnectorFormValues(
+	public EntityModel<?> saveOperationOptionsConnectorFormValues(
 			@ApiParam(value = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @Valid List<IdmFormValueDto> formValues) {
@@ -1006,7 +1006,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")})
 			})
-	public Resources<ConnectorTypeDto> getSupportedTypes() {
+	public CollectionModel<ConnectorTypeDto> getSupportedTypes() {
 		Map<SysConnectorServerDto, List<IcConnectorInfo>> allConnectorInfos = new LinkedHashMap<>();
 		// All remote connectors - optionally, but with higher priority.
 		remoteServerService.find(null)
@@ -1099,7 +1099,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 		}
 		resolvedConnectorTypes.addAll(defaultConnectorTypes);
 
-		return new Resources<>(
+		return new CollectionModel<>(
 				resolvedConnectorTypes.stream()
 						.sorted(Comparator.comparing(ConnectorTypeDto::getOrder))
 						.collect(Collectors.toList())
