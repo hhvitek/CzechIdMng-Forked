@@ -1,6 +1,5 @@
 package eu.bcvsolutions.idm.core.workflow.config;
 
-import com.google.common.collect.Lists;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,10 +33,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ContextResource;
-import org.springframework.core.io.EntityModel;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
+
+import com.google.common.collect.Lists;
 
 import eu.bcvsolutions.idm.core.notification.api.service.EmailNotificationSender;
 import eu.bcvsolutions.idm.core.workflow.domain.CustomActivityBehaviorFactory;
@@ -163,20 +164,20 @@ public class WorkflowConfig {
 		}
 		
 		@Override
-		public List<EntityModel> discoverProcessDefinitionResources(ResourcePatternResolver applicationContext,
-				String prefixes, List<String> suffixes, boolean checkPDs) throws IOException {
+		public List<Resource> discoverProcessDefinitionResources(ResourcePatternResolver applicationContext,
+																	String prefixes, List<String> suffixes, boolean checkPDs) throws IOException {
 			if (checkPDs && StringUtils.isNotBlank(prefixes)) {	
-				Map<String, EntityModel> resources = new HashMap<>();
+				Map<String, Resource> resources = new HashMap<>();
 	    		for(String prefix : prefixes.split(",")) {
 	    			if(StringUtils.isBlank(prefix)) {
 	    				// nothing to do
 	    				continue;
 	    			}
-    				for(EntityModel resource : super.discoverProcessDefinitionResources(applicationContext, prefix.trim(), suffixes, checkPDs)) {
+    				for(Resource resource : super.discoverProcessDefinitionResources(applicationContext, prefix.trim(), suffixes, checkPDs)) {
     					String resourceName = determineResourceName(resource);
     					if (resources.containsKey(resourceName)) {
     						// last one wins - just log
-    						LOG.info("EntityModel [{}] was found in more locations, using resource from [{}].", resourceName, prefix);
+    						LOG.info("Resource [{}] was found in more locations, using resource from [{}].", resourceName, prefix);
     					}
     					resources.put(resourceName, resource);
     				}
@@ -184,7 +185,7 @@ public class WorkflowConfig {
 	    		}
 	    		return new ArrayList<>(resources.values());
 		    }
-		    return new ArrayList<EntityModel>();
+		    return new ArrayList<Resource>();
 		}
 		
 		/**
@@ -193,7 +194,7 @@ public class WorkflowConfig {
 	     * @param resource the resource to get the name for
 	     * @return the name of the resource
 	     */
-	    private String determineResourceName(EntityModel resource) {
+	    private String determineResourceName(Resource resource) {
 	        String resourceName = null;
 
 	        if (resource instanceof ContextResource) {

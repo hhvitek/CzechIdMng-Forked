@@ -204,7 +204,7 @@ public class ExecuteScriptTaskExecutorTest extends AbstractIntegrationTest {
 		
 		IdmIdentityFilter identityFilter = new IdmIdentityFilter();
 		identityFilter.setText("test-execute-");
-		List<IdmIdentityDto> identities = identityService.find(identityFilter, PageRequest.of(0, 20, new Sort(Direction.ASC, IdmIdentity_.firstName.getName()))).getContent();
+		List<IdmIdentityDto> identities = identityService.find(identityFilter, PageRequest.of(0, 20, Sort.by(Direction.ASC, IdmIdentity_.firstName.getName()))).getContent();
 	
 		assertEquals(5, identities.size());
 		for (int index = 0; index < 5; index++) {

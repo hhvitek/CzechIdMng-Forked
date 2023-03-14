@@ -18,7 +18,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.EntityModel;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.plugin.core.OrderAwarePluginRegistry;
@@ -242,7 +242,7 @@ public class DefaultIdmScriptService
 					continue;
 				}
 				//
-				for (EntityModel resource : resources) {
+				for (Resource resource : resources) {
 					try {
 						IdmScriptType scriptType = readType(location, resource.getInputStream());
 						//

@@ -56,7 +56,7 @@ public class AccountProtectionExpirationTaskExecutor extends AbstractSchedulable
 			Page<AccAccountDto> expiredAccounts = service
 					.findExpired(
 						expiration,
-						PageRequest.of(0, 100, new Sort(Direction.ASC, AccAccountDto.PROPERTY_END_OF_PROTECTION)
+						PageRequest.of(0, 100, Sort.by(Direction.ASC, AccAccountDto.PROPERTY_END_OF_PROTECTION)
 					));
 			// init count
 			if (count == null) {

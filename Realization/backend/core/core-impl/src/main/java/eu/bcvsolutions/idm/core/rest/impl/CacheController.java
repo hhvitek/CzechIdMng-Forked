@@ -1,7 +1,5 @@
 package eu.bcvsolutions.idm.core.rest.impl;
 
-import static eu.bcvsolutions.idm.core.security.api.domain.IdmGroupPermission.APP_ADMIN;
-
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
@@ -25,6 +23,7 @@ import eu.bcvsolutions.idm.core.api.config.swagger.SwaggerConfig;
 import eu.bcvsolutions.idm.core.api.dto.IdmCacheDto;
 import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.service.IdmCacheManager;
+import static eu.bcvsolutions.idm.core.security.api.domain.IdmGroupPermission.APP_ADMIN;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -76,7 +75,7 @@ public class CacheController {
 		List<IdmCacheDto> records = cacheManager.getAllAvailableCaches();
 		PageImpl page = new PageImpl(records, PageRequest.of(0, records.size() == 0 ? 10 : records.size()), records.size());
 		if (page.getContent().isEmpty()) {
-			return pagedResourcesAssembler.toEmptyResource(page, IdmCacheDto.class);
+			return pagedResourcesAssembler.toEmptyModel(page, IdmCacheDto.class);
 		}
 		return pagedResourcesAssembler.toModel(page);
 	}

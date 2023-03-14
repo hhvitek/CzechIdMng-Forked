@@ -136,7 +136,7 @@ public class DefaultLongPollingManager implements LongPollingManager{
 		ZonedDateTime timeStamp = subscriber.getLastTimeStamp();
 		if (timeStamp == null) {
 			List<AbstractDto> entities = service
-					.find(filter, PageRequest.of(0, 1, new Sort(Direction.DESC, AbstractEntity_.created.getName(),
+					.find(filter, PageRequest.of(0, 1, Sort.by(Direction.DESC, AbstractEntity_.created.getName(),
 							AbstractEntity_.modified.getName())))
 					.getContent();
 

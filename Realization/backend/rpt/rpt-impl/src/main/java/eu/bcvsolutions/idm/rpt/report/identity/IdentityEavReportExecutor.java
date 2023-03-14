@@ -115,7 +115,7 @@ public class IdentityEavReportExecutor extends AbstractReportExecutor {
 					identityFilter.setDisabled(Boolean.valueOf(disabled));
 				}
 				// find a first page of identities
-				Pageable pageable = PageRequest.of(0, 100, new Sort(Direction.ASC, IdmIdentity_.username.getName()));
+				Pageable pageable = PageRequest.of(0, 100, Sort.by(Direction.ASC, IdmIdentity_.username.getName()));
 
 				do {
 					Page<IdmIdentityDto> identities =

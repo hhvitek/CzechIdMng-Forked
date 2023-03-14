@@ -99,7 +99,7 @@ public class ChangeConfidentialStorageKeyTaskExecutor extends AbstractSchedulabl
 		//
 		do {
 			Page<IdmConfidentialStorageValueDto> values = confidetialStorageValueService
-					.find(PageRequest.of(page, PAGE_SIZE, new Sort(Direction.ASC, AbstractEntity_.id.getName())));
+					.find(PageRequest.of(page, PAGE_SIZE, Sort.by(Direction.ASC, AbstractEntity_.id.getName())));
 			//
 			if (count == null) {
 				count = values.getTotalElements();

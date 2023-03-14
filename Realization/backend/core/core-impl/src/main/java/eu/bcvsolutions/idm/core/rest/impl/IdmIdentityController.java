@@ -620,7 +620,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 		WorkPositionDto position = new WorkPositionDto(identity, primeContract);
 		if (primeContract.getWorkPosition() != null) {
 			IdmTreeNodeDto contractPosition = treeNodeService.get(primeContract.getWorkPosition());
-			position.getPath().addAll(treeNodeService.findAllParents(contractPosition.getId(), new Sort(Direction.ASC, "forestIndex.lft")));
+			position.getPath().addAll(treeNodeService.findAllParents(contractPosition.getId(), Sort.by(Direction.ASC, "forestIndex.lft")));
 			position.getPath().add(contractPosition);
 		}
 		return new ResponseEntity<WorkPositionDto>(position, HttpStatus.OK);

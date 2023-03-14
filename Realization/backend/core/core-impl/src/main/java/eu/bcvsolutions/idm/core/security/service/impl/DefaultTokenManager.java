@@ -129,7 +129,7 @@ public class DefaultTokenManager implements TokenManager {
 		filter.setOwnerId(getOwnerId(owner));
 		//
 		return tokenService
-				.find(filter, PageRequest.of(0, Integer.MAX_VALUE, new Sort(Direction.ASC, IdmToken_.expiration.getName())), permission)
+				.find(filter, PageRequest.of(0, Integer.MAX_VALUE, Sort.by(Direction.ASC, IdmToken_.expiration.getName())), permission)
 				.getContent();
 	}
 	

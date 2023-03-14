@@ -11,7 +11,6 @@ import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 
-import eu.bcvsolutions.idm.core.api.utils.ReflectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -19,10 +18,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +37,6 @@ import com.google.common.collect.Lists;
 import eu.bcvsolutions.idm.core.api.bulk.action.BulkActionManager;
 import eu.bcvsolutions.idm.core.api.bulk.action.dto.IdmBulkActionDto;
 import eu.bcvsolutions.idm.core.api.config.swagger.SwaggerConfig;
-import eu.bcvsolutions.idm.core.api.domain.Identifiable;
 import eu.bcvsolutions.idm.core.api.dto.BaseDto;
 import eu.bcvsolutions.idm.core.api.dto.ResultModels;
 import eu.bcvsolutions.idm.core.api.dto.filter.BaseFilter;
@@ -46,7 +44,6 @@ import eu.bcvsolutions.idm.core.api.dto.filter.DataFilter;
 import eu.bcvsolutions.idm.core.api.dto.filter.PermissionContext;
 import eu.bcvsolutions.idm.core.api.exception.EntityNotFoundException;
 import eu.bcvsolutions.idm.core.api.exception.ForbiddenEntityException;
-//import eu.bcvsolutions.idm.core.api.exception.ResultCodeException;
 import eu.bcvsolutions.idm.core.api.service.LookupService;
 import eu.bcvsolutions.idm.core.api.service.ReadDtoService;
 import eu.bcvsolutions.idm.core.api.utils.DtoUtils;
@@ -403,21 +400,10 @@ public abstract class AbstractReadDtoController<DTO extends BaseDto, F extends B
 		Assert.notNull(page, "EntityModel page (content) is required.");
 		//
 		if (page.getContent().isEmpty()) {
-			return pagedResourcesAssembler.toEmptyResource(page, domainType);
+			return pagedResourcesAssembler.toEmptyModel(page, domainType);
 		}
 		//
-		return pagedResourcesAssembler.toModel(page, it -> {
-			if (!(it instanceof Identifiable)) {
-				// just for sure - if some response with different dto is returned manually
-				return new EntityModel<>(it);
-			}
-			if (!getDtoClass().isAssignableFrom(it.getClass())) {
-				// not controlled dto => self link is not correct
-				return new EntityModel<>(it);
-			}
-			// controlled dto
-			return toModel((DTO) it);
-		});
+		return pagedResourcesAssembler.toCollectionModel(Collections.singleton(page));
 	}
 
 	/**

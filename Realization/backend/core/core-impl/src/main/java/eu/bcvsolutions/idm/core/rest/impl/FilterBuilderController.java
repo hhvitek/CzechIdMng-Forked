@@ -74,7 +74,7 @@ public class FilterBuilderController  {
 		List<FilterBuilderDto> filterBuilderDtos = filterManager.find(toFilter(parameters));
 		PageImpl page = new PageImpl(filterBuilderDtos, PageRequest.of(0, filterBuilderDtos.size() == 0 ? 10 : filterBuilderDtos.size()), filterBuilderDtos.size());
 		if (page.getContent().isEmpty()) {
-			return pagedResourcesAssembler.toEmptyResource(page, FilterBuilderDto.class);
+			return pagedResourcesAssembler.toEmptyModel(page, FilterBuilderDto.class);
 		}
 		return pagedResourcesAssembler.toModel(page);
 	}

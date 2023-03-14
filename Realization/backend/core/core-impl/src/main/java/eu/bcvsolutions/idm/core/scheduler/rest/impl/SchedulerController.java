@@ -432,7 +432,7 @@ public class SchedulerController implements BaseController {
 	protected CollectionModel<?> pageToResources(Page<Object> page, Class<?> domainType) {
 
 		if (page.getContent().isEmpty()) {
-			return pagedResourcesAssembler.toEmptyResource(page, domainType);
+			return pagedResourcesAssembler.toEmptyModel(page, domainType);
 		}
 
 		return pagedResourcesAssembler.toModel(page);

@@ -84,7 +84,7 @@ public class BulkActionController {
 		List<IdmBulkActionDto> records = bulkActionManager.find(toFilter(parameters));
 		PageImpl page = new PageImpl(records, PageRequest.of(0, records.size() == 0 ? 10 : records.size()), records.size());
 		if (page.getContent().isEmpty()) {
-			return pagedResourcesAssembler.toEmptyResource(page, IdmBulkActionDto.class);
+			return pagedResourcesAssembler.toEmptyModel(page, IdmBulkActionDto.class);
 		}
 		return pagedResourcesAssembler.toModel(page);
 	}

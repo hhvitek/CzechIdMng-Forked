@@ -177,7 +177,7 @@ public class AccountProvisioningMergeTest extends AbstractProvisioningMergeTest 
 		// only account one should have the value
 		List<SysProvisioningArchiveDto> archives = provisioningArchiveService
 				.find(operationFilter,
-						PageRequest.of(0, 100, new Sort(Sort.Direction.DESC, AbstractEntity_.created.getName())))
+						PageRequest.of(0, 100, Sort.by(Sort.Direction.DESC, AbstractEntity_.created.getName())))
 				.getContent();
 		Assert.assertEquals(1, archives.size());
 		Map<ProvisioningAttributeDto, Object> accountObject = archives.get(0).getProvisioningContext().getAccountObject();
@@ -197,7 +197,7 @@ public class AccountProvisioningMergeTest extends AbstractProvisioningMergeTest 
 		// account two should have no value
 		archives = provisioningArchiveService
 				.find(operationFilter,
-						PageRequest.of(0, 100, new Sort(Sort.Direction.DESC, AbstractEntity_.created.getName())))
+						PageRequest.of(0, 100, Sort.by(Sort.Direction.DESC, AbstractEntity_.created.getName())))
 				.getContent();
 		//Assert.assertEquals(0, archives.size());
 	}

@@ -66,7 +66,7 @@ public class AvailableServiceController  {
 	List<AvailableServiceDto> serviceDtos = availableServiceService.findServices(toFilter(parameters));
 		PageImpl page = new PageImpl(serviceDtos, PageRequest.of(0, serviceDtos.size() == 0 ? 10 : serviceDtos.size()), serviceDtos.size());
 		if (page.getContent().isEmpty()) {
-			return pagedResourcesAssembler.toEmptyResource(page, AvailableServiceDto.class);
+			return pagedResourcesAssembler.toEmptyModel(page, AvailableServiceDto.class);
 		}
 		return pagedResourcesAssembler.toModel(page);
 	}

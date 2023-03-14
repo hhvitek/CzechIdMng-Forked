@@ -94,7 +94,7 @@ public class EntityEventProcessorController {
 		List<EntityEventProcessorDto> records = entityEventManager.find(toFilter(parameters));
 		PageImpl page = new PageImpl(records, PageRequest.of(0, records.size() == 0 ? 10 : records.size()), records.size());
 		if (page.getContent().isEmpty()) {
-			return pagedResourcesAssembler.toEmptyResource(page, EntityEventProcessorDto.class);
+			return pagedResourcesAssembler.toEmptyModel(page, EntityEventProcessorDto.class);
 		}
 		return pagedResourcesAssembler.toModel(page);
 	}
