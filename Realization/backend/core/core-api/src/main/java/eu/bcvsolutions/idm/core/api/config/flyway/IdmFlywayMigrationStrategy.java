@@ -35,7 +35,7 @@ public class IdmFlywayMigrationStrategy implements FlywayMigrationStrategy {
 	 */
 	@Override
 	public void migrate(Flyway flyway) {
-		String dbName = resolveDbName(flyway);
+		String dbName = resolveDbName(flyway.getConfiguration());
 		LOG.info("Flyway resolved [{}] jdbc database", dbName);
 		Flyway
 			.configure()

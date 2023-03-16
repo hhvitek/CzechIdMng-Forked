@@ -43,4 +43,9 @@ public class AccFlywayConfig extends AbstractFlywayConfiguration {
 		LOG.info("Starting flyway migration for module acc [{}]: ", flyway.getConfiguration().getTable());
 		return flyway;
 	}
+
+	@Override
+	public String getPropertyPrefix() {
+		return "flyway.acc";
+	}
 }

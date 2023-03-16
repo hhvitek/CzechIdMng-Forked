@@ -43,4 +43,9 @@ public class VirtualSystemFlywayConfig extends AbstractFlywayConfiguration {
 		LOG.info("Starting flyway migration for vs module [{}]: ", flyway.getConfiguration().getTable());
 		return flyway;
 	}
+
+	@Override
+	public String getPropertyPrefix() {
+		return "flyway.vs";
+	}
 }

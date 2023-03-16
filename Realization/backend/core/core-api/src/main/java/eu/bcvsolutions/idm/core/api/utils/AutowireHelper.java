@@ -6,6 +6,7 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
@@ -18,6 +19,7 @@ import org.springframework.util.ClassUtils;
  * @author Radek Tomiška
  */
 @Component
+@Lazy(false)
 public final class AutowireHelper implements ApplicationContextAware {
 
 	private static final AutowireHelper INSTANCE = new AutowireHelper();

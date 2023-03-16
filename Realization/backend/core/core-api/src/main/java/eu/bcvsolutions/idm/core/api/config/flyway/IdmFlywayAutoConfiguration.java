@@ -1,23 +1,29 @@
 package eu.bcvsolutions.idm.core.api.config.flyway;
 
+import java.util.List;
+
 import javax.sql.DataSource;
 
-import eu.bcvsolutions.idm.core.api.config.datasource.DatasourceConfig;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.callback.Callback;
-import org.flywaydb.core.api.callback.FlywayCallback;
+import org.flywaydb.core.api.migration.JavaMigration;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.flyway.*;
+import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration;
+import org.springframework.boot.autoconfigure.flyway.FlywayConfigurationCustomizer;
+import org.springframework.boot.autoconfigure.flyway.FlywayDataSource;
+import org.springframework.boot.autoconfigure.flyway.FlywayProperties;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ResourceLoader;
+
+import eu.bcvsolutions.idm.core.api.config.datasource.DatasourceConfig;
 
 /**
  * FlywayAutoConfiguration extension added support for multi modular {@link Flyway} configuration.
@@ -37,27 +43,44 @@ public class IdmFlywayAutoConfiguration extends FlywayAutoConfiguration {
 	 * @author Radek Tomiška
 	 */
 	@Configuration
-	@Import({FlywayJpaDependencyConfiguration.class, DatasourceConfig.class})
+	@Import({DatasourceConfig.class})
 	@EnableConfigurationProperties({ DataSourceProperties.class, FlywayProperties.class })
 	public static class IdmFlywayConfiguration extends FlywayAutoConfiguration.FlywayConfiguration {
 
+		private FlywayProperties properties;
+		private DataSourceProperties dataSourceProperties;
+		private ResourceLoader resourceLoader;
+		private ObjectProvider<DataSource> dataSource;
+		private ObjectProvider<DataSource> flywayDataSource;
+		private ObjectProvider<FlywayConfigurationCustomizer> fluentConfigurationCustomizers;
+		private ObjectProvider<JavaMigration> javaMigrations;
+		private ObjectProvider<Callback> callbacks;
 		public IdmFlywayConfiguration(
-				FlywayProperties properties, 
+				FlywayProperties properties,
 				DataSourceProperties dataSourceProperties,
-				ResourceLoader resourceLoader, 
+				ResourceLoader resourceLoader,
 				ObjectProvider<DataSource> dataSource,
 				@FlywayDataSource ObjectProvider<DataSource> flywayDataSource,
-				ObjectProvider<FlywayMigrationStrategy> migrationStrategy,
 				ObjectProvider<FlywayConfigurationCustomizer> fluentConfigurationCustomizers,
-				ObjectProvider<Callback> callbacks, 
-				ObjectProvider<FlywayCallback> flywayCallbacks) {
-			super(addProperty(properties), 
-					dataSourceProperties, resourceLoader, 
-					dataSource, flywayDataSource, migrationStrategy, fluentConfigurationCustomizers, callbacks, flywayCallbacks);
+				ObjectProvider<JavaMigration> javaMigrations,
+				ObjectProvider<Callback> callbacks) {
+			super();
+			this.properties = properties;
+			this.dataSourceProperties = dataSourceProperties;
+			this.resourceLoader = resourceLoader;
+			this.dataSource = dataSource;
+			this.flywayDataSource = flywayDataSource;
+			this.fluentConfigurationCustomizers = fluentConfigurationCustomizers;
+			this.javaMigrations = javaMigrations;
+			this.callbacks = callbacks;
 		}
 		
-		private static FlywayProperties addProperty(FlywayProperties properties) {
+		private static FlywayProperties addProperty(FlywayProperties properties, String table,
+													String location, boolean baselineOnMigrate) {
 			properties.setCheckLocation(false);
+			properties.setTable(table);
+			properties.setLocations(List.of(location));
+			properties.setBaselineOnMigrate(baselineOnMigrate);
 			//
 			return properties;
 		}
@@ -65,29 +88,15 @@ public class IdmFlywayAutoConfiguration extends FlywayAutoConfiguration {
 		/**
 		 * Creates module dependent {@link Flyway} configuration.
          *
+		 * @param table
+		 * @param location
+		 * @param baselineOnMigrate
 		 * @return
 		 */
-		public Flyway createFlyway() {
-			return super.flyway();
-		}
-		
-		/**
-		 * Default Flyway configuration is not needed.
-		 */
-		@Deprecated
-		@Override
-		public Flyway flyway() {
-			return null;
-		}
-		
-		/**
-		 * Default Flyway configuration is not needed.
-		 */
-		@Deprecated
-		@Override
-		public FlywayMigrationInitializer flywayInitializer(Flyway flyway) {
-			return null;
+		public Flyway createFlyway(String table, String location, boolean baselineOnMigrate) {
+			return super.flyway(addProperty(properties, table, location, baselineOnMigrate),
+					dataSourceProperties, resourceLoader,
+					dataSource, flywayDataSource, fluentConfigurationCustomizers, javaMigrations, callbacks);
 		}
 	}
-
 }
