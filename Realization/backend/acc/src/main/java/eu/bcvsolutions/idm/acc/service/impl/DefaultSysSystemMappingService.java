@@ -428,7 +428,7 @@ public class DefaultSysSystemMappingService
 			variables.put(SysSystemAttributeMappingService.CONTEXT_KEY, null);
 			// add default script evaluator, for call another scripts
 			variables.put(AbstractScriptEvaluator.SCRIPT_EVALUATOR,
-					pluginExecutors.getPluginFor(IdmScriptCategory.TRANSFORM_TO));
+					pluginExecutors.getPluginFor(IdmScriptCategory.TRANSFORM_TO).orElse(null));
 
 			// Add access for script evaluator
 			List<Class<?>> extraClass = new ArrayList<>();
@@ -554,7 +554,7 @@ public class DefaultSysSystemMappingService
 			variables.put(SysSystemAttributeMappingService.CONTEXT_KEY, mappingContext);
 			// Add default script evaluator, for call another scripts
 			variables.put(AbstractScriptEvaluator.SCRIPT_EVALUATOR,
-					pluginExecutors.getPluginFor(IdmScriptCategory.MAPPING_CONTEXT));
+					pluginExecutors.getPluginFor(IdmScriptCategory.MAPPING_CONTEXT).orElse(null));
 
 			// Add access for script evaluator
 			List<Class<?>> extraClass = new ArrayList<>();

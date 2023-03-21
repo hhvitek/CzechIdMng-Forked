@@ -131,7 +131,7 @@ public class DefaultReportManager implements ReportManager {
 		Assert.notNull(report, "Report is required!");
 		Assert.notNull(report.getId(), "Persisted report is required!");
 		//
-		ReportExecutor executor = reportExecutorRegistry.getPluginFor(report.getExecutorName());
+		ReportExecutor executor = reportExecutorRegistry.getPluginFor(report.getExecutorName()).orElse(null);
 		if (executor == null) {
 			throw new ResultCodeException(CoreResultCode.NOT_FOUND, ImmutableMap.of("reportExecutor", report.getExecutorName()));
 		}
@@ -168,7 +168,7 @@ public class DefaultReportManager implements ReportManager {
 		Assert.notNull(report, "Report is required.");
 		Assert.hasLength(rendererName, "Renderer name is required.");
 		//
-		ReportRenderer renderer = reportRendererRegistry.getPluginFor(rendererName);
+		ReportRenderer renderer = reportRendererRegistry.getPluginFor(rendererName).orElse(null);
 		if (renderer == null) {
 			throw new ResultCodeException(CoreResultCode.NOT_FOUND, ImmutableMap.of("reportRenderer", rendererName));
 		}
@@ -233,7 +233,7 @@ public class DefaultReportManager implements ReportManager {
 				String[] rendererNames = registrarBean.getValue().register(reportName);
 				if (rendererNames != null) {
 					for (String rendererName : rendererNames) {
-						ReportRenderer renderer = reportRendererRegistry.getPluginFor(rendererName);
+						ReportRenderer renderer = reportRendererRegistry.getPluginFor(rendererName).orElse(null);
 						if (enabledEvaluator.isEnabled(renderer)) {
 							renderers.add(toDto(renderer));
 						}
@@ -272,7 +272,7 @@ public class DefaultReportManager implements ReportManager {
 	}
 	
 	private ReportExecutor getExecutor(RptReportDto report) {
-		ReportExecutor executor = reportExecutorRegistry.getPluginFor(report.getExecutorName());
+		ReportExecutor executor = reportExecutorRegistry.getPluginFor(report.getExecutorName()).orElse(null);
 		if (executor == null) {
 			throw new ResultCodeException(CoreResultCode.NOT_FOUND, ImmutableMap.of("reportExecutor", report.getExecutorName()));
 		}

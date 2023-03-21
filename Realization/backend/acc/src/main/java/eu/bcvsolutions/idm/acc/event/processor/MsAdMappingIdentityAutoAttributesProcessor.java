@@ -300,7 +300,7 @@ public class MsAdMappingIdentityAutoAttributesProcessor extends AbstractSystemMa
 				.orElse(null);
 		if (scriptDto != null) {
 			String script = this.getPluginExecutors().getPluginFor(toResource ? IdmScriptCategory.TRANSFORM_TO : IdmScriptCategory.TRANSFORM_FROM)
-					.generateTemplate(scriptDto);
+					.orElse(null).generateTemplate(scriptDto);
 			if (Strings.isNotBlank(script)) {
 				return createAttributeMappingByScriptToResource(dto, schemaAttribute, script, toResource);
 			}

@@ -75,7 +75,7 @@ public class DefaultFormProjectionManager implements FormProjectionManager {
 	@Override
 	@SuppressWarnings("unchecked")
 	public IdmFormDefinitionDto getConfiguredFormDefinition(Identifiable owner, IdmFormDefinitionDto formDefinition) {
-		FormProjectionLookup<BaseDto> lookup = (FormProjectionLookup<BaseDto>) formProjectionLookups.getPluginFor(owner.getClass());
+		FormProjectionLookup<BaseDto> lookup = (FormProjectionLookup<BaseDto>) formProjectionLookups.getPluginFor(owner.getClass()).orElse(null);
 		if (lookup == null) {
 			return formDefinition;
 		}
@@ -131,7 +131,7 @@ public class DefaultFormProjectionManager implements FormProjectionManager {
 	@Override
 	@SuppressWarnings("unchecked")
 	public IdmFormInstanceDto getBasicFieldsInstance(Identifiable owner) {
-		FormProjectionLookup<BaseDto> lookup = (FormProjectionLookup<BaseDto>) formProjectionLookups.getPluginFor(owner.getClass());
+		FormProjectionLookup<BaseDto> lookup = (FormProjectionLookup<BaseDto>) formProjectionLookups.getPluginFor(owner.getClass()).orElse(null);
 		if (lookup == null) {
 			return null;
 		}

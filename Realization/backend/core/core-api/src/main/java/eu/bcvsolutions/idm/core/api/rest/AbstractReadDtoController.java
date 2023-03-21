@@ -403,7 +403,7 @@ public abstract class AbstractReadDtoController<DTO extends BaseDto, F extends B
 			return pagedResourcesAssembler.toEmptyModel(page, domainType);
 		}
 		//
-		return pagedResourcesAssembler.toCollectionModel(Collections.singleton(page));
+		return pagedResourcesAssembler.toModel(page);
 	}
 
 	/**

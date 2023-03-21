@@ -127,7 +127,7 @@ public class DefaultIdmNotificationConfigurationService
 	@Override
 	public List<NotificationSender<?>> getDefaultSenders() {
 		List<NotificationSender<?>> senders = new ArrayList<>();
-		senders.add(notificationSenders.getPluginFor(IdmConsoleLog.NOTIFICATION_TYPE)); // TODO: global configuration
+		senders.add(notificationSenders.getPluginFor(IdmConsoleLog.NOTIFICATION_TYPE).orElse(null)); // TODO: global configuration
 		return Collections.unmodifiableList(senders);
 	}
 	
@@ -191,7 +191,7 @@ public class DefaultIdmNotificationConfigurationService
 		}
 		//
 		// default plugin by ordered definition
-		NotificationSender<?> sender = notificationSenders.getPluginFor(notificationType);
+		NotificationSender<?> sender = notificationSenders.getPluginFor(notificationType).orElse(null);
 		String implName = sender.getConfigurationValue(ConfigurationService.PROPERTY_IMPLEMENTATION);
 		if (StringUtils.isBlank(implName)) {
 			// return default sender - configuration is empty
