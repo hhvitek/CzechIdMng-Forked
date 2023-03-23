@@ -1,8 +1,8 @@
 package eu.bcvsolutions.idm.core.api.config.swagger;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Pageable;
@@ -10,12 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
 import org.springframework.util.MultiValueMap;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 
 import eu.bcvsolutions.idm.core.api.domain.ModuleDescriptor;
-import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import io.swagger.annotations.Api;
 import springfox.documentation.RequestHandler;
 import springfox.documentation.builders.PathSelectors;
@@ -31,7 +28,6 @@ import springfox.documentation.spring.web.plugins.Docket;
  * Modular swagger simple configuration
  * - expose all api endpoints in given basePackage
  *
- * @see #api(String)
  * @author Radek Tomiška
  *
  */
@@ -48,7 +44,7 @@ public abstract class AbstractSwaggerConfig implements SwaggerConfig {
 	 * Docket initialization by module conventions.
 	 *
 	 * @see ModuleDescriptor
-	 * @param basePackage Expose endpoints from given base basePackages
+	 * @param basePackages Expose endpoints from given base basePackages
 	 * @return
 	 */
 	protected Docket api(String... basePackages) {
@@ -65,7 +61,7 @@ public abstract class AbstractSwaggerConfig implements SwaggerConfig {
 				.groupName(getModuleDescriptor().getId())
 				.select()
 					.apis(getApis(basePackages))
-					.paths(getPaths())
+					.paths(PathSelectors.any())
 				.build()
 				.apiInfo(metaData());
 	}
@@ -79,25 +75,16 @@ public abstract class AbstractSwaggerConfig implements SwaggerConfig {
 	protected Predicate<RequestHandler> getApis(String... basePackages) {
 		Assert.notEmpty(basePackages, "At least one base package is required to generate swagger documentation.");
 		//
-		List<Predicate<RequestHandler>> predicates = new ArrayList<>();
 		// endpoints from packages
-		predicates.add(Predicates.or(Arrays.asList(basePackages)
+		List<Predicate<RequestHandler>> basePackagesPredicates = Arrays.asList(basePackages)
 				.stream()
 				.map(RequestHandlerSelectors::basePackage)
-				.collect(Collectors.toList())));
-		// and with annotations
-		predicates.add(RequestHandlerSelectors.withClassAnnotation(Api.class));
+				.collect(Collectors.toList());
 		//
-		return Predicates.and(predicates);
-	}
-
-	/**
-	 * Expose endpoints with given path only.
-	 *
-	 * @return
-	 */
-	protected Predicate<String> getPaths() {
-		return PathSelectors.ant(BaseController.BASE_PATH + "/**");
+		Predicate<RequestHandler> apiPredicate = basePackagesPredicates.stream().reduce(Predicate::or).orElse(x -> false);
+		// and with annotations
+		apiPredicate.and(RequestHandlerSelectors.withClassAnnotation(Api.class));
+		return apiPredicate;
 	}
 
 	/**
