@@ -2149,10 +2149,43 @@
       "UNIFORMPASSWORD": "Uniform password system",
       "SYSTEMGROUP": "Group of systems",
       "SYSTEMOWNER": "Owner of system",
-      "SYSTEMOWNERROLE": "Owner of system by role"
+      "SYSTEMOWNERROLE": "Owner of system by role",
+      "ACCOUNTFORMVALUE": "Forms - values",
+      "ACCOUNTROLEASSIGNMENT": "Account role assignments",
+      "REMOTESERVER": "Remote connector servers",
+      "SYSTEMGROUPSYSTEM": "Systems in system groups"
     }
   },
   "eav": {
+    "authorization-evaluator": {
+      "acc-system-owner-evaluator": {
+        "help": "Permissions for systems for system owner."
+      },
+      "acc-system-owner-assigned-by-identity-evaluator": {
+        "help": "Permissions for system owners based on system permissions."
+      },
+      "acc-system-owner-assigned-by-role-evaluator": {
+        "help": "Permissions for system owners (by role) based on system permissions."
+      },
+      "acc-role-account-by-role-evaluator": {
+        "help": "Permissions for role accounts based on role permissions."
+      },
+      "acc-contract-account-by-contract-evaluator": {
+        "help": "Permissions for contract accounts based on contract permissions."
+      },
+      "acc-read-account-by-identity-evaluator": {
+        "help": "Permissions for identity accounts based on identity permissions."
+      },
+      "acc-role-catalogue-account-by-role-catalogue-evaluator": {
+        "help": "Permissions for role catalogue accounts based on role catalogue permissions."
+      },
+      "acc-identity-role-account-by-identity-role-evaluator": {
+        "help": "Permissions for identity role accounts based on identity role permissions."
+      },
+      "acc-identity-account-by-account-evaluator": {
+        "help": "Permissions for identity accounts based on account permissions."
+      }
+    },
     "eu-bcvsolutions-idm-acc-entity-syssystem": {
       "connid-net-tirasa-connid-bundles-db-table-databasetableconnector-net-tirasa-connid-bundles-db-table-2-2-4": {
         "attributes": {
@@ -2868,7 +2901,13 @@
       "account-delete-bulk-action": {
         "label": "$t(action.delete.action) accounts",
         "help": "$t(action.delete.action) selected accounts.",
-        "icon": "$t(action.delete.icon)"
+        "icon": "$t(action.delete.icon)",
+        "attributes": {
+          "force-delete": {
+            "label": "Deletes accounts even if they are protected or if account protection is enabled in the system configuration.",
+            "help": "The account will be deleted even if it is protected or if account protection is enabled in the system configuration."
+          }
+        }
       },
       "account-stop-managing-bulk-action": {
         "label": "Stop managing accounts",
@@ -2898,7 +2937,7 @@
       "acc-system-mapping-duplicate-bulk-action": {
         "icon": "fa:clone",
         "label": "Duplicate the system mapping",
-        "help": "Creates copy of selected system mappings."
+        "help": "Creates copy of selected system mappings. If connected mapping is configured, it will be removed from the duplicated mapping."
       },
       "acc-identity-account-management-bulk-action": {
         "icon": "link",
@@ -3069,6 +3108,18 @@
           "numberofdays": {
             "label": "Number of days",
             "help": "Errors not older than given number of days."
+          }
+        }
+      }
+    },
+    "authorization-evaluator": {
+      "acc-account-role-assignment-by-account-evaluator": {
+        "help": "Permissions for roles assigned to accounts based on permissions for account",
+        "attributes": {
+          "include-permissions": {
+            "label": "Transfer permissions",
+            "help": "Select permissions which will be transfered to account role assignment permissions.",
+            "placeholder": "Same permissions as for the account or select ..."
           }
         }
       }
