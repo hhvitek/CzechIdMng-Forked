@@ -186,7 +186,7 @@ public class DefaultIdmNotificationConfigurationService
 	
 	@Override
 	public NotificationSender<?> getSender(String notificationType) {
-		if (!notificationSenders.hasPluginFor(notificationType)) {
+		if (notificationType == null || !notificationSenders.hasPluginFor(notificationType)) {
 			return null;
 		}
 		//

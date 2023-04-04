@@ -1,7 +1,5 @@
 package eu.bcvsolutions.idm.core.scheduler.service.impl;
 
-import static org.mockito.Mockito.when;
-
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
@@ -9,8 +7,6 @@ import java.util.List;
 import org.apache.camel.spring.GenericBeansException;
 import org.junit.Assert;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.quartz.Calendar;
 import org.quartz.DailyTimeIntervalScheduleBuilder;
@@ -35,6 +31,7 @@ import eu.bcvsolutions.idm.core.api.exception.CoreException;
 import eu.bcvsolutions.idm.core.scheduler.api.dto.Task;
 import eu.bcvsolutions.idm.core.scheduler.repository.IdmDependentTaskTriggerRepository;
 import eu.bcvsolutions.idm.test.api.AbstractUnitTest;
+import static org.mockito.Mockito.*;
 
 /**
  * Scheduler unit test to cover error states.
@@ -46,13 +43,12 @@ import eu.bcvsolutions.idm.test.api.AbstractUnitTest;
  */
 public class DefaultSchedulerManagerUnitTest extends AbstractUnitTest {
 	
-	@Mock private AutowireCapableBeanFactory contextFactory;
-	@Mock private ApplicationContext context;
-	@Mock private Scheduler scheduler;
-	@Mock private IdmDependentTaskTriggerRepository dependentTaskTriggerRepository;
+	private final AutowireCapableBeanFactory contextFactory = mock(AutowireCapableBeanFactory.class);
+	private final ApplicationContext context = mock(ApplicationContext.class);
+	private final Scheduler scheduler = mock(Scheduler.class);
+	private final IdmDependentTaskTriggerRepository dependentTaskTriggerRepository = mock(IdmDependentTaskTriggerRepository.class);
 	//
-	@InjectMocks 
-	private DefaultSchedulerManager manager;
+	private final DefaultSchedulerManager manager = spy(new DefaultSchedulerManager(context, scheduler, dependentTaskTriggerRepository));
 	
 	@Test(expected = CoreException.class)
 	public void testExceptionOnGetAllTasks() throws SchedulerException {
