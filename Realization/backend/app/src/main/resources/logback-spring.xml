@@ -53,6 +53,7 @@
 		<logger name="org.hibernate.SQL" level="WARN"/>
 		<logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="WARN"/>
 		<logger name="AUDIT" level="ERROR"/>
+		<logger name="org.springframework.transaction" level="TRACE"/>
     </springProfile>
     
     <springProfile name="dev-mysql">  	
