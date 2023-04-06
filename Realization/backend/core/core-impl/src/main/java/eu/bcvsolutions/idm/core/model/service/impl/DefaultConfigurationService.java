@@ -72,21 +72,19 @@ public class DefaultConfigurationService
 	private final IdmConfigurationRepository repository;
 	private final ConfidentialStorage confidentialStorage;
 	private final ConfigurableEnvironment env;
-	private final IdmCacheManager cacheManager;
+	@Autowired private IdmCacheManager cacheManager;
 	//
 	@Autowired
 	public DefaultConfigurationService(
 			IdmConfigurationRepository repository,
 			ConfidentialStorage confidentialStorage,
 			ConfigurableEnvironment env,
-			EntityEventManager entityEventManager,
-			IdmCacheManager cacheManager) {
+			EntityEventManager entityEventManager) {
 		super(repository, entityEventManager);
 		//
 		this.repository = repository;
 		this.confidentialStorage = confidentialStorage;
 		this.env = env;
-		this.cacheManager = cacheManager;
 	}
 	
 	@Override

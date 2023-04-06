@@ -36,13 +36,14 @@ public class DefaultAttachmentManagerUnitTest extends AbstractVerifiableUnitTest
 	private final AttachmentConfiguration attachmentConfiguration = mock(AttachmentConfiguration.class);
 	private final ModelMapper modelMapper = spy(ModelMapper.class);
 
-	private final DefaultAttachmentManager attachmentManager = spy(new DefaultAttachmentManager(repository,
-			attachmentConfiguration, lookupService));
+	private final DefaultAttachmentManager attachmentManager = spy(new DefaultAttachmentManager(repository));
 
 	@Before
 	public void init() {
 		when(attachmentConfiguration.getStoragePath()).thenReturn("/idm_data");
 		ReflectionTestUtils.setField(attachmentManager, "modelMapper", modelMapper);
+		ReflectionTestUtils.setField(attachmentManager, "attachmentConfiguration", attachmentConfiguration);
+		ReflectionTestUtils.setField(attachmentManager, "lookupService", lookupService);
 	}
 
 	@Test

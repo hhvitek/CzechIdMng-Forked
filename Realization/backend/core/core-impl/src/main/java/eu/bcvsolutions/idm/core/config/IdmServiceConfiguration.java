@@ -286,7 +286,7 @@ public class IdmServiceConfiguration {
 	@Bean
 	@ConditionalOnMissingBean(IdmConfigurationService.class)
 	public IdmConfigurationService configurationService() {
-		return new DefaultConfigurationService(configurationRepository, confidentialStorage(), environment, entityEventManager(), cacheManager);
+		return new DefaultConfigurationService(configurationRepository, confidentialStorage(), environment, entityEventManager());
 	}
 	
 	/**
@@ -906,7 +906,7 @@ public class IdmServiceConfiguration {
 	@Bean
 	@ConditionalOnMissingBean(AttachmentManager.class)
 	public AttachmentManager attachmentManager() {
-		return new DefaultAttachmentManager(attachmentRepository, attachmentConfiguration(), lookupService());
+		return new DefaultAttachmentManager(attachmentRepository);
 	}
 	
 	/**

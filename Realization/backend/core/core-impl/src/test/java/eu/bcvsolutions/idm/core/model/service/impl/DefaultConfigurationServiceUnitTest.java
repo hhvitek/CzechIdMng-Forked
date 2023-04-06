@@ -50,7 +50,7 @@ public class DefaultConfigurationServiceUnitTest extends AbstractUnitTest {
 	private final SiemLoggerManager logger = mock(SiemLoggerManager.class);
 	private final ConfigurableEnvironment env = mock(ConfigurableEnvironment.class);
 	//
-	private final DefaultConfigurationService service = spy(new DefaultConfigurationService(repository, confidentialStorage, env, entityEventManager, cacheManager));
+	private final DefaultConfigurationService service = spy(new DefaultConfigurationService(repository, confidentialStorage, env, entityEventManager));
 
 	@Before
 	public void init() {
@@ -58,6 +58,7 @@ public class DefaultConfigurationServiceUnitTest extends AbstractUnitTest {
 		when(logger.skipLogging(any(String.class))).thenReturn(false);
 		ReflectionTestUtils.setField(service, "modelMapper", modelMapper);
 		ReflectionTestUtils.setField(service, "siemLoggerManager", logger);
+		ReflectionTestUtils.setField(service, "cacheManager", cacheManager);
 	}
 
 	@Test

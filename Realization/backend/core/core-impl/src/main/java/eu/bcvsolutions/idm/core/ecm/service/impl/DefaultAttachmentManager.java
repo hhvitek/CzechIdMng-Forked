@@ -70,17 +70,13 @@ public class DefaultAttachmentManager
 	// or create "temp" attachment without owner in the same storage?
 	private static final String DEFAULT_TEMP_FILE_EXTENSION = "tmp";
 	//
-	private final AttachmentConfiguration attachmentConfiguration;
-	private final LookupService lookupService;
+
+	@Autowired private AttachmentConfiguration attachmentConfiguration;
+	@Autowired private LookupService lookupService;
 	
 	@Autowired
-	public DefaultAttachmentManager(IdmAttachmentRepository repository,
-									AttachmentConfiguration attachmentConfiguration,
-									LookupService lookupService) {
+	public DefaultAttachmentManager(IdmAttachmentRepository repository) {
 		super(repository);
-
-		this.attachmentConfiguration = attachmentConfiguration;
-		this.lookupService = lookupService;
 	}
 	
 	@Override
