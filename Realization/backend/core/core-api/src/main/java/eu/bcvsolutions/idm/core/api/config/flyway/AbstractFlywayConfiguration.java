@@ -34,9 +34,9 @@ public abstract class AbstractFlywayConfiguration {
 			location = environment.getProperty(prefix + ".locations");
 		} catch (IllegalArgumentException e) {
 			/**
-			 * This is a workaroung for the issue with usign ${} in properties file. The PropertyResolver
+			 * This is a workaround for the issue with using ${} in properties file. The PropertyResolver
 			 * will try to resolve the ${} and will throw an exception if it can't find the value.
-			 * But this value is is resolved much later.
+			 * But this value is resolved much later.
 			 */
 			String[] messageSplit = e.getMessage().split("\"");
 			if (messageSplit.length > 1) {
