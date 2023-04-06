@@ -94,7 +94,7 @@ public class RoleRequestDeleteBulkActionIntegrationTest extends AbstractBulkActi
 		bulkAction.setIdentifiers(ids);
 		IdmBulkActionDto processAction = bulkActionManager.processAction(bulkAction);
 		checkResultLrt(processAction, 1l, null, null);
-		
+
 		roleRequest = roleRequestService.get(roleRequest.getId());
 		Assert.assertEquals(OperationState.CANCELED,roleRequest.getSystemState().getState());
 		
