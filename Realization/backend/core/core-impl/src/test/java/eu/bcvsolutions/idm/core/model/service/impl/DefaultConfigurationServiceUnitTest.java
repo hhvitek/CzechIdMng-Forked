@@ -5,11 +5,11 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.modelmapper.ModelMapper;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import com.google.common.collect.Lists;
 
@@ -42,7 +42,7 @@ public class DefaultConfigurationServiceUnitTest extends AbstractUnitTest {
 	private static final String VALUE_TWO = "value Two";
 	private static final String VALUE_THREE = "valueThree";
 	//
-	@Spy private ModelMapper modelMapper = new ModelMapper();
+	ModelMapper modelMapper = spy(ModelMapper.class);
 	private final IdmConfigurationRepository repository = mock(IdmConfigurationRepository.class);
 	private final ConfidentialStorage confidentialStorage = mock(ConfidentialStorage.class);
 	private final EntityEventManager entityEventManager = mock(EntityEventManager.class);
@@ -50,18 +50,20 @@ public class DefaultConfigurationServiceUnitTest extends AbstractUnitTest {
 	private final SiemLoggerManager logger = mock(SiemLoggerManager.class);
 	private final ConfigurableEnvironment env = mock(ConfigurableEnvironment.class);
 	//
-	private final DefaultConfigurationService service = spy(new DefaultConfigurationService(repository, confidentialStorage, env, entityEventManager));
+	private final DefaultConfigurationService service = spy(new DefaultConfigurationService(repository, confidentialStorage, env, entityEventManager, cacheManager));
 
 	@Before
 	public void init() {
 		when(logger.buildAction(any(String.class), any(String.class))).thenReturn("");
 		when(logger.skipLogging(any(String.class))).thenReturn(false);
+		ReflectionTestUtils.setField(service, "modelMapper", modelMapper);
+		ReflectionTestUtils.setField(service, "siemLoggerManager", logger);
 	}
 
 	@Test
 	public void testGetValuesWithNull() {
 		when(repository.findOneByName(any(String.class))).thenReturn(null);
-		//
+		when(cacheManager.getValue(any(String.class), any(String.class))).thenReturn(null);
 		List<String> results = service.getValues("key");
 		//
 		Assert.assertNotNull(results);

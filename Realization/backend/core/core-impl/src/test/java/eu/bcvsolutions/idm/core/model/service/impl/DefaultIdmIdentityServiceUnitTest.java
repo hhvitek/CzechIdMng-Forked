@@ -5,8 +5,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.modelmapper.ModelMapper;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import com.google.common.collect.Lists;
 
@@ -48,6 +50,12 @@ public class DefaultIdmIdentityServiceUnitTest extends AbstractUnitTest {
 	private final ModelMapper modelMapper = spy(ModelMapper.class);
 	//
 	private final DefaultIdmIdentityService service = spy(new DefaultIdmIdentityService(repository, formService, entityEventManager));
+
+	@Before
+	public void init() {
+		ReflectionTestUtils.setField(service, "modelMapper", modelMapper);
+		ReflectionTestUtils.setField(service, "identityContractService", identityContractService);
+	}
 
 	@Test
 	public void testNiceLabelWithNull() {
