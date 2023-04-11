@@ -1,5 +1,6 @@
 package eu.bcvsolutions.idm.core.bulk.action.impl.rolerequest;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -23,7 +24,7 @@ import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
 import eu.bcvsolutions.idm.test.api.AbstractBulkActionTest;
 
 /**
- * Integration tests for {@link TreeNodeDeleteBulkAction}.
+ * Integration tests for {@link RoleRequestDeleteBulkAction}.
  *
  * @author Ondrej Husnik
  */
@@ -112,7 +113,7 @@ public class RoleRequestDeleteBulkActionIntegrationTest extends AbstractBulkActi
 		IdmRoleDto role = this.createRoles(1).get(0);
 		IdmIdentityDto identity = createIdentities(1).get(0);
 		IdmIdentityContractDto contract = getHelper().getPrimeContract(identity);
-		
+
 		IdmRoleRequestDto roleRequest = roleRequestService.createRequest(contract, role);
 		Assert.assertNotNull(roleRequest);
 		Assert.assertNotNull(roleRequest.getId());
