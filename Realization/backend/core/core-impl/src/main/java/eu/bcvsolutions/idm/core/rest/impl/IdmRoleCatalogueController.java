@@ -340,11 +340,11 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
 			nickname = "searchRootRoleCatalogues", 
 			tags = { IdmRoleCatalogueController.TAG })
 	@ApiImplicitParams({
-        @ApiImplicitParam(name = "page", dataType = "string", paramType = "query",
+        @ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query",
                 value = "Results page you want to retrieve (0..N)"),
-        @ApiImplicitParam(name = "size", dataType = "string", paramType = "query",
+        @ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query",
                 value = "Number of records per page."),
-        @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query",
+        @ApiImplicitParam(name = "sort", allowMultiple = true, dataTypeClass = String.class, paramType = "query",
                 value = "Sorting criteria in the format: property(,asc|desc). " +
                         "Default sort order is ascending. " +
                         "Multiple sort criteria are supported.")
@@ -367,11 +367,11 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
 			tags = { IdmRoleCatalogueController.TAG },
 			notes = "Finds direct chilren by given parent node uuid identifier. Set 'parent' parameter.")
 	@ApiImplicitParams({
-        @ApiImplicitParam(name = "page", dataType = "string", paramType = "query",
+        @ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query",
                 value = "Results page you want to retrieve (0..N)"),
-        @ApiImplicitParam(name = "size", dataType = "string", paramType = "query",
+        @ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query",
                 value = "Number of records per page."),
-        @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query",
+        @ApiImplicitParam(name = "sort", allowMultiple = true, dataTypeClass = String.class, paramType = "query",
                 value = "Sorting criteria in the format: property(,asc|desc). " +
                         "Default sort order is ascending. " +
                         "Multiple sort criteria are supported.")

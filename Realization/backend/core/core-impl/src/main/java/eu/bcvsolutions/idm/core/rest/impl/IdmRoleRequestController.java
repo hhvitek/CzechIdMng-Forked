@@ -338,10 +338,10 @@ public class IdmRoleRequestController extends AbstractReadWriteDtoController<Idm
 					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							@AuthorizationScope(scope = CoreGroupPermission.ROLE_REQUEST_READ, description = "") }) })
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = "parameters", allowMultiple = true, dataType = "string", paramType = "query", value = "Search criteria parameters. Parameters could be registered by module. Example id=25c5b9e8-b15d-4f95-b715-c7edf6f4aee6"),
-			@ApiImplicitParam(name = "page", dataType = "string", paramType = "query", value = "Results page you want to retrieve (0..N)"),
-			@ApiImplicitParam(name = "size", dataType = "string", paramType = "query", value = "Number of records per page."),
-			@ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
+			@ApiImplicitParam(name = "parameters", allowMultiple = true, dataTypeClass = String.class, paramType = "query", value = "Search criteria parameters. Parameters could be registered by module. Example id=25c5b9e8-b15d-4f95-b715-c7edf6f4aee6"),
+			@ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query", value = "Results page you want to retrieve (0..N)"),
+			@ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query", value = "Number of records per page."),
+			@ApiImplicitParam(name = "sort", allowMultiple = true, dataTypeClass = String.class, paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
 					+ "Default sort order is ascending. " + "Multiple sort criteria are supported.") })
 	public CollectionModel<?> getConcepts(
 			@ApiParam(value = "Role request's uuid identifier.", required = true) @PathVariable String backendId,

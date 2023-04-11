@@ -188,11 +188,11 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
 			@Authorization(SwaggerConfig.AUTHENTICATION_CIDMST) //
 	}) //
 	@ApiImplicitParams({ //
-			@ApiImplicitParam(name = "page", dataType = "string", paramType = "query", //
+			@ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query", //
 					value = "Results page you want to retrieve (0..N)"), //
-			@ApiImplicitParam(name = "size", dataType = "string", paramType = "query", //
+			@ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query", //
 					value = "Number of records per page."), //
-			@ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query", //
+			@ApiImplicitParam(name = "sort", allowMultiple = true, dataTypeClass = String.class, paramType = "query", //
 					value = "Sorting criteria in the format: property(,asc|desc). " + //
 							"Default sort order is ascending. " + //
 							"Multiple sort criteria are supported.") //
@@ -218,9 +218,9 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
 	@ApiOperation(value = "Search records", authorizations = { @Authorization(SwaggerConfig.AUTHENTICATION_BASIC),
 			@Authorization(SwaggerConfig.AUTHENTICATION_CIDMST) })
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = "page", dataType = "string", paramType = "query", value = "Results page you want to retrieve (0..N)"),
-			@ApiImplicitParam(name = "size", dataType = "string", paramType = "query", value = "Number of records per page."),
-			@ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
+			@ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query", value = "Results page you want to retrieve (0..N)"),
+			@ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query", value = "Number of records per page."),
+			@ApiImplicitParam(name = "sort", allowMultiple = true, dataTypeClass = String.class, paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
 					+ "Default sort order is ascending. " + "Multiple sort criteria are supported.") })
 	public CollectionModel<?> findQuick(@ApiParam(value = "Request ID", required = true) String requestId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -242,11 +242,11 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
 			@Authorization(SwaggerConfig.AUTHENTICATION_CIDMST) //
 	}) //
 	@ApiImplicitParams({ //
-			@ApiImplicitParam(name = "page", dataType = "string", paramType = "query", //
+			@ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query", //
 					value = "Results page you want to retrieve (0..N)"), //
-			@ApiImplicitParam(name = "size", dataType = "string", paramType = "query", //
+			@ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query", //
 					value = "Number of records per page."), //
-			@ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query", //
+			@ApiImplicitParam(name = "sort", allowMultiple = true, dataTypeClass = String.class, paramType = "query", //
 					value = "Sorting criteria in the format: property(,asc|desc). " + //
 							"Default sort order is ascending. " + //
 							"Multiple sort criteria are supported.") }) //
