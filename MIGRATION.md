@@ -838,4 +838,19 @@ Due to breaking changes above, custom module requires some refactoring, before i
   spring.main.lazy-initialization=false
   ```
 - 🟠 **Changes in Mockito**:
-  - The new version of Mockito will no longer properly support using the @InjectMocks annotation. If you are using, rewrite the test following DefaultLongRunningTaskManagerUnitTest
+  - The new version of Mockito will no longer properly support using the @InjectMocks annotation. If you are using this annotation, rewrite the test following DefaultLongRunningTaskManagerUnitTest.
+- 🟠 **Profile configuration changes**:
+  - You application-<>.property file can no longer contain the `spring.profiles.active` key. Remove all such instances. The profile is resolved based on the name of the file now.
+- 🟠 **Quartz configuration changes**:
+  - Quartz now requires its own data source. It will create it itself based on our configuration.
+  - If you use a custom quartz-<>.properties files (stand-alone installation typically), add the following properties:
+  ```
+  # Configure DataSource
+  org.quartz.jobStore.dataSource=quartzDataSource
+  org.quartz.dataSource.quartzDataSource.URL=jdbc:postgresql://localhost:5432/bcv_idm_13
+  org.quartz.dataSource.quartzDataSource.user=idmadmin
+  org.quartz.dataSource.quartzDataSource.password=idmadmin
+  org.quartz.dataSource.quartzDataSource.driver=org.postgresql.Driver
+  org.quartz.dataSource.quartzDataSource.validationQuery=SELECT 1
+  org.quartz.dataSource.quartzDataSource.maxConnections =20
+  ```
