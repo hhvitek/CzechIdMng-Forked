@@ -36,7 +36,7 @@ public class AccTestFlywayConfig extends AbstractFlywayConfiguration {
 	@Bean
 	@DependsOn("flywayAcc")
 	@ConditionalOnMissingBean(name = "flywayAccTest")
-	@ConditionalOnExpression("${flyway.enabled:true} && '${flyway.acctest.locations}'!=''")
+	@ConditionalOnExpression("${spring.flyway.enabled:true} && '${flyway.acctest.locations}'!=''")
 	@ConfigurationProperties(prefix = "flyway.acctest")
 	public Flyway flywayAccTest() {
 		Flyway flyway = super.createFlyway();		

@@ -36,7 +36,7 @@ public class RptFlywayConfig extends AbstractFlywayConfiguration {
 	@Bean
 	@DependsOn("flywayCore")
 	@ConditionalOnMissingBean(name = "flywayRpt")
-	@ConditionalOnExpression("${flyway.enabled:true} && '${flyway.rpt.locations}'!=''")
+	@ConditionalOnExpression("${spring.flyway.enabled:true} && '${flyway.rpt.locations}'!=''")
 	@ConfigurationProperties(prefix = "flyway.rpt")
 	public Flyway flywayRpt() {
 		Flyway flyway = super.createFlyway();		
