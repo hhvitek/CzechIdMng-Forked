@@ -2,6 +2,7 @@ package eu.bcvsolutions.idm.core.exception;
 
 import java.util.Map;
 
+import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.web.context.request.WebRequest;
 
@@ -26,9 +27,10 @@ public class RestErrorAttributes extends DefaultErrorAttributes {
 	public static final String ATTRIBUTE_ERROR = "error";
 	
 	@Override
-    public Map<String, Object> getErrorAttributes(WebRequest webRequest, boolean includeStackTrace) {
+    public Map<String, Object> getErrorAttributes(WebRequest webRequest, ErrorAttributeOptions errorAttributeOptions) {
 		Throwable error = getError(webRequest);
-		Map<String, Object> errorAttributes = super.getErrorAttributes(webRequest, includeStackTrace);
+		Map<String, Object> errorAttributes = super.getErrorAttributes(webRequest,
+				errorAttributeOptions);
 		//
 		ErrorModel errorModel = null;
 		if (error instanceof ResultCodeException) {

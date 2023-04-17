@@ -16,7 +16,6 @@ import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration;
 import org.springframework.boot.autoconfigure.flyway.FlywayConfigurationCustomizer;
 import org.springframework.boot.autoconfigure.flyway.FlywayDataSource;
 import org.springframework.boot.autoconfigure.flyway.FlywayProperties;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -44,11 +43,10 @@ public class IdmFlywayAutoConfiguration extends FlywayAutoConfiguration {
 	 */
 	@Configuration
 	@Import({DatasourceConfig.class})
-	@EnableConfigurationProperties({ DataSourceProperties.class, FlywayProperties.class })
+	@EnableConfigurationProperties({ FlywayProperties.class })
 	public static class IdmFlywayConfiguration extends FlywayAutoConfiguration.FlywayConfiguration {
 
 		private FlywayProperties properties;
-		private DataSourceProperties dataSourceProperties;
 		private ResourceLoader resourceLoader;
 		private ObjectProvider<DataSource> dataSource;
 		private ObjectProvider<DataSource> flywayDataSource;
@@ -57,7 +55,6 @@ public class IdmFlywayAutoConfiguration extends FlywayAutoConfiguration {
 		private ObjectProvider<Callback> callbacks;
 		public IdmFlywayConfiguration(
 				FlywayProperties properties,
-				DataSourceProperties dataSourceProperties,
 				ResourceLoader resourceLoader,
 				ObjectProvider<DataSource> dataSource,
 				@FlywayDataSource ObjectProvider<DataSource> flywayDataSource,
@@ -66,7 +63,6 @@ public class IdmFlywayAutoConfiguration extends FlywayAutoConfiguration {
 				ObjectProvider<Callback> callbacks) {
 			super();
 			this.properties = properties;
-			this.dataSourceProperties = dataSourceProperties;
 			this.resourceLoader = resourceLoader;
 			this.dataSource = dataSource;
 			this.flywayDataSource = flywayDataSource;
@@ -94,9 +90,8 @@ public class IdmFlywayAutoConfiguration extends FlywayAutoConfiguration {
 		 * @return
 		 */
 		public Flyway createFlyway(String table, String location, boolean baselineOnMigrate) {
-			return super.flyway(addProperty(properties, table, location, baselineOnMigrate),
-					dataSourceProperties, resourceLoader,
-					dataSource, flywayDataSource, fluentConfigurationCustomizers, javaMigrations, callbacks);
+				return super.flyway(addProperty(properties, table, location, baselineOnMigrate),
+					resourceLoader, dataSource, flywayDataSource, fluentConfigurationCustomizers, javaMigrations, callbacks);
 		}
 	}
 }
