@@ -4,7 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,13 +35,11 @@ public class UpcomingTasksController implements BaseController {
 
 	protected static final String TAG = "Upcoming tasks";
 	private SchedulerManager schedulerService;
-	private LookupService lookupService;
 	private PagedResourcesAssembler<Object> pagedResourcesAssembler;
 	private ParameterConverter parameterConverter;
 
 	public UpcomingTasksController(SchedulerManager schedulerService, LookupService lookupService, PagedResourcesAssembler<Object> pagedResourcesAssembler) {
 		this.schedulerService = schedulerService;
-		this.lookupService = lookupService;
 		this.pagedResourcesAssembler = pagedResourcesAssembler;
 		this.parameterConverter = new ParameterConverter(lookupService);
 	}
@@ -75,7 +73,7 @@ public class UpcomingTasksController implements BaseController {
 			@ApiImplicitParam(name = "nextFireTimesLimitCount", dataType = "string", paramType = "query",
 					value = "Limit size of nextFireTimes list"),
 	})
-	public Resources<?> findUpcomingTasks(
+	public CollectionModel<?> findUpcomingTasks(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		Page tasks = schedulerService.findUpcomingTasks(toFilter(parameters), pageable);
@@ -83,11 +81,12 @@ public class UpcomingTasksController implements BaseController {
 		return pageToResources(tasks, Task.class);
 	}
 
-	protected Resources<?> pageToResources(Page<Object> page, Class<?> domainType) {
+	protected CollectionModel<?> pageToResources(Page<Object> page, Class<?> domainType) {
 		if (page.getContent().isEmpty()) {
-			return pagedResourcesAssembler.toEmptyResource(page, domainType);
+			return pagedResourcesAssembler.toEmptyModel(page, domainType);
 		}
-		return pagedResourcesAssembler.toResource(page);
+
+		return pagedResourcesAssembler.toModel(page);
 	}
 
 	private ParameterConverter getParameterConverter() {
