@@ -64,13 +64,13 @@ public class UpcomingTasksController implements BaseController {
 							@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_READ, description = "") })
 			})
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = "page", dataType = "string", paramType = "query",
+			@ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query",
 					value = "Results page you want to retrieve (0..N)"),
-			@ApiImplicitParam(name = "size", dataType = "string", paramType = "query",
+			@ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query",
 					value = "Number of records per page."),
-			@ApiImplicitParam(name = "nextFireTimesLimitSeconds", dataType = "string", paramType = "query",
+			@ApiImplicitParam(name = "nextFireTimesLimitSeconds", dataTypeClass = String.class, paramType = "query",
 					value = "Limit number of seconds in the future for cron trigger"),
-			@ApiImplicitParam(name = "nextFireTimesLimitCount", dataType = "string", paramType = "query",
+			@ApiImplicitParam(name = "nextFireTimesLimitCount", dataTypeClass = String.class, paramType = "query",
 					value = "Limit size of nextFireTimes list"),
 	})
 	public CollectionModel<?> findUpcomingTasks(
