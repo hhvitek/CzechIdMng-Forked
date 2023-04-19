@@ -2,7 +2,10 @@ package eu.bcvsolutions.idm.core.api.config.flyway;
 
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
+import org.springframework.core.env.PropertyResolver;
+import org.springframework.core.env.PropertySourcesPropertyResolver;
 
 /**
  * Module dependent {@link Flyway} configuration.
@@ -24,28 +27,24 @@ public abstract class AbstractFlywayConfiguration {
 	public Flyway createFlyway() {
 		String prefix = getPropertyPrefix();
 		if (prefix == null) {
-			// TODO: throw exception
-			return null;
+			throw new IllegalArgumentException("Property prefix is required!");
 		}
 		//
-		String table = environment.getProperty(prefix + ".table");
-		String location = null;
-		try {
-			location = environment.getProperty(prefix + ".locations");
-		} catch (IllegalArgumentException e) {
-			/**
-			 * This is a workaround for the issue with using ${} in properties file. The PropertyResolver
-			 * will try to resolve the ${} and will throw an exception if it can't find the value.
-			 * But this value is resolved much later.
-			 */
-			String[] messageSplit = e.getMessage().split("\"");
-			if (messageSplit.length > 1) {
-				location = messageSplit[1];
-			}
-		}
-		Boolean baselineOnMigrate = environment.getProperty(prefix + ".baselineOnMigrate", Boolean.class);
+		String table = getPropertyResolver().getProperty(prefix + ".table");
+		String location = getPropertyResolver().getProperty(prefix + ".locations");
+		Boolean baselineOnMigrate = getPropertyResolver().getProperty(prefix + ".baselineOnMigrate", Boolean.class, Boolean.FALSE);
 		return flywayConfiguration.createFlyway(table, location, baselineOnMigrate);
 	}
 
 	public abstract String getPropertyPrefix();
+
+	private PropertyResolver getPropertyResolver() {
+		if (this.environment instanceof ConfigurableEnvironment) {
+			PropertySourcesPropertyResolver resolver = new PropertySourcesPropertyResolver(
+					((ConfigurableEnvironment) this.environment).getPropertySources());
+			resolver.setIgnoreUnresolvableNestedPlaceholders(true);
+			return resolver;
+		}
+		return this.environment;
+	}
 }
