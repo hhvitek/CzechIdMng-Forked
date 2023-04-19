@@ -188,12 +188,13 @@ public class DefaultFilterManager implements FilterManager {
 		Assert.notNull(filterBuilder, "Filter builder is required.");
 		//
 		// default plugin by ordered definition
-		FilterBuilder<? extends BaseEntity, ? extends DataFilter> defaultBuilder = (FilterBuilder<? extends BaseEntity, ? extends DataFilter>)
-				builders.getPluginFor(new FilterKey(filterBuilder.getEntityClass(), filterBuilder.getName())).orElse(null);
-		// impl property is controlled by default filter configuration
-		configurationService.setValue(
-				defaultBuilder.getConfigurationPropertyName(ConfigurationService.PROPERTY_IMPLEMENTATION),
-				filterBuilderId);
+		builders.getPluginFor(new FilterKey(filterBuilder.getEntityClass(), filterBuilder.getName())).ifPresent(
+			builder -> {
+				// impl property is controlled by default filter configuration
+				configurationService.setValue(
+						builder.getConfigurationPropertyName(ConfigurationService.PROPERTY_IMPLEMENTATION),
+						filterBuilderId);
+			});
 	}
 	
 	@Override

@@ -76,8 +76,7 @@ public abstract class AbstractSwaggerConfig implements SwaggerConfig {
 		Assert.notEmpty(basePackages, "At least one base package is required to generate swagger documentation.");
 		//
 		// endpoints from packages
-		List<Predicate<RequestHandler>> basePackagesPredicates = Arrays.asList(basePackages)
-				.stream()
+		List<Predicate<RequestHandler>> basePackagesPredicates = Arrays.stream(basePackages)
 				.map(RequestHandlerSelectors::basePackage)
 				.collect(Collectors.toList());
 		//
