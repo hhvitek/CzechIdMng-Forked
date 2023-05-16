@@ -1,25 +1,6 @@
 package eu.bcvsolutions.idm.acc.service.impl;
 
-import java.io.Serializable;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import eu.bcvsolutions.idm.core.api.dto.filter.BaseRoleAssignmentFilter;
-import eu.bcvsolutions.idm.core.api.service.IdmRoleAssignmentService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-
 import eu.bcvsolutions.idm.acc.domain.AccResultCode;
 import eu.bcvsolutions.idm.acc.domain.SystemEntityType;
 import eu.bcvsolutions.idm.acc.dto.AccAccountDto;
@@ -58,13 +39,11 @@ import eu.bcvsolutions.idm.core.api.dto.AbstractRoleAssignmentDto;
 import eu.bcvsolutions.idm.core.api.dto.DefaultResultModel;
 import eu.bcvsolutions.idm.core.api.dto.IdmAccountDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmEntityStateDto;
-import eu.bcvsolutions.idm.core.api.dto.IdmIdentityContractDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmIdentityDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmRoleDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmRoleRequestDto;
 import eu.bcvsolutions.idm.core.api.dto.OperationResultDto;
 import eu.bcvsolutions.idm.core.api.dto.filter.IdmEntityStateFilter;
-import eu.bcvsolutions.idm.core.api.dto.filter.IdmRequestIdentityRoleFilter;
 import eu.bcvsolutions.idm.core.api.entity.ValidableEntity;
 import eu.bcvsolutions.idm.core.api.event.EntityEvent;
 import eu.bcvsolutions.idm.core.api.exception.ResultCodeException;
@@ -73,7 +52,22 @@ import eu.bcvsolutions.idm.core.api.service.EntityStateManager;
 import eu.bcvsolutions.idm.core.api.service.IdmRoleAssignmentManager;
 import eu.bcvsolutions.idm.core.api.service.LookupService;
 import eu.bcvsolutions.idm.core.api.utils.DtoUtils;
-import eu.bcvsolutions.idm.core.model.entity.IdmIdentityRole_;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Service for control account management. Account management is supported for
@@ -200,7 +194,7 @@ public class DefaultAccAccountManagementService implements AccAccountManagementS
 
 		if (identityRoles == null || identityRoles.length == 0) {
 			// No identity-roles ... we don't have anything to do
-			return null;
+			return Collections.emptyList();
 		}
 
 		List<AbstractRoleAssignmentDto> identityRolesList = Lists.newArrayList(identityRoles);
@@ -227,7 +221,7 @@ public class DefaultAccAccountManagementService implements AccAccountManagementS
 
 		if (identityRoles == null || identityRoles.length == 0) {
 			// No identity-roles ... we don't have anything to do
-			return null;
+			return Collections.emptyList();
 		}
 		List<AbstractRoleAssignmentDto> identityRolesList = Lists.newArrayList(identityRoles);
 		// Find identity-accounts for changed identity-roles (using IN predicate)
@@ -296,7 +290,7 @@ public class DefaultAccAccountManagementService implements AccAccountManagementS
 			IdmRoleDto roleDto = DtoUtils.getEmbedded(roleSystem, SysRoleSystem_.role);
 			SysSystemDto systemDto = DtoUtils.getEmbedded(roleSystem, SysRoleSystem_.system);
 			throw new ProvisioningException(AccResultCode.PROVISIONING_ROLE_ATTRIBUTE_MORE_UID,
-					ImmutableMap.of("role", roleDto.getCode(), "system", systemDto.getName()));
+					Map.of("role", roleDto.getCode(), "system", systemDto.getName()));
 		}
 
 		SysRoleSystemAttributeDto uidRoleAttribute = !attributesUid.isEmpty() ? attributesUid.get(0) : null;
@@ -314,11 +308,11 @@ public class DefaultAccAccountManagementService implements AccAccountManagementS
 			if (uid == null) {
 				SysSystemDto systemEntity = DtoUtils.getEmbedded(roleSystem, SysRoleSystem_.system);
 				throw new ProvisioningException(AccResultCode.PROVISIONING_GENERATED_UID_IS_NULL,
-						ImmutableMap.of("system", systemEntity.getName()));
+						Map.of("system", systemEntity.getName()));
 			}
 			if (!(uid instanceof String)) {
 				throw new ProvisioningException(AccResultCode.PROVISIONING_ATTRIBUTE_UID_IS_NOT_STRING,
-						ImmutableMap.of("uid", uid));
+						Map.of("uid", uid));
 			}
 			return (String) uid;
 		}
@@ -711,10 +705,10 @@ public class DefaultAccAccountManagementService implements AccAccountManagementS
 			return null;
 		}
 		if (!this.canBeAccountCreated(uid, identity, mapping, system)) {
-			LOG.info(MessageFormat.format(
+			LOG.info(
 					"For entity [{0}] and entity type [{1}] cannot be created the account (on system [{2}]),"
 							+ " because script \"Can be account created\" on the mapping returned \"false\"!",
-					identity.getCode(), IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE, system.getName()));
+					identity.getCode(), IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE, system.getName());
 			return null;
 		}
 
@@ -742,7 +736,7 @@ public class DefaultAccAccountManagementService implements AccAccountManagementS
 		long numberOfAccountWithSameUid = accountService.count(accountFilter);
 		if (numberOfAccountWithSameUid > 0) {
 			throw new ResultCodeException(AccResultCode.PROVISIONING_ACCOUNT_UID_ALREADY_EXISTS,
-					ImmutableMap.of("uid", uid, "account", "", "system", roleSystem.getSystem(), "mapping", mappingId));
+					Map.of("uid", uid, "account", "", "system", roleSystem.getSystem(), "mapping", mappingId));
 		}
 
 		AccAccountDto account = new AccAccountDto();
@@ -804,43 +798,39 @@ public class DefaultAccAccountManagementService implements AccAccountManagementS
 
 		// check if account should be provisioned based on role mapping, must be same as the one for account
 		AccAccountDto accountDto = DtoUtils.getEmbedded(identityAccount, AccIdentityAccount_.account, AccAccountDto.class, null);
-		long accountWithSameMapping = 0;
-		String accountSystem = "";
-		String accountId = "";
-		String accountMappingId = "";
-		String accountUid = "";
 		if (accountDto != null) {
-			accountSystem = accountDto.getSystem() != null ? accountDto.getSystem().toString() : "";
-			accountId = accountDto.getId() != null ? accountDto.getId().toString() : "";
-			accountUid = accountDto.getUid();
-			accountMappingId = accountDto.getSystemMapping() != null ? accountDto.getSystemMapping().toString() : "";
-
-			IdmRequestIdentityRoleFilter rif = new IdmRequestIdentityRoleFilter();
-			rif.setRoleAssignmentUuid(identityAccount.getIdentityRole());
-
-			final List<AbstractRoleAssignmentDto> assignments = roleAssignmentManager.find(rif, null, (s, a) -> {});
-			AbstractRoleAssignmentDto roleAssignmentDto = assignments.stream().findFirst().orElseThrow();
-			SysRoleSystemFilter roleSystemFilter = new SysRoleSystemFilter();
-			roleSystemFilter.setRoleId(roleAssignmentDto.getRole());
-			roleSystemFilter.setSystemId(accountDto.getSystem());
-			roleSystemFilter.setSystemMappingId(accountDto.getSystemMapping());
-			accountWithSameMapping = roleSystemService.count(roleSystemFilter);
+			AccIdentityAccountFilter accountIdentityAccountFilter = new AccIdentityAccountFilter();
+			accountIdentityAccountFilter.setAccountId(accountDto.getId());
+			// All identity-accounts with the same uid for this identity must have same system mapping
+			identityAccountService.find(accountIdentityAccountFilter, null).stream()
+					.filter(identAccount -> !haveSameSystemMapping(identAccount, identityAccount))
+					.findAny()
+					.ifPresent(acc -> {
+						throw new ResultCodeException(AccResultCode.PROVISIONING_ACCOUNT_UID_ALREADY_EXISTS,
+							Map.of("uid", accountDto.getUid(), "account", accountDto.getId(),
+									"system", accountDto.getSystem(), "mapping", accountDto.getSystemMapping()));
+					});
 		}
-		if (accountWithSameMapping == 0) {
-			if (count == 0) {
-				AccIdentityAccountDto identityAccountDto = identityAccountService.save(identityAccount);
-				accounts.add(identityAccountDto.getAccount());
-			} else {
-				// If this identity-account already exists, then we need to add his account ID
-				// (for execute the provisioning).
-				accounts.add(identityAccountService.find(identityAccountFilter, null).getContent().get(0).getAccount());
-			}
+		//
+		if (count == 0) {
+			AccIdentityAccountDto identityAccountDto = identityAccountService.save(identityAccount);
+			accounts.add(identityAccountDto.getAccount());
 		} else {
-			throw new ResultCodeException(AccResultCode.PROVISIONING_ACCOUNT_UID_ALREADY_EXISTS,
-					ImmutableMap.of("uid", accountUid, "account", accountId, "system", accountSystem, "mapping", accountMappingId));
+			// If this identity-account already exists, then we need to add his account ID
+			// (for execute the provisioning).
+			accounts.add(identityAccountService.find(identityAccountFilter, null).getContent().get(0).getAccount());
 		}
 	}
-	
+
+	private boolean haveSameSystemMapping(AccIdentityAccountDto account1, AccIdentityAccountDto account2) {
+		final AccAccountDto acc1 = DtoUtils.getEmbedded(account1, AccIdentityAccount_.account, AccAccountDto.class, null);
+		final AccAccountDto acc2 = DtoUtils.getEmbedded(account2, AccIdentityAccount_.account, AccAccountDto.class, null);
+		if (acc1 == null || acc2 == null) {
+			return false;
+		}
+		return Objects.equals(acc1.getSystemMapping(), acc2.getSystemMapping());
+	}
+
 	/**
 	 * Method for noting identity-accounts for delayed account management or delete.
 	 */
