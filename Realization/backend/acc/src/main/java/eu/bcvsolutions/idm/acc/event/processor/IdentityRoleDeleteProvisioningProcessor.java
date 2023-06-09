@@ -36,6 +36,8 @@ import eu.bcvsolutions.idm.core.api.utils.DtoUtils;
 import eu.bcvsolutions.idm.core.model.entity.IdmIdentityContract_;
 import eu.bcvsolutions.idm.core.security.api.domain.Enabled;
 
+import java.util.Objects;
+
 /**
  * Identity provisioning after role has been deleted.
  *
