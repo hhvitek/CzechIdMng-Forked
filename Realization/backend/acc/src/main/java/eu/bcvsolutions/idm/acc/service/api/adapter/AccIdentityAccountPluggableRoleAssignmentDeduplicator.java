@@ -33,7 +33,7 @@ public class AccIdentityAccountPluggableRoleAssignmentDeduplicator implements Pl
 	@Override
 	public AbstractRoleAssignmentDto getDuplicated(AbstractRoleAssignmentDto one, AbstractRoleAssignmentDto two, Boolean skipSubdefinition) {
 
-		if (one == null || two == null) {
+		if (one == null || two == null || one.getId() == null || two.getId() == null) {
 			// This may be a bit counterintuitive, but if one of the roles is null, we do not want to interfere with other deduplicators
 			// and we return the first role as if it were duplicated. If both roles are null, we return null because we have no other choice.
 			// This situation should not happen, but if it does, we do not want to throw an exception.
@@ -42,7 +42,6 @@ public class AccIdentityAccountPluggableRoleAssignmentDeduplicator implements Pl
 		}
 		AccIdentityAccountFilter identityAccountFilter = new AccIdentityAccountFilter();
 		identityAccountFilter.setIdentityRoleId(one.getId());
-		identityAccountFilter.setAccountId(one.getEntity());
 
 		LOG.debug("Searching for identity accounts for role: {}", one.getId());
 		List<AccIdentityAccountDto> accIdentityAccountsOne = identityAccountService.find(identityAccountFilter, null).getContent();
@@ -50,7 +49,6 @@ public class AccIdentityAccountPluggableRoleAssignmentDeduplicator implements Pl
 
 		identityAccountFilter = new AccIdentityAccountFilter();
 		identityAccountFilter.setIdentityRoleId(two.getId());
-		identityAccountFilter.setAccountId(two.getEntity());
 
 		LOG.debug("Searching for identity accounts for role: {}", two.getId());
 		List<AccIdentityAccountDto> accIdentityAccountsTwo = identityAccountService.find(identityAccountFilter, null).getContent();
