@@ -17,6 +17,10 @@ import eu.bcvsolutions.idm.test.api.AbstractUnitTest;
  */
 public class AbstractDtoUnitTest extends AbstractUnitTest {
 
+	/**
+	 * Test equals and hash code methods
+	 * @since 13.0.0 the behavior of toString method was changed - it returns just the code for CodeableDto
+	 */
 	@Test
 	public void testEqualsAndHashCode() {
 		AbstractDto dtoOne = new IdmIdentityDto();
@@ -36,27 +40,23 @@ public class AbstractDtoUnitTest extends AbstractUnitTest {
 		//
 		Assert.assertFalse(dtoOne.equals(dtoTwo));
 		Assert.assertNotEquals(dtoOne.hashCode(), dtoTwo.hashCode());
-		Assert.assertNotEquals(dtoOne.toString(), dtoTwo.toString());
 		//
 		dtoOne = new IdmIdentityDto(UUID.randomUUID());
 		dtoTwo = new IdmIdentityDto(dtoOne.getId());
 		//
 		Assert.assertTrue(dtoOne.equals(dtoTwo));
 		Assert.assertEquals(dtoOne.hashCode(), dtoTwo.hashCode());
-		Assert.assertEquals(dtoOne.toString(), dtoTwo.toString());
 		//
 		dtoOne = new IdmIdentityDto(UUID.randomUUID());
 		dtoTwo = new IdmIdentityDto();
 		//
 		Assert.assertFalse(dtoOne.equals(dtoTwo));
 		Assert.assertNotEquals(dtoOne.hashCode(), dtoTwo.hashCode());
-		Assert.assertNotEquals(dtoOne.toString(), dtoTwo.toString());
 		//
 		dtoOne = new IdmIdentityDto();
 		dtoTwo = new IdmIdentityDto(UUID.randomUUID());
 		//
 		Assert.assertFalse(dtoOne.equals(dtoTwo));
 		Assert.assertNotEquals(dtoOne.hashCode(), dtoTwo.hashCode());
-		Assert.assertNotEquals(dtoOne.toString(), dtoTwo.toString());
 	}
 }
