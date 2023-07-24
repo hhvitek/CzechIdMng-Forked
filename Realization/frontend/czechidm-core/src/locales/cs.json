@@ -1,9 +1,9 @@
 {
   "app": {
-    "name": "CzechIdM",
+    "name": "IdStory Identity Manager",
     "author": {
-      "name": "BCV solutions s.r.o.",
-      "homePage": "https://www.bcvsolutions.eu"
+      "name": "IdStory",
+      "homePage": "https://idstory.com"
     },
     "serviceDesk": "ServiceDesk",
     "helpDesk": "Nápověda",
@@ -33,7 +33,7 @@
       "upload": "Soubor byl úspěšně nahrán"
     },
     "task": {
-      "detailNotFound":"Tento typ úkolu není podporován!",
+      "detailNotFound": "Tento typ úkolu není podporován!",
       "taskSolvedOrNotFound": "Tento úkol neexistuje, nebo byl již vyřešen."
     },
     "failed": "Operace selhala",
@@ -340,7 +340,7 @@
       "title": "Produkční"
     }
   },
-  "navigation" : {
+  "navigation": {
     "toogle": "Toggle navigation",
     "collapse": {
       "label": "Zmenšit menu"
@@ -367,10 +367,10 @@
         "title": "Přiřazené role"
       },
       "tasks": {
-        "label" : "Úkoly",
-        "title" : "Moje úkoly"
+        "label": "Úkoly",
+        "title": "Moje úkoly"
       },
-      "task" : "Úkol",
+      "task": "Úkol",
       "identities": {
         "label": "Uživatelé",
         "title": "Seznam uživatelů"
@@ -403,12 +403,12 @@
       }
     }
   },
-  "component" : {
+  "component": {
     "basic": {
-      "HelpIcon" : {
+      "HelpIcon": {
         "title": "Nápověda"
       },
-      "SelectBox" : {
+      "SelectBox": {
         "noResultsText": "Žádný výsledek",
         "searchPromptText": "Pro vyhledávání začněte psát ...",
         "searchingText": "Vyhledávání...",
@@ -417,8 +417,8 @@
           "label": "-- nevybráno --"
         }
       },
-      "Table" : {
-        "Pagination" : {
+      "Table": {
+        "Pagination": {
           "recordInfo": "<strong title='Počáteční zobrazený záznam na stránce'>{{minRecord}}</strong> - <strong title='Poslední zobrazený záznam na stránce'>{{maxRecord}}</strong> z <strong title='Celkový počet záznamů'>{{totalRecords}}</strong> záznamů",
           "size": "Záznamů na stránce",
           "page": {
@@ -442,10 +442,10 @@
           }
         },
         "button": {
-          "collapse" : {
+          "collapse": {
             "title": "Sbalit tabulku"
           },
-          "expand" : {
+          "expand": {
             "title": "Rozbalit tabulku"
           }
         }
@@ -486,10 +486,10 @@
     "advanced": {
       "PanelHeader": {
         "button": {
-          "collapse" : {
+          "collapse": {
             "title": "Sbalit panel"
           },
-          "expand" : {
+          "expand": {
             "title": "Rozbalit panel"
           }
         }
@@ -581,11 +581,11 @@
         },
         "button": {
           "refresh": "Znovu načíst záznamy",
-          "transactionId" : {
+          "transactionId": {
             "label": "Zobrazit v auditu",
             "title": "Zobrazit v auditu všechny záznamy s daným identifikátorem uživatelské transacke."
           },
-          "entityId" : {
+          "entityId": {
             "label": "Zobrazit v auditu",
             "title": "Zobrazit v auditu všechny záznamy s daným interním identifikátorem entity."
           }
@@ -708,7 +708,7 @@
             "title": "Upravit nastavení atributů v definici formuláře"
           }
         },
-        "showChanges":{
+        "showChanges": {
           "newValue": "(Nová hodnota)",
           "originalValue": "(Původní hodnota)"
         }
@@ -716,7 +716,7 @@
       "Recaptcha": {
         "required": "Potvrďte prosím, že nejste robot"
       },
-      "PasswordField":{
+      "PasswordField": {
         "newPassword": {
           "label": "Nové heslo"
         },
@@ -785,12 +785,12 @@
       }
     }
   },
-  "enums" : {
-    "ApiOperationTypeEnum" : {
-      "CREATE" : "Vytvořit",
-      "UPDATE" : "Upravit",
-      "GET" : "Načíst",
-      "DELETE" : "Smazat"
+  "enums": {
+    "ApiOperationTypeEnum": {
+      "CREATE": "Vytvořit",
+      "UPDATE": "Upravit",
+      "GET": "Načíst",
+      "DELETE": "Smazat"
     },
     "RoleTypeEnum": {
       "SYSTEM": "Systémová"
@@ -899,7 +899,7 @@
       "HAS_ANY_AUTHORITY": "Alespoň jedno z oprávnění",
       "HAS_ALL_AUTHORITIES": "Přiřazena všechna z oprávnění"
     },
-    "LogTypeEnum":  {
+    "LogTypeEnum": {
       "INFO": "INFO",
       "DEBUG": "DEBUG",
       "TRACE": "TRACE",
@@ -935,14 +935,14 @@
       "WARNING": "WARNING",
       "ERROR": "ERROR"
     },
-    "OperationStateEnum":{
+    "OperationStateEnum": {
       "CREATED": "Vytvořeno",
       "RUNNING": "Běží",
-    	"EXECUTED": "Provedeno",
-    	"EXCEPTION": "Chyba",
-    	"NOT_EXECUTED": "Neprovedeno",
-    	"BLOCKED": "Blokováno",
-    	"CANCELED": "Zrušeno"
+      "EXECUTED": "Provedeno",
+      "EXCEPTION": "Chyba",
+      "NOT_EXECUTED": "Neprovedeno",
+      "BLOCKED": "Blokováno",
+      "CANCELED": "Zrušeno"
     },
     "TriggerTypeEnum": {
       "SIMPLE": "Jednorázové spuštění",
@@ -1173,7 +1173,7 @@
     }
   },
   "dashboard": {
-    "profileDashboard" : {
+    "profileDashboard": {
       "header": "Vaše základní údaje",
       "goToProfil": "Přejít na detail profilu"
     },
@@ -1193,7 +1193,7 @@
     }
   },
   "permission": {
-    "base" : {
+    "base": {
       "ADMIN": "Administrace (vše)",
       "METRICS": "Monitoring",
       "COUNT": "Počet záznamů",
@@ -1407,7 +1407,7 @@
         "message": {
           "passwordChange": {
             "info": "Tento formulář lze použít pro změnu hesla Vaší uživatelské identity",
-            "link" : "Přejít na detail pro změnu hesla",
+            "link": "Přejít na detail pro změnu hesla",
             "required": "Vyžadována změna hesla pro CzechIdM",
             "idmNotEnabled": "Změna hesla pro CzechIdM není povolena",
             "success": {
@@ -1427,7 +1427,7 @@
           "body": "<div class=\"alert alert-info\">Formulář pro změnu hesla je určen pouze pro externí zaměstnance. Interní zaměstnanec si může změnit heslo po přihlášení ve svém profilu.</div>Změnu hesla provedete vyplněním formuláře. Do tohoto formuláře zadáte své uživatelské jméno, stávající heslo, požadované nové heslo a nakonec ještě jednou své nové heslo pro kontrolu. Poté můžete změnu potvrdit kliknutím na tlačítko <button class=\"basic-button btn btn-xs btn-success disabled soft-disabled\">Změna hesla</button>."
         }
       },
-      "strength" : {
+      "strength": {
         "weak": "slabé",
         "okay": "normální",
         "strong": "silné",
@@ -1505,22 +1505,22 @@
         "passwordSimilarExternalCodePreValidate": "osobnímu číslu",
         "maxHistorySimilar": "Heslo se musí lišit od posledních {{0}} hesel.",
         "advancedControlValidateType": "Rozšířená kontrola hesel je dostupná pouze pro validační politku.",
-        "specialCharacterBase":{
+        "specialCharacterBase": {
           "list": "Seznam speciálních znaků pro politiky hesel: {{0}}",
           "text": "Speciální znaky: {{0}}"
-          },
+        },
         "forbiddenCharacterBase": {
           "list": "Seznam zakázaných znaků pro politiky hesel: {{0}}",
           "text": "Zakázané znaky: {{0}}"
-          },
+        },
         "forbiddenBeginCharacterBase": {
           "list": "Seznam zakázaných znaků, kterými heslo nesmí začínat: {{0}}",
           "text": "Zakázané počáteční znaky: {{0}}"
-          },
+        },
         "forbiddenEndCharacterBase": {
           "list": "Seznam zakázaných znaků, kterými heslo nesmí končit: {{0}}",
           "text": "Zakázané znaky na konci: {{0}}"
-          },
+        },
         "passwordSimilarUsernamePreValidate": "uživatelskému jménu",
         "passwordSimilarEmailPreValidate": "emailu",
         "passwordSimilarFirstNamePreValidate": "jménu",
@@ -1554,7 +1554,7 @@
         "success": "Položka konfigurace [{{name}}] byla úspěšně uložena",
         "sucessBulk": "Položky konfigurace byly úspěšně uloženy."
       },
-      "addMore":{
+      "addMore": {
         "header": "Přidat více konfiguračních položek",
         "configurationArea": {
           "header": "Konfigurační položky",
@@ -1818,7 +1818,7 @@
         "approve": "Schválit",
         "disapprove": "Zamítnout",
         "messages": {
-          "approved":"Úkol byl úspěšně schválen",
+          "approved": "Úkol byl úspěšně schválen",
           "disapproved": "Úkol byl úspěšně zamítnut",
           "confirmTaskApproveTitle": "Potvrzení schválení úkolu",
           "confirmTaskApprove": "Opravdu chcete tento úkol schválit?",
@@ -1827,7 +1827,7 @@
         }
       },
       "RoleApprovalTaskDetail": {
-        "roleName" : "Název role"
+        "roleName": "Název role"
       },
       "IdentityRoleConceptTable": {
         "oldValue": "Původní hodnota [{{oldValue}}]",
@@ -1912,7 +1912,7 @@
             "help": "Po zaškrtnutí zobrazí pouze napřímo přiřazené role."
           },
           "legend": {
-            "header":"Legenda",
+            "header": "Legenda",
             "role-types": {
               "role": "Napřímo přidělená aplikační role.",
               "business-role": "Napřímo přidělená business role. Přidělením této role budou přiděleny i role definované touto business rolí (sub role).",
@@ -2070,7 +2070,7 @@
           "save": {
             "success": "Údaje prvku [{{name}}] byly úspěšně uloženy."
           },
-          "error" : {
+          "error": {
             "notFound": "Definice dalších atributů pro prvek stromové struktury nebyla nalezena."
           }
         },
@@ -2107,7 +2107,7 @@
             "rebuild": "Reindexovat"
           },
           "action": {
-            "rebuild" : {
+            "rebuild": {
               "header": "Spuštění reindexace",
               "message": "Opravdu chcete spustit reindexaci pro typ struktury [{{record}}]",
               "success": "Byl naplánován rebuild indexu pro typ struktury [{{record}}]."
@@ -2185,7 +2185,7 @@
           "header": "Základní informace",
           "title": "Základní informace"
         },
-        "identities":{
+        "identities": {
           "header": "Uživatelé s přiřazenou automatickou rolí",
           "title": "Uživatelé",
           "filter": {
@@ -2240,7 +2240,7 @@
           "text": "Vytvoří požadavek na změnu této automatické role. Požadavek může vyžadovat schválení."
         }
       },
-      "request":{
+      "request": {
         "header": "Žádosti o změnu automatických rolí"
       }
     },
@@ -2590,26 +2590,26 @@
         "text": "Kód / Název / Popis"
       },
       "detail": {
-        "header" : "Základní informace",
-        "title" : "Základní informace"
+        "header": "Základní informace",
+        "title": "Základní informace"
       },
       "authorities": {
-          "header": "Oprávnění skriptu",
-          "title": "Oprávnění skriptu",
-          "edit": {
-            "header": "Editace autorizace pro skript <small>{{name}}</small>"
-          },
-          "create": {
-            "header": "Vytvoření nové autorizace pro skript <small>{{name}}</small>"
-          },
-          "save": {
-            "header": "Oprávnění pro skript bylo úspěšně uloženo",
-            "success": "Oprávnění pro skript bylo úspěšně uloženo"
-          }
+        "header": "Oprávnění skriptu",
+        "title": "Oprávnění skriptu",
+        "edit": {
+          "header": "Editace autorizace pro skript <small>{{name}}</small>"
+        },
+        "create": {
+          "header": "Vytvoření nové autorizace pro skript <small>{{name}}</small>"
+        },
+        "save": {
+          "header": "Oprávnění pro skript bylo úspěšně uloženo",
+          "success": "Oprávnění pro skript bylo úspěšně uloženo"
+        }
       },
       "references": {
-        "header" : "Použití ve skriptech",
-        "title" : "Použití ve skriptech"
+        "header": "Použití ve skriptech",
+        "title": "Použití ve skriptech"
       },
       "dropzone": {
         "infoText": "Přetáhněte skripty v archivu (ZIP) nebo jednotlivé skripty (XML) na tuto plochu a nebo na ní klikněte pro výběr souborů."
@@ -2728,29 +2728,28 @@
         }
       },
       "filter": {
-        "applicant":{
+        "applicant": {
           "placeholder": "Uživatelské jméno toho pro koho se žádá"
         },
-        "states":{
+        "states": {
           "placeholder": "Stav v IdM"
         },
-        "dateCreatedFrom":{
+        "dateCreatedFrom": {
           "placeholder": "Vytvořeno od"
         },
-        "dateCreatedTill":{
+        "dateCreatedTill": {
           "placeholder": "Vytvořeno do"
         },
-        "applicants":{
+        "applicants": {
           "placeholder": "Žádost pro"
         },
-        "creator":{
+        "creator": {
           "placeholder": "Žadatel (kdo vytvořil žádost)"
         },
-        "systemStates":{
+        "systemStates": {
           "placeholder": "Stav na systémech"
         }
       }
-
     },
     "roleRequestDetail": {
       "header": "Žádost o změnu rolí",
@@ -2762,16 +2761,16 @@
         "start": "Odeslat žádost"
       },
       "button": {
-        "createRequest":{
+        "createRequest": {
           "header": "Odeslat žádost ke schválení",
           "label": "Podat žádost",
           "tooltip": "Zahájí žádost o změnu rolí. Spustí případné schvalovací procesy."
         },
-        "saveConcept":{
+        "saveConcept": {
           "label": "Uložit koncept",
           "tooltip": "Uloží koncept žádosti. Žádost nebude podána."
         },
-        "addRole":{
+        "addRole": {
           "title": "Přidat novou roli",
           "text": "Přidat do žádosti novou roli."
         }
@@ -2803,10 +2802,10 @@
         }
       },
       "filter": {
-        "role":{
+        "role": {
           "placeholder": "Vyhledání dle názvu role"
         },
-        "states":{
+        "states": {
           "placeholder": "Vyhledání podle stavů"
         }
       }
@@ -2821,7 +2820,7 @@
         "start": "Podat žádost"
       },
       "button": {
-        "createRequest":{
+        "createRequest": {
           "label": "Podat žádost",
           "tooltip": "Zahájí žádost pro automatickou roli. Spustí případné schvalovací procesy."
         }
@@ -2859,16 +2858,16 @@
         }
       },
       "filter": {
-        "states":{
+        "states": {
           "placeholder": "Vyhledání podle stavů"
         },
-        "text":{
+        "text": {
           "placeholder": "Kód, typ cílového objektu či poznámka"
         },
-        "dateCreatedFrom":{
+        "dateCreatedFrom": {
           "placeholder": "Vytvořeno od"
         },
-        "dateCreatedTill":{
+        "dateCreatedTill": {
           "placeholder": "Vytvořeno do"
         }
       }
@@ -2895,15 +2894,15 @@
         "start": "Podat žádost"
       },
       "button": {
-        "createRequest":{
+        "createRequest": {
           "label": "Podat žádost",
           "tooltip": "Zahájí žádost. Spustí případné schvalovací procesy."
         },
-        "saveConcept":{
+        "saveConcept": {
           "label": "Uložit koncept",
           "tooltip": "Uloží koncept žádosti. Žádost nebude podána."
         },
-        "previewDetailByRequest":{
+        "previewDetailByRequest": {
           "label": "Zobrazit náhled",
           "tooltip": "Zobrazí náhled spolu s požadovanými změnami."
         },
@@ -2981,7 +2980,7 @@
           "success": "Údaje role [{{name}}] byly úspěšně uloženy.",
           "start": "Odeslat žádost"
         },
-        "error" : {
+        "error": {
           "notFound": "Definice dalších atributů pro roli nebyla nalezena."
         }
       },
@@ -3172,7 +3171,7 @@
         "description": {
           "label": "$t(entity.Identity.description)",
           "placeholder": "Poznámka k uživateli"
-          },
+        },
         "active": "Aktivní",
         "blockLoginDate": "Identita má blokované přihlášení do aplikace z důvodu překročení neúspěšných pokusů o přihlášení. Přihlášení bude možné po {{date}}.",
         "validation": {
@@ -3481,7 +3480,7 @@
         "save": {
           "success": "Údaje identity [{{name}}] byly úspěšně uloženy."
         },
-        "error" : {
+        "error": {
           "notFound": "Definice dalších atributů pro identitu nebyla nalezena."
         }
       },
@@ -3495,8 +3494,8 @@
         "header": "Detail pracovněprávního vztahu",
         "title": "Detail PPV",
         "label": "Základní údaje",
-        "invalidContract":"Detail neplatného PPV",
-        "validContract":"Detail PPV",
+        "invalidContract": "Detail neplatného PPV",
+        "validContract": "Detail PPV",
         "edit": {
           "title": "Detail PPV",
           "header": "{{position}} <small>detail přiřazené pozice</small>",
@@ -3522,7 +3521,7 @@
         "save": {
           "success": "Údaje PPV [{{name}}] byly úspěšně uloženy."
         },
-        "error" : {
+        "error": {
           "notFound": "Definice dalších atributů pro PPV nebyla nalezena."
         }
       },
@@ -3575,8 +3574,8 @@
         "label": "Základní údaje",
         "labelContract": "Základní údaje - pracovní pozice",
         "labelSlice": "Základní údaje - časového řezu",
-        "invalidContract":"Detail neplatného PPV",
-        "validContract":"Detail PPV",
+        "invalidContract": "Detail neplatného PPV",
+        "validContract": "Detail PPV",
         "edit": {
           "title": "Detail PPV",
           "header": "{{position}} <small>detail přiřazené pozice</small>",
@@ -3600,7 +3599,7 @@
         "save": {
           "success": "Údaje PPV [{{name}}] byly úspěšně uloženy."
         },
-        "error" : {
+        "error": {
           "notFound": "Definice dalších atributů pro PPV nebyla nalezena."
         }
       },
@@ -4003,7 +4002,7 @@
         "success": "Položka konfigurace [{{name}}] byla úspěšně uložena"
       }
     },
-    "workflow" : {
+    "workflow": {
       "definition": {
         "title": "Detail workflow definice",
         "header": "Detail workflow definice",
@@ -4015,7 +4014,7 @@
         "category": "Kategorie",
         "diagramResourceName": "Název schéma",
         "deploymentId": "ID deploymentu",
-        "id":"Identifikátor",
+        "id": "Identifikátor",
         "diagram": "Náhled procesu",
         "fullscreenDiagram": "Diagram procesu"
       },
@@ -4030,14 +4029,14 @@
         "fileRejected": "Soubor s definicí workflow musí mít příponu bpmn20.xml ({{name}})!",
         "filesRejected": "Soubor/y s definicí workflow musí mít příponu bpmn20.xml!",
         "fileUploaded": "Definice ({{name}}) byla úspěšně nahrána.",
-        "id":"$t(content.workflow.definition.id)"
+        "id": "$t(content.workflow.definition.id)"
       },
-      "history":{
-        "processes":{
+      "history": {
+        "processes": {
           "title": "Historie workflow procesů",
           "header": "Historie workflow procesů <small>schvalování, úkolů</small>"
         },
-        "process":{
+        "process": {
           "title": "Historie workflow procesu",
           "header": "Historie workflow procesu",
           "diagram": "Náhled procesu",
@@ -4056,13 +4055,13 @@
           "subprocesses": "Podřízené procesy",
           "nextProcessOptions": "Další vlastnosti procesu",
           "filter": {
-            "processDefinition":{
+            "processDefinition": {
               "label": "Definice",
               "placeholder": "Definice workflow"
             }
           }
         },
-        "task":{
+        "task": {
           "title": "Uživatelské úkoly procesu",
           "header": "Uživatelské úkoly procesu",
           "startTime": "$t(entity.WorkflowHistoricTaskInstance.startTime)",
@@ -4540,12 +4539,12 @@
       "script": {
         "help": "Tělo skriptu v jazyce Groovy.",
         "label": "Skript"
-       },
-       "select": {
-         "help": "",
-         "button": "Vložit skript",
-         "label": "Výběr dostupných skriptů"
-       },
+      },
+      "select": {
+        "help": "",
+        "button": "Vložit skript",
+        "label": "Výběr dostupných skriptů"
+      },
       "description": "Popis skriptu"
     },
     "ScriptAuthority": {
@@ -4557,7 +4556,7 @@
       "className": "Jméno třídy",
       "service": "Jméno služby"
     },
-    "FormDefinition" : {
+    "FormDefinition": {
       "_type": "Definice formuláře",
       "type": "Typ",
       "code": "Kód",
@@ -4580,7 +4579,7 @@
         "help": "Pořadí definice na detailu záznamu."
       }
     },
-    "FormProjection" : {
+    "FormProjection": {
       "_type": "Projekce formuláře",
       "code": {
         "label": "Kód",
@@ -4665,7 +4664,7 @@
         "help": "Další konfigurační položky."
       }
     },
-    "DelegationDefinition" : {
+    "DelegationDefinition": {
       "_type": "Definice delegace",
       "type": {
         "label": "Typ delegace",
@@ -4690,7 +4689,7 @@
         "label": "Popis"
       }
     },
-    "Delegation" : {
+    "Delegation": {
       "_type": "Delegované úkoly",
       "definition": {
         "label": "Definice delegace"
@@ -4705,7 +4704,7 @@
         "label": "Stav úkolu"
       }
     },
-    "FormAttribute" : {
+    "FormAttribute": {
       "_type": "Atribut formuláře",
       "code": {
         "label": "Kód",
@@ -4853,14 +4852,14 @@
     },
     "AutomaticRole": {
       "name": {
-          "label": "Název",
-          "help": "Název je použit pro jednodušší identifikaci automatické role."
+        "label": "Název",
+        "help": "Název je použit pro jednodušší identifikaci automatické role."
       },
       "role": {
         "label": "Role",
         "help": "Vybraná role bude přiřazena uživatelům podle specifických pravidel."
       },
-     "attribute": {
+      "attribute": {
         "type": {
           "label": "Typ kontrolovaného atributu",
           "help": "Pro tento typ atributu bude kontrolována hodnota pravidla"
@@ -4874,8 +4873,8 @@
         "comparison": "Typ porovnání",
         "formAttribute": "Atribut formuláře",
         "value": {
-            "label": "Hodnota",
-            "help": "Hodnota, s kterou se bude porovnávat hodnota v atributu."
+          "label": "Hodnota",
+          "help": "Hodnota, s kterou se bude porovnávat hodnota v atributu."
         }
       }
     },
@@ -4921,7 +4920,7 @@
     },
     "IdentityRole": {
       "_type": "Přiřazená role",
-      "role" : "Název role",
+      "role": "Název role",
       "owner": {
         "title": "Přiřazeno na"
       },
@@ -4960,7 +4959,6 @@
       "label": "Systém",
       "help": "Vyberte systém, na kterém chcete vytvořit účet."
     },
-
     "ExportImport": {
       "_type": "Export/Import dávky",
       "name": {
@@ -5494,7 +5492,7 @@
         "help": "Uvedené znaky nesmí být použity na konci hesla. Znaky budou kontrolovány při validaci hesla a při generování hesla budou zcela vypuštěny. Vkládejte bez mezer jednotlivé znaky přímo za sebou, například: 1LliIo0!"
       },
       "weakPassRequired": {
-        "label":  "Povinné slabé hesla"
+        "label": "Povinné slabé hesla"
       },
       "weakPass": {
         "label": "Slabé hesla"
@@ -5719,7 +5717,7 @@
         "help": "Spustit na serveru (identifikátor instance)"
       },
       "description": "Popis",
-      "dryRun" : "Zkušební běh",
+      "dryRun": "Zkušební běh",
       "triggers": "Plánovaná spuštění",
       "trigger": {
         "_type": {
@@ -5774,7 +5772,7 @@
       },
       "log": "Log",
       "description": {
-        "label" : "Popis",
+        "label": "Popis",
         "placeholder": "Slovní popis požadavku na změnu oprávnění."
       },
       "created": "Vytvořeno",
@@ -5834,7 +5832,7 @@
       "operation": "Požadovaná změna",
       "executeImmediately": "Provést bez schválení",
       "description": {
-        "label" : "Popis",
+        "label": "Popis",
         "placeholder": "Slovní popis požadavku"
       },
       "created": "Vytvořeno",
@@ -5849,7 +5847,7 @@
       "name": "Název",
       "executeImmediately": "Provést bez schválení",
       "description": {
-        "label" : "Popis",
+        "label": "Popis",
         "placeholder": "Slovní popis požadavku"
       },
       "created": "Vytvořeno",
@@ -5867,7 +5865,7 @@
       "modified": "Upraveno",
       "ownerType": "Typ objektu",
       "operation": "Požadovaná změna",
-      "ownerId":"Cílový objekt",
+      "ownerId": "Cílový objekt",
       "candicateUsers": "Schvalují",
       "currentActivity": "Stav schvalování",
       "wfProcessId": "WF",
@@ -5888,8 +5886,8 @@
       "comparison": "$t(entity.AutomaticRole.attribute.comparison)",
       "formAttribute": "$t(entity.AutomaticRole.attribute.formAttribute)",
       "value": {
-          "label": "$t(entity.AutomaticRole.attribute.value.label)",
-          "help": "$t(entity.AutomaticRole.attribute.value.help)"
+        "label": "$t(entity.AutomaticRole.attribute.value.label)",
+        "help": "$t(entity.AutomaticRole.attribute.value.help)"
       }
     },
     "EntityEvent": {
@@ -6109,236 +6107,236 @@
     }
   },
   "wf": {
-    "approve-identity-change-permissions" : {
+    "approve-identity-change-permissions": {
       "name": "Změna rolí pro uživatele '{{0}}'",
       "task": {
         "approveByHelpDesk": {
           "name": "Schvalování 'Helpdesk'",
-          "description":"Schválení změny rolí pro '{{0}}' (Helpdesk)"
+          "description": "Schválení změny rolí pro '{{0}}' (Helpdesk)"
         },
         "returnedRequestFromHelpdesk": {
           "name": "Požadavek vrácen z 'Helpdesk'",
-          "description":"Vrácený požadavek na změnu rolí pro uživatele '{{0}}'"
+          "description": "Vrácený požadavek na změnu rolí pro uživatele '{{0}}'"
         },
         "approveByManager": {
           "name": "Schvalování vedoucím",
-          "description":"Schválení změny rolí vedoucím pro '{{0}}'"
+          "description": "Schválení změny rolí vedoucím pro '{{0}}'"
         },
         "returnedRequestFromManager": {
           "name": "Požadavek vrácen vedoucím",
-          "description":"Vrácený požadavek na změnu rolí pro uživatele '{{0}}'"
+          "description": "Vrácený požadavek na změnu rolí pro uživatele '{{0}}'"
         },
         "approveByUserManager": {
           "name": "Schválení vedoucím uživatele",
-          "description":"Schválení změny rolí vedoucím uživatele pro '{{0}}'"
+          "description": "Schválení změny rolí vedoucím uživatele pro '{{0}}'"
         },
         "returnedRequestFromUserManager": {
           "name": "Požadavek vrácen vedoucím uživatele",
-          "description":"Vrácený požadavek na změnu rolí pro uživatele '{{0}}'"
+          "description": "Vrácený požadavek na změnu rolí pro uživatele '{{0}}'"
         },
         "approveIncompatibilities": {
           "name": "Schválení neslučitelných rolí",
-          "description":"Schválení neslučitelných rolí pro uživatele '{{0}}'"
+          "description": "Schválení neslučitelných rolí pro uživatele '{{0}}'"
         },
         "approvedBySecurity": {
           "name": "Schválení bezpečnostním oddělením",
-          "description":"Schválení změny rolí bezpečnostním oddělením pro '{{0}}'"
+          "description": "Schválení změny rolí bezpečnostním oddělením pro '{{0}}'"
         }
       }
     },
-    "change-role-without-approve" : {
+    "change-role-without-approve": {
       "name": "Změna v přiřazení (přidání/odebrání/změna) role '{{0}}' pro uživatele '{{1}}'"
     },
-    "approve-role-by-manager" : {
+    "approve-role-by-manager": {
       "name": "Schválení změny v přiřazení role '{{0}}' pro uživatele '{{1}}'",
       "task": {
         "approveAssignByManager": {
           "name": "Schválení přiřazení role vedoucím",
-          "description":"Schválení přiřazení role '{{0}}' pro uživatele '{{1}}'"
+          "description": "Schválení přiřazení role '{{0}}' pro uživatele '{{1}}'"
         },
         "approveChangeByManager": {
           "name": "Schválení změny platnosti role vedoucím",
-          "description":"Schválení změny platnosti v přiřazení role '{{0}}' pro uživatele '{{1}}'"
+          "description": "Schválení změny platnosti v přiřazení role '{{0}}' pro uživatele '{{1}}'"
         }
       }
     },
-    "approve-remove-role-by-manager" : {
+    "approve-remove-role-by-manager": {
       "name": "Schválení odebrání přiřazené role '{{0}}' pro uživatele '{{1}}'",
       "task": {
         "approveByManager": {
           "name": "Schválení odebrání role vedoucím",
-          "description":"Schválení odebrání role '{{0}}' vedoucím pro uživatele '{{1}}'"
+          "description": "Schválení odebrání role '{{0}}' vedoucím pro uživatele '{{1}}'"
         }
       }
     },
-    "approve-role-by-guarantee" : {
+    "approve-role-by-guarantee": {
       "name": "Schválení změny v přiřazení role '{{0}}' garantem pro uživatele '{{1}}'",
       "name_automaticRole": "Schválení změny v automatickém přiřazování role '{{0}}' jejím garantem",
       "task": {
         "approveAssign": {
           "name": "Schválení přiřazení role garantem",
-          "description":"Schválení přiřazení role '{{0}}' jejím garantem pro uživatele '{{1}}'"
+          "description": "Schválení přiřazení role '{{0}}' jejím garantem pro uživatele '{{1}}'"
         },
         "approveChange": {
           "name": "Schválení změny platnosti role garantem",
-          "description":"Schválení změny platnosti v přiřazení role '{{0}}' jejím garantem pro uživatele '{{1}}'"
+          "description": "Schválení změny platnosti v přiřazení role '{{0}}' jejím garantem pro uživatele '{{1}}'"
         },
         "approveAutomaticRole": {
           "name": "Schválení úpravy/vytvoření/smazání automatické role",
-          "description":"Schválení úpravy/vytvoření automatické role '{{0}}'"
+          "description": "Schválení úpravy/vytvoření automatické role '{{0}}'"
         }
       }
     },
-    "approve-role-by-guarantee-security" : {
+    "approve-role-by-guarantee-security": {
       "name": "Schválení změny v přiřazení role '{{0}}' garantem a bezpečnostním oddělením pro uživatele '{{1}}'",
       "name_automaticRole": "Schválení změny v automatickém přiřazování role '{{0}}' jejím garantem a bezpečnostním oddělením",
       "task": {
         "approveAssignByGuarantee": {
           "name": "Schválení přiřazení role garantem",
-          "description":"Schválení přiřazení role '{{0}}' jejím garantem pro uživatele '{{1}}'"
+          "description": "Schválení přiřazení role '{{0}}' jejím garantem pro uživatele '{{1}}'"
         },
         "approveChangeByGuarantee": {
           "name": "Schválení změny platnosti role garantem",
-          "description":"Schválení změny platnosti v přiřazení role '{{0}}' jejím garantem pro uživatele '{{1}}'"
+          "description": "Schválení změny platnosti v přiřazení role '{{0}}' jejím garantem pro uživatele '{{1}}'"
         },
         "approveAssignBySecurity": {
           "name": "Schválení přiřazení role bezpečnostním oddělením",
-          "description":"Schválení přiřazení role '{{0}}' bezpečnostním oddělením pro uživatele '{{1}}'"
+          "description": "Schválení přiřazení role '{{0}}' bezpečnostním oddělením pro uživatele '{{1}}'"
         },
         "approveChangeBySecurity": {
           "name": "Schválení změny platnosti role bezpečnostním oddělením",
-          "description":"Schválení změny platnosti v přiřazení role '{{0}}' bezpečnostním oddělením pro uživatele '{{1}}'"
+          "description": "Schválení změny platnosti v přiřazení role '{{0}}' bezpečnostním oddělením pro uživatele '{{1}}'"
         },
         "approveAutomaticRole": {
           "name": "Schválení úpravy/vytvoření/smazání automatické role",
-          "description":"Schválení úpravy/vytvoření/smazání automatické role '{{0}}'"
+          "description": "Schválení úpravy/vytvoření/smazání automatické role '{{0}}'"
         },
         "approveAutomaticRoleBySecurity": {
           "name": "Schválení úpravy/vytvoření/smazání automatické role",
-          "description":"Schválení úpravy/vytvoření/smazání automatické role '{{0}}'"
+          "description": "Schválení úpravy/vytvoření/smazání automatické role '{{0}}'"
         }
       }
     },
-    "request-idm-role" : {
+    "request-idm-role": {
       "name": "Žádost o změnu/vytvoření/odstranění role s názvem '{{0}}'",
       "task": {
         "approveAutomaticRole": {
           "name": "Schválení změny role garantem",
-          "description":"Žádost o změnu/vytvoření/odstranění role s názvem '{{0}}'"
+          "description": "Žádost o změnu/vytvoření/odstranění role s názvem '{{0}}'"
         }
       }
     },
-    "request-idm-role-composition" : {
+    "request-idm-role-composition": {
       "name": "Schválení žádosti o změnu 'Business' role",
       "task": {
         "approveAddBusinessRole": {
           "name": "Schválení přidání nové 'Business' role",
-          "description":"Schválení přidání 'Business' role ('{{1}}') s názvem '{{0}}' do role '{{2}}'."
+          "description": "Schválení přidání 'Business' role ('{{1}}') s názvem '{{0}}' do role '{{2}}'."
         },
         "approveRemoveBusinessRole": {
           "name": "Schválení odebrání 'Business' role",
-          "description":"Schválení odebrání 'Business' role ('{{0}}') s názvem '{{1}}' z role '{{2}}'."
+          "description": "Schválení odebrání 'Business' role ('{{0}}') s názvem '{{1}}' z role '{{2}}'."
         }
       }
     },
-    "COMMENT":"If you can not find a translation for a specific WF definition, then we'll try to locate the translation in global tasks (by task key only):",
+    "COMMENT": "If you can not find a translation for a specific WF definition, then we'll try to locate the translation in global tasks (by task key only):",
     "task": {
       "approveByManager": {
         "name": "Schválení vedoucím",
-        "description":"Schválení vedoucím"
+        "description": "Schválení vedoucím"
       }
     },
-    "decision" : {
+    "decision": {
       "approve": {
-        "label" : "Schválit",
+        "label": "Schválit",
         "tooltip": "Provede schválení tohoto úkolu.",
         "warning": "Opravdu chcete provést schválení?",
         "resultLabel": "Schváleno"
       },
       "disapprove": {
-        "label" : "Zamítnout",
+        "label": "Zamítnout",
         "tooltip": "Zamítnout úkol.",
         "warning": "Opravdu chcete zamítnout úkol?",
         "resultLabel": "Zamítnuto"
       },
       "backToApplicant": {
-        "label" : "Vrátit žadateli",
+        "label": "Vrátit žadateli",
         "tooltip": "Vrátí žádost žadateli.",
         "warning": "Opravdu chcete vrátit žádost žadateli?",
         "resultLabel": "Vráceno žadateli."
       },
       "createRequest": {
-        "label" : "Vytvořit žádost",
+        "label": "Vytvořit žádost",
         "tooltip": "Vytvoří žádost.",
         "warning": "Opravdu chcete vytvořit žádost?",
         "resultLabel": "Žádost vytvořena."
       },
       "cancelRequest": {
-        "label" : "Smazat žádost",
+        "label": "Smazat žádost",
         "tooltip": "Zruší tuto žádost.",
         "warning": "Opravdu chcete zrušit tuto žádost?",
         "resultLabel": "Žádost smazána."
       },
       "repairedRequest": {
-        "label" : "Žádost opravena",
+        "label": "Žádost opravena",
         "tooltip": "Žádost byla opravena/doplněna dle připomínek.",
         "warning": "Opravdu chcete žádost vrátit ke schválení?",
         "resultLabel": "Žádost opravena."
       }
     },
-    "formData" : {
+    "formData": {
       "applicantDescription": {
-        "name" : "Poznámka žadatele",
+        "name": "Poznámka žadatele",
         "tooltip": "Poznámka zadaná žadatelem při založení žádosti",
         "placeholder": "Poznámka zadaná žadatelem při založení žádosti"
       },
       "managerDescriptionForApplicant": {
-        "name" : "Poznámka pro žadatele",
+        "name": "Poznámka pro žadatele",
         "tooltip": "Poznámka, která bude žadateli zobrazena při vrácení žádosti.",
         "placeholder": "Poznámka, která bude žadateli zobrazena při vrácení žádosti."
       },
       "managerDescription": {
-        "name" : "Poznámka vedoucího",
+        "name": "Poznámka vedoucího",
         "tooltip": "Poznámka od vedoucího.",
         "placeholder": "Poznámka od vedoucího."
       },
       "description": {
-        "name" : "Poznámka",
+        "name": "Poznámka",
         "tooltip": "",
         "placeholder": ""
       },
       "roleName": {
-        "name" : "Název role",
+        "name": "Název role",
         "tooltip": "",
         "placeholder": ""
       },
       "validFrom": {
-        "name" : "$t(entity.validFrom)",
+        "name": "$t(entity.validFrom)",
         "tooltip": "",
         "placeholder": ""
       },
       "validTill": {
-        "name" : "$t(entity.validTill)",
+        "name": "$t(entity.validTill)",
         "tooltip": "",
         "placeholder": ""
       },
       "validFromDateOld": {
-        "name" : "$t(entity.validFrom) (původní)",
+        "name": "$t(entity.validFrom) (původní)",
         "tooltip": "",
         "placeholder": ""
       },
       "validTillDateOld": {
-        "name" : "$t(entity.validTill) (původní)",
+        "name": "$t(entity.validTill) (původní)",
         "tooltip": "",
         "placeholder": ""
       },
       "validFromDateNew": {
-        "name" : "$t(entity.validFrom) (nová)",
+        "name": "$t(entity.validFrom) (nová)",
         "tooltip": "",
         "placeholder": ""
       },
       "validTillDateNew": {
-        "name" : "$t(entity.validTill) (nová)",
+        "name": "$t(entity.validTill) (nová)",
         "tooltip": "",
         "placeholder": ""
       },
@@ -8114,7 +8112,7 @@
       "title": "Nadřazený prvek nelze přiřadit",
       "message": "Neplatný nadřazený prvek. Vyberte prosím jiný."
     },
-    "TREE_NODE_BAD_NICE_NAME" : {
+    "TREE_NODE_BAD_NICE_NAME": {
       "title": "Duplicitní jméno pro uživatele",
       "message": "Na této úrovni se již nachází prvek s tímto jménem pro uživatele: [{{name}}]."
     },
@@ -8138,7 +8136,7 @@
       "title": "Katalog rolí obsahuje položky",
       "message": "Katalog rolí [{{roleCatalogue}}] obsahuje podřízené položky katalogu [<strong class=\"highlight\">{{count}}</strong>]. Před odebráním tohoto katalogu odeberte všechny podřízené položky nebo zaškrtněte smazání včetně navázaných záznamů níže."
     },
-    "ROLE_CATALOGUE_BAD_NICE_NAME" : {
+    "ROLE_CATALOGUE_BAD_NICE_NAME": {
       "title": "Duplicitní jméno pro uživatele",
       "message": "Na této úrovni se již nachází katalog s tímto jménem pro uživatele: [{{name}}]."
     },
@@ -9018,7 +9016,7 @@
       "title": "Kód role koliduje s prostředím",
       "message": "Kód role {{code}} nelze kombinovat s prostředím {{environment}}. Pokud je zadáno prostředí, použijte atribut 'baseCode'."
     },
-    "ROLE_CODE_REQUIRED":  {
+    "ROLE_CODE_REQUIRED": {
       "title": "Kód role je povinný",
       "message": "Zadejte kód nebo základní kód ('baseCode') role."
     },
@@ -9218,21 +9216,21 @@
       "unique": "Položka musí být unikátní. Hodnota [{{unique}}] je již použita."
     },
     "string": {
-      "min_1" : "Zadejte minimálně jeden znak!",
-      "min_2" : "Zadejte minimálně {{count}} znaky!",
-      "min_5" : "Zadejte minimálně {{count}} znaků!",
-      "base" : "Položka je povinná!",
+      "min_1": "Zadejte minimálně jeden znak!",
+      "min_2": "Zadejte minimálně {{count}} znaky!",
+      "min_5": "Zadejte minimálně {{count}} znaků!",
+      "base": "Položka je povinná!",
       "email": "Formát emailu není validní!",
-      "max_1" : "Zadejte maximálně {{count}} znak!",
-      "max_2" : "Zadejte maximálně {{count}} znaky!",
-      "max_5" : "Zadejte maximálně {{count}} znaků!",
+      "max_1": "Zadejte maximálně {{count}} znak!",
+      "max_2": "Zadejte maximálně {{count}} znaky!",
+      "max_5": "Zadejte maximálně {{count}} znaků!",
       "guid": "Zadejte validní uuid identifikátor",
       "isTrimmable": "Obsahuje netisknutelné znaky na začátku nebo konci textu!"
     },
     "number": {
-      "min" : "Minimální hodnota je: {{count}}!",
-      "base" : "Položka musí být číslo!",
-      "max" : "Maximální hodnota je: {{count}}!",
+      "min": "Minimální hodnota je: {{count}}!",
+      "base": "Položka musí být číslo!",
+      "max": "Maximální hodnota je: {{count}}!",
       "integer": "Celé číslo (integer)"
     },
     "boolean": {
@@ -9240,22 +9238,22 @@
     },
     "any": {
       "allowOnly": "Položka je povinná!",
-      "empty" : "$t(validationError.string.base)",
+      "empty": "$t(validationError.string.base)",
       "required": "$t(validationError.any.allowOnly)"
     },
-    "object" : {
-      "base" : "$t(validationError.string.base)"
+    "object": {
+      "base": "$t(validationError.string.base)"
     },
-    "array" : {
-      "base" : "$t(validationError.string.base)",
-      "min_1" : "Zadejte minimálně jednu položku!",
-      "min_2" : "Zadejte minimálně dvě položky!",
-      "min_5" : "Zadejte minimálně {{count}} položek!"
+    "array": {
+      "base": "$t(validationError.string.base)",
+      "min_1": "Zadejte minimálně jednu položku!",
+      "min_2": "Zadejte minimálně dvě položky!",
+      "min_5": "Zadejte minimálně {{count}} položek!"
     },
-    "date" : {
-     "unvalid" : "Datum není validní!",
-     "min": "Zadané datum nesmí být menší než {{count}}!",
-     "max": "Zadané datum nesmí být větší než {{count}}!"
+    "date": {
+      "unvalid": "Datum není validní!",
+      "min": "Zadané datum nesmí být menší než {{count}}!",
+      "max": "Zadané datum nesmí být větší než {{count}}!"
     },
     "passwords_not_same": "Hesla musí být shodná!",
     "configurationSecured": "Nemáte oprávnění pro editaci systémové konfigurace"
@@ -9268,7 +9266,7 @@
       }
     },
     "record": {
-      "notFound" : "Záznam nebyl nalezen nebo nemáte dostatečné oprávnění pro zobrazení záznamu."
+      "notFound": "Záznam nebyl nalezen nebo nemáte dostatečné oprávnění pro zobrazení záznamu."
     }
   },
   "cache": {

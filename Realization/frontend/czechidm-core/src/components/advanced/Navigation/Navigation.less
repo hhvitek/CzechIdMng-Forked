@@ -6,8 +6,13 @@
   height: 10px;
   width: 20px;
 
-  &.cs { background-image: url('../images/flags/cs.gif'); }
-  &.en { background-image: url('../images/flags/en.gif'); }
+  &.cs {
+    background-image: url('../images/flags/cs.gif');
+  }
+
+  &.en {
+    background-image: url('../images/flags/en.gif');
+  }
 }
 
 .application-logo {
@@ -33,6 +38,7 @@
 .home {
   background-position: top left;
   background-repeat: no-repeat;
+  background-size: contain;
   margin-top: 5px;
   width: 128px;
   height: 40px;
@@ -58,7 +64,7 @@ header {
 
   // @FIXME -- theme
   .MuiButton-endIcon {
-      margin-left: 0px;
+    margin-left: 0px;
   }
 
   .dropdown-menu {
@@ -88,7 +94,7 @@ header {
   .identity-image {
     padding: 0px 15px 5px 15px;
 
-    >.profile-default-icon {
+    > .profile-default-icon {
       height: 50px;
     }
   }
@@ -98,6 +104,7 @@ header {
   font-size: 1.10em;
   font-weight: 400;
   line-height: 1.5;
+
   a {
     color: inherit;
 
@@ -118,6 +125,7 @@ header {
     width: 18px;
     font-size: 1.15rem;
   }
+
   .nav {
 
     li > a {
@@ -181,7 +189,7 @@ header {
   padding-left: 45px;
 }
 
-@media(min-width:768px) {
+@media (min-width: 768px) {
   .sidebar {
 
     &.collapsed {

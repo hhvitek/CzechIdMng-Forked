@@ -1,9 +1,9 @@
 {
   "app": {
-    "name": "CzechIdM",
+    "name": "IdStory Identity Manager",
     "author": {
-      "name": "BCV solutions s.r.o.",
-      "homePage": "https://www.bcvsolutions.eu"
+      "name": "IdStory",
+      "homePage": "https://idstory.com"
     },
     "serviceDesk": "ServiceDesk",
     "helpDesk": "Help",
@@ -33,7 +33,7 @@
       "upload": "File successfully uploaded"
     },
     "task": {
-      "detailNotFound":"This task is not supported!",
+      "detailNotFound": "This task is not supported!",
       "taskSolvedOrNotFound": "This task doesn't exist or has already been resolved."
     },
     "failed": "Operation failed",
@@ -175,7 +175,7 @@
       "header": "Activate record",
       "header_plural": "Activate records",
       "message_0": "N/A",
-      "message" : "Do you really want to activate selected record [<strong>{{record}}</strong>]?",
+      "message": "Do you really want to activate selected record [<strong>{{record}}</strong>]?",
       "message_plural": "Selected records: [<strong>{{records}}</strong>].<br /><br />Do you really want to activate <strong>{{count}}</strong> selected records?",
       "error": "An error occurred while activating [{{record}}]",
       "success_0": "N/A",
@@ -308,7 +308,7 @@
       "title": "Production"
     }
   },
-  "navigation" : {
+  "navigation": {
     "toogle": "Toggle navigation",
     "collapse": {
       "label": "Collapse menu"
@@ -335,10 +335,10 @@
         "title": "Assigned roles"
       },
       "tasks": {
-        "label" : "Tasks",
-        "title" : "My tasks"
+        "label": "Tasks",
+        "title": "My tasks"
       },
-      "task" : "Task",
+      "task": "Task",
       "identities": {
         "label": "Users",
         "title": "List of users"
@@ -371,12 +371,12 @@
       }
     }
   },
-  "component" : {
+  "component": {
     "basic": {
-      "HelpIcon" : {
+      "HelpIcon": {
         "title": "Help"
       },
-      "SelectBox" : {
+      "SelectBox": {
         "noResultsText": "No result",
         "searchPromptText": "Start typing ...",
         "searchingText": "Searching ...",
@@ -385,8 +385,8 @@
           "label": "-- not selected --"
         }
       },
-      "Table" : {
-        "Pagination" : {
+      "Table": {
+        "Pagination": {
           "recordInfo": "<strong title='First record on page'>{{minRecord}}</strong> - <strong title='Last record on page'>{{maxRecord}}</strong> of <strong title='Total number of records'>{{totalRecords}}</strong> records",
           "size": "Number of records",
           "page": {
@@ -410,10 +410,10 @@
           }
         },
         "button": {
-          "collapse" : {
+          "collapse": {
             "title": "Collapse table"
           },
-          "expand" : {
+          "expand": {
             "title": "Expand table"
           }
         }
@@ -454,10 +454,10 @@
     "advanced": {
       "PanelHeader": {
         "button": {
-          "collapse" : {
+          "collapse": {
             "title": "Collapse panel"
           },
-          "expand" : {
+          "expand": {
             "title": "Expand panel"
           }
         }
@@ -548,11 +548,11 @@
         },
         "button": {
           "refresh": "Reload records",
-          "transactionId" : {
+          "transactionId": {
             "label": "Show in audit",
             "title": "Show all audit records with given user transaction identifier."
           },
-          "entityId" : {
+          "entityId": {
             "label": "Show in audit",
             "title": "Show all audit records with given internal entity identifier."
           }
@@ -675,7 +675,7 @@
             "title": "Edit attributes setting in form definition"
           }
         },
-        "showChanges":{
+        "showChanges": {
           "newValue": "(New value)",
           "originalValue": "(Original value)"
         }
@@ -683,7 +683,7 @@
       "Recaptcha": {
         "required": "Check 'you are not a robot' please"
       },
-      "PasswordField":{
+      "PasswordField": {
         "newPassword": {
           "label": "New password"
         },
@@ -752,12 +752,12 @@
       }
     }
   },
-  "enums" : {
-    "ApiOperationTypeEnum" : {
-      "CREATE" : "create",
-      "UPDATE" : "edit",
-      "GET" : "get",
-      "DELETE" : "delete"
+  "enums": {
+    "ApiOperationTypeEnum": {
+      "CREATE": "create",
+      "UPDATE": "edit",
+      "GET": "get",
+      "DELETE": "delete"
     },
     "RoleTypeEnum": {
       "SYSTEM": "System"
@@ -866,7 +866,7 @@
       "HAS_ANY_AUTHORITY": "At least one of the privileges",
       "HAS_ALL_AUTHORITIES": "Assigned all the permissions"
     },
-    "LogTypeEnum":  {
+    "LogTypeEnum": {
       "INFO": "INFO",
       "DEBUG": "DEBUG",
       "TRACE": "TRACE",
@@ -902,7 +902,7 @@
       "WARNING": "WARNING",
       "ERROR": "ERROR"
     },
-    "OperationStateEnum":{
+    "OperationStateEnum": {
       "CREATED": "Created",
       "RUNNING": "Running",
       "EXECUTED": "Executed",
@@ -1140,7 +1140,7 @@
     }
   },
   "dashboard": {
-    "profileDashboard" : {
+    "profileDashboard": {
       "header": "Your basic information",
       "goToProfil": "Go to profile"
     },
@@ -1160,7 +1160,7 @@
     }
   },
   "permission": {
-    "base" : {
+    "base": {
       "ADMIN": "Administration (all)",
       "METRICS": "Monitoring",
       "COUNT": "Number of records",
@@ -1394,7 +1394,7 @@
           "body": "<div class=\"alert alert-info\">The change password form is only for external employees. An internal employee can change his password after signing in to his profile.</div>To change your password, fill out the form. In this form, you enter your username, your existing password, the new password you want, and finally your new password for review. You can then confirm the change by clicking the <button class=\"basic-button btn btn-xs btn-success disabled soft-disabled\">Change password</button> button."
         }
       },
-      "strength" : {
+      "strength": {
         "weak": "weak",
         "okay": "normal",
         "strong": "strong",
@@ -1462,22 +1462,22 @@
         "passwordSimilarExternalCode": "Password cannot be similar to personal number: {{0}}",
         "date": "Password can not be change now, try again: {{0}}",
         "advancedControlValidateType": "Enhanced control is available only for validate policies.",
-        "specialCharacterBase":{
+        "specialCharacterBase": {
           "list": "List of special characters for password policies: {{0}}",
           "text": "Special characters: {{0}}"
-          },
+        },
         "forbiddenCharacterBase": {
           "list": "List of forbidden characters for password policies: {{0}}",
           "text": "Forbidden characters: {{0}}"
-          },
+        },
         "forbiddenBeginCharacterBase": {
           "list": "List of characters passwrods must not start with: {{0}}",
           "text": "Forbidden initial characters: {{0}}"
-          },
+        },
         "forbiddenEndCharacterBase": {
           "list": "List of characters passwrods must not end with: {{0}}",
           "text": "Forbidden final characters: {{0}}"
-          },
+        },
         "passwordSimilarUsernamePreValidate": "login",
         "passwordSimilarEmailPreValidate": "email",
         "passwordSimilarFirstNamePreValidate": "first name",
@@ -1514,7 +1514,7 @@
         "success": "Configuration item [{{name}}] successfully saved",
         "sucessBulk": "Configuration items were successfully saved"
       },
-      "addMore":{
+      "addMore": {
         "header": "Add more configuration items",
         "configurationArea": {
           "header": "Configuration items",
@@ -1724,7 +1724,7 @@
         }
       }
     },
-    "task":{
+    "task": {
       "instances": {
         "header": "Unresolved tasks",
         "title": "Unresolved tasks"
@@ -1772,7 +1772,7 @@
         "approve": "Accept",
         "disapprove": "Reject",
         "messages": {
-          "approved":"Task successfully approved",
+          "approved": "Task successfully approved",
           "disapproved": "Task successfully rejected",
           "confirmTaskApproveTitle": "Task approve confirmation",
           "confirmTaskApprove": "Do you really want to approve this task?",
@@ -1781,7 +1781,7 @@
         }
       },
       "RoleApprovalTaskDetail": {
-        "roleName" : "Role name"
+        "roleName": "Role name"
       },
       "IdentityRoleConceptTable": {
         "oldValue": "Old value [{{oldValue}}]",
@@ -1866,7 +1866,7 @@
             "help": "After checked, only directly assigned roles will be displayed."
           },
           "legend": {
-            "header":"Legend",
+            "header": "Legend",
             "role-types": {
               "role": "Directly assigned application role.",
               "business-role": "Directly assigned business role. Defined sub roles will be assigned together with this role.",
@@ -2020,7 +2020,7 @@
           "save": {
             "success": "Extended attributes for element [{{name}}] was successfully saved."
           },
-          "error" : {
+          "error": {
             "notFound": "Extended attributes definition for element not found."
           }
         },
@@ -2057,7 +2057,7 @@
             "rebuild": "Reindex"
           },
           "action": {
-            "rebuild" : {
+            "rebuild": {
               "header": "Reindex",
               "message": "Do you really want to rebuild index for tree type structure [{{record}}]",
               "success": "Rebuild index for tree type structure [{{record}}] was scheduled."
@@ -2143,7 +2143,7 @@
           "header": "Basic informations",
           "title": "Basic informations"
         },
-        "identities":{
+        "identities": {
           "header": "Users with assigned role",
           "title": "Users with role",
           "filter": {
@@ -2190,7 +2190,7 @@
           "text": "Creates a request to change this automatic role. The request may require approval."
         }
       },
-      "request":{
+      "request": {
         "header": "Change request for automatic role"
       }
     },
@@ -2540,26 +2540,26 @@
         "text": "Code / Name / Description"
       },
       "detail": {
-        "header" : "Basic informations",
-        "title" : "Basic informations"
+        "header": "Basic informations",
+        "title": "Basic informations"
       },
       "authorities": {
-          "header": "Script authorities",
-          "title": "Script authorities",
-          "edit": {
-            "header": "Edit authority for script <small>{{name}}</small>"
-          },
-          "create": {
-            "header": "Create new authority for script <small>{{name}}</small>"
-          },
-          "save": {
-            "header": "Authority for script successfully saved",
-            "success": "Authority for script successfully saved"
-          }
+        "header": "Script authorities",
+        "title": "Script authorities",
+        "edit": {
+          "header": "Edit authority for script <small>{{name}}</small>"
+        },
+        "create": {
+          "header": "Create new authority for script <small>{{name}}</small>"
+        },
+        "save": {
+          "header": "Authority for script successfully saved",
+          "success": "Authority for script successfully saved"
+        }
       },
       "references": {
-        "header" : "Usage in scripts",
-        "title" : "Usage in scripts"
+        "header": "Usage in scripts",
+        "title": "Usage in scripts"
       },
       "dropzone": {
         "infoText": "Drag scripts in archive (ZIP) or single scripts (XML) here, or click to select files."
@@ -2678,25 +2678,25 @@
         }
       },
       "filter": {
-        "applicant":{
+        "applicant": {
           "placeholder": "Search by whole username (requested for)"
         },
-        "states":{
+        "states": {
           "placeholder": "States in IdM"
         },
-        "dateCreatedFrom":{
+        "dateCreatedFrom": {
           "placeholder": "Created from"
         },
-        "dateCreatedTill":{
+        "dateCreatedTill": {
           "placeholder": "Created to"
         },
-        "applicants":{
+        "applicants": {
           "placeholder": "Requested for"
         },
-        "systemStates":{
+        "systemStates": {
           "placeholder": "States in systems"
         },
-        "creator":{
+        "creator": {
           "placeholder": "Applicant (who created a request)"
         }
       }
@@ -2711,16 +2711,16 @@
         "start": "Execute request"
       },
       "button": {
-        "createRequest":{
+        "createRequest": {
           "header": "Submit a request for approval",
           "label": "Submit a request",
           "tooltip": "Start request for change assigned roles."
         },
-        "saveConcept":{
+        "saveConcept": {
           "label": "Save concept",
           "tooltip": "Save the concept of this request. Request will be not started."
         },
-        "addRole":{
+        "addRole": {
           "title": "Add new role",
           "text": "Add new role to this request."
         }
@@ -2729,162 +2729,161 @@
         "header": "Request contains incompatible roles",
         "message": "Request contains incompatible roles, which have to be approved additonally. <strong>Do you really want execute request with included incompatible roles?</strong>"
       }
-     },
-     "automaticRoleRequests": {
-       "header": "Requests for automatic roles",
-       "title": "Requests for automatic roles",
-       "role": "Request for role",
-       "name": "Name",
-       "create": {
-         "header": "Create new request for automatic role"
-       },
-       "button": {
-         "createRequest": "Create request",
-         "start": "Execute request"
-       },
-       "action": {
-         "startRequest": {
-           "header": "Do you really want execute this request",
-           "message": "Do you really want execute this request and start approval process?",
-           "started": "Request was started",
-           "exception": "Error occurred during submitting request. Request was not submitted!",
-           "duplicated": "Request was not submitted because it is duplicate with another request created on [{{created}}]."
-         }
-       },
-       "filter": {
-         "role":{
-           "placeholder": "Search by whole username applicant."
-         },
-         "states":{
-           "placeholder": "Search by states"
-         }
-       }
-     },
-     "automaticRoleRequestDetail": {
-       "header": "Request for automatic role",
-       "title": "Change automatic role",
-       "conceptHeader": "Requested change of rules",
-       "conceptWithCurrentRulesHeader": "Approved rules (includes required changes)",
-       "save": {
-         "success": "Request to change automatic role successfully saved",
-         "start": "Execute request"
-       },
-       "button": {
-         "createRequest":{
-           "label": "Submit a request",
-           "tooltip": "Start request for change automatic role"
-         }
-       },
-       "create": {
-         "header": "Create the rule"
-       },
-       "edit": {
-         "header": "Edit the rule"
-       },
-       "rulesIsAnd": {
-         "title": "All rules must be met.",
-         "text": "To assign a role, the entity must meet all the (below defined) rules at the same time."
-       }
-
+    },
+    "automaticRoleRequests": {
+      "header": "Requests for automatic roles",
+      "title": "Requests for automatic roles",
+      "role": "Request for role",
+      "name": "Name",
+      "create": {
+        "header": "Create new request for automatic role"
       },
-     "requests": {
-       "header": "Requests",
-       "title": "Requests",
-       "role": "Request",
-       "name": "Name",
-       "create": {
-         "header": "Create new request"
-       },
-       "button": {
-         "createRequest": "Create request",
-         "start": "Execute request"
-       },
-       "action": {
-         "startRequest": {
-           "header": "Do you really want execute this request",
-           "message": "Do you really want execute this request and start approval process?",
-           "started": "Request was started",
-           "exception": "Error occurred during submitting request. Request was not submitted!",
-           "duplicated": "Request was not submitted because it is duplicate with another request created on [{{created}}]."
-         }
-       },
-       "filter": {
-         "states":{
-           "placeholder": "Search by states"
-         },
-         "text":{
-           "placeholder": "Target object code, type or description"
-         },
-         "dateCreatedFrom":{
+      "button": {
+        "createRequest": "Create request",
+        "start": "Execute request"
+      },
+      "action": {
+        "startRequest": {
+          "header": "Do you really want execute this request",
+          "message": "Do you really want execute this request and start approval process?",
+          "started": "Request was started",
+          "exception": "Error occurred during submitting request. Request was not submitted!",
+          "duplicated": "Request was not submitted because it is duplicate with another request created on [{{created}}]."
+        }
+      },
+      "filter": {
+        "role": {
+          "placeholder": "Search by whole username applicant."
+        },
+        "states": {
+          "placeholder": "Search by states"
+        }
+      }
+    },
+    "automaticRoleRequestDetail": {
+      "header": "Request for automatic role",
+      "title": "Change automatic role",
+      "conceptHeader": "Requested change of rules",
+      "conceptWithCurrentRulesHeader": "Approved rules (includes required changes)",
+      "save": {
+        "success": "Request to change automatic role successfully saved",
+        "start": "Execute request"
+      },
+      "button": {
+        "createRequest": {
+          "label": "Submit a request",
+          "tooltip": "Start request for change automatic role"
+        }
+      },
+      "create": {
+        "header": "Create the rule"
+      },
+      "edit": {
+        "header": "Edit the rule"
+      },
+      "rulesIsAnd": {
+        "title": "All rules must be met.",
+        "text": "To assign a role, the entity must meet all the (below defined) rules at the same time."
+      }
+    },
+    "requests": {
+      "header": "Requests",
+      "title": "Requests",
+      "role": "Request",
+      "name": "Name",
+      "create": {
+        "header": "Create new request"
+      },
+      "button": {
+        "createRequest": "Create request",
+        "start": "Execute request"
+      },
+      "action": {
+        "startRequest": {
+          "header": "Do you really want execute this request",
+          "message": "Do you really want execute this request and start approval process?",
+          "started": "Request was started",
+          "exception": "Error occurred during submitting request. Request was not submitted!",
+          "duplicated": "Request was not submitted because it is duplicate with another request created on [{{created}}]."
+        }
+      },
+      "filter": {
+        "states": {
+          "placeholder": "Search by states"
+        },
+        "text": {
+          "placeholder": "Target object code, type or description"
+        },
+        "dateCreatedFrom": {
           "placeholder": "Created from"
-         },
-         "dateCreatedTill":{
+        },
+        "dateCreatedTill": {
           "placeholder": "Created to"
         }
-       }
-     },
-     "requestInfo": {
-       "title": "You are on the request preview",
-       "text": "Any changes you make will only be written to this request.",
-       "button": {
-         "goToRequest": {
-           "label": "Go to the request detail"
-         },
-         "showChanges": {
-           "label": "Show changes",
-           "tooltip": "Shows the changes made to this request in this detail."
-         }
-       }
-     },
-     "requestDetail": {
-       "header": "Request",
-       "title": "Request",
-       "conceptHeader": "Requested changes",
-       "save": {
-         "success": "Request successfully saved",
-         "start": "Execute request"
-       },
-       "button": {
-         "createRequest":{
-           "label": "Submit a request",
-           "tooltip": "Start request"
-         },
-         "saveConcept":{
-           "label": "Save concept",
-           "tooltip": "Save the concept of this request. Request will be not started."
-         },
-         "previewDetailByRequest":{
-           "label": "Show preview",
-           "tooltip": "Show preview with all requested changes."
-         },
-         "showItemChanges": {
-           "tooltip": "Show changed attributes for this object."
-         }
-       },
-       "create": {
-         "header": "Create the request change"
-       },
-       "edit": {
-         "header": "Edit the request change"
-       },
-       "itemDetail": {
-         "header": "Requested changes",
-         "title": {
-           "add": "Request for create new object",
-           "remove": "Request for delete that object",
-           "update": "Request for change that object"
-         },
-         "nochanges": {
-           "title": "No changes found.",
-           "text": "No requested changes was found for this object."
-         },
-         "changes": {
-           "property": "Attribute name",
-           "oldValue": "Current value",
-           "newValue": "New value"
+      }
+    },
+    "requestInfo": {
+      "title": "You are on the request preview",
+      "text": "Any changes you make will only be written to this request.",
+      "button": {
+        "goToRequest": {
+          "label": "Go to the request detail"
+        },
+        "showChanges": {
+          "label": "Show changes",
+          "tooltip": "Shows the changes made to this request in this detail."
         }
-       }
+      }
+    },
+    "requestDetail": {
+      "header": "Request",
+      "title": "Request",
+      "conceptHeader": "Requested changes",
+      "save": {
+        "success": "Request successfully saved",
+        "start": "Execute request"
       },
+      "button": {
+        "createRequest": {
+          "label": "Submit a request",
+          "tooltip": "Start request"
+        },
+        "saveConcept": {
+          "label": "Save concept",
+          "tooltip": "Save the concept of this request. Request will be not started."
+        },
+        "previewDetailByRequest": {
+          "label": "Show preview",
+          "tooltip": "Show preview with all requested changes."
+        },
+        "showItemChanges": {
+          "tooltip": "Show changed attributes for this object."
+        }
+      },
+      "create": {
+        "header": "Create the request change"
+      },
+      "edit": {
+        "header": "Edit the request change"
+      },
+      "itemDetail": {
+        "header": "Requested changes",
+        "title": {
+          "add": "Request for create new object",
+          "remove": "Request for delete that object",
+          "update": "Request for change that object"
+        },
+        "nochanges": {
+          "title": "No changes found.",
+          "text": "No requested changes was found for this object."
+        },
+        "changes": {
+          "property": "Attribute name",
+          "oldValue": "Current value",
+          "newValue": "New value"
+        }
+      }
+    },
     "role": {
       "identities": {
         "header": "Users with assigned role",
@@ -2931,7 +2930,7 @@
           "success": "Extended attributes for role [{{name}}] successfully saved.",
           "start": "Execute request"
         },
-        "error" : {
+        "error": {
           "notFound": "Extended attributes definition for role not found."
         }
       },
@@ -3428,7 +3427,7 @@
         "save": {
           "success": "Extended attributes for identity [{{name}}] successfully saved."
         },
-        "error" : {
+        "error": {
           "notFound": "Extended attributes definition for identity not found."
         }
       },
@@ -3442,8 +3441,8 @@
         "header": "Contracted position detail",
         "title": "Contracted position detail",
         "label": "Basic information",
-        "invalidContract":"Invalid contracted position detail",
-        "validContract":"Contracted position detail",
+        "invalidContract": "Invalid contracted position detail",
+        "validContract": "Contracted position detail",
         "edit": {
           "title": "Contracted position detail",
           "header": "{{position}} <small>contracted position detail</small>",
@@ -3469,7 +3468,7 @@
         "save": {
           "success": "Extended attributes for contracted position [{{name}}] successfully saved."
         },
-        "error" : {
+        "error": {
           "notFound": "Extended attributes definition for contracted position not found."
         }
       },
@@ -3522,8 +3521,8 @@
         "label": "Basic information",
         "labelContract": "Basic information of contract",
         "labelSlice": "Basic information of time slice",
-        "invalidContract":"Invalid time slice of contracted position detail",
-        "validContract":"Time slice of contracted position detail",
+        "invalidContract": "Invalid time slice of contracted position detail",
+        "validContract": "Time slice of contracted position detail",
         "edit": {
           "title": "Time slice of contracted position detail",
           "header": "{{position}} <small>time slice of contracted position detail</small>",
@@ -3547,7 +3546,7 @@
         "save": {
           "success": "Extended attributes for time slice of contracted position [{{name}}] successfully saved."
         },
-        "error" : {
+        "error": {
           "notFound": "Extended attributes definition for time slice of contracted position not found."
         }
       },
@@ -3950,7 +3949,7 @@
         "success": "Configuration item [{{name}}] was successfully saved"
       }
     },
-    "workflow" : {
+    "workflow": {
       "definition": {
         "title": "Workflow definition details",
         "header": "Workflow definition details",
@@ -3962,7 +3961,7 @@
         "category": "Category",
         "diagramResourceName": "Scheme name",
         "deploymentId": "Deployment Id",
-        "id":"Identificator",
+        "id": "Identificator",
         "diagram": "Process preview",
         "fullscreenDiagram": "Process preview"
       },
@@ -3977,14 +3976,14 @@
         "fileRejected": "Workflow definition file must be of type bpmn20.xml ({{name}})!",
         "filesRejected": "Workflow definition types must be of type bpmn20.xml!",
         "fileUploaded": "Workflow definition ({{name}}) was successfully uploaded.",
-        "id":"$t(content.workflow.definition.id)"
+        "id": "$t(content.workflow.definition.id)"
       },
-      "history":{
-        "processes":{
+      "history": {
+        "processes": {
           "title": "History of worfklow processes",
           "header": "History of worfklow processes <small>approving, tasks</small>"
         },
-        "process":{
+        "process": {
           "title": "History of process",
           "header": "History of process",
           "diagram": "Process diagram",
@@ -4003,13 +4002,13 @@
           "subprocesses": "Sub-processes",
           "nextProcessOptions": "Next process options",
           "filter": {
-            "processDefinition":{
+            "processDefinition": {
               "label": "Definition",
               "placeholder": "Workflow definition"
             }
           }
         },
-        "task":{
+        "task": {
           "title": "User tasks in process",
           "header": "User tasks in process",
           "startTime": "$t(entity.WorkflowHistoricTaskInstance.startTime)",
@@ -4504,7 +4503,7 @@
       "className": "Class name",
       "service": "Service name"
     },
-    "FormDefinition" : {
+    "FormDefinition": {
       "_type": "Form definition",
       "type": "Type",
       "code": "Code",
@@ -4527,7 +4526,7 @@
         "help": "Definition order on record detail."
       }
     },
-    "FormProjection" : {
+    "FormProjection": {
       "_type": "Form projection",
       "code": {
         "label": "Code",
@@ -4612,7 +4611,7 @@
         "help": "Additional projection properties."
       }
     },
-    "DelegationDefinition" : {
+    "DelegationDefinition": {
       "_type": "Definition of delegation",
       "type": {
         "label": "Delegation type",
@@ -4637,7 +4636,7 @@
         "label": "Description"
       }
     },
-    "Delegation" : {
+    "Delegation": {
       "_type": "Delegation",
       "definition": {
         "label": "Definition of the delegation"
@@ -4652,7 +4651,7 @@
         "label": "Task state"
       }
     },
-    "FormAttribute" : {
+    "FormAttribute": {
       "_type": "Form attribute",
       "code": {
         "label": "Code",
@@ -4800,8 +4799,8 @@
     },
     "AutomaticRole": {
       "name": {
-          "label": "Name",
-          "help": "The name is used to easily identify the automatic role."
+        "label": "Name",
+        "help": "The name is used to easily identify the automatic role."
       },
       "role": {
         "label": "Role",
@@ -4821,9 +4820,9 @@
         "comparison": "Comparison type",
         "formAttribute": "Form attribute",
         "value": {
-            "label": "Value",
-            "help": "The value with which the value in the attribute will be compared."
-          }
+          "label": "Value",
+          "help": "The value with which the value in the attribute will be compared."
+        }
       }
     },
     "AuthorizationPolicy": {
@@ -4868,7 +4867,7 @@
     },
     "IdentityRole": {
       "_type": "Assigned role",
-      "role" : "Role",
+      "role": "Role",
       "owner": {
         "title": "Assigned to"
       },
@@ -5451,7 +5450,7 @@
         "help": "Select number of words passphrase contains."
       },
       "maxPasswordAge": {
-        "label":"Maximum password age",
+        "label": "Maximum password age",
         "help": "Maximum number of days for password validity."
       },
       "minPasswordAge": {
@@ -5666,7 +5665,7 @@
         "help": "Execute on server (instance identifier)"
       },
       "description": "Description",
-      "dryRun" : "Dry run",
+      "dryRun": "Dry run",
       "triggers": "Scheduled starts",
       "trigger": {
         "_type": {
@@ -5721,7 +5720,7 @@
       },
       "log": "Log",
       "description": {
-        "label" : "Description",
+        "label": "Description",
         "placeholder": "Verbal description of a request to change assinged roles"
       },
       "created": "Created",
@@ -5781,7 +5780,7 @@
       "name": "Name of automatic role",
       "executeImmediately": "Without approval",
       "description": {
-        "label" : "Description",
+        "label": "Description",
         "placeholder": "Verbal description of a request"
       },
       "created": "Created",
@@ -5796,7 +5795,7 @@
       "name": "Name",
       "executeImmediately": "Without approval",
       "description": {
-        "label" : "Description",
+        "label": "Description",
         "placeholder": "Verbal description of a request"
       },
       "created": "Created",
@@ -5814,7 +5813,7 @@
       "modified": "Modified",
       "ownerType": "Object type",
       "operation": "Requested change",
-      "ownerId":"Target object",
+      "ownerId": "Target object",
       "candicateUsers": "Approvers",
       "currentActivity": "Approval state",
       "wfProcessId": "WF identifier",
@@ -5835,9 +5834,9 @@
       "comparison": "$t(entity.AutomaticRole.attribute.comparison)",
       "formAttribute": "$t(entity.AutomaticRole.attribute.formAttribute)",
       "value": {
-          "label": "$t(entity.AutomaticRole.attribute.value.label)",
-          "help": "$t(entity.AutomaticRole.attribute.value.help)"
-        }
+        "label": "$t(entity.AutomaticRole.attribute.value.label)",
+        "help": "$t(entity.AutomaticRole.attribute.value.help)"
+      }
     },
     "EntityEvent": {
       "_type": "Event",
@@ -6056,236 +6055,236 @@
     }
   },
   "wf": {
-    "approve-identity-change-permissions" : {
+    "approve-identity-change-permissions": {
       "name": "Change of assigned roles for user '{{0}}'",
       "task": {
         "approveByHelpDesk": {
           "name": "Approval by 'Helpdesk'",
-          "description":"Approving a change of assigned roles for '{{0}}' (Helpdesk)"
+          "description": "Approving a change of assigned roles for '{{0}}' (Helpdesk)"
         },
         "returnedRequestFromHelpdesk": {
           "name": "The request was returned from 'Helpdesk'",
-          "description":"Returned change-of-roles request for '{{0}}'"
+          "description": "Returned change-of-roles request for '{{0}}'"
         },
         "approveByManager": {
           "name": "Approval by manager",
-          "description":"Approving a change of assigned roles by manager for '{{0}}'"
+          "description": "Approving a change of assigned roles by manager for '{{0}}'"
         },
         "returnedRequestFromManager": {
           "name": "The request was returned from manager",
-          "description":"Returned change-of-roles request for '{{0}}'"
+          "description": "Returned change-of-roles request for '{{0}}'"
         },
         "approveByUserManager": {
           "name": "Approval by user manager",
-          "description":"Approving a change of assigned roles by user manager for '{{0}}'"
+          "description": "Approving a change of assigned roles by user manager for '{{0}}'"
         },
         "returnedRequestFromUserManager": {
           "name": "The request was returned from user manager",
-          "description":"Returned change-of-roles request for '{{0}}'"
+          "description": "Returned change-of-roles request for '{{0}}'"
         },
         "approveIncompatibilities": {
           "name": "Approval of incompatible roles",
-          "description":"Approval of incompatible roles for user '{{0}}'"
+          "description": "Approval of incompatible roles for user '{{0}}'"
         },
         "approvedBySecurity": {
           "name": "Approval by security department",
-          "description":"Approving a change of assigned roles by security department for '{{0}}'"
+          "description": "Approving a change of assigned roles by security department for '{{0}}'"
         }
       }
     },
-    "change-role-without-approve" : {
+    "change-role-without-approve": {
       "name": "Change assignment of the role (add / remove / change) '{{0}}' for user '{{1}}'"
     },
-    "approve-role-by-manager" : {
+    "approve-role-by-manager": {
       "name": "Approval change of assignmented role '{{0}}' for user '{{1}}'",
       "task": {
         "approveAssignByManager": {
           "name": "Approval of assignment role by the manager",
-          "description":"Approval of assignment role '{{0}}' by the manager for the user '{{1}}'"
+          "description": "Approval of assignment role '{{0}}' by the manager for the user '{{1}}'"
         },
         "approveChangeByManager": {
           "name": "Approval of validity change of the role by the manager",
-          "description":"Approval of validity change of the role '{{0}}' by the manager for the user '{{1}}'"
+          "description": "Approval of validity change of the role '{{0}}' by the manager for the user '{{1}}'"
         }
       }
     },
-    "approve-remove-role-by-manager" : {
+    "approve-remove-role-by-manager": {
       "name": "Approval remove of assignmented role '{{0}}' for user '{{1}}'",
       "task": {
         "approveByManager": {
           "name": "Approval remove of assignmented role by user's manager",
-          "description":"Approval remove of assignmented role '{{0}}' by user's manager for the user '{{1}}'"
+          "description": "Approval remove of assignmented role '{{0}}' by user's manager for the user '{{1}}'"
         }
       }
     },
-    "approve-role-by-guarantee" : {
+    "approve-role-by-guarantee": {
       "name": "Approval change of assignmented role '{{0}}' for user '{{1}}'",
       "name_automaticRole": "Approve change in automatic role assignment '{{0}}' by his guarantee",
       "task": {
         "approveAssign": {
           "name": "Approval the role assignment by the guarantee",
-          "description":"Approval the role '{{0}}' assignment by the guarantee for user '{{1}}'"
+          "description": "Approval the role '{{0}}' assignment by the guarantee for user '{{1}}'"
         },
         "approveChange": {
           "name": "Approval of validity change of the role by the guarantee",
-          "description":"Approval of validity change of role '{{0}}' by the guarantee for user '{{1}}'"
+          "description": "Approval of validity change of role '{{0}}' by the guarantee for user '{{1}}'"
         },
         "approveAutomaticRole": {
           "name": "Approval create/change/remove of automatic role by the guarantee",
-          "description":"Approval create/change/remove of automatic role '{{0}}' by the guarantee"
+          "description": "Approval create/change/remove of automatic role '{{0}}' by the guarantee"
         }
       }
     },
-    "approve-role-by-guarantee-security" : {
+    "approve-role-by-guarantee-security": {
       "name": "Approval change of assignmented role '{{0}}' by the guarantee and security department for user '{{1}}'",
       "name_automaticRole": "Approve change in automatic role assignment '{{0}}' by his guarantee and security department",
       "task": {
         "approveAssignByGuarantee": {
           "name": "Approval the role assignment by the guarantee",
-          "description":"Approval the role '{{0}}' assignment by the guarantee for user '{{1}}'"
+          "description": "Approval the role '{{0}}' assignment by the guarantee for user '{{1}}'"
         },
         "approveChangeByGuarantee": {
           "name": "Approval of validity change of the role by the guarantee",
-          "description":"Approval of validity change of role '{{0}}' by the guarantee for user '{{1}}'"
+          "description": "Approval of validity change of role '{{0}}' by the guarantee for user '{{1}}'"
         },
         "approveAssignBySecurity": {
           "name": "Approval the role assignment by security department",
-          "description":"Approval the role '{{0}}' assignment by security department for user '{{1}}'"
+          "description": "Approval the role '{{0}}' assignment by security department for user '{{1}}'"
         },
         "approveChangeBySecurity": {
           "name": "Approval of validity change of the role by security department",
-          "description":"Approval of validity change of role '{{0}}' by security department for user '{{1}}'"
+          "description": "Approval of validity change of role '{{0}}' by security department for user '{{1}}'"
         },
         "approveAutomaticRole": {
           "name": "Approval create/change/remove of automatic role",
-          "description":"Approval create/change/remove of automatic role '{{0}}'"
+          "description": "Approval create/change/remove of automatic role '{{0}}'"
         },
         "approveAutomaticRoleBySecurity": {
           "name": "Approval create/change/remove of automatic role",
-          "description":"Approval create/change/remove of automatic role '{{0}}'"
+          "description": "Approval create/change/remove of automatic role '{{0}}'"
         }
       }
     },
-    "request-idm-role" : {
+    "request-idm-role": {
       "name": "Request for change/create/remove role with name '{{0}}'",
       "task": {
         "approveAutomaticRole": {
           "name": "Approve role changes by guarantee",
-          "description":"Request for change/create/remove role with name '{{0}}'"
+          "description": "Request for change/create/remove role with name '{{0}}'"
         }
       }
     },
-    "request-idm-role-composition" : {
+    "request-idm-role-composition": {
       "name": "Approving request change of business role",
       "task": {
         "approveAddBusinessRole": {
           "name": "Approve adding the new business role",
-          "description":"Approval of adding business role with name '{{0}}' as '{{1}}' to role '{{2}}'"
+          "description": "Approval of adding business role with name '{{0}}' as '{{1}}' to role '{{2}}'"
         },
         "approveRemoveBusinessRole": {
           "name": "Approve removing the business role",
-          "description":"Approve removal of the business role ({{0}}) with name '{{1}}' from role '{{2}}'."
+          "description": "Approve removal of the business role ({{0}}) with name '{{1}}' from role '{{2}}'."
         }
       }
     },
-    "COMMENT":"If you can not find a translation for a specific WF definition, then we'll try to locate the translation in global tasks (by task key only):",
+    "COMMENT": "If you can not find a translation for a specific WF definition, then we'll try to locate the translation in global tasks (by task key only):",
     "task": {
       "approveByManager": {
         "name": "Approving by manager",
-        "description":"Approving by manager"
+        "description": "Approving by manager"
       }
     },
-    "decision" : {
+    "decision": {
       "approve": {
-        "label" : "Accept",
+        "label": "Accept",
         "tooltip": "Executes approval of the task.",
         "warning": "Do you want to approve the request?",
         "resultLabel": "Approved"
       },
       "disapprove": {
-        "label" : "Reject",
+        "label": "Reject",
         "tooltip": "Reject task.",
         "warning": "Do you want to reject the request?",
         "resultLabel": "Rejected"
       },
       "backToApplicant": {
-        "label" : "Return to applicant",
+        "label": "Return to applicant",
         "tooltip": "Returns request to requester.",
         "warning": "Do you want to return the request?",
         "resultLabel": "Returned to requester."
       },
       "createRequest": {
-        "label" : "Submit request",
+        "label": "Submit request",
         "tooltip": "Submit request.",
         "warning": "Do you want to submit the request?",
         "resultLabel": "Request submitted."
       },
       "cancelRequest": {
-        "label" : "Delete request",
+        "label": "Delete request",
         "tooltip": "Delete this request.",
         "warning": "Do you want to delete the request?",
         "resultLabel": "Request canceled."
       },
       "repairedRequest": {
-        "label" : "Request repaired",
+        "label": "Request repaired",
         "tooltip": "Request was repaired by comments.",
         "warning": "Do you want return request to approve?",
         "resultLabel": "Request repaired."
       }
     },
-    "formData" : {
+    "formData": {
       "applicantDescription": {
-        "name" : "Requester's note",
+        "name": "Requester's note",
         "tooltip": "Requester's note in submitted request",
         "placeholder": "Requester's note in submitted request"
       },
       "managerDescriptionForApplicant": {
-        "name" : "Note for requester",
+        "name": "Note for requester",
         "tooltip": "Note for requester in returned request",
         "placeholder": "Note for requester in returned request"
       },
       "managerDescription": {
-        "name" : "Authorizer's note",
+        "name": "Authorizer's note",
         "tooltip": "Note from authorizer.",
         "placeholder": "Note from authorizer."
       },
       "description": {
-        "name" : "Note",
+        "name": "Note",
         "tooltip": "",
         "placeholder": ""
       },
       "roleName": {
-        "name" : "Role name",
+        "name": "Role name",
         "tooltip": "",
         "placeholder": ""
       },
       "validFrom": {
-        "name" : "$t(entity.validFrom)",
+        "name": "$t(entity.validFrom)",
         "tooltip": "",
         "placeholder": ""
       },
       "validTill": {
-        "name" : "$t(entity.validTill)",
+        "name": "$t(entity.validTill)",
         "tooltip": "",
         "placeholder": ""
       },
       "validFromDateOld": {
-        "name" : "$t(entity.validFrom) (old)",
+        "name": "$t(entity.validFrom) (old)",
         "tooltip": "",
         "placeholder": ""
       },
       "validTillDateOld": {
-        "name" : "$t(entity.validTill) (old)",
+        "name": "$t(entity.validTill) (old)",
         "tooltip": "",
         "placeholder": ""
       },
       "validFromDateNew": {
-        "name" : "$t(entity.validFrom) (new)",
+        "name": "$t(entity.validFrom) (new)",
         "tooltip": "",
         "placeholder": ""
       },
       "validTillDateNew": {
-        "name" : "$t(entity.validTill) (new)",
+        "name": "$t(entity.validTill) (new)",
         "tooltip": "",
         "placeholder": ""
       },
@@ -6535,7 +6534,7 @@
         "help": "Creates an export batch containing selected roles. The resulting export will be saved in the <strong>Export/Import</strong> agenda.",
         "attributes": {
           "name": {
-              "label": "Description of export",
+            "label": "Description of export",
             "help": ""
           }
         }
@@ -6580,7 +6579,7 @@
         "help": "Creates an export batch containing selected configuration items. The resulting export will be saved in the <strong>Export/Import</strong> agenda.",
         "attributes": {
           "name": {
-              "label": "Description of export",
+            "label": "Description of export",
             "help": ""
           }
         }
@@ -6592,7 +6591,7 @@
         "help": "Creates an export batch containing selected form definitions. The export result will be saved in the <strong>Export/Import</strong> agenda.",
         "attributes": {
           "name": {
-              "label": "Description of export",
+            "label": "Description of export",
             "help": ""
           }
         }
@@ -7253,7 +7252,7 @@
           "item-codes": {
             "label": "Items",
             "help": "Add permission to code list items. All items from selected code list will be used as default.",
-              "placeholder": "All items or items codes (use comma as separator)"
+            "placeholder": "All items or items codes (use comma as separator)"
           }
         }
       },
@@ -8061,7 +8060,7 @@
       "title": "Superior element cannot be set",
       "message": "Invalid superior element, please select another."
     },
-    "TREE_NODE_BAD_NICE_NAME" : {
+    "TREE_NODE_BAD_NICE_NAME": {
       "title": "Duplicate name for user",
       "message": "This level already contains this tree node name for user: [{{name}}]."
     },
@@ -8085,7 +8084,7 @@
       "title": "Role catalog contains items",
       "message": "Role catalog [{{roleCatalogue}}] contains sub catalog items [<strong class=\"highlight\">{{count}}</strong>]. Remove all sub items first or use force delete bellow."
     },
-    "ROLE_CATALOGUE_BAD_NICE_NAME" : {
+    "ROLE_CATALOGUE_BAD_NICE_NAME": {
       "title": "Duplicate name for user",
       "message": "This level already contains this catalog name for user: [{{name}}]."
     },
@@ -8441,7 +8440,7 @@
       "title": "Bulk action can not be started",
       "message": "Action [{{action}}] can't be processed. Module [{{module}}] is disabled."
     },
-      "BULK_ACTION_ENTITIES_ARE_NOT_SPECIFIED": {
+    "BULK_ACTION_ENTITIES_ARE_NOT_SPECIFIED": {
       "title": "Bulk action can not be started",
       "message": "Bulk action hasn't specified entities or filter."
     },
@@ -8965,7 +8964,7 @@
       "title": "Role code colide with environment",
       "message": "Role code {{code}} cannot be combined with environment {{environment}}. Use base code with environment instead."
     },
-    "ROLE_CODE_REQUIRED":  {
+    "ROLE_CODE_REQUIRED": {
       "title": "Role code is required",
       "message": "Fill role code or base code."
     },
@@ -9165,19 +9164,19 @@
       "unique": "Field value has to be unique. Value [{{unique}}] is already used."
     },
     "string": {
-      "min" : "Enter at least one character!",
-      "min_plural" : "Enter at least {{count}} characters!",
-      "base" : "Required field!",
+      "min": "Enter at least one character!",
+      "min_plural": "Enter at least {{count}} characters!",
+      "base": "Required field!",
       "email": "format of e-mail is not valid!",
-      "max" : "Enter the maximum {{count}} character!",
-      "max_plural" : "Enter the maximum {{count}} characters!",
+      "max": "Enter the maximum {{count}} character!",
+      "max_plural": "Enter the maximum {{count}} characters!",
       "guid": "Enter a valid uuid identifier",
       "isTrimmable": "Contains some whitespace characters at the beginning or the end of the text!"
     },
     "number": {
-      "min" : "Min value is: {{count}}!",
-      "base" : "Value must be number!",
-      "max" : "Max value is: {{count}}!",
+      "min": "Min value is: {{count}}!",
+      "base": "Value must be number!",
+      "max": "Max value is: {{count}}!",
       "integer": "Integer number"
     },
     "boolean": {
@@ -9185,19 +9184,19 @@
     },
     "any": {
       "allowOnly": "Required field!",
-      "empty" : "$t(validationError.string.base)",
+      "empty": "$t(validationError.string.base)",
       "required": "$t(validationError.any.allowOnly)"
     },
-    "object" : {
-      "base" : "$t(validationError.string.base)"
+    "object": {
+      "base": "$t(validationError.string.base)"
     },
-    "array" : {
-      "base" : "$t(validationError.string.base)",
-      "min" : "Enter at least one item!",
-      "min_plural" : "Enter at least {{count}} items!"
+    "array": {
+      "base": "$t(validationError.string.base)",
+      "min": "Enter at least one item!",
+      "min_plural": "Enter at least {{count}} items!"
     },
-    "date" : {
-      "unvalid" : "Invalid date!",
+    "date": {
+      "unvalid": "Invalid date!",
       "min": "Date cannot be less than {{count}}!",
       "max": "Date cannot be greater than {{count}}!"
     },
@@ -9212,7 +9211,7 @@
       }
     },
     "record": {
-      "notFound" : "Record not found or insufficient permissions to read selected record."
+      "notFound": "Record not found or insufficient permissions to read selected record."
     }
   },
   "cache": {
