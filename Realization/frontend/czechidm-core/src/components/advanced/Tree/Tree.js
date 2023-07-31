@@ -11,6 +11,17 @@ import * as Basic from '../../basic';
 import * as Domain from '../../../domain';
 import * as Utils from '../../../utils';
 import DetailButton from '../Table/DetailButton';
+import {
+  collapseTreeNode,
+  expandTreeNode,
+  selectTreeNode
+} from '../../../redux/ui/actions';
+import {
+  getExpandedTreeNodes, getSelectedTreeNodes,
+  isTreeNodeExpanded
+} from '../../../redux/ui/selectors';
+import { TreeNode } from './TreeNode';
+import { getUiState } from '../../../utils/UiUtils';
 
 const BASE_ICON_WIDTH = 15; // TODO: how to get dynamic padding from css?
 
@@ -21,24 +32,24 @@ const styles = theme => ({
       borderLeftColor: theme.palette.secondary.main,
       borderLeftWidth: 3,
       borderLeftStyle: 'solid',
-      paddingLeft: 12
+      paddingLeft: 12,
     },
     '& .basic-button.embedded': {
       textAlign: 'left',
       padding: 0,
-      minWidth: 'auto'
-    }
+      minWidth: 'auto',
+    },
   },
 });
 
 /**
-* Advanced tree component
-*
-* TODO: use redux state to prevent reload whole tree after active operations
-* TODO: search
-*
-* @author Radek Tomiška
-*/
+ * Advanced tree component
+ *
+ * TODO: use redux state to prevent reload whole tree after active operations
+ * TODO: search
+ *
+ * @author Radek Tomiška
+ */
 class Tree extends Basic.AbstractContextComponent {
 
   constructor(props, context) {
@@ -67,7 +78,7 @@ class Tree extends Basic.AbstractContextComponent {
       selected: new Immutable.OrderedSet(props.selected), // contains ids
       nodes, // loaded node ids
       ui: new Immutable.Map(), // ui state (loading decorator, last search parameters, total)
-      filterOpened: false
+      filterOpened: false,
     };
   }
 
@@ -77,7 +88,7 @@ class Tree extends Basic.AbstractContextComponent {
 
   UNSAFE_componentWillReceiveProps(newProps) {
     if (!Domain.SearchParameters.is(newProps.forceSearchParameters, this.props.forceSearchParameters)
-        || this.props.rendered !== newProps.rendered) {
+      || this.props.rendered !== newProps.rendered) {
       this.reload(newProps);
     } else {
       const newState = {};
@@ -118,8 +129,8 @@ class Tree extends Basic.AbstractContextComponent {
   }
 
   /**
-  * Manager for entity in tree
-  */
+   * Manager for entity in tree
+   */
   getManager() {
     return this.props.manager;
   }
@@ -128,7 +139,7 @@ class Tree extends Basic.AbstractContextComponent {
    * Reload tree
    */
   reload(props = null) {
-    const { onChange, onSelect, roots, selected } = props || this.props;
+    const {onChange, onSelect, roots, selected} = props || this.props;
     //
     let nodes = new Immutable.Map();
     if (roots) {
@@ -147,7 +158,7 @@ class Tree extends Basic.AbstractContextComponent {
       activeNodeId: null,
       selected: new Immutable.OrderedSet(selected), // contains ids
       nodes,
-      ui: new Immutable.Map()
+      ui: new Immutable.Map(),
     }, () => {
       if (!roots) {
         this._loadNodes();
@@ -159,39 +170,6 @@ class Tree extends Basic.AbstractContextComponent {
       if (onSelect) {
         onSelect(null);
       }
-    });
-  }
-
-  onExpand(nodeId, event) {
-    if (event) {
-      event.preventDefault();
-    }
-    this._loadNodes(nodeId);
-  }
-
-  /**
-   * Hide node children
-   *
-   * @param  {String} nodeId
-   * @param  {func} cb
-   * @param  {event} event
-   */
-  onCollapse(nodeId, event = null) {
-    if (event) {
-      event.preventDefault();
-    }
-    //
-    let { nodes, ui } = this.state;
-    if (nodes.has(nodeId)) {
-      nodes = nodes.delete(nodeId);
-    }
-    if (ui.has(nodeId)) {
-      ui = ui.delete(nodeId);
-    }
-    //
-    this.setState({
-      nodes,
-      ui
     });
   }
 
@@ -207,10 +185,10 @@ class Tree extends Basic.AbstractContextComponent {
     if (event) {
       event.preventDefault();
     }
-    const { onChange, onSelect, traverse, multiSelect, clearable } = this.props;
-    const { nodes } = this.state;
-    const { shiftKey } = event;
-    let { selected } = this.state;
+    const {onChange, onSelect, traverse, multiSelect, clearable} = this.props;
+    const {nodes} = this.state;
+    const {shiftKey} = event;
+    let {selected} = this.state;
     //
     if (!multiSelect || !shiftKey) {
       if (!selected.has(nodeId)) {
@@ -272,7 +250,7 @@ class Tree extends Basic.AbstractContextComponent {
     //
     this.setState({
       activeNodeId: nodeId,
-      selected
+      selected,
     }, () => {
       const node = this._getNode(nodeId); // root can be given
       if (traverse && (nodeId == null || node.childrenCount > 0) && !nodes.has(nodeId)) {
@@ -287,7 +265,7 @@ class Tree extends Basic.AbstractContextComponent {
       event.preventDefault();
     }
     //
-    const { onDoubleClick } = this.props;
+    const {onDoubleClick} = this.props;
     if (onDoubleClick) {
       onDoubleClick(nodeId);
     }
@@ -297,7 +275,7 @@ class Tree extends Basic.AbstractContextComponent {
     if (event) {
       event.preventDefault();
     }
-    const { onDetail } = this.props;
+    const {onDetail} = this.props;
     if (!onDetail) {
       return;
     }
@@ -311,7 +289,7 @@ class Tree extends Basic.AbstractContextComponent {
     }
     //
     this.setState({
-      filterOpened: true
+      filterOpened: true,
     });
   }
 
@@ -321,7 +299,7 @@ class Tree extends Basic.AbstractContextComponent {
     }
     //
     this.setState({
-      filterOpened: false
+      filterOpened: false,
     });
   }
 
@@ -331,7 +309,7 @@ class Tree extends Basic.AbstractContextComponent {
     }
     //
     this.setState({
-      filterOpened: !filterOpened
+      filterOpened: !filterOpened,
     });
   }
 
@@ -352,7 +330,7 @@ class Tree extends Basic.AbstractContextComponent {
   }
 
   getValue() {
-    const { selected } = this.state;
+    const {selected} = this.state;
     return selected.toArray();
   }
 
@@ -362,7 +340,7 @@ class Tree extends Basic.AbstractContextComponent {
       roots,
       forceSearchParameters,
       paginationRootSize,
-      paginationNodeSize
+      paginationNodeSize,
     } = _props;
     if (!_props.rendered) {
       // component is not rendered ... loading is not needed
@@ -379,6 +357,7 @@ class Tree extends Basic.AbstractContextComponent {
     if (this.state.ui.has(nodeId)) {
       uiState = this.state.ui.get(nodeId);
     }
+
     searchParameters = null;
     if (uiState.searchParameters) {
       // next page
@@ -399,13 +378,13 @@ class Tree extends Basic.AbstractContextComponent {
       searchParameters = searchParameters.setFilter('text', filter);
     }
     //
-    const { ui } = this.state;
+    const {ui} = this.state;
     this.setState({
       ui: ui.set(nodeId, {
         ...uiState,
         searchParameters,
-        showLoading: true
-      })
+        showLoading: true,
+      }),
     }, () => {
       let _forceSearchParameters = null;
       if (forceSearchParameters) {
@@ -417,7 +396,7 @@ class Tree extends Basic.AbstractContextComponent {
           searchParameters,
           nodeId === null ? this.getUiKey() : `${this.getUiKey()}-${nodeId}`,
           (json, error) => {
-            let { nodes, ui } = this.state;
+            let {nodes, ui} = this.state;
             if (!error) {
               let data = json._embedded[this.getManager().getCollectionType()] || [];
               data = data.map(node => node.id); // only ids are stored in state; TODO: move state to redux store (e.g. Data)
@@ -442,20 +421,20 @@ class Tree extends Basic.AbstractContextComponent {
               ui = ui.set(nodeId, {
                 searchParameters,
                 total: currentChildrenCount,
-                showLoading: false
+                showLoading: false,
               });
             } else {
               this.addErrorMessage({
                 level: 'error',
-                key: 'error-tree-load'
+                key: 'error-tree-load',
               }, error);
             }
             this.setState({
               nodes,
-              ui
+              ui,
             });
-          }
-        )
+          },
+        ),
       );
     });
   }
@@ -470,132 +449,104 @@ class Tree extends Basic.AbstractContextComponent {
     return this.getManager().getEntity(this.context.store.getState(), nodeId);
   }
 
-  _getNoData() {
-    const { noData } = this.props;
-    //
-    if (noData) {
-      return noData;
+  getNodeSearchParams(nodeId) {
+    const state = this.context.store.getState();
+    const uiKey = this.getUiKey();
+    const expanded = isTreeNodeExpanded(state, uiKey, nodeId);
+    const uiState = getUiState(state, uiKey, nodeId);
+
+    const {
+      paginationRootSize,
+      paginationNodeSize,
+      forceSearchParameters
+    } = this.props;
+    let searchParameters = null;
+    const filter = null;
+
+    if (uiState?.searchParameters && expanded) {
+      // next page
+      searchParameters = uiState.searchParameters.setPage(uiState.searchParameters.getPage() + 1);
+    } else if (!nodeId) {
+      // load roots
+      searchParameters = this.getManager().getService().getRootSearchParameters();
+      if (paginationRootSize) { // only if given, default will be used from underlying service by default otherwise
+        searchParameters = searchParameters.setSize(paginationRootSize);
+      }
+    } else {
+      searchParameters = this.getManager().getService().getTreeSearchParameters().setFilter('parent', nodeId);
+      if (paginationNodeSize) { // only if given, default will be used from underlying service by default otherwise
+        searchParameters = searchParameters.setSize(paginationNodeSize);
+      }
     }
-    // default noData
-    return this.i18n('noData', { defaultValue: 'No record found' });
+
+    if (filter) {
+      searchParameters = searchParameters.setFilter('text', filter);
+    }
+
+    let _forceSearchParameters = null;
+    if (forceSearchParameters) {
+      _forceSearchParameters = forceSearchParameters.setSize(null).setPage(null); // we dont want override setted pagination
+    }
+
+    searchParameters = this.getManager().mergeSearchParameters(searchParameters, _forceSearchParameters);
+
+    return searchParameters;
   }
 
-  _getNodeIcon(node) {
-    if (!node) {
-      return null;
-    }
-    //
-    const { nodeIcon, traverse } = this.props;
-    const { nodes } = this.state;
-    const opened = nodes.has(node.id) && !traverse;
-    //
-    if (nodeIcon !== undefined) {
-      if (!nodeIcon) {
-        // => null can be given - disable default icons
-        return null;
-      }
-      // callback or static
-      if (_.isFunction(nodeIcon)) {
-        return nodeIcon({ node, opened });
-      }
-      return nodeIcon;
-    }
-    // default
-    let icon = 'fa:file-o';
-    if (node.childrenCount > 0 || node.childrenCount === undefined) {
-      if (opened) {
-        icon = 'fa:folder-open';
-      } else {
-        icon = 'fa:folder';
-      }
-    }
-    return icon;
-  }
+  loadNode(nodeId) {
+    const searchParameters = this.getNodeSearchParams(nodeId);
+    const uiKey = this.getUiKey();
+    const manager = this.getManager();
 
-  _getNodeStyle(node) {
-    if (!node) {
-      return null;
-    }
-    //
-    const { nodeStyle, traverse } = this.props;
-    const { nodes } = this.state;
-    const opened = nodes.has(node.id) && !traverse;
-    //
-    if (nodeStyle && _.isFunction(nodeStyle)) {
-      return nodeStyle({ node, opened });
-    }
-    // object or null etc.
-    return nodeStyle;
-  }
-
-  /**
-   * Configurable node icon classnames - add color, shadow etc.
-   * @param  {[type]} node [description]
-   * @return {[type]}      [description]
-   */
-  _getNodeIconClassName(node) {
-    if (!node) {
-      return null;
-    }
-    //
-    const { nodeIconClassName, traverse } = this.props;
-    const { nodes } = this.state;
-    const opened = nodes.has(node.id) && !traverse;
-    //
-    if (nodeIconClassName !== undefined) {
-      if (!nodeIconClassName) {
-        // => null can be given - disable default
-        return null;
-      }
-      // callback or static
-      if (_.isFunction(nodeIconClassName)) {
-        return nodeIconClassName({ node, opened });
-      }
-      return nodeIconClassName;
-    }
-    // default
-    return classNames(
-      { folder: node.childrenCount === undefined || node.childrenCount > 0 },
-      { file: node.childrenCount === 0 }
+    return manager.fetchEntities(
+      searchParameters,
+      `${uiKey}${nodeId ? `-${nodeId}` : ''}`
     );
   }
 
-  _getNodeNiceLabel(node) {
-    if (!node) {
-      return null;
-    }
-    //
-    const { nodeNiceLabel } = this.props;
-    if (nodeNiceLabel === null) {
-      // no label (icon only)
-      return null;
-    }
-    //
-    if (nodeNiceLabel) {
-      return nodeNiceLabel(node);
-    }
-    return this.getManager().getNiceLabel(node);
+  handleNodeExpand = (nodeId) => {
+    const uiKey = this.getUiKey();
+    this.context.store.dispatch(dispatch => {
+      dispatch(this.loadNode(nodeId));
+      dispatch(expandTreeNode(uiKey, nodeId));
+    });
   }
 
-  /**
-   * Node descrition.
-   *
-   * @param  {object} node tree node
-   * @return {string}   description
-   * @since 10.7.0
-   */
-  _getNodeDescription(node) {
-    const { showNodeDescription } = this.props;
-    if (!node || !showNodeDescription) {
-      return null;
+  handleNodeCollapse = (nodeId) => {
+    const uiKey = this.getUiKey();
+    this.context.store.dispatch(collapseTreeNode(uiKey, nodeId));
+  }
+
+  handleNodeClick = (nodeId, e) => {
+    const {
+      onChange,
+      onSelect,
+      multiSelect,
+      clearable,
+      selectedTreeNodes
+    } = this.props;
+    const uiKey = this.getUiKey();
+
+    const {shiftKey} = e;
+
+    this.context.store.dispatch(selectTreeNode(uiKey, nodeId, {
+      add: multiSelect && shiftKey,
+      toggle: clearable
+    }));
+
+    if (onSelect) {
+      onSelect(nodeId);
     }
-    //
-    return node.description;
+
+    if (onChange) {
+      const changeId = selectedTreeNodes?.has(nodeId) && clearable ? null : nodeId;
+      onChange(changeId);
+    }
   }
 
   _renderHeader() {
-    const { header, multiSelect } = this.props;
-    const { selected, activeNodeId } = this.state;
+    const {header, multiSelect} = this.props;
+    const {selected, activeNodeId} = this.state;
     //
     if (header === null) { // => not rendered
       return header;
@@ -622,16 +573,16 @@ class Tree extends Basic.AbstractContextComponent {
             padding: '0px 2px',
             marginBottom: 0,
             marginRight: 3,
-            backgroundColor: 'transparent'
+            backgroundColor: 'transparent',
           }}>
           <li>
             <Basic.Button
               level="link"
               className="embedded"
-              onClick={ this.onSelect.bind(this, null) }
-              title={ this.i18n('root.link.title') }
+              onClick={this.onSelect.bind(this, null)}
+              title={this.i18n('root.link.title')}
               titlePlacement="bottom">
-              { this.i18n('root.link.label') }
+              {this.i18n('root.link.label')}
             </Basic.Button>
           </li>
           {
@@ -641,13 +592,15 @@ class Tree extends Basic.AbstractContextComponent {
               <Basic.Button
                 level="link"
                 className="embedded"
-                onClick={ this.onSelect.bind(this, parents[0].id) }>
-                <Basic.ShortText text={ this.getManager().getNiceLabel(parents[0]) }/>
+                onClick={this.onSelect.bind(this, parents[0].id)}>
+                <Basic.ShortText
+                  text={this.getManager().getNiceLabel(parents[0])}/>
               </Basic.Button>
             </li>
           }
           <li>
-            <Basic.ShortText text={ this.getManager().getNiceLabel(selectedNode) }/>
+            <Basic.ShortText
+              text={this.getManager().getNiceLabel(selectedNode)}/>
           </li>
         </ol>
       );
@@ -686,7 +639,7 @@ class Tree extends Basic.AbstractContextComponent {
    * @return {Boolean}
    */
   _isDisabled(node) {
-    const { roots, disableable } = this.props;
+    const {roots, disableable} = this.props;
     //
     if (disableable === false) {
       return false;
@@ -708,187 +661,6 @@ class Tree extends Basic.AbstractContextComponent {
     return result;
   }
 
-  /**
-   * Render parent's child nodes
-   *
-   * @param  {uuid} parentId node id (null is root)
-   * @param {int} level - node depth
-   * @param {array(uuid)} renderedNodes - prevent to render cyclic nodes (when composition is rendered)
-   */
-  _renderNodes(parentId = null, level = 0, renderedNodes = null) {
-    const { traverse, nodeContent, classes } = this.props;
-    const { nodes, ui, selected } = this.state;
-    const treeNodeRowClasses = classes ? classes.treeNodeRow : null;
-    //
-    // prevent to render cyclic compositions
-    if (renderedNodes === null) {
-      renderedNodes = new Immutable.OrderedSet();
-    }
-    if (renderedNodes.has(parentId)) {
-      return null;
-    }
-    renderedNodes = renderedNodes.add(parentId);
-    //
-    if (!nodes.has(parentId)) {
-      return null;
-    }
-    let parentUiState = {};
-    if (ui.has(parentId)) {
-      parentUiState = ui.get(parentId);
-    }
-    const levelNodeIds = nodes.get(parentId);
-    //
-    if (levelNodeIds.length === 0) {
-      return (
-        <Basic.Alert text={ this._getNoData() } className="no-data"/>
-      );
-    }
-    const allRootLeafs = level === 0 ? this.isLeafs(levelNodeIds) : false;
-    //
-    return (
-      <Basic.Div>
-        {
-          levelNodeIds.map(nodeId => {
-            const node = this._getNode(nodeId);
-            if (!node) {
-              return true;
-            }
-            //
-            let uiState = {};
-            if (ui.has(node.id)) {
-              uiState = ui.get(node.id);
-            }
-            // icon classnames - force + configurable
-            const iconClassNames = classNames(
-              'node-icon',
-              { showLoading: uiState && uiState.showLoading },
-              this._getNodeIconClassName(node)
-            );
-            // resolve node icon
-            const icon = this._getNodeIcon(node);
-            // node has disabled flag
-            const isDisabled = this._isDisabled(node);
-            // selected item decorator
-            const nodeClassNames = classNames(
-              treeNodeRowClasses,
-              'tree-node-row',
-              { selected: selected.has(node.id) },
-              { disabled: isDisabled }
-            );
-            //
-            // Node icon + label
-            const _nodeContent = [];
-            if (nodeContent) {
-              // external node content was given
-              _nodeContent.push(
-                <Basic.Icon
-                  value={ icon }
-                  className={ iconClassNames }
-                  showLoading={ uiState && uiState.showLoading }
-                  style={{ width: 14 }}/>
-              );
-              _nodeContent.push(nodeContent({ node }));
-            } else if (isDisabled) {
-              _nodeContent.push(
-                <span>
-                  <Basic.Icon
-                    value={ icon }
-                    className={ iconClassNames }
-                    showLoading={ uiState && uiState.showLoading }/>
-                  { this._getNodeNiceLabel(node) }
-                </span>
-              );
-            } else {
-              // default content
-              _nodeContent.push(
-                <Basic.Button
-                  level="link"
-                  className="embedded"
-                  onClick={ this.onSelect.bind(this, node.id) }
-                  onDoubleClick={ this.onDoubleClick.bind(this, node.id) }>
-                  <Basic.Icon
-                    value={ icon }
-                    className={ iconClassNames }
-                    showLoading={ uiState && uiState.showLoading }/>
-                  { this._getNodeNiceLabel(node) }
-                </Basic.Button>
-              );
-            }
-            //
-            let expandIcon = 'far:plus-square';
-            let expandAction = this.onExpand.bind(this, node.id);
-            let expandTitle = this.i18n('expand.expand');
-            if (renderedNodes.has(node.id)) {
-              expandIcon = 'fa:arrow-up';
-              expandAction = null;
-              expandTitle = this.i18n('expand.cycle');
-            } else if (nodes.has(node.id)) {
-              expandIcon = 'far:minus-square';
-              expandAction = this.onCollapse.bind(this, node.id);
-              expandTitle = this.i18n('expand.collapse');
-            }
-            //
-            return (
-              <div>
-                <div className={ nodeClassNames } style={ this._getNodeStyle(node) }>
-                  {/* Expand button */}
-                  {/* - expand button is shown, when children count is higher than zero */}
-                  {/* - or undefined (children is unknown and has to be loaded at first) */}
-                  <Basic.Icon
-                    rendered={ !traverse && !allRootLeafs }
-                    value={ expandIcon }
-                    onClick={ expandAction }
-                    title={ expandTitle }
-                    className={ classNames(
-                      'expand-icon',
-                      { disabled: renderedNodes.has(node.id) },
-                      { visible: (node.childrenCount > 0 || node.childrenCount === undefined) }
-                    )}
-                    style={{ marginLeft: 2 + (level * BASE_ICON_WIDTH) }}/> {/* dynamic margin by node level */}
-
-                  <span title={ this._getNodeDescription(node) }>
-                    { /* Node icon + label */
-                      _nodeContent
-                    }
-                  </span>
-                  {
-                    !node.childrenCount
-                    ||
-                    <small style={{ marginLeft: 3 }}>({ node.childrenCount })</small>
-                  }
-                </div>
-                {
-                  traverse
-                  ||
-                  this._renderNodes(node.id, level + 1, renderedNodes)
-                }
-              </div>
-            );
-          })
-        }
-        {
-          !parentUiState.total
-          ||
-          levelNodeIds.length >= parentUiState.total
-          ||
-          <Basic.Button
-            level="link"
-            className="embedded"
-            style={{
-              marginLeft: BASE_ICON_WIDTH + (level * BASE_ICON_WIDTH)
-            }}
-            showLoading={ parentUiState.showLoading }
-            showLoadingIcon
-            onClick={ this.onNextPage.bind(this, parentId) }>
-            <small>
-              { this.i18n('component.advanced.Tree.moreRecords', { counter: levelNodeIds.length, total: parentUiState.total, escape: false }) }
-            </small>
-          </Basic.Button>
-        }
-      </Basic.Div>
-    );
-  }
-
   render() {
     const {
       rendered,
@@ -900,13 +672,13 @@ class Tree extends Basic.AbstractContextComponent {
       style,
       bodyStyle,
       bodyClassName,
-      showRefreshButton
+      showRefreshButton,
     } = this.props;
     const {
       nodes,
       ui,
       activeNodeId,
-      filterOpened
+      filterOpened,
     } = this.state;
     //
     const selectedNode = this._getNode(activeNodeId);
@@ -937,106 +709,118 @@ class Tree extends Basic.AbstractContextComponent {
     const _showLoading = !nodes.has(null) || showLoading;
     //
     return (
-      <div className={ classNames('advanced-tree', className) } style={ style }>
+      <div className={classNames('advanced-tree', className)} style={style}>
         {
           header === null
           ||
           <div>
             <div className="basic-toolbar tree-header">
               <div className="tree-header-text">
-                { this._renderHeader() }
+                {this._renderHeader()}
               </div>
               <div className="tree-header-buttons">
                 <DetailButton
-                  rendered={ !!(selectedNode !== null && onDetail) }
-                  onClick={ this.onDetail.bind(this, activeNodeId) }
-                  title={ this.i18n('detail.link.title') }/>
+                  rendered={!!(selectedNode !== null && onDetail)}
+                  onClick={this.onDetail.bind(this, activeNodeId)}
+                  title={this.i18n('detail.link.title')}/>
 
                 {/* RT: search prepare  */}
                 <Basic.Button
                   className="hidden"
                   buttonSize="xs"
-                  showLoading={ _showLoading }
+                  showLoading={_showLoading}
                   icon="filter"
-                  style={{ marginLeft: 3 }}
-                  onClick={ this.toogleFilter.bind(this, filterOpened) }>
-                  <Basic.Icon icon={!filterOpened ? 'triangle-bottom' : 'triangle-top'} style={{ fontSize: '0.85em'}}/>
+                  style={{marginLeft: 3}}
+                  onClick={this.toogleFilter.bind(this, filterOpened)}>
+                  <Basic.Icon
+                    icon={!filterOpened ? 'triangle-bottom' : 'triangle-top'}
+                    style={{fontSize: '0.85em'}}/>
                 </Basic.Button>
 
                 <Basic.Button
-                  title={ this.i18n('reload') }
+                  title={this.i18n('reload')}
                   titlePlacement="bottom"
                   buttonSize="xs"
-                  onClick={ this.reload.bind(this, null) }
-                  showLoading={ _showLoading }
-                  rendered={ showRefreshButton }
+                  onClick={this.reload.bind(this, null)}
+                  showLoading={_showLoading}
+                  rendered={showRefreshButton}
                   icon="fa:refresh"
-                  style={{ marginLeft: 3 }}/>
+                  style={{marginLeft: 3}}/>
               </div>
             </div>
             {/* RT: search prepare */}
-            <Basic.Collapse in={ filterOpened }>
+            <Basic.Collapse in={filterOpened}>
               <div>
                 <form
                   className="basic-toolbar"
-                  style={{ display: 'flex', marginBottom: 0 }}
-                  onSubmit={ this.useFilter.bind(this) }>
-                  <div style={{ flex: 1 }}>
+                  style={{display: 'flex', marginBottom: 0}}
+                  onSubmit={this.useFilter.bind(this)}>
+                  <div style={{flex: 1}}>
                     <Basic.TextField
                       ref="filter"
-                      label={ null }
-                      placeholder={ this.i18n('component.basic.SelectBox.searchingText') }
+                      label={null}
+                      placeholder={this.i18n('component.basic.SelectBox.searchingText')}
                       className="small"
-                      style={{ marginBottom: 0 }}/>
+                      style={{marginBottom: 0}}/>
                   </div>
                   <div className="text-right">
                     <Basic.Button
                       type="submit"
                       className="btn-xs"
-                      showLoading={ _showLoading }
+                      showLoading={_showLoading}
                       icon="fa:check"
-                      style={{ marginLeft: 3 }}/>
+                      style={{marginLeft: 3}}/>
                     <Basic.Button
                       className="btn-xs"
-                      showLoading={ _showLoading }
+                      showLoading={_showLoading}
                       icon="remove"
-                      style={{ marginLeft: 3 }}
-                      onClick={ this.cancelFilter.bind(this) }/>
+                      style={{marginLeft: 3}}
+                      onClick={this.cancelFilter.bind(this)}/>
                   </div>
                 </form>
               </div>
             </Basic.Collapse>
           </div>
         }
-        <div className={ classNames('tree-body', bodyClassName) } style={ bodyStyle }>
+        <div
+          className={classNames('tree-body', bodyClassName)}
+          style={bodyStyle}>
           {
             _showLoading
-            ?
-            <Basic.Loading isStatic show />
-            :
-            <div>
-              {
-                !traverse || !root
-                ||
-                <Basic.Button
-                  level="link"
-                  className="embedded parent-link"
-                  onClick={ this.onSelect.bind(this, parent) }
-                  showLoading={ uiState && uiState.showLoading }
-                  title={ this.i18n('parent.link.title') }>
-                  <Basic.Icon
-                    value="fa:level-down"
-                    className="fa-rotate-180 parent-icon"/>
-                  [{ this.i18n('parent.link.label') }]
-                  <Basic.Icon
-                    value="refresh"
-                    showLoading
-                    rendered={ uiState && uiState.showLoading === true }
-                    style={{ marginLeft: 5 }}/>
-                </Basic.Button>
-              }
-              { this._renderNodes(root) }
-            </div>
+              ?
+              <Basic.Loading isStatic show/>
+              :
+              <div>
+                {
+                  !traverse || !root
+                  ||
+                  <Basic.Button
+                    level="link"
+                    className="embedded parent-link"
+                    onClick={this.onSelect.bind(this, parent)}
+                    showLoading={uiState && uiState.showLoading}
+                    title={this.i18n('parent.link.title')}>
+                    <Basic.Icon
+                      value="fa:level-down"
+                      className="fa-rotate-180 parent-icon"/>
+                    [{this.i18n('parent.link.label')}]
+                    <Basic.Icon
+                      value="refresh"
+                      showLoading
+                      rendered={uiState && uiState.showLoading === true}
+                      style={{marginLeft: 5}}/>
+                  </Basic.Button>
+                }
+                <Basic.Tree>
+                  <TreeNode
+                    uiKey={this.getUiKey()}
+                    onClick={this.handleNodeClick}
+                    onExpand={this.handleNodeExpand}
+                    onCollapse={this.handleNodeCollapse}
+                    onDoubleClick={this.onDoubleClick}
+                    expanded/>
+                </Basic.Tree>
+              </div>
           }
         </div>
       </div>
@@ -1051,10 +835,10 @@ Tree.propTypes = {
    */
   uiKey: PropTypes.string.isRequired,
   /**
-  * EntityManager for fetching entities in tree. Manager's underlying service should support methods:
-  * - getRootSearchParameters() - returns search parameters to find roots
-  * - getTreeSearchParameters() - returns search parameters to find children with 'parent' paremeter filter.
-  */
+   * EntityManager for fetching entities in tree. Manager's underlying service should support methods:
+   * - getRootSearchParameters() - returns search parameters to find roots
+   * - getTreeSearchParameters() - returns search parameters to find children with 'parent' paremeter filter.
+   */
   manager: PropTypes.object.isRequired,
   /**
    * "Hard roots" - roots can be loaded from outside and given as parameter, then root will not be loaded by method getRootSearchParameters().
@@ -1063,7 +847,7 @@ Tree.propTypes = {
    */
   roots: PropTypes.arrayOf(PropTypes.oneOfType(
     PropTypes.string,
-    PropTypes.object
+    PropTypes.object,
   )),
   /**
    * "Hard filters"
@@ -1075,7 +859,7 @@ Tree.propTypes = {
    */
   nodeIcon: PropTypes.oneOfType(
     PropTypes.string,
-    PropTypes.func
+    PropTypes.func,
   ),
   /**
    * Node icon class name - string or callback - named parameters "node" and "opened" will be given.
@@ -1083,14 +867,14 @@ Tree.propTypes = {
    */
   nodeIconClassName: PropTypes.oneOfType(
     PropTypes.string,
-    PropTypes.func
+    PropTypes.func,
   ),
   /**
    * Node style - single style for all nodes (string) or callback - named parameters "node" and "opened" will be given.
    */
   nodeStyle: PropTypes.oneOfType(
     PropTypes.string,
-    PropTypes.func
+    PropTypes.func,
   ),
   /**
    * Override whole node content - all listeners will be disabled (onSelect ...), just node icon remains.
@@ -1098,7 +882,7 @@ Tree.propTypes = {
    */
   nodeContent: PropTypes.oneOfType([
     PropTypes.string,
-    PropTypes.element
+    PropTypes.element,
   ]),
   /**
    * Node label. Manager's nice label is used by default.
@@ -1129,7 +913,7 @@ Tree.propTypes = {
    */
   header: PropTypes.oneOfType([
     PropTypes.string,
-    PropTypes.element
+    PropTypes.element,
   ]),
   /**
    * If tree roots are empty, then this text will be shown
@@ -1180,7 +964,7 @@ Tree.propTypes = {
    *
    * @since 10.7.0
    */
-  showNodeDescription: PropTypes.bool
+  showNodeDescription: PropTypes.bool,
 };
 
 Tree.defaultProps = {
@@ -1190,15 +974,23 @@ Tree.defaultProps = {
   clearable: true,
   showRefreshButton: true,
   disableable: true,
-  showNodeDescription: true
+  showNodeDescription: true,
 };
 
-function select(state, component) {
+const mapStateToProps = (state, component) => {
   const manager = component.manager;
   const uiKey = component.uiKey;
-  //
+
   return {
-    _showLoading: manager.isShowLoading(state, uiKey)
+    _showLoading: manager.isShowLoading(state, uiKey),
+    expandedNodes: getExpandedTreeNodes(state, uiKey),
+    selectedTreeNodes: getSelectedTreeNodes(state, uiKey)
   };
-}
-export default connect(select, null, null, { forwardRef: true })(withStyles(styles, { withTheme: true })(Tree));
+};
+
+const mapDispatchToProps = {
+  onExpandNode: expandTreeNode,
+  onCollapseNode: collapseTreeNode,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps, null, {forwardRef: true})(withStyles(styles, {withTheme: true})(Tree));

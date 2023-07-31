@@ -1,5 +1,7 @@
 import FormableEntityManager from './FormableEntityManager';
 import { TreeNodeService } from '../../services';
+import { ACTIONS } from '../actions';
+import { TREE_NODE_ENTITY_TYPE } from '../ui/reducer';
 
 /**
  * Tree nodes - items of tree scructures
@@ -19,7 +21,7 @@ export default class TreeNodeManager extends FormableEntityManager {
   }
 
   getEntityType() {
-    return 'TreeNode'; // TODO: constant or enumeration
+    return TREE_NODE_ENTITY_TYPE;
   }
 
   getCollectionType() {
@@ -32,6 +34,26 @@ export default class TreeNodeManager extends FormableEntityManager {
    */
   getRootSearchParameters() {
     this.getService().getRootSearchParameters();
+  }
+
+  expandTreeNode(nodeId, uiKey = TreeNodeManager.UI_KEY_DEFAULT_TREE_NODE) {
+    return {
+      type: ACTIONS.UI.EXPAND_TREE_NODE,
+      uiKey,
+      payload: {
+        nodeId
+      }
+    };
+  }
+
+  collapseTreeNode(nodeId, uiKey = TreeNodeManager.UI_KEY_DEFAULT_TREE_NODE) {
+    return {
+      type: ACTIONS.UI.COLLAPSE_TREE_NODE,
+      uiKey,
+      payload: {
+        nodeId
+      }
+    };
   }
 
   /**
