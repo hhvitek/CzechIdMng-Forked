@@ -1142,4 +1142,50 @@ public class DefaultVsRequestServiceIntegrationTest extends AbstractIntegrationT
 		}
 	}
 
+	@Test
+	public void testChangeUid() {
+		SysSystemDto system = this.createVirtualSystem(USER_IMPLEMENTER_NAME, null);
+		IdmIdentityDto identity = helper.createIdentity((GuardedString) null);
+		String roleCode = getHelper().createName();
+		this.assignRoleSystem(system, identity, roleCode);
+		// Find created requests
+		VsRequestFilter requestFilter = new VsRequestFilter();
+		requestFilter.setSystemId(system.getId());
+		requestFilter.setState(VsRequestState.IN_PROGRESS);
+		requestFilter.setUid(identity.getUsername());
+		List<VsRequestDto> requests = requestService.find(requestFilter, null).getContent();
+		Assert.assertEquals(1, requests.size());
+		VsRequestDto request = requests.get(0);
+		Assert.assertEquals(identity.getUsername(), request.getUid());
+		request = requestService.realize(request);
+
+		identity.setLastName(getHelper().createName());
+		identity = identityService.save(identity);
+		requests = requestService.find(requestFilter, null).getContent();
+		Assert.assertEquals(1, requests.size());
+		VsRequestDto requestBefore = requests.get(0);
+
+		String newUid = this.getHelper().createName();
+		identity.setUsername(newUid);
+		identity = identityService.save(identity);
+		requests = requestService.find(requestFilter, null).getContent();
+		Assert.assertEquals(2, requests.size());
+		VsRequestDto requestWithUUID = requests.stream().filter(r -> !r.getId().equals(requestBefore.getId())).findFirst().orElseThrow();
+
+		identity.setFirstName(getHelper().createName());
+		identity = identityService.save(identity);
+		requests = requestService.find(requestFilter, null).getContent();
+		Assert.assertEquals(3, requests.size());
+		VsRequestDto requestAfter = requests.stream().filter(r -> !r.getId().equals(requestBefore.getId()) && !r.getId().equals(requestWithUUID.getId())).findFirst().orElseThrow();
+
+		requestService.realize(requestWithUUID);
+
+		VsRequestDto requestForCheck = requestService.get(requestBefore.getId());
+		Assert.assertNotEquals(requestForCheck.getUid(), requestBefore.getUid());
+		Assert.assertEquals(newUid, requestForCheck.getUid());
+
+		requestForCheck = requestService.get(requestAfter.getId());
+		Assert.assertNotEquals(requestForCheck.getUid(), requestAfter.getUid());
+		Assert.assertEquals(newUid, requestForCheck.getUid());
+	}
 }

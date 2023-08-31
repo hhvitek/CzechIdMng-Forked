@@ -349,6 +349,7 @@ public class DefaultVsRequestService extends AbstractReadWriteDtoService<VsReque
 			break;
 		}
 		case UPDATE: {
+			String oldUid = request.getConnectorObject().getUidValue();
 			VsAccountDto account = accountService.findByUidSystem(request.getUid(), request.getSystem());
 			if (account == null) {
 				throw new VsException(VsResultCode.VS_REQUEST_UPDATING_ACCOUNT_NOT_EXIST,
@@ -356,6 +357,21 @@ public class DefaultVsRequestService extends AbstractReadWriteDtoService<VsReque
 			}
 			result = virtualConnector.internalUpdate(new IcUidAttributeImpl(null, request.getUid(), null),
 					request.getConnectorObject().getObjectClass(), request.getConnectorObject().getAttributes());
+
+			// UID was changed
+			String newUid = result.getUidValue();
+			if (!StringUtils.equals(oldUid, newUid)) {
+				VsRequestFilter filter = new VsRequestFilter();
+				filter.setUid(String.valueOf(oldUid));
+				// Just only for requests in progress
+				filter.setState(VsRequestState.IN_PROGRESS);
+
+				List<VsRequestDto> requests = this.find(filter, null).getContent();
+				for (VsRequestDto req : requests) {
+					req.setUid(newUid);
+					this.save(req);
+				}
+			}
 			break;
 		}
 		case DELETE: {
