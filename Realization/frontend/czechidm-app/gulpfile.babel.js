@@ -42,7 +42,7 @@ const paths = {
   bundle: 'app.js',
   srcJs: ['node_modules/jquery/dist/jquery.min.js'],
   srcFont: ['node_modules/bootstrap-less/fonts/*', 'src/fonts/*'],
-  srcWebFont: [ 'node_modules/@fortawesome/fontawesome-free/webfonts/*' ],
+  srcWebFont: ['node_modules/@fortawesome/fontawesome-free/webfonts/*'],
   srcJsx: 'src/Index.js',
   srcLess: ['src/css/main.less'],
   srcIncludedLess: [],
@@ -92,16 +92,16 @@ function selectStageAndProfile(done) {
   let profile = argv.profile;
   if (!profile) {
     profile = 'default';
-    log(`No profile argument present. Profile "${ profile }" will be used for build!`);
+    log(`No profile argument present. Profile "${profile}" will be used for build!`);
   } else {
-    log(`Profile "${ profile }" will be used for build.`);
+    log(`Profile "${profile}" will be used for build.`);
   }
   let stage = argv.stage;
   if (!stage) {
     stage = 'development';
-    log(`No stage argument present. Stage "${ stage }" will be used for build!`);
+    log(`No stage argument present. Stage "${stage}" will be used for build!`);
   } else {
-    log(`Stage "${ stage }" will be used for build.`);
+    log(`Stage "${stage}" will be used for build.`);
   }
   process.env.NODE_ENV = stage;
   process.env.NODE_PROFILE = profile;
@@ -109,7 +109,7 @@ function selectStageAndProfile(done) {
 }
 
 function clean(done) {
-  del.sync([ 'dist' ]);
+  del.sync(['dist']);
   done();
 }
 
@@ -119,9 +119,9 @@ function clean(done) {
  */
 function removeSymlinks() {
   return vfs
-    .src([ '../czechidm-*' ])
+    .src(['../czechidm-*'])
     .pipe(flatmap((stream, file) => {
-      const pathToSymlink = `./node_modules/${ file.basename }`;
+      const pathToSymlink = `./node_modules/${file.basename}`;
       log('Symlink to delete:', pathToSymlink);
       del.sync(pathToSymlink);
       return stream;
@@ -132,7 +132,7 @@ function removeSymlinks() {
  * Delete app module from modules (prevent cycle).
  */
 function removeAppLink(done) {
-  del.sync([ './czechidm-modules/czechidm-app' ]);
+  del.sync(['./czechidm-modules/czechidm-app']);
   done();
 }
 
@@ -140,7 +140,7 @@ function removeAppLink(done) {
  * Clear node modules (remove links to ours modules)
  */
 function npmPrune(done) {
-  shell.task([ 'npm prune' ], { verbose: true, quiet: false });
+  shell.task(['npm prune'], {verbose: true, quiet: false});
   done();
 }
 
@@ -148,7 +148,7 @@ function npmPrune(done) {
  * Npm install
  */
 function npmInstall(done) {
-  shell.task([ 'npm install' ], { verbose: true, quiet: false });
+  shell.task(['npm install --force'], {verbose: true, quiet: false});
   done();
 }
 
@@ -156,21 +156,21 @@ function npmInstall(done) {
  * Register node_modules for product modules.
  */
 function makeProductModules() {
-  return vfs.src([ '../czechidm-*' ]) // Exclusion '!../czechidm-app' not works on linux
+  return vfs.src(['../czechidm-*']) // Exclusion '!../czechidm-app' not works on linux
     .pipe(flatmap((stream, file) => {
       if (!file.path.endsWith('czechidm-app')) {
         log('Product module found:', file.path);
         vfs.src('./node_modules')
-          .pipe(vfs.symlink(`${ file.path }/`, { useJunctions: true }))
+          .pipe(vfs.symlink(`${file.path}/`, {useJunctions: true}))
           .pipe(flatmap((streamLog, fileLog) => {
             log('Created symlink on main "node_modules"', colors.magenta(fileLog.path));
             return streamLog;
           }))
-          .pipe(shell([ 'npm install' ], { verbose: true, quiet: false }));
+          .pipe(shell(['npm install --force'], {verbose: true, quiet: false}));
       }
       return stream;
     }))
-    .pipe(vfs.symlink('./czechidm-modules', { useJunctions: true }));
+    .pipe(vfs.symlink('./czechidm-modules', {useJunctions: true}));
 }
 
 /**
@@ -179,7 +179,7 @@ function makeProductModules() {
 function makeModules() {
   return vfs
     .src('./czechidm-modules/czechidm-*')
-    .pipe(vfs.symlink('./node_modules', { useJunctions: true }));
+    .pipe(vfs.symlink('./node_modules', {useJunctions: true}));
 }
 
 /**
@@ -194,10 +194,10 @@ function loadModules() {
       const descriptor = require(file.path);
       if (descriptor.npmName) {
         log('Loaded module-descriptor with ID:', descriptor.id);
-        const pathRelative = `${descriptor.npmName }/module-descriptor.js`;
+        const pathRelative = `${descriptor.npmName}/module-descriptor.js`;
         // Add row to module assembler
-        modulesAssemblerContent = `${ modulesAssemblerContent } moduleDescriptors = moduleDescriptors.set("${
-          descriptor.id }", require("${ pathRelative }"));\n`;
+        modulesAssemblerContent = `${modulesAssemblerContent} moduleDescriptors = moduleDescriptors.set("${
+          descriptor.id}", require("${pathRelative}"));\n`;
       }
       return stream;
     }));
@@ -245,9 +245,9 @@ function loadModuleRoutes() {
         log('Loading routes for module with ID:', descriptor.id);
         const fullRoutePath = file.path.substring(0, file.path.lastIndexOf('module-descriptor.js')) + descriptor.mainRouteFile;
         log('Main module route file path:', fullRoutePath);
-        const relativeRoutePath = `${ descriptor.npmName }/${ descriptor.mainRouteFile }`;
+        const relativeRoutePath = `${descriptor.npmName}/${descriptor.mainRouteFile}`;
         // Add row to route assembler
-        routesAssemblerContent = `${ routesAssemblerContent }require("${ relativeRoutePath }"),\n`;
+        routesAssemblerContent = `${routesAssemblerContent}require("${relativeRoutePath}"),\n`;
       }
       return stream;
     }));
@@ -277,10 +277,10 @@ function loadModuleComponents() {
         log('Loading components for module with ID:', descriptor.id);
         const fullComponentPath = file.path.substring(0, file.path.lastIndexOf('module-descriptor.js')) + descriptor.mainComponentDescriptorFile;
         log('Main module route file path:', fullComponentPath);
-        const relativeComponentPath = `${ descriptor.npmName }/${ descriptor.mainComponentDescriptorFile }`;
+        const relativeComponentPath = `${descriptor.npmName}/${descriptor.mainComponentDescriptorFile}`;
         // Add row to component assembler
-        componentsAssemblerContent = `${componentsAssemblerContent } componentDescriptors = componentDescriptors.set("${
-          descriptor.id }", require("${ relativeComponentPath }"));\n`;
+        componentsAssemblerContent = `${componentsAssemblerContent} componentDescriptors = componentDescriptors.set("${
+          descriptor.id}", require("${relativeComponentPath}"));\n`;
       }
       return stream;
     }));
@@ -304,7 +304,7 @@ function createComponentAssembler() {
  * @return {object}     config json
  */
 function getConfigByEnvironment(env = 'development', profile = 'default') {
-  return require(`./config/${ profile }/${ env }.json`);
+  return require(`./config/${profile}/${env}.json`);
 }
 
 /**
@@ -350,7 +350,7 @@ function copyConfig(done) {
   //
   return fs.writeFile(
     path.join(__dirname, paths.dist, '/config.js'),
-    `config = ${ JSON.stringify(configuration) };\n`,
+    `config = ${JSON.stringify(configuration)};\n`,
     done
   );
 }
@@ -371,11 +371,11 @@ function styles() {
      * .less files to be placed around the app structure with the component
      * or page they apply to.
      */
-    .pipe(inject(gulp.src(paths.srcIncludedLess, { read: false }), {
+    .pipe(inject(gulp.src(paths.srcIncludedLess, {read: false}), {
       starttag: '/* inject:imports */',
       endtag: '/* endinject */',
       transform: function transform(filepath) {
-        return `@import "${ __dirname }${ filepath }";`;
+        return `@import "${__dirname}${filepath}";`;
       }
     }))
     .pipe(less({
@@ -383,7 +383,7 @@ function styles() {
       globalVars: {
         ENV: configuration.env,
         version: 10,
-        theme: `"${ configuration.theme }"` // wrap to quotes - less engine needs it to skip formating slash characters
+        theme: `"${configuration.theme}"` // wrap to quotes - less engine needs it to skip formating slash characters
       }
     }).on('error', log))
     .pipe(autoprefixer('last 10 versions', 'ie 9'))
@@ -391,7 +391,7 @@ function styles() {
     .pipe(concat('main.css'))
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest(paths.distCss))
-    .pipe(reload({ stream: true }))
+    .pipe(reload({stream: true}))
     .pipe(gulp.dest(paths.distCss));
 }
 
@@ -499,7 +499,7 @@ function loadModuleLocales() {
       }
       return stream;
     }))
-    .pipe(reload({ stream: true }));
+    .pipe(reload({stream: true}));
 }
 
 /**
@@ -522,11 +522,11 @@ function useBrowserSync(done) {
 function runTest() {
   // https://www.npmjs.com/package/gulp-mocha#require
   return gulp
-    .src(paths.testSrc, { read: false })
+    .src(paths.testSrc, {read: false})
     .pipe(mocha({
       reporter: 'nyan',
       recursive: true,
-      require: [ '@babel/register', 'esm', './test/setup.js'],
+      require: ['@babel/register', 'esm', './test/setup.js'],
       ignoreLeaks: false
     }));
 }
@@ -570,7 +570,7 @@ function useBrowserify() {
  */
 function useWatchify() {
   const bundler = watchify(
-    browserify(paths.srcJsx, { ...watchify.args, debug: true })
+    browserify(paths.srcJsx, {...watchify.args, debug: true})
       .plugin(pathmodify, pathmodifyOptions)
       .transform(stringify)
   );
@@ -581,11 +581,12 @@ function useWatchify() {
       .on('error', notify.onError())
       .pipe(source(paths.bundle))
       .pipe(buffer())
-      .pipe(sourcemaps.init({ loadMaps: true }))
+      .pipe(sourcemaps.init({loadMaps: true}))
       .pipe(sourcemaps.write('.'))
       .pipe(gulp.dest(paths.distJs))
-      .pipe(reload({ stream: true }));
+      .pipe(reload({stream: true}));
   }
+
   //
   bundler
     .transform(babelify, {

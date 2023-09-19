@@ -8,7 +8,12 @@ import * as Basic from '../components/basic';
 import * as Advanced from '../components/advanced';
 import * as Utils from '../utils';
 import { HelpContent } from '../domain';
-import { SecurityManager, IdentityManager, ConfigurationManager, DataManager } from '../redux';
+import {
+  SecurityManager,
+  IdentityManager,
+  ConfigurationManager,
+  DataManager
+} from '../redux';
 
 const IDM_NAME = Utils.Config.getConfig('app.name', 'CzechIdM');
 const PASSWORD_PREVALIDATION = 'PASSWORD_PREVALIDATION';
@@ -44,7 +49,7 @@ class PasswordChange extends Basic.AbstractContent {
     super.componentDidMount();
     //
     const data = {};
-    const { query } = this.props.location;
+    const {query} = this.props.location;
     //
     if (query) {
       data.username = query.username;
@@ -61,7 +66,7 @@ class PasswordChange extends Basic.AbstractContent {
   }
 
   cancel() {
-    const { userContext } = this.props;
+    const {userContext} = this.props;
     if (!SecurityManager.isAuthenticated(userContext)) {
       this.context.history.push('/login');
     } else {
@@ -218,17 +223,26 @@ class PasswordChange extends Basic.AbstractContent {
           }
           if (successAccounts.length > 0) {
             this.addMessage({
-              message: this.i18n('content.identity.passwordChange.message.success', { accounts: successAccounts.join(', '), username })
+              message: this.i18n('content.identity.passwordChange.message.success', {
+                accounts: successAccounts.join(', '),
+                username
+              })
             });
           }
           if (failedAccounts.length > 0) {
             this.addMessage({
               level: 'warning',
-              message: this.i18n('content.identity.passwordChange.message.failed', { accounts: failedAccounts.join(', '), username })
+              message: this.i18n('content.identity.passwordChange.message.failed', {
+                accounts: failedAccounts.join(', '),
+                username
+              })
             });
           }
           if (successAccounts.length === 0 && failedAccounts.length === 0) {
-            this.addMessage({ level: 'warning', message: this.i18n('content.identity.passwordChange.message.notChanged', { username }) });
+            this.addMessage({
+              level: 'warning',
+              message: this.i18n('content.identity.passwordChange.message.notChanged', {username})
+            });
           }
         });
       })
@@ -237,7 +251,7 @@ class PasswordChange extends Basic.AbstractContent {
           this.addMessage({
             level: 'warning',
             title: this.i18n('error.PASSWORD_CHANGE_FAILED.title'),
-            message: this.i18n('error.IDENTITY_NOT_FOUND.message', { identity: username }),
+            message: this.i18n('error.IDENTITY_NOT_FOUND.message', {identity: username}),
           });
           this._preValidate();
         } else {
@@ -251,7 +265,7 @@ class PasswordChange extends Basic.AbstractContent {
     this.setState({
       showLoading: true
     }, () => {
-      this.context.store.dispatch(securityManager.login(username, password, (isAuthenticated, error, newUserContext) => {
+      this.context.store.dispatch(securityManager.login(username, password, (isAuthenticated, error, newUserContext, ...abc) => {
         if (error) {
           if (error.statusEnum && error.statusEnum === 'TWO_FACTOR_AUTH_REQIURED') {
             this.setState({
@@ -269,7 +283,7 @@ class PasswordChange extends Basic.AbstractContent {
           return;
         }
         // If current url is login, then redirect to main page.
-        const { location } = this.props;
+        const {location} = this.props;
         const loginTargetPath = newUserContext.loginTargetPath || location.pathname;
         if (loginTargetPath === '/login' || loginTargetPath === '/password/change') {
           this.context.history.replace('/');
@@ -292,8 +306,11 @@ class PasswordChange extends Basic.AbstractContent {
     }, () => {
       const formData = this.refs.form.getData();
       const verificationCode = formData.verificationCode;
-      const { token } = this.state;
-      this.context.store.dispatch(securityManager.loginTwoFactor({ token, verificationCode }, (result, error, newUserContext) => {
+      const {token} = this.state;
+      this.context.store.dispatch(securityManager.loginTwoFactor({
+        token,
+        verificationCode
+      }, (result, error, newUserContext) => {
         if (error) {
           this.setState({
             showLoading: false
@@ -301,7 +318,7 @@ class PasswordChange extends Basic.AbstractContent {
           return;
         }
         // If current url is login, then redirect to main page.
-        const { location } = this.props;
+        const {location} = this.props;
         const loginTargetPath = newUserContext.loginTargetPath || location.pathname;
         if (loginTargetPath === '/login' || loginTargetPath === '/password/change') {
           this.context.history.replace('/');
@@ -315,7 +332,7 @@ class PasswordChange extends Basic.AbstractContent {
   getHelp() {
     let helpContent = new HelpContent();
     helpContent = helpContent.setHeader(this.i18n('help.header'));
-    helpContent = helpContent.setBody(this.i18n('help.body', { escape: false }));
+    helpContent = helpContent.setBody(this.i18n('help.body', {escape: false}));
     //
     return helpContent;
   }
@@ -325,7 +342,7 @@ class PasswordChange extends Basic.AbstractContent {
     helpContent = helpContent.setHeader(this.i18n('content.login.twoFactor.help.header'));
     helpContent = helpContent.setBody(
       <div>
-        { this.i18n('content.login.twoFactor.help.content', { escape: false }) }
+        {this.i18n('content.login.twoFactor.help.content', {escape: false})}
       </div>
     );
     //
@@ -333,68 +350,87 @@ class PasswordChange extends Basic.AbstractContent {
   }
 
   render() {
-    const { showLoading, validationError, validationDefinition, showTwoFactor } = this.state;
-    const { passwordChangeType, enabledPasswordChangeForIdm } = this.props;
+    const {
+      showLoading,
+      validationError,
+      validationDefinition,
+      showTwoFactor
+    } = this.state;
+    const {passwordChangeType, enabledPasswordChangeForIdm} = this.props;
     //
     return (
       <div>
-        <Helmet title={this.i18n('title')} />
+        <Helmet title={this.i18n('title')}/>
         <Basic.Container component="main" maxWidth="xs">
           <Basic.Alert
             level="warning"
             icon="exclamation-sign"
-            text={ this.i18n('content.identity.passwordChange.changeType.DISABLED') }
-            rendered={ passwordChangeType === IdentityManager.PASSWORD_DISABLED }/>
+            text={this.i18n('content.identity.passwordChange.changeType.DISABLED')}
+            rendered={passwordChangeType === IdentityManager.PASSWORD_DISABLED}/>
 
-          <Basic.Div rendered={ showTwoFactor }>
-            <form onSubmit={ this.handleTwoFactor.bind(this) }>
-              <Basic.Panel showLoading={ showLoading }>
+          <Basic.Div rendered={showTwoFactor}>
+            <form onSubmit={this.handleTwoFactor.bind(this)}>
+              <Basic.Panel showLoading={showLoading}>
                 <Basic.PanelHeader
-                  text={ this.i18n('content.login.twoFactor.header') }
-                  help={ this.getTwoFactorHelp() }/>
+                  text={this.i18n('content.login.twoFactor.header')}
+                  help={this.getTwoFactorHelp()}/>
                 <Basic.PanelBody>
-                  <Basic.AbstractForm ref="form" className="form-horizontal" style={{ padding: 0, backgroundColor: '#fff' }}>
+                  <Basic.AbstractForm
+                    ref="form"
+                    className="form-horizontal"
+                    style={{
+                      padding: 0,
+                      backgroundColor: '#fff'
+                    }}>
                     <Basic.TextField
                       ref="verificationCode"
                       labelSpan="col-sm-5"
                       componentSpan="col-sm-7"
                       className="last"
-                      label={ this.i18n('content.login.twoFactor.verificationCode.label') }
-                      placeholder={ this.i18n('content.login.twoFactor.verificationCode.placeholder') }
+                      label={this.i18n('content.login.twoFactor.verificationCode.label')}
+                      placeholder={this.i18n('content.login.twoFactor.verificationCode.placeholder')}
                       required
-                      validation={ Joi.number().integer().min(0).max(999999) }/>
+                      validation={Joi.number().integer().min(0).max(999999)}/>
                   </Basic.AbstractForm>
                 </Basic.PanelBody>
                 <Basic.PanelFooter>
-                  <Basic.Button level="link" onClick={ () => this.setState({ showTwoFactor: false }) }>
-                    { this.i18n('button.cancel') }
+                  <Basic.Button
+                    level="link"
+                    onClick={() => this.setState({showTwoFactor: false})}>
+                    {this.i18n('button.cancel')}
                   </Basic.Button>
                   <Basic.Button type="submit" level="success">
-                    { this.i18n('button.verify.label') }
+                    {this.i18n('button.verify.label')}
                   </Basic.Button>
                 </Basic.PanelFooter>
               </Basic.Panel>
             </form>
           </Basic.Div>
 
-          <Basic.Div rendered={ !showTwoFactor }>
+          <Basic.Div rendered={!showTwoFactor}>
             <form
-              onSubmit={ this.passwordChange.bind(this) }
-              className={ passwordChangeType === IdentityManager.PASSWORD_DISABLED ? 'hidden' : '' }>
-              <Basic.Panel showLoading={ showLoading }>
-                <Basic.PanelHeader text={ this.i18n('header') } help={ this.getHelp() }/>
+              onSubmit={this.passwordChange.bind(this)}
+              className={passwordChangeType === IdentityManager.PASSWORD_DISABLED ? 'hidden' : ''}>
+              <Basic.Panel showLoading={showLoading}>
+                <Basic.PanelHeader
+                  text={this.i18n('header')}
+                  help={this.getHelp()}/>
 
                 <Basic.AbstractForm ref="form" className="panel-body">
 
-                  <Basic.Alert text={ this.i18n('message.passwordChange.info') } className="no-margin"/>
+                  <Basic.Alert
+                    text={this.i18n('message.passwordChange.info')}
+                    className="no-margin"/>
 
                   <Basic.Alert
-                    text={ this.i18n('message.passwordChange.idmNotEnabled') }
+                    text={this.i18n('message.passwordChange.idmNotEnabled')}
                     className="no-margin"
-                    rendered={ !enabledPasswordChangeForIdm }
-                    level="info" />
+                    rendered={!enabledPasswordChangeForIdm}
+                    level="info"/>
 
-                  <Advanced.ValidationMessage error={ validationError } validationDefinition={ validationDefinition } />
+                  <Advanced.ValidationMessage
+                    error={validationError}
+                    validationDefinition={validationDefinition}/>
 
                   <Basic.TextField
                     ref="username"
