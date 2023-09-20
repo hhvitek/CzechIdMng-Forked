@@ -26,6 +26,8 @@ const PERMISSION_SEPARATOR = '_';
 const ADMIN_PERMISSION = 'ADMIN';
 const ADMIN_AUTHORITY = `APP${PERMISSION_SEPARATOR}${ADMIN_PERMISSION}`;
 
+const LOGIN_RETRY_TIMEOUT_MS = 15000;
+
 const authenticateService = new AuthenticateService();
 const identityService = new IdentityService();
 const flashMessagesManager = new FlashMessagesManager();
@@ -65,14 +67,33 @@ export default class SecurityManager {
    * @param  {function} redirect
    * @return {action}
    */
-  login(username, password, redirect) {
+  login(username, password, redirect, {retry} = {retry: false}) {
     return (dispatch, getState) => {
       dispatch(this.requestLogin());
       dispatch(flashMessagesManager.hideAllMessages());
-      //
-      authenticateService.login(username, password)
-        .then(json => this._handleUserAuthSuccess(dispatch, getState, redirect, json))
-        .catch(error => dispatch(this.receiveLoginError(error, redirect)));
+
+      let firstRunTime;
+
+      const doLogin = async () => {
+        const runTime = performance.now();
+
+        if (!firstRunTime) {
+          firstRunTime = runTime;
+        }
+
+        try {
+          const json = await authenticateService.login(username, password);
+          this._handleUserAuthSuccess(dispatch, getState, redirect, json);
+        } catch (error) {
+          if (retry && (runTime - firstRunTime < LOGIN_RETRY_TIMEOUT_MS)) {
+            return doLogin();
+          }
+
+          dispatch(this.receiveLoginError(error, redirect));
+        }
+      };
+
+      doLogin();
     };
   }
 

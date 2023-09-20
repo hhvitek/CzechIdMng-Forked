@@ -262,10 +262,12 @@ class PasswordChange extends Basic.AbstractContent {
   }
 
   login(username, password) {
+    const {casEnabled} = this.props;
+
     this.setState({
       showLoading: true
     }, () => {
-      this.context.store.dispatch(securityManager.login(username, password, (isAuthenticated, error, newUserContext, ...abc) => {
+      this.context.store.dispatch(securityManager.login(username, password, (isAuthenticated, error, newUserContext) => {
         if (error) {
           if (error.statusEnum && error.statusEnum === 'TWO_FACTOR_AUTH_REQIURED') {
             this.setState({
@@ -290,7 +292,7 @@ class PasswordChange extends Basic.AbstractContent {
         } else {
           this.context.history.replace(loginTargetPath);
         }
-      }));
+      }, {retry: casEnabled}));
     });
   }
 
@@ -477,6 +479,7 @@ function select(state) {
   return {
     i18nReady: state.config.get('i18nReady'),
     userContext: state.security.userContext,
+    casEnabled: ConfigurationManager.getPublicValueAsBoolean(state, 'idm.pub.core.cas.enabled', false),
     passwordChangeType: ConfigurationManager.getPublicValue(state, 'idm.pub.core.identity.passwordChange'),
     enabledPasswordChangeForIdm: ConfigurationManager.getPublicValueAsBoolean(state, 'idm.pub.core.identity.passwordChange.public.idm.enabled', true),
     mustChangePassword: DataManager.getData(state, SecurityManager.PASSWORD_MUST_CHANGE)
