@@ -713,7 +713,7 @@ class Tree extends Basic.AbstractContextComponent {
         {
           header === null
           ||
-          <div>
+          <>
             <div className="basic-toolbar tree-header">
               <div className="tree-header-text">
                 {this._renderHeader()}
@@ -780,7 +780,7 @@ class Tree extends Basic.AbstractContextComponent {
                 </form>
               </div>
             </Basic.Collapse>
-          </div>
+          </>
         }
         <div
           className={classNames('tree-body', bodyClassName)}
@@ -812,13 +812,25 @@ class Tree extends Basic.AbstractContextComponent {
                   </Basic.Button>
                 }
                 <Basic.Tree>
-                  <TreeNode
+                  {this.props.roots?.length > 0 ? this.props.roots.map(entity => <TreeNode
+                    key={entity.id}
+                    id={entity.id}
                     uiKey={this.getUiKey()}
+                    entityType={this.getManager().getEntityType()}
                     onClick={this.handleNodeClick}
                     onExpand={this.handleNodeExpand}
                     onCollapse={this.handleNodeCollapse}
                     onDoubleClick={this.onDoubleClick}
-                    expanded/>
+                    expanded/>) : (
+                    <TreeNode
+                      uiKey={this.getUiKey()}
+                      entityType={this.getManager().getEntityType()}
+                      onClick={this.handleNodeClick}
+                      onExpand={this.handleNodeExpand}
+                      onCollapse={this.handleNodeCollapse}
+                      onDoubleClick={this.onDoubleClick}
+                      expanded/>
+                  )}
                 </Basic.Tree>
               </div>
           }

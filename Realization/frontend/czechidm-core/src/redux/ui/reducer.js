@@ -2,8 +2,6 @@ import merge from 'object-assign';
 import Immutable from 'immutable';
 import { UI_ACTIONS } from './actions';
 
-export const TREE_NODE_ENTITY_TYPE = 'TreeNode';
-
 export function uiReducer(state = {}, action) {
   const uiKey = action.uiKey;
 

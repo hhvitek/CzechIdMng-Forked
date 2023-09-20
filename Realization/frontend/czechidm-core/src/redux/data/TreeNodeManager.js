@@ -21,7 +21,7 @@ export default class TreeNodeManager extends FormableEntityManager {
   }
 
   getEntityType() {
-    return TREE_NODE_ENTITY_TYPE;
+    return 'TreeNode';
   }
 
   getCollectionType() {

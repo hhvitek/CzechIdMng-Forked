@@ -1,13 +1,12 @@
 import EntityUtils from '../../utils/EntityUtils';
-import { TREE_NODE_ENTITY_TYPE } from './reducer';
 
 export const getExpandedTreeNodes = (state, uiKey) => state?.ui[uiKey]?.expandedTreeNodes;
 export const isTreeNodeExpanded = (state, uiKey, nodeId) => state?.ui[uiKey]?.expandedTreeNodes?.has(nodeId);
 export const getSelectedTreeNodes = (state, uiKey) => state?.ui[uiKey]?.selectedTreeNodes;
 export const isTreeNodeSelected = (state, uiKey, nodeId) => state?.ui[uiKey]?.selectedTreeNodes?.has(nodeId);
 
-export const getTreeNodeLabel = (state, id) => {
-  const nodeEntity = EntityUtils.getEntity(state, TREE_NODE_ENTITY_TYPE, id, null);
+export const getTreeNodeLabel = (state, id, type) => {
+  const nodeEntity = EntityUtils.getEntity(state, type, id, null);
 
   if (!nodeEntity) {
     return '';
@@ -19,7 +18,7 @@ export const getTreeNodeLabel = (state, id) => {
   return `${nodeEntity.name} (${nodeEntity.code})`;
 };
 
-export const getTreeNodeChildrenCount = (state, id) => {
-  const nodeEntity = EntityUtils.getEntity(state, TREE_NODE_ENTITY_TYPE, id, null);
+export const getTreeNodeChildrenCount = (state, id, type) => {
+  const nodeEntity = EntityUtils.getEntity(state, type, id, null);
   return nodeEntity?.childrenCount;
 };

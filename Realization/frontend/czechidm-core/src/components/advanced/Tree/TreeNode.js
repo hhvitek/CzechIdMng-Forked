@@ -15,6 +15,7 @@ import { TreeItem } from '../../basic/TreeItem';
 export function TreeNode({
   uiKey,
   id,
+  entityType,
   onClick,
   onDoubleClick,
   onExpand,
@@ -24,8 +25,8 @@ export function TreeNode({
 }) {
   const loading = useIsUiStateLoading(uiKey, id);
   const childNodes = useUiStateItems(uiKey, id);
-  const label = useSelector(state => getTreeNodeLabel(state, id));
-  const childrenCount = useSelector(state => getTreeNodeChildrenCount(state, id));
+  const label = useSelector(state => getTreeNodeLabel(state, id, entityType));
+  const childrenCount = useSelector(state => getTreeNodeChildrenCount(state, id, entityType));
   const stateExpanded = useSelector(state => isTreeNodeExpanded(state, uiKey, id));
   const stateSelected = useSelector(state => isTreeNodeSelected(state, uiKey, id));
 
@@ -75,6 +76,7 @@ export function TreeNode({
           key={childNodeId}
           id={childNodeId}
           uiKey={uiKey}
+          entityType={entityType}
           onClick={onClick}
           onDoubleClick={onDoubleClick}
           onExpand={onExpand}
