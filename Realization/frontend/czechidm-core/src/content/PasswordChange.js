@@ -248,6 +248,8 @@ class PasswordChange extends Basic.AbstractContent {
   }
 
   login(username, password) {
+    const {casEnabled} = this.props;
+
     this.setState({
       showLoading: true
     }, () => {
@@ -276,7 +278,7 @@ class PasswordChange extends Basic.AbstractContent {
         } else {
           this.context.history.replace(loginTargetPath);
         }
-      }));
+      }, {retry: casEnabled}));
     });
   }
 
@@ -441,6 +443,7 @@ function select(state) {
   return {
     i18nReady: state.config.get('i18nReady'),
     userContext: state.security.userContext,
+    casEnabled: ConfigurationManager.getPublicValueAsBoolean(state, 'idm.pub.core.cas.enabled', false),
     passwordChangeType: ConfigurationManager.getPublicValue(state, 'idm.pub.core.identity.passwordChange'),
     enabledPasswordChangeForIdm: ConfigurationManager.getPublicValueAsBoolean(state, 'idm.pub.core.identity.passwordChange.public.idm.enabled', true),
     mustChangePassword: DataManager.getData(state, SecurityManager.PASSWORD_MUST_CHANGE)
