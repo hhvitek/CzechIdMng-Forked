@@ -1,8 +1,13 @@
 import _ from 'lodash';
 //
-import { AuthenticateService, IdentityService, LocalizationService } from '../../services';
+import {
+  AuthenticateService,
+  IdentityService,
+  LocalizationService
+} from '../../services';
 import FlashMessagesManager from '../flash/FlashMessagesManager';
 import { Actions } from '../config/constants';
+import ConfigurationManager from '../data/ConfigurationManager';
 
 /**
  * action types
@@ -112,7 +117,7 @@ export default class SecurityManager {
    * @since 10.5.0
    */
   switchUser(username, cb = null) {
-    localStorage.setItem("switchUser", true);
+    localStorage.setItem('switchUser', true);
     return (dispatch, getState) => {
       dispatch(this.requestLogin());
       dispatch(flashMessagesManager.hideAllMessages());
@@ -132,7 +137,7 @@ export default class SecurityManager {
    * @since 10.5.0
    */
   switchUserLogout(cb = null) {
-    localStorage.setItem("switchUser", true);
+    localStorage.setItem('switchUser', true);
     return (dispatch, getState) => {
       dispatch(this.requestLogin());
       dispatch(flashMessagesManager.hideAllMessages());
@@ -152,7 +157,10 @@ export default class SecurityManager {
     identityService.getProfile(identityId, json.token)
       .catch(error => {
         // profile is optional - logged identity couldn't have permission for read profile (or profile not found)
-        flashMessagesManager.addErrorMessage({ hidden: true, level: 'info' }, error);
+        flashMessagesManager.addErrorMessage({
+          hidden: true,
+          level: 'info'
+        }, error);
         return null;
       })
       .then(profile => {
@@ -207,7 +215,11 @@ export default class SecurityManager {
         LocalizationService.changeLanguage(profile.preferredLanguage, (error) => {
           if (error) {
             // FIXME: locale is broken ... but en message will be better
-            dispatch(flashMessagesManager.addMessage({level: 'error', title: 'Nepodařilo se iniciovat lokalizaci', message: error }));
+            dispatch(flashMessagesManager.addMessage({
+              level: 'error',
+              title: 'Nepodařilo se iniciovat lokalizaci',
+              message: error
+            }));
           } else {
             dispatch({
               type: Actions.I18N_READY,
@@ -264,7 +276,7 @@ export default class SecurityManager {
       authenticateService.clearStorage();
       // add error message
       if (error && (!error.statusEnum || error.statusEnum !== 'TWO_FACTOR_AUTH_REQIURED')) {
-        dispatch(flashMessagesManager.addErrorMessage({ position: 'tc' }, error));
+        dispatch(flashMessagesManager.addErrorMessage({position: 'tc'}, error));
       }
       // redirect after login, if needed
       if (redirect) {
