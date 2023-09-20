@@ -540,7 +540,7 @@ class Tree extends Basic.AbstractContextComponent {
 
     if (onChange) {
       const changeId = selectedTreeNodes?.has(nodeId) && clearable ? null : nodeId;
-      onChange(changeId);
+      onChange(changeId, e);
     }
   }
 
@@ -812,16 +812,18 @@ class Tree extends Basic.AbstractContextComponent {
                   </Basic.Button>
                 }
                 <Basic.Tree>
-                  {this.props.roots?.length > 0 ? this.props.roots.map(entity => <TreeNode
-                    key={entity.id}
-                    id={entity.id}
-                    uiKey={this.getUiKey()}
-                    entityType={this.getManager().getEntityType()}
-                    onClick={this.handleNodeClick}
-                    onExpand={this.handleNodeExpand}
-                    onCollapse={this.handleNodeCollapse}
-                    onDoubleClick={this.onDoubleClick}
-                    expanded/>) : (
+                  {this.props.roots?.length > 0 ? this.props.roots.map(entity => (
+                    <TreeNode
+                      key={entity.id}
+                      id={entity.id}
+                      uiKey={this.getUiKey()}
+                      entityType={this.getManager().getEntityType()}
+                      onClick={this.handleNodeClick}
+                      onExpand={this.handleNodeExpand}
+                      onCollapse={this.handleNodeCollapse}
+                      onDoubleClick={this.onDoubleClick}
+                      renderNode={this.props.renderNode}
+                      nodeIcon={this.props.nodeIcon}/>)) : (
                     <TreeNode
                       uiKey={this.getUiKey()}
                       entityType={this.getManager().getEntityType()}
@@ -829,6 +831,8 @@ class Tree extends Basic.AbstractContextComponent {
                       onExpand={this.handleNodeExpand}
                       onCollapse={this.handleNodeCollapse}
                       onDoubleClick={this.onDoubleClick}
+                      renderNode={this.props.renderNode}
+                      nodeIcon={this.props.nodeIcon}
                       expanded/>
                   )}
                 </Basic.Tree>
@@ -870,7 +874,6 @@ Tree.propTypes = {
    * { null } can be given - disable default icons.
    */
   nodeIcon: PropTypes.oneOfType(
-    PropTypes.string,
     PropTypes.func,
   ),
   /**
@@ -892,7 +895,7 @@ Tree.propTypes = {
    * Override whole node content - all listeners will be disabled (onSelect ...), just node icon remains.
    * Can be used, if tree is used just as decorator without selected value holder.
    */
-  nodeContent: PropTypes.oneOfType([
+  renderNode: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.element,
   ]),

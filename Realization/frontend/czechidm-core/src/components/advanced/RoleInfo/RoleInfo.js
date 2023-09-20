@@ -4,7 +4,11 @@ import { connect } from 'react-redux';
 //
 import * as Basic from '../../basic';
 import * as Utils from '../../../utils';
-import { RoleManager, ConfigurationManager, SecurityManager } from '../../../redux';
+import {
+  RoleManager,
+  ConfigurationManager,
+  SecurityManager
+} from '../../../redux';
 import AbstractEntityInfo from '../EntityInfo/AbstractEntityInfo';
 import RolePriorityEnum from '../../../enums/RolePriorityEnum';
 import Tree from '../Tree/Tree';
@@ -24,7 +28,7 @@ export class RoleInfo extends AbstractEntityInfo {
   }
 
   getNiceLabel(entity) {
-    const { showEnvironment, showCode } = this.props;
+    const {showEnvironment, showCode} = this.props;
     const _entity = this.getEntity(entity);
     //
     return this.getManager().getNiceLabel(_entity, showEnvironment, showCode);
@@ -36,7 +40,7 @@ export class RoleInfo extends AbstractEntityInfo {
     }
     //
     // evaluate authorization policies
-    const { _permissions } = this.props;
+    const {_permissions} = this.props;
     if (!manager.canRead(this.getEntity(), _permissions)) {
       return false;
     }
@@ -82,7 +86,7 @@ export class RoleInfo extends AbstractEntityInfo {
   }
 
   _renderIcon() {
-    const { showTree } = this.props;
+    const {showTree} = this.props;
     if (showTree) {
       return null;
     }
@@ -103,22 +107,22 @@ export class RoleInfo extends AbstractEntityInfo {
     //
     return (
       <Tree
-        uiKey={ `role-info-${ this.getEntityId() }` }
+        uiKey={`role-info-${this.getEntityId()}`}
         onMouseDown={this._stopPropagationMouseDown.bind(this)}
-        manager={ this.getManager() }
-        roots={[ _entity ]}
-        header={ null }
+        manager={this.getManager()}
+        roots={[_entity]}
+        header={null}
         className="role-info-tree"
         bodyClassName="role-info-tree-body"
-        onChange={ () => false }
-        nodeIcon={ ({ node }) => (this.props.showIcon ? this.getEntityIcon(node) : null) }
-        nodeStyle={{ paddingLeft: 0 }}
-        nodeIconClassName={ null }
-        nodeContent={ ({ node }) => {
+        onChange={() => false}
+        nodeIcon={({node}) => (this.props.showIcon ? this.getEntityIcon(node) : null)}
+        nodeStyle={{paddingLeft: 0}}
+        nodeIconClassName={null}
+        renderNode={({node}) => {
           // FIXME: maxWidth + inline-block for IE - find a way, how to fix overflowX
           // TODO: maxWidth configurable
           return (
-            <span className='spanRole'>{ super._renderPopover(node) }</span>
+            <span className="spanRole">{super._renderPopover(node)}</span>
           );
         }}
       />
@@ -144,7 +148,7 @@ export class RoleInfo extends AbstractEntityInfo {
     if (entity.environment && this.props.showEnvironment) {
       content.push({
         label: this.i18n('entity.Role.environment.label'),
-        value: (<CodeListValue code="environment" value={ entity.environment }/>)
+        value: (<CodeListValue code="environment" value={entity.environment}/>)
       });
     }
     //
@@ -152,8 +156,8 @@ export class RoleInfo extends AbstractEntityInfo {
       label: this.i18n('entity.Role.priorityEnum'),
       value: (
         <Basic.EnumValue
-          enum={ RolePriorityEnum }
-          value={ RolePriorityEnum.findKeyBySymbol(RolePriorityEnum.getKeyByPriority(entity.priority)) } />
+          enum={RolePriorityEnum}
+          value={RolePriorityEnum.findKeyBySymbol(RolePriorityEnum.getKeyByPriority(entity.priority))}/>
       )
     });
     //
@@ -161,7 +165,7 @@ export class RoleInfo extends AbstractEntityInfo {
       content.push({
         label: this.i18n('entity.Role.description'),
         value: (
-          <Basic.ShortText value={ entity.description } maxLength={ 100 }/>
+          <Basic.ShortText value={entity.description} maxLength={100}/>
         )
       });
     }
@@ -196,7 +200,7 @@ RoleInfo.defaultProps = {
 };
 
 function select(state, component) {
-  const { entityIdentifier, entity, showEnvironment, showCode } = component;
+  const {entityIdentifier, entity, showEnvironment, showCode} = component;
   let entityId = entityIdentifier;
   if (!entityId && entity) {
     entityId = entity.id;
@@ -217,4 +221,5 @@ function select(state, component) {
     _permissions: manager.getPermissions(state, null, entityId)
   };
 }
+
 export default connect(select)(RoleInfo);

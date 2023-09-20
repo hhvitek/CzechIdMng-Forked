@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { isFunction } from 'swiss-knife-utils';
 import {
+  getEntity,
   getTreeNodeChildrenCount,
   getTreeNodeLabel,
   isTreeNodeExpanded, isTreeNodeSelected
@@ -21,10 +22,13 @@ export function TreeNode({
   onExpand,
   onCollapse,
   expanded: expandedProp,
-  selected: selectedProp
+  selected: selectedProp,
+  renderNode,
+  nodeIcon
 }) {
   const loading = useIsUiStateLoading(uiKey, id);
   const childNodes = useUiStateItems(uiKey, id);
+  const node = useSelector(state => getEntity(state, id, entityType));
   const label = useSelector(state => getTreeNodeLabel(state, id, entityType));
   const childrenCount = useSelector(state => getTreeNodeChildrenCount(state, id, entityType));
   const stateExpanded = useSelector(state => isTreeNodeExpanded(state, uiKey, id));
@@ -70,6 +74,9 @@ export function TreeNode({
       onDoubleClick={handleDoubleClick}
       onExpand={handleExpand}
       onCollapse={handleCollapse}
+      renderNode={renderNode}
+      nodeIcon={nodeIcon}
+      node={node}
     >
       {childNodes?.map(childNodeId => (
         <TreeNode
@@ -81,6 +88,8 @@ export function TreeNode({
           onDoubleClick={onDoubleClick}
           onExpand={onExpand}
           onCollapse={onCollapse}
+          renderNode={renderNode}
+          nodeIcon={nodeIcon}
         />
       ))}
     </TreeItem>

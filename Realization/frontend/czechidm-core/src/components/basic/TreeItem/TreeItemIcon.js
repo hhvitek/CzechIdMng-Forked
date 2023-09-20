@@ -8,6 +8,7 @@ export function TreeItemIcon({
   expandable,
   expanded,
   loading,
+  nodeIcon,
   ...props
 }) {
   const leaf = !expandable;
@@ -15,7 +16,7 @@ export function TreeItemIcon({
 
   return (
     <Icon
-      value={icon}
+      value={nodeIcon || icon}
       showLoading={loading}
       className={classnames('tree-item-icon', className, {leaf, parent: !leaf})}
       {...props}>

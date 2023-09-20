@@ -75,6 +75,9 @@ export function TreeItem(props) {
     onClick,
     onDoubleClick,
     childrenCount,
+    renderNode,
+    nodeIcon,
+    node,
     ...restProps
   } = props;
 
@@ -86,6 +89,14 @@ export function TreeItem(props) {
   if (!label) {
     return <>{children}</>;
   }
+
+  const itemIcon = nodeIcon === null ? null : (
+    <TreeItemIcon
+      nodeIcon={nodeIcon && nodeIcon({node, opened: expanded})}
+      expandable={canExpand}
+      expanded={expanded}
+      loading={loading}/>
+  );
 
   return (
     <li
@@ -100,19 +111,27 @@ export function TreeItem(props) {
             className={classes.expandIcon}
           />
         )}
-        <Button
-          level="link"
-          className="embedded"
-          onClick={onClick}
-          onDoubleClick={onDoubleClick}>
-          <TreeItemIcon
-            expandable={canExpand}
-            expanded={expanded}
-            loading={loading}/>
-          {label}
-        </Button>
-        {childrenCount > 0 &&
-          <small className="tree-item-children-count">({childrenCount})</small>}
+        {renderNode ? (
+          <>
+            {itemIcon}
+            {renderNode({node})}
+          </>
+        ) : (
+          <>
+            <Button
+              level="link"
+              className="embedded"
+              onClick={onClick}
+              onDoubleClick={onDoubleClick}>
+              {itemIcon}
+              {label}
+            </Button>
+            {childrenCount > 0 &&
+              <small
+                className="tree-item-children-count">({childrenCount})
+              </small>}
+          </>
+        )}
       </div>
 
       {canExpand && (
@@ -121,7 +140,8 @@ export function TreeItem(props) {
             component="ul"
             role="group"
             in={showExpanded}
-            className={classes.group}>
+            className={classes.group}
+            timeout={80}>
             {children}
           </Collapse>
         </TreeItemGroupContextProvider>
