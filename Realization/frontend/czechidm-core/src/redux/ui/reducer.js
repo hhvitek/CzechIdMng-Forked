@@ -1,9 +1,14 @@
 import merge from 'object-assign';
 import Immutable from 'immutable';
 import { UI_ACTIONS } from './actions';
+import { LOGOUT } from '../security/SecurityManager';
 
 export function uiReducer(state = {}, action) {
   const uiKey = action.uiKey;
+
+  if (action.type === LOGOUT) {
+    return {};
+  }
 
   if (!uiKey) {
     return state;
