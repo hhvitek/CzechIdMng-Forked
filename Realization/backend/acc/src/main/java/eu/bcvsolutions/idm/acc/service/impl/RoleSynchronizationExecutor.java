@@ -10,6 +10,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+import eu.bcvsolutions.idm.core.api.domain.Loggable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -25,7 +26,6 @@ import eu.bcvsolutions.idm.acc.domain.OperationResultType;
 import eu.bcvsolutions.idm.acc.domain.SynchronizationActionType;
 import eu.bcvsolutions.idm.acc.domain.SynchronizationContext;
 import eu.bcvsolutions.idm.acc.dto.AccAccountDto;
-import eu.bcvsolutions.idm.acc.dto.AccIdentityAccountDto;
 import eu.bcvsolutions.idm.acc.dto.AccRoleAccountDto;
 import eu.bcvsolutions.idm.acc.dto.EntityAccountDto;
 import eu.bcvsolutions.idm.acc.dto.SysRoleSystemAttributeDto;
@@ -38,56 +38,39 @@ import eu.bcvsolutions.idm.acc.dto.SysSyncLogDto;
 import eu.bcvsolutions.idm.acc.dto.SysSyncRoleConfigDto;
 import eu.bcvsolutions.idm.acc.dto.SysSystemAttributeMappingDto;
 import eu.bcvsolutions.idm.acc.dto.SysSystemDto;
-import eu.bcvsolutions.idm.acc.dto.SysSystemEntityDto;
-import eu.bcvsolutions.idm.acc.dto.filter.AccAccountFilter;
-import eu.bcvsolutions.idm.acc.dto.filter.AccIdentityAccountFilter;
 import eu.bcvsolutions.idm.acc.dto.filter.AccRoleAccountFilter;
 import eu.bcvsolutions.idm.acc.dto.filter.EntityAccountFilter;
 import eu.bcvsolutions.idm.acc.dto.filter.SysRoleSystemAttributeFilter;
 import eu.bcvsolutions.idm.acc.dto.filter.SysRoleSystemFilter;
 import eu.bcvsolutions.idm.acc.dto.filter.SysSystemAttributeMappingFilter;
-import eu.bcvsolutions.idm.acc.dto.filter.SysSystemEntityFilter;
 import eu.bcvsolutions.idm.acc.entity.SysSchemaAttribute_;
 import eu.bcvsolutions.idm.acc.entity.SysSyncRoleConfig_;
 import eu.bcvsolutions.idm.acc.entity.SysSystemAttributeMapping_;
-import eu.bcvsolutions.idm.acc.service.api.AccIdentityAccountService;
 import eu.bcvsolutions.idm.acc.service.api.AccRoleAccountService;
 import eu.bcvsolutions.idm.acc.service.api.EntityAccountService;
 import eu.bcvsolutions.idm.acc.service.api.ProvisioningService;
 import eu.bcvsolutions.idm.acc.service.api.SynchronizationEntityExecutor;
 import eu.bcvsolutions.idm.acc.service.api.SysRoleSystemAttributeService;
 import eu.bcvsolutions.idm.acc.service.api.SysRoleSystemService;
-import eu.bcvsolutions.idm.core.api.domain.ConceptRoleRequestOperation;
-import eu.bcvsolutions.idm.core.api.domain.OperationState;
-import eu.bcvsolutions.idm.core.api.domain.RoleRequestState;
 import eu.bcvsolutions.idm.core.api.domain.RoleType;
 import eu.bcvsolutions.idm.core.api.dto.AbstractDto;
-import eu.bcvsolutions.idm.core.api.dto.DefaultResultModel;
-import eu.bcvsolutions.idm.core.api.dto.IdmIdentityContractDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmIdentityDto;
-import eu.bcvsolutions.idm.core.api.dto.IdmIdentityRoleDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmRoleCatalogueDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmRoleCatalogueRoleDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmRoleDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmRoleRequestDto;
-import eu.bcvsolutions.idm.core.api.dto.OperationResultDto;
 import eu.bcvsolutions.idm.core.api.dto.filter.CorrelationFilter;
-import eu.bcvsolutions.idm.core.api.dto.filter.IdmIdentityRoleFilter;
 import eu.bcvsolutions.idm.core.api.dto.filter.IdmRoleCatalogueFilter;
 import eu.bcvsolutions.idm.core.api.dto.filter.IdmRoleCatalogueRoleFilter;
 import eu.bcvsolutions.idm.core.api.dto.filter.IdmRoleFilter;
 import eu.bcvsolutions.idm.core.api.event.EntityEvent;
 import eu.bcvsolutions.idm.core.api.exception.ResultCodeException;
-import eu.bcvsolutions.idm.core.api.service.IdmIdentityContractService;
-import eu.bcvsolutions.idm.core.api.service.IdmIdentityRoleService;
 import eu.bcvsolutions.idm.core.api.service.IdmRoleCatalogueRoleService;
 import eu.bcvsolutions.idm.core.api.service.IdmRoleCatalogueService;
 import eu.bcvsolutions.idm.core.api.service.IdmRoleRequestService;
 import eu.bcvsolutions.idm.core.api.service.IdmRoleService;
 import eu.bcvsolutions.idm.core.api.service.LookupService;
 import eu.bcvsolutions.idm.core.api.utils.DtoUtils;
-import eu.bcvsolutions.idm.core.model.entity.IdmIdentityContract_;
-import eu.bcvsolutions.idm.core.model.entity.IdmIdentityRole_;
 import eu.bcvsolutions.idm.core.model.entity.IdmRoleCatalogueRole_;
 import eu.bcvsolutions.idm.core.model.entity.IdmRoleCatalogue_;
 import eu.bcvsolutions.idm.core.model.entity.IdmRoleRequest_;
@@ -137,17 +120,13 @@ public class RoleSynchronizationExecutor extends AbstractSynchronizationExecutor
 	@Autowired
 	private SysRoleSystemAttributeService roleSystemAttributeService;
 	@Autowired
-	private IdmIdentityRoleService identityRoleService;
-	@Autowired
 	private IdmRoleCatalogueService roleCatalogueService;
 	@Autowired
 	private IdmRoleCatalogueRoleService roleCatalogueRoleService;
 	@Autowired
-	private AccIdentityAccountService identityAccountService;
-	@Autowired
-	private IdmIdentityContractService identityContractService;
-	@Autowired
 	private IdmRoleRequestService roleRequestService;
+	@Autowired(required = false)
+	private List<RoleMembershipSyncResolver<?>> membershipSyncResolvers;
 	
 	/**
 	 * Call provisioning for given account
@@ -402,10 +381,6 @@ public class RoleSynchronizationExecutor extends AbstractSynchronizationExecutor
 				addToItemLog(logItem, "The member attribute between this role and system was not found. Assigning of role to users will be skip for this role.");
 				return false;
 			}
-			// Find identities with this role.
-			IdmIdentityRoleFilter identityRoleFilter = new IdmIdentityRoleFilter();
-			identityRoleFilter.setRoleId(roleDto.getId());
-			List<IdmIdentityRoleDto> existsIdentityRoleDtos = identityRoleService.find(identityRoleFilter, null).getContent();
 			
 			// Get cache with users (DN vs UID).
 			Map<String, String> usersUidCache = getUserUidCache();
@@ -414,7 +389,7 @@ public class RoleSynchronizationExecutor extends AbstractSynchronizationExecutor
 			Assert.notNull(memberIdentifierAttribute, "User identifier attribute cannot be null!");
 
 			Set<String> membersUid = Sets.newHashSet();
-			Set<UUID> membersContractIds = Sets.newHashSet();
+
 			
 			// Call user system for every member (if isn't already in the cache).
 			SysSystemDto userSystemDto = systemService.get(roleSystemDto.getSystem());
@@ -432,23 +407,14 @@ public class RoleSynchronizationExecutor extends AbstractSynchronizationExecutor
 					return false;
 				}
 			}
-			
-			count[0] = 0;
-			membersUid.forEach(uid -> assignMissingIdentityRoles(roleDto, config, logItem, existsIdentityRoleDtos, membersContractIds, userSystemDto, count, uid, context));
 
-			if (!checkForCancelAndFlush(config)) {
-				return false;
-			}
-
-			// Remove redundant identity roles. 
-			List<IdmIdentityRoleDto> redundantIdentityRoles = existsIdentityRoleDtos.stream()
-					.filter(existsIdentityRole -> !membersContractIds.contains(existsIdentityRole.getIdentityContract()))
-					.collect(Collectors.toList());
-
-			count[0] = 0;
-			redundantIdentityRoles.forEach(redundantIdentityRole -> removeRedundantIdentityRoles(roleDto, config, logItem, count, redundantIdentityRole));
+			membershipSyncResolvers.forEach(resolver -> resolver.resolve(roleDto, config, logItem, userSystemDto, membersUid, context, getExecutorAcessor()));
 		}
 		return true;
+	}
+
+	private RoleMembershipSyncResolver.SynchronizationExecutorAcessor getExecutorAcessor() {
+		return new RoleSynchronizationExecutorAccessor(this);
 	}
 
 	@Override
@@ -465,9 +431,13 @@ public class RoleSynchronizationExecutor extends AbstractSynchronizationExecutor
 			RoleRequestEvent event = new RoleRequestEvent(RoleRequestEvent.RoleRequestEventType.EXCECUTE, roleRequestDto, properties);
 			// Async start of request.
 			roleRequestDto = roleRequestService.startRequestInternal(event);
-			IdmIdentityDto applicant = DtoUtils.getEmbedded(roleRequestDto, IdmRoleRequest_.applicant, IdmIdentityDto.class);
+			try {
+				final var applicant = roleRequestService.getApplicantLabel(roleRequestDto.getApplicantInfo());
+				log.addToLog(MessageFormat.format("Role-request with ID [{1}] for applicant [{0}] was executed with result [{2}].", applicant, roleRequestDto.getId(), roleRequestDto.getState().name()));
+			} catch (ClassNotFoundException e) {
+				log.addToLog(MessageFormat.format("Role-request with ID [{1}] for applicant [{0}] was executed with result [{2}].", "UNKNOWN", roleRequestDto.getId(), roleRequestDto.getState().name()));
+			}
 
-			log.addToLog(MessageFormat.format("Role-request with ID [{1}] for applicant [{0}] was executed with result [{2}].", applicant.getUsername(), roleRequestDto.getId(), roleRequestDto.getState().name()));
 		});
 		super.syncEnd(log, syncContext);
 	}
@@ -659,135 +629,6 @@ public class RoleSynchronizationExecutor extends AbstractSynchronizationExecutor
 		return true;
 	}
 
-	/**
-	 *  Remove redundant identity roles.
-	 */
-	private void removeRedundantIdentityRoles(IdmRoleDto roleDto, SysSyncRoleConfigDto config, SysSyncItemLogDto logItem, int[] count, IdmIdentityRoleDto redundantIdentityRole) {
-		// On every 20th item will be hibernate flushed and check if sync was not ended.
-		if (count[0] % 20 == 0 && count[0] > 0) {
-			if (!checkForCancelAndFlush(config)) {
-				return;
-			}
-		}
-		count[0]++;
-
-		IdmIdentityContractDto identityContractDto = DtoUtils.getEmbedded(redundantIdentityRole, IdmIdentityRole_.identityContract, IdmIdentityContractDto.class);
-		IdmIdentityDto identityDto = DtoUtils.getEmbedded(identityContractDto, IdmIdentityContract_.identity, IdmIdentityDto.class);
-
-		if (!config.isAssignRoleRemoveSwitch()) {
-			addToItemLog(logItem, MessageFormat.format("!!Role is assigned for username [{0}] and contract [{1}], but isn't member of role. Role will be not removed from a user, because removing of redundant roles is not allowed in this sync now!", identityDto.getUsername(), identityContractDto.getId()));
-			return;
-		}
-		if (redundantIdentityRole.getAutomaticRole() != null) {
-			addToItemLog(logItem, MessageFormat.format("!!Role is assigned for username [{0}] and contract [{1}], but isn't member of role. Assigned role will be not removed, because the role was assigned by automatic role!", identityDto.getUsername(), identityContractDto.getId()));
-			return;
-		}
-		if (redundantIdentityRole.getDirectRole() != null) {
-			addToItemLog(logItem, MessageFormat.format("!!Role is assigned for username [{0}] and contract [{1}], but isn't member of role. Assigned role will be not removed, because the role was assigned by business role!", identityDto.getUsername(), identityContractDto.getId()));
-			return;
-		}
-		addToItemLog(logItem, MessageFormat.format("Role is assigned for username [{0}] and contract [{1}], but isn't member of role. Assigned role will be removed.", identityDto.getUsername(), identityContractDto.getId()));
-		// Get cache with role-requests by identity-contract.
-		Map<UUID, UUID> roleRequestCache = getRoleRequestCache();
-
-		// Get role-request for the primary contract from a cache. If no request is present, then create one.
-		initRoleRequest(identityContractDto, roleRequestCache, config);
-		UUID roleRequestId = roleRequestCache.get(identityContractDto.getId());
-		IdmRoleRequestDto mockRoleRequest = new IdmRoleRequestDto();
-		mockRoleRequest.setId(roleRequestId);
-		// Create a concept for remove  an assigned role.
-		roleRequestService.createConcept(mockRoleRequest, identityContractDto, redundantIdentityRole.getId(),
-				roleDto.getId(), ConceptRoleRequestOperation.REMOVE);
-	}
-
-	/**
-	 * Assign missing identity roles.
-	 */
-	private void assignMissingIdentityRoles(IdmRoleDto roleDto,
-											SysSyncRoleConfigDto config,
-											SysSyncItemLogDto logItem,
-											List<IdmIdentityRoleDto> existsIdentityRoleDtos,
-											Set<UUID> membersContractIds,
-											SysSystemDto userSystemDto,
-											int[] count,
-											String uid,
-											SynchronizationContext context) {
-		// On every 20th item will be hibernate flushed and check if sync was not ended.
-		if (count[0] % 20 == 0 && count[0] > 0) {
-			if (!checkForCancelAndFlush(config)) {
-				return;
-			}
-		}
-		count[0]++;
-
-		// Need to find account using SysSystemEntityDto uid, because uid of AccAccountDto can be different.
-		SysSystemEntityFilter entityFilter = new SysSystemEntityFilter();
-		entityFilter.setEntityType(IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE);
-		entityFilter.setSystemId(userSystemDto.getId());
-		entityFilter.setUid(uid);
-		SysSystemEntityDto systemEntity = systemEntityService.find(entityFilter, null)
-				.stream()
-				.findFirst()
-				.orElse(null);
-		if (systemEntity == null) {
-			return;
-		}
-
-		AccAccountFilter accAccountFilter = new AccAccountFilter();
-		accAccountFilter.setSystemEntityId(systemEntity.getId());
-		final UUID accAccountId = accountService.findIds(accAccountFilter, null)
-				.stream()
-				.findFirst()
-				.orElse(null);
-		if (accAccountId == null) {
-			return;
-		}
-
-		AccIdentityAccountFilter identityAccountWithoutRelationFilter = new AccIdentityAccountFilter();
-		identityAccountWithoutRelationFilter.setAccountId(accAccountId);
-		AccIdentityAccountDto identityAccountDto = identityAccountService.find(identityAccountWithoutRelationFilter, null).getContent()
-				.stream()
-				.findFirst()
-				.orElse(null);
-		if (identityAccountDto == null)  {
-			return;
-		}
-		UUID identityId = identityAccountDto.getIdentity();
-
-		IdmIdentityContractDto primeContract = identityContractService.getPrimeContract(identityId);
-		if (primeContract == null) {
-			addToItemLog(logItem, MessageFormat.format("!!Role was not assigned to the user [{0}], because primary contract was not found!!", uid));
-			initSyncActionLog(SynchronizationActionType.UPDATE_ENTITY, OperationResultType.WARNING, logItem, context.getLog(),
-					context.getActionLogs());
-			return;
-		}
-
-		membersContractIds.add(primeContract.getId());
-
-		IdmIdentityRoleDto existIdentityRoleDto = existsIdentityRoleDtos.stream()
-				.filter(identityRole -> primeContract.getId().equals(identityRole.getIdentityContract()))
-				.findFirst()
-				.orElse(null);
-		if (existIdentityRoleDto != null){
-			// Identity already has the role.
-			return;
-		}
-
-		addToItemLog(logItem, MessageFormat.format("Role is not assigned for user [{0}] and contract [{1}]. Role request for add role will be created.", uid, primeContract.getId()));
-
-		// Get cache with role-requests by identity-contract.
-		Map<UUID, UUID> roleRequestCache = getRoleRequestCache();
-
-		// Get role-request for the primary contract from a cache. If no request is present, then create one.
-		initRoleRequest(primeContract, roleRequestCache, config);
-
-		UUID roleRequestId = roleRequestCache.get(primeContract.getId());
-		IdmRoleRequestDto mockRoleRequest = new IdmRoleRequestDto();
-		mockRoleRequest.setId(roleRequestId);
-		// Create a concept for assign a role to primary contract.
-		roleRequestService.createConceptWithoutValidity(mockRoleRequest, primeContract, null, roleDto.getId(),
-				ConceptRoleRequestOperation.ADD);
-	}
 
 	/**
 	 * Returns false if sync was ended.
@@ -801,23 +642,6 @@ public class RoleSynchronizationExecutor extends AbstractSynchronizationExecutor
 		}
 		// Cancel if sync ends.
 		return synchronizationConfigService.isRunning(config);
-	}
-
-	/**
-	 * Get role-request from a cache or create new one if no exist in a cache.
-	 */
-	private void initRoleRequest(IdmIdentityContractDto primeContract, Map<UUID, UUID> roleRequestCache, SysSyncRoleConfigDto config) {
-		if (!roleRequestCache.containsKey(primeContract.getId())) {
-			IdmRoleRequestDto roleRequest = roleRequestService.createRequest(primeContract);
-			roleRequest.setState(RoleRequestState.CONCEPT);
-			OperationResultDto systemResult = new OperationResultDto.Builder(OperationState.NOT_EXECUTED)
-					.setModel(new DefaultResultModel(AccResultCode.SYNC_OF_ROLES_COMMON_ROLE_REQUEST, ImmutableMap.of("system", syncContext.getSystem().getCode())))
-					.build();
-			roleRequest.setSystemState(systemResult);
-			roleRequest.addToLog(MessageFormat.format("Role-request created from ROLE sync with ID [{0}] on the system [{1}].", config.getId(), syncContext.getSystem().getCode()));
-			roleRequest = roleRequestService.save(roleRequest);
-			roleRequestCache.put(primeContract.getId(), roleRequest.getId());
-		}
 	}
 
 	/**
@@ -1284,5 +1108,39 @@ public class RoleSynchronizationExecutor extends AbstractSynchronizationExecutor
 	@Override
 	public String getSystemEntityType() {
 		return SYSTEM_ENTITY_TYPE;
+	}
+
+	private class RoleSynchronizationExecutorAccessor implements RoleMembershipSyncResolver.SynchronizationExecutorAcessor {
+
+		private final RoleSynchronizationExecutor executor;
+
+		private RoleSynchronizationExecutorAccessor(RoleSynchronizationExecutor executor) {
+			this.executor = executor;
+		}
+
+		@Override
+		public void addToItemLog(Loggable logItem, String text) {
+			executor.addToItemLog(logItem, text);
+		}
+
+		@Override
+		public Map<UUID, UUID> getRoleRequestCache() {
+			return executor.getRoleRequestCache();
+		}
+
+		@Override
+		public void initSyncActionLog(SynchronizationActionType actionType, OperationResultType resultType, SysSyncItemLogDto logItem, SysSyncLogDto log, List<SysSyncActionLogDto> actionLogs) {
+			executor.initSyncActionLog(actionType, resultType, logItem, log, actionLogs);
+		}
+
+		@Override
+		public boolean checkForCancelAndFlush(SysSyncRoleConfigDto config) {
+			return executor.checkForCancelAndFlush(config);
+		}
+
+		@Override
+		public SynchronizationContext getSyncContext() {
+			return executor.syncContext;
+		}
 	}
 }
