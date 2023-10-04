@@ -15,6 +15,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import eu.bcvsolutions.idm.core.api.dto.BaseDto;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -188,13 +189,12 @@ public class DefaultFilterManager implements FilterManager {
 		Assert.notNull(filterBuilder, "Filter builder is required.");
 		//
 		// default plugin by ordered definition
-		builders.getPluginFor(new FilterKey(filterBuilder.getEntityClass(), filterBuilder.getName())).ifPresent(
-			builder -> {
-				// impl property is controlled by default filter configuration
-				configurationService.setValue(
-						builder.getConfigurationPropertyName(ConfigurationService.PROPERTY_IMPLEMENTATION),
-						filterBuilderId);
-			});
+		FilterBuilder<? extends BaseEntity, ? extends DataFilter> defaultBuilder = (FilterBuilder<? extends BaseEntity, ? extends DataFilter>)
+				builders.getPluginFor(new FilterKey(filterBuilder.getEntityClass(), filterBuilder.getName())).orElse(null);
+		// impl property is controlled by default filter configuration
+		configurationService.setValue(
+				defaultBuilder.getConfigurationPropertyName(ConfigurationService.PROPERTY_IMPLEMENTATION),
+				filterBuilderId);
 	}
 	
 	@Override
