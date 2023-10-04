@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -86,7 +86,7 @@ public class SysSyncConfigController
 							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "") }),
 					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "") }) })
-	public Resources<?> find(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+	public CollectionModel<?> find(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -100,7 +100,7 @@ public class SysSyncConfigController
 							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "") }),
 					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "") }) })
-	public Resources<?> findQuick(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+	public CollectionModel<?> findQuick(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -119,7 +119,7 @@ public class SysSyncConfigController
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_AUTOCOMPLETE, description = "") })
 				})
-	public Resources<?> autocomplete(
+	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
@@ -223,7 +223,7 @@ public class SysSyncConfigController
 		this.validate(this.getService().get(backendId));
 
 		return new ResponseEntity<>(
-				toResource(this.synchronizationService.startSynchronization(this.getService().get(backendId))),
+				toModel(this.synchronizationService.startSynchronization(this.getService().get(backendId))),
 				HttpStatus.OK);
 	}
 
@@ -245,7 +245,7 @@ public class SysSyncConfigController
 	public ResponseEntity<?> cancelSynchronization(
 			@ApiParam(value = "Config's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		return new ResponseEntity<>(
-				toResource(this.synchronizationService.stopSynchronization(this.getService().get(backendId))),
+				toModel(this.synchronizationService.stopSynchronization(this.getService().get(backendId))),
 				HttpStatus.OK);
 	}
 

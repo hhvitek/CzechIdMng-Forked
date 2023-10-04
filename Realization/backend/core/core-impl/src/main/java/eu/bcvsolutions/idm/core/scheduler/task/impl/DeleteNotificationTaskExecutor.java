@@ -97,7 +97,7 @@ public class DeleteNotificationTaskExecutor
 		}
 		return service.find(
 				filter, 
-				PageRequest.of(0, pageable.getPageSize(), new Sort(Direction.ASC, IdmNotificationLog_.parent.getName()))
+				PageRequest.of(0, pageable.getPageSize(), Sort.by(Direction.ASC, IdmNotificationLog_.parent.getName()))
 				); // new pageable is given => records are deleted and we need the first page all time
 	}
 

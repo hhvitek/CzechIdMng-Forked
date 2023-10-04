@@ -5,6 +5,7 @@ import java.time.ZonedDateTime;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.PersistJobDataAfterExecution;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
@@ -28,10 +29,11 @@ public class RetryProvisioningTaskExecutor extends AbstractSchedulableTaskExecut
 	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(RetryProvisioningTaskExecutor.class);
 	public static final String TASK_NAME = "acc-retry-provisioning-long-running-task";
 	//
-	@Autowired private ProvisioningExecutor provisioningExecutor;	
+	@Lazy
+	@Autowired private ProvisioningExecutor provisioningExecutor;
 	@Autowired private SysProvisioningBatchService provisioningBatchService;
 	//
-	private ZonedDateTime start;	
+	private ZonedDateTime start;
 	
 	@Override
 	public String getName() {

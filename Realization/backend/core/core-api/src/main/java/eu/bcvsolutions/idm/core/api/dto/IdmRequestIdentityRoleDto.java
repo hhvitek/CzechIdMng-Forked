@@ -4,7 +4,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.bcvsolutions.idm.core.api.domain.Identifiable;
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 /**
  * DTO for show changes on assigned identity roles

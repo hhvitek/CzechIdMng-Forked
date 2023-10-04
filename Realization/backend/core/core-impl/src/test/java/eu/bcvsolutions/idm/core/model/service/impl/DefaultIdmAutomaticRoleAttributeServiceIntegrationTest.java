@@ -126,7 +126,7 @@ public class DefaultIdmAutomaticRoleAttributeServiceIntegrationTest extends Abst
 		notificationRepository.deleteAll();
 
 		List<IdmIdentityDto> identities = identityService
-				.find(PageRequest.of(0, Integer.MAX_VALUE, new Sort(Direction.ASC, IdmIdentity_.created.getName())))
+				.find(PageRequest.of(0, Integer.MAX_VALUE, Sort.by(Direction.ASC, IdmIdentity_.created.getName())))
 				.getContent();
 		// This delete all identities instead first 20 (we don't want delete demo and
 		// test data)!

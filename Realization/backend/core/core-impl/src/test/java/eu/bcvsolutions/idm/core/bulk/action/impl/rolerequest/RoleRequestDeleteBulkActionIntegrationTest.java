@@ -1,5 +1,6 @@
 package eu.bcvsolutions.idm.core.bulk.action.impl.rolerequest;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -23,7 +24,7 @@ import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
 import eu.bcvsolutions.idm.test.api.AbstractBulkActionTest;
 
 /**
- * Integration tests for {@link TreeNodeDeleteBulkAction}.
+ * Integration tests for {@link RoleRequestDeleteBulkAction}.
  *
  * @author Ondrej Husnik
  */
@@ -80,7 +81,7 @@ public class RoleRequestDeleteBulkActionIntegrationTest extends AbstractBulkActi
 		final var reqId = roleRequest.getId();
 		Assert.assertEquals(RoleRequestState.CONCEPT, roleRequest.getState());
 		getHelper().executeRequest(roleRequest, false);
-		getHelper().waitForResult(res -> roleRequestService.get(reqId).getState() == RoleRequestState.EXECUTED, 1000, 10);
+		getHelper().waitForResult(res -> roleRequestService.get(reqId).getState() != RoleRequestState.EXECUTED, 1000, 10);
 		roleRequest = roleRequestService.get(roleRequest);
 		Assert.assertEquals(RoleRequestState.EXECUTED, roleRequest.getState());
 		
@@ -94,7 +95,7 @@ public class RoleRequestDeleteBulkActionIntegrationTest extends AbstractBulkActi
 		bulkAction.setIdentifiers(ids);
 		IdmBulkActionDto processAction = bulkActionManager.processAction(bulkAction);
 		checkResultLrt(processAction, 1l, null, null);
-		
+
 		roleRequest = roleRequestService.get(roleRequest.getId());
 		Assert.assertEquals(OperationState.CANCELED,roleRequest.getSystemState().getState());
 		
@@ -112,7 +113,7 @@ public class RoleRequestDeleteBulkActionIntegrationTest extends AbstractBulkActi
 		IdmRoleDto role = this.createRoles(1).get(0);
 		IdmIdentityDto identity = createIdentities(1).get(0);
 		IdmIdentityContractDto contract = getHelper().getPrimeContract(identity);
-		
+
 		IdmRoleRequestDto roleRequest = roleRequestService.createRequest(contract, role);
 		Assert.assertNotNull(roleRequest);
 		Assert.assertNotNull(roleRequest.getId());

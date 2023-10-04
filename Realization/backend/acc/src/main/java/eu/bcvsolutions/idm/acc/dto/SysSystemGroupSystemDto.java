@@ -3,7 +3,7 @@ package eu.bcvsolutions.idm.acc.dto;
 import eu.bcvsolutions.idm.core.api.domain.Embedded;
 import eu.bcvsolutions.idm.core.api.dto.AbstractDto;
 import java.util.UUID;
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 /**
  * System groups system - relation between a system and a group of systems.

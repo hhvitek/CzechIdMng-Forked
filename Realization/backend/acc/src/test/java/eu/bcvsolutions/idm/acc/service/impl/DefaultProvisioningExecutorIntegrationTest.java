@@ -481,7 +481,7 @@ public class DefaultProvisioningExecutorIntegrationTest extends AbstractIntegrat
 			List<SysProvisioningArchiveDto> archived = provisioningArchiveService
 					.find(
 						filter, 
-						PageRequest.of(0, 10, new Sort(Direction.DESC, SysProvisioningArchive_.created.getName()))
+						PageRequest.of(0, 10, Sort.by(Direction.DESC, SysProvisioningArchive_.created.getName()))
 					)
 					.getContent();
 			Assert.assertEquals(1, archived.size());
@@ -503,7 +503,7 @@ public class DefaultProvisioningExecutorIntegrationTest extends AbstractIntegrat
 			archived = provisioningArchiveService
 					.find(
 						filter, 
-						PageRequest.of(0, 10, new Sort(Direction.DESC, SysProvisioningArchive_.created.getName()))
+						PageRequest.of(0, 10, Sort.by(Direction.DESC, SysProvisioningArchive_.created.getName()))
 					)
 					.getContent();
 			Assert.assertEquals(2, archived.size());
@@ -526,7 +526,7 @@ public class DefaultProvisioningExecutorIntegrationTest extends AbstractIntegrat
 			archived = provisioningArchiveService
 					.find(
 						filter, 
-						PageRequest.of(0, 10, new Sort(Direction.DESC, SysProvisioningArchive_.created.getName()))
+						PageRequest.of(0, 10, Sort.by(Direction.DESC, SysProvisioningArchive_.created.getName()))
 					)
 					.getContent();
 			Assert.assertEquals(3, archived.size());

@@ -8,8 +8,8 @@ import eu.bcvsolutions.idm.core.api.dto.filter.BaseRoleAssignmentFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -92,7 +92,7 @@ public class IdmIdentityRoleController extends AbstractReadWriteDtoController<Id
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.IDENTITYROLE_READ, description = "") })
 				})
-	public Resources<?> find(
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -111,7 +111,7 @@ public class IdmIdentityRoleController extends AbstractReadWriteDtoController<Id
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.IDENTITYROLE_READ, description = "") })
 				})
-	public Resources<?> findQuick(
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -130,7 +130,7 @@ public class IdmIdentityRoleController extends AbstractReadWriteDtoController<Id
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.IDENTITYROLE_AUTOCOMPLETE, description = "") })
 				})
-	public Resources<?> autocomplete(
+	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
@@ -149,10 +149,10 @@ public class IdmIdentityRoleController extends AbstractReadWriteDtoController<Id
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.IDENTITYROLE_CANBEREQUESTED, description = "") })
 				})
-	public Resources<?> findCanBeRequested(
+	public CollectionModel<?> findCanBeRequested(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
-		return toResources(find(toFilter(parameters), pageable, RoleBasePermission.CANBEREQUESTED), getDtoClass());
+		return toCollectionModel(find(toFilter(parameters), pageable, RoleBasePermission.CANBEREQUESTED), getDtoClass());
 	}
 	
 	@Override
@@ -246,7 +246,7 @@ public class IdmIdentityRoleController extends AbstractReadWriteDtoController<Id
 		IdmRoleDto roleDto = DtoUtils.getEmbedded(dto, IdmIdentityRole_.role, IdmRoleDto.class);
 		if (roleDto != null && roleDto.getIdentityRoleAttributeDefinition() != null) {
 			IdmFormDefinitionDto definition = roleService.getFormAttributeSubdefinition(roleDto);
-			return formDefinitionController.toResources(Lists.newArrayList(definition));
+			return formDefinitionController.toCollectionModel(Lists.newArrayList(definition));
 		}
 		
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -273,7 +273,7 @@ public class IdmIdentityRoleController extends AbstractReadWriteDtoController<Id
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.IDENTITYROLE_READ, description = "") })
 				})
-	public Resource<?> getFormValues(
+	public EntityModel<?> getFormValues(
 			@ApiParam(value = "Identity role's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@ApiParam(value = "Code of form definition (default will be used if no code is given)."
@@ -288,7 +288,7 @@ public class IdmIdentityRoleController extends AbstractReadWriteDtoController<Id
 		IdmRoleDto roleDto = DtoUtils.getEmbedded(dto, IdmIdentityRole_.role, IdmRoleDto.class);
 		IdmFormDefinitionDto definition = roleService.getFormAttributeSubdefinition(roleDto);
 		//
-		return new Resource<>(formService.getFormInstance(dto, definition));
+		return new EntityModel<>(formService.getFormInstance(dto, definition));
 	}
 	
 	@Override

@@ -59,7 +59,7 @@ public class GenerateConfidentialStorageInitializationVectorsTaskExecutor extend
 			// Sorting by the date of creation, so we won't skip anything, if a new value is added to confidential storage
 			// when this task is running
 			Page<IdmConfidentialStorageValueDto> values = confidentialStorageValueService
-					.find(PageRequest.of(page, PAGE_SIZE, new Sort(Direction.ASC, AbstractEntity_.created.getName())));
+					.find(PageRequest.of(page, PAGE_SIZE, Sort.by(Direction.ASC, AbstractEntity_.created.getName())));
 			//
 			if (count == null) {
 				count = values.getTotalElements();

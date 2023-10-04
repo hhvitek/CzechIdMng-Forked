@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -78,7 +78,7 @@ public class WorkflowProcessInstanceController extends AbstractReadWriteDtoContr
 			value = "Search process instances", 
 			nickname = "searchQuickProcessInstances", 
 			tags = { WorkflowProcessInstanceController.TAG })
-	public Resources<?> searchQuick(
+	public CollectionModel<?> searchQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);

@@ -43,4 +43,9 @@ public class RptFlywayConfig extends AbstractFlywayConfiguration {
 		LOG.info("Starting flyway migration for module rpt [{}]: ", flyway.getConfiguration().getTable());
 		return flyway;
 	}
+
+	@Override
+	public String getPropertyPrefix() {
+		return "flyway.rpt";
+	}
 }

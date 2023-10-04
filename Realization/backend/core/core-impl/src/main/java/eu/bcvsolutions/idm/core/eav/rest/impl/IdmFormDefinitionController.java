@@ -18,8 +18,8 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -114,7 +114,7 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_READ, description = "") })
 				})
-	public Resources<?> find(
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -134,7 +134,7 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_READ, description = "") })
 				})
 	@Override
-	public Resources<?> findQuick(
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
@@ -154,7 +154,7 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_AUTOCOMPLETE, description = "") })
 				})
-	public Resources<?> autocomplete(
+	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
@@ -437,7 +437,7 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 	public ResponseEntity<?> getDefinition(Class<? extends Identifiable> ownerClass, BasePermission... permission) {
 		IdmFormDefinitionDto definition = getDefinition(ownerClass, (IdmFormDefinitionDto) null, permission);
 		//
-		return new ResponseEntity<>(toResource(definition), HttpStatus.OK);
+		return new ResponseEntity<>(toModel(definition), HttpStatus.OK);
 	}
 	
 	/**
@@ -466,7 +466,7 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 		// find definitions + sorted
 		Page<IdmFormDefinitionDto> definitions = find(filter, formService.getDefinitionPageable(), permission);
 		//
-		return new ResponseEntity<>(toResources(definitions, getDtoClass()), HttpStatus.OK);
+		return new ResponseEntity<>(toCollectionModel(definitions, getDtoClass()), HttpStatus.OK);
 	}
 	
 	/**
@@ -475,8 +475,8 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 	 * @param definitions
 	 * @return
 	 */
-	public ResponseEntity<?> toResources(List<IdmFormDefinitionDto> definitions) {
-		return new ResponseEntity<>(toResources(definitions, getDtoClass()), HttpStatus.OK); 
+	public ResponseEntity<?> toCollectionModel(List<IdmFormDefinitionDto> definitions) {
+		return new ResponseEntity<>(toCollectionModel(definitions, getDtoClass()), HttpStatus.OK); 
 	}
 	
 	/**
@@ -489,7 +489,7 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 		IdmFormDefinitionFilter filter = new IdmFormDefinitionFilter();
 		filter.setId(definitionId);
 		//
-		return new ResponseEntity<>(toResources(find(filter, null, null), getDtoClass()), HttpStatus.OK);
+		return new ResponseEntity<>(toCollectionModel(find(filter, null, null), getDtoClass()), HttpStatus.OK);
 	}
 	
 	/**
@@ -589,10 +589,10 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 	 * @param permission base permissions to evaluate (AND)
 	 * @return
 	 */
-	public Resource<IdmFormInstanceDto> getFormValues(Identifiable owner, IdmFormDefinitionDto formDefinition, BasePermission... permission) {
+	public EntityModel<IdmFormInstanceDto> getFormValues(Identifiable owner, IdmFormDefinitionDto formDefinition, BasePermission... permission) {
 		Assert.notNull(owner, "Owner is required to get form values.");
 		//
-		return new Resource<>(formService.getFormInstance(owner, getDefinition(owner.getClass(), formDefinition, permission), permission));
+		return new EntityModel<>(formService.getFormInstance(owner, getDefinition(owner.getClass(), formDefinition, permission), permission));
 	}
 	
 	/**
@@ -605,7 +605,7 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 	 * @return
 	 * @throws ForbiddenEntityException if authorization policies doesn't met
 	 */
-	public Resource<?> saveFormValues(Identifiable owner, IdmFormDefinitionDto formDefinition, List<IdmFormValueDto> formValues, BasePermission... permission) {		
+	public EntityModel<?> saveFormValues(Identifiable owner, IdmFormDefinitionDto formDefinition, List<IdmFormValueDto> formValues, BasePermission... permission) {		
 		formDefinition = getDefinition(owner.getClass(), formDefinition); 
 		// construct form instance with given values
 		IdmFormInstanceDto formInstance = new IdmFormInstanceDto(owner, formDefinition, formValues);
@@ -614,7 +614,7 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 		// FE - high event priority
 		event.setPriority(PriorityType.HIGH);
 		// publish event for save form instance
-		return new Resource<>(formService.publish(event, permission).getContent());
+		return new EntityModel<>(formService.publish(event, permission).getContent());
 	}
 	
 	/**
@@ -627,7 +627,7 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 	 * @throws ForbiddenEntityException if authorization policies doesn't met
 	 * @since 9.4.0
 	 */
-	public Resource<?> saveFormValue(Identifiable owner, IdmFormValueDto formValue, BasePermission... permission) {		
+	public EntityModel<?> saveFormValue(Identifiable owner, IdmFormValueDto formValue, BasePermission... permission) {		
 		Assert.notNull(owner, "Owner is required to save form value.");
 		Assert.notNull(formValue, "Form value is required to save her.");
 		//
@@ -643,7 +643,7 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 		// FE - high event priority
 		event.setPriority(PriorityType.HIGH);
 		// publish event for save form instance
-		return new Resource<>(formService.publish(event, permission).getContent());
+		return new EntityModel<>(formService.publish(event, permission).getContent());
 	}
 
 	/**

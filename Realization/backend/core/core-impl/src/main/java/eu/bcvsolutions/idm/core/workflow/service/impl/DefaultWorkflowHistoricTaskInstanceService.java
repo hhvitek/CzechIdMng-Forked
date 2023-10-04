@@ -141,7 +141,7 @@ public class DefaultWorkflowHistoricTaskInstanceService
 
 		if (processInstances != null) {
 			processInstances.forEach((instance) -> {
-				dtos.add(toResource(instance));
+				dtos.add(toModel(instance));
 			});
 		}
 
@@ -185,7 +185,7 @@ public class DefaultWorkflowHistoricTaskInstanceService
 		return !resources.isEmpty() ? resources.get(0) : null;
 	}
 
-	private WorkflowHistoricTaskInstanceDto toResource(HistoricTaskInstance task) {
+	private WorkflowHistoricTaskInstanceDto toModel(HistoricTaskInstance task) {
 		if (task == null) {
 			return null;
 		}

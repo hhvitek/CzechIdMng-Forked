@@ -32,14 +32,14 @@ public class CoreFlywayConfig extends AbstractFlywayConfiguration {
 	
 	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(CoreFlywayConfig.class);
 	public static final String NAME = "flywayCore";
-	
+
 	@Bean
 	@ConditionalOnMissingBean(name = NAME)
 	@DependsOn(IdmFlywayPostProcessor.NAME)
 	@ConditionalOnExpression("${flyway.enabled:true} && '${flyway.core.locations}'!=''")
 	@ConfigurationProperties(prefix = "flyway.core")
 	public Flyway flywayCore() {
-		Flyway flyway = super.createFlyway();		
+		Flyway flyway = super.createFlyway();
 		LOG.info("Starting flyway migration for module core [{}]: ", flyway.getConfiguration().getTable());
 		return flyway;
 	}
@@ -52,5 +52,10 @@ public class CoreFlywayConfig extends AbstractFlywayConfiguration {
 	@ConditionalOnMissingBean(name = NAME)
 	public String flywayCoreUnavailable() {
 		return "N/A";
+	}
+
+	@Override
+	public String getPropertyPrefix() {
+		return "flyway.core";
 	}
 }

@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -108,7 +108,7 @@ public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditD
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.AUDIT_READ, description = "") })
 				})
-	public Resources<?> findQuick(
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
 		return this.find(parameters, pageable);
@@ -139,18 +139,18 @@ public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditD
 						@AuthorizationScope(scope = CoreGroupPermission.AUDIT_READ, description = "") })
 				})
 	@ApiImplicitParams({
-		@ApiImplicitParam(name = "entity", allowMultiple = false, dataType = "string", paramType = "query",
+		@ApiImplicitParam(name = "entity", allowMultiple = false, dataTypeClass = String.class, paramType = "query",
 				value = "Entity class - find related audit log to this class"),
-        @ApiImplicitParam(name = "page", dataType = "string", paramType = "query",
+        @ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query",
                 value = "Results page you want to retrieve (0..N)"),
-        @ApiImplicitParam(name = "size", dataType = "string", paramType = "query",
+        @ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query",
                 value = "Number of records per page."),
-        @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query",
+        @ApiImplicitParam(name = "sort", allowMultiple = true, dataTypeClass = String.class, paramType = "query",
                 value = "Sorting criteria in the format: property(,asc|desc). " +
                         "Default sort order is ascending. " +
                         "Multiple sort criteria are supported.")
 	})
-	public Resources<?> findEntity(
+	public CollectionModel<?> findEntity(
 			@RequestParam(required = false) String entityClass,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
@@ -174,7 +174,7 @@ public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditD
 		dtos.forEach(dto -> {
 			loadEmbeddedEntity(loadedDtos, dto);
 		});
-		return toResources(dtos, getDtoClass());
+		return toCollectionModel(dtos, getDtoClass());
 
 	}
 
@@ -191,11 +191,11 @@ public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditD
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.AUDIT_READ, description = "") })
 				})
-	public Resources<?> findLogin(
+	public CollectionModel<?> findLogin(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
 		// Password hasn't own rest controller -> audit is solved by audit controller.
-		return this.toResources(this.auditService.findLogin(toFilter(parameters), pageable), getDtoClass());
+		return this.toCollectionModel(this.auditService.findLogin(toFilter(parameters), pageable), getDtoClass());
 	}
 	
 	@ResponseBody
@@ -215,7 +215,7 @@ public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditD
 					+ " Must at least one attribute withannotation {@value Audited}")
 	public ResponseEntity<?> findAuditedEntity() {
 		List<String> entities = auditService.getAllAuditedEntitiesNames();
-		return new ResponseEntity<>(toResources(entities, null), HttpStatus.OK);
+		return new ResponseEntity<>(toCollectionModel(entities, null), HttpStatus.OK);
 	}
 	
 	@ResponseBody

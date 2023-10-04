@@ -1,21 +1,16 @@
 package eu.bcvsolutions.idm.core.ecm.service.impl;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.modelmapper.ModelMapper;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import eu.bcvsolutions.idm.core.api.service.LookupService;
 import eu.bcvsolutions.idm.core.ecm.api.config.AttachmentConfiguration;
@@ -24,6 +19,8 @@ import eu.bcvsolutions.idm.core.ecm.entity.IdmAttachment;
 import eu.bcvsolutions.idm.core.ecm.repository.IdmAttachmentRepository;
 import eu.bcvsolutions.idm.core.model.entity.IdmProfile;
 import eu.bcvsolutions.idm.test.api.AbstractVerifiableUnitTest;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 /**
  * Attachment manager unit tests
@@ -34,14 +31,21 @@ import eu.bcvsolutions.idm.test.api.AbstractVerifiableUnitTest;
  */
 public class DefaultAttachmentManagerUnitTest extends AbstractVerifiableUnitTest {
 
-	@Mock private IdmAttachmentRepository repository;
-	@Mock private LookupService lookupService;
-	@Mock private AttachmentConfiguration attachmentConfiguration;
-	@Spy 
-	private ModelMapper modelMapper = new ModelMapper();
-	@InjectMocks
-	private DefaultAttachmentManager attachmentManager;
-	
+	private final IdmAttachmentRepository repository = mock(IdmAttachmentRepository.class);
+	private final LookupService lookupService = mock(LookupService.class);
+	private final AttachmentConfiguration attachmentConfiguration = mock(AttachmentConfiguration.class);
+	private final ModelMapper modelMapper = spy(ModelMapper.class);
+
+	private final DefaultAttachmentManager attachmentManager = spy(new DefaultAttachmentManager(repository));
+
+	@Before
+	public void init() {
+		when(attachmentConfiguration.getStoragePath()).thenReturn("/idm_data");
+		ReflectionTestUtils.setField(attachmentManager, "modelMapper", modelMapper);
+		ReflectionTestUtils.setField(attachmentManager, "attachmentConfiguration", attachmentConfiguration);
+		ReflectionTestUtils.setField(attachmentManager, "lookupService", lookupService);
+	}
+
 	@Test
 	public void testAttachmentInputStreamIsClosedAfterSave() throws IOException {		
 		when(attachmentConfiguration.getStoragePath()).thenReturn("target");

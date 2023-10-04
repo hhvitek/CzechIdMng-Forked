@@ -2,7 +2,7 @@ package eu.bcvsolutions.idm.core.workflow.model.dto;
 
 import java.io.Serializable;
 
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 import org.springframework.util.Assert;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

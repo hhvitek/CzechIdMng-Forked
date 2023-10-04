@@ -15,7 +15,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import eu.bcvsolutions.idm.core.api.dto.BaseDto;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +30,7 @@ import com.google.common.collect.Sets;
 import eu.bcvsolutions.idm.core.api.CoreModule;
 import eu.bcvsolutions.idm.core.api.domain.CoreResultCode;
 import eu.bcvsolutions.idm.core.api.dto.AbstractComponentDto;
+import eu.bcvsolutions.idm.core.api.dto.BaseDto;
 import eu.bcvsolutions.idm.core.api.dto.FilterBuilderDto;
 import eu.bcvsolutions.idm.core.api.dto.filter.BaseFilter;
 import eu.bcvsolutions.idm.core.api.dto.filter.DataFilter;
@@ -188,12 +188,13 @@ public class DefaultFilterManager implements FilterManager {
 		Assert.notNull(filterBuilder, "Filter builder is required.");
 		//
 		// default plugin by ordered definition
-		FilterBuilder<? extends BaseEntity, ? extends DataFilter> defaultBuilder = (FilterBuilder<? extends BaseEntity, ? extends DataFilter>)
-				builders.getPluginFor(new FilterKey(filterBuilder.getEntityClass(), filterBuilder.getName()));
-		// impl property is controlled by default filter configuration
-		configurationService.setValue(
-				defaultBuilder.getConfigurationPropertyName(ConfigurationService.PROPERTY_IMPLEMENTATION),
-				filterBuilderId);
+		builders.getPluginFor(new FilterKey(filterBuilder.getEntityClass(), filterBuilder.getName())).ifPresent(
+			builder -> {
+				// impl property is controlled by default filter configuration
+				configurationService.setValue(
+						builder.getConfigurationPropertyName(ConfigurationService.PROPERTY_IMPLEMENTATION),
+						filterBuilderId);
+			});
 	}
 	
 	@Override
@@ -348,7 +349,7 @@ public class DefaultFilterManager implements FilterManager {
 		}
 		//
 		// default plugin by ordered definition
-		FilterBuilder<E, DataFilter> builder = (FilterBuilder<E, DataFilter>) builders.getPluginFor(key);
+		FilterBuilder<E, DataFilter> builder = (FilterBuilder<E, DataFilter>) builders.getPluginFor(key).orElse(null);
 		if (builder.isDisabled()) {
 			return new DisabledFilterBuilder<E>(builder);
 		}

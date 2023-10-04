@@ -13,8 +13,8 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -136,7 +136,7 @@ public class IdmRoleController extends AbstractEventableDtoController<IdmRoleDto
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.ROLE_READ, description = "") })
 				})
-	public Resources<?> find(
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -155,7 +155,7 @@ public class IdmRoleController extends AbstractEventableDtoController<IdmRoleDto
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.ROLE_READ, description = "") })
 				})
-	public Resources<?> findQuick(
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
@@ -174,7 +174,7 @@ public class IdmRoleController extends AbstractEventableDtoController<IdmRoleDto
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.ROLE_AUTOCOMPLETE, description = "") })
 				})
-	public Resources<?> autocomplete(
+	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
@@ -193,10 +193,10 @@ public class IdmRoleController extends AbstractEventableDtoController<IdmRoleDto
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.ROLE_CANBEREQUESTED, description = "") })
 				})
-	public Resources<?> findCanBeRequested(
+	public CollectionModel<?> findCanBeRequested(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
-		return toResources(find(toFilter(parameters), pageable, RoleBasePermission.CANBEREQUESTED), getDtoClass());
+		return toCollectionModel(find(toFilter(parameters), pageable, RoleBasePermission.CANBEREQUESTED), getDtoClass());
 	}
 	
 	@Override
@@ -392,7 +392,7 @@ public class IdmRoleController extends AbstractEventableDtoController<IdmRoleDto
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.ROLE_READ, description = "") })
 				})
-	public Resources<?> findRevisions(
+	public CollectionModel<?> findRevisions(
 			@ApiParam(value = "Role's uuid identifier or code.", required = true)
 			@PathVariable("backendId") String backendId, 
 			Pageable pageable) {
@@ -402,7 +402,7 @@ public class IdmRoleController extends AbstractEventableDtoController<IdmRoleDto
 		}
 		//
 		Page<IdmAuditDto> results = this.auditService.findRevisionsForEntity(IdmRole.class.getSimpleName(), originalDto.getId(), pageable);
-		return toResources(results, IdmAuditDto.class);
+		return toCollectionModel(results, IdmAuditDto.class);
 	}
 	
 	/**
@@ -480,7 +480,7 @@ public class IdmRoleController extends AbstractEventableDtoController<IdmRoleDto
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.ROLE_READ, description = "") })
 				})
-	public Resource<?> getFormValues(
+	public EntityModel<?> getFormValues(
 			@ApiParam(value = "Role's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@ApiParam(value = "Code of form definition (default will be used if no code is given).", required = false, defaultValue = FormService.DEFAULT_DEFINITION_CODE)
@@ -515,7 +515,7 @@ public class IdmRoleController extends AbstractEventableDtoController<IdmRoleDto
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.ROLE_UPDATE, description = "") })
 				})
-	public Resource<?> saveFormValues(
+	public EntityModel<?> saveFormValues(
 			@ApiParam(value = "Role's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId,
 			@ApiParam(value = "Code of form definition (default will be used if no code is given).", required = false, defaultValue = FormService.DEFAULT_DEFINITION_CODE)
@@ -553,7 +553,7 @@ public class IdmRoleController extends AbstractEventableDtoController<IdmRoleDto
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.ROLE_UPDATE, description = "") })
 				})
-	public Resource<?> saveFormValue(
+	public EntityModel<?> saveFormValue(
 			@ApiParam(value = "Role's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @Valid IdmFormValueDto formValue) {		
@@ -750,7 +750,7 @@ public class IdmRoleController extends AbstractEventableDtoController<IdmRoleDto
 						@AuthorizationScope(scope = CoreGroupPermission.ROLE_READ, description = "") })
 				},
 			notes = "Incompatible roles are resolved from sub roles.")
-	public Resources<?> getIncompatibleRoles(
+	public CollectionModel<?> getIncompatibleRoles(
 			@ApiParam(value = "Roles's uuid identifier or code.", required = true)
 			@PathVariable String backendId) {	
 		IdmRoleDto role = getDto(backendId);
@@ -765,7 +765,7 @@ public class IdmRoleController extends AbstractEventableDtoController<IdmRoleDto
 		// resolve incompatible roles defined by business role
 		Set<ResolvedIncompatibleRoleDto> incompatibleRoles = incompatibleRoleService.resolveIncompatibleRoles(Lists.newArrayList(distinctRoles));
 		//
-		return toResources(incompatibleRoles, ResolvedIncompatibleRoleDto.class);
+		return toCollectionModel(incompatibleRoles, ResolvedIncompatibleRoleDto.class);
 	}
 
 	@Override	

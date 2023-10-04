@@ -42,4 +42,9 @@ public class ToolFlywayConfig extends AbstractFlywayConfiguration {
 		log.info("Starting flyway migration for tool module [{}]: ", flyway.getConfiguration().getTable());
 		return flyway;
 	}
+
+	@Override
+	public String getPropertyPrefix() {
+		return "flyway.tool";
+	}
 }

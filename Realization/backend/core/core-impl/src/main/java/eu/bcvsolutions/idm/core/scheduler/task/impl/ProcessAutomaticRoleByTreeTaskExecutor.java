@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import eu.bcvsolutions.idm.core.model.entity.AbstractRoleAssignment_;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -71,6 +70,7 @@ import eu.bcvsolutions.idm.core.eav.api.domain.PersistentType;
 import eu.bcvsolutions.idm.core.eav.api.dto.IdmFormAttributeDto;
 import eu.bcvsolutions.idm.core.eav.api.dto.IdmFormInstanceDto;
 import eu.bcvsolutions.idm.core.eav.api.dto.IdmFormValueDto;
+import eu.bcvsolutions.idm.core.model.entity.AbstractRoleAssignment_;
 import eu.bcvsolutions.idm.core.model.entity.IdmContractPosition_;
 import eu.bcvsolutions.idm.core.model.entity.IdmIdentityContract_;
 import eu.bcvsolutions.idm.core.model.entity.IdmIdentityRole_;
@@ -316,7 +316,7 @@ public class ProcessAutomaticRoleByTreeTaskExecutor extends AbstractSchedulableS
 		Pageable pageable = PageRequest.of(
 				0, 
 				getPageSize(),
-				new Sort(Direction.ASC, BaseEntity.PROPERTY_ID)
+				Sort.by(Direction.ASC, BaseEntity.PROPERTY_ID)
 		);
 		//
 		boolean canContinue = true;
@@ -373,7 +373,7 @@ public class ProcessAutomaticRoleByTreeTaskExecutor extends AbstractSchedulableS
 		Pageable pageable = PageRequest.of(
 				0, 
 				getPageSize(),
-				new Sort(Direction.ASC, BaseEntity.PROPERTY_ID)
+				Sort.by(Direction.ASC, BaseEntity.PROPERTY_ID)
 		);
 		boolean canContinue = true;
 		//
@@ -426,7 +426,7 @@ public class ProcessAutomaticRoleByTreeTaskExecutor extends AbstractSchedulableS
 		Pageable pageable = PageRequest.of(
 				0, 
 				getPageSize(),
-				new Sort(Direction.ASC, BaseEntity.PROPERTY_ID)
+				Sort.by(Direction.ASC, BaseEntity.PROPERTY_ID)
 		);
 		boolean canContinue = true;
 		// filter - if role was assigned by contract or contract position doesn't matter => automatic role is the same

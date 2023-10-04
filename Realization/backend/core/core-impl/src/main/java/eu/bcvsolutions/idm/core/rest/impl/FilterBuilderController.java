@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -69,14 +69,14 @@ public class FilterBuilderController  {
 				},
 			notes = "Returns all registered filter builders.")
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Resources<?> find(
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		List<FilterBuilderDto> filterBuilderDtos = filterManager.find(toFilter(parameters));
 		PageImpl page = new PageImpl(filterBuilderDtos, PageRequest.of(0, filterBuilderDtos.size() == 0 ? 10 : filterBuilderDtos.size()), filterBuilderDtos.size());
 		if (page.getContent().isEmpty()) {
-			return pagedResourcesAssembler.toEmptyResource(page, FilterBuilderDto.class);
+			return pagedResourcesAssembler.toEmptyModel(page, FilterBuilderDto.class);
 		}
-		return pagedResourcesAssembler.toResource(page);
+		return pagedResourcesAssembler.toModel(page);
 	}
 	
 	/**

@@ -387,7 +387,7 @@ public class DefaultProvisioningExecutor implements ProvisioningExecutor {
 			filter.setNotInState(OperationState.CREATED);
 			filter.setBatchId(batch.getId());
 			List<SysProvisioningOperationDto> activeOperations = provisioningOperationService
-					.find(filter, PageRequest.of(0, 1, new Sort(Direction.DESC, SysProvisioningOperation_.created.getName())))
+					.find(filter, PageRequest.of(0, 1, Sort.by(Direction.DESC, SysProvisioningOperation_.created.getName())))
 					.getContent();
 			if (activeOperations.isEmpty()) {
 				// batch is completed (no operations in queue)

@@ -3,7 +3,7 @@ package eu.bcvsolutions.idm.core.notification.api.dto;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

@@ -21,10 +21,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.ResourceSupport;
-import org.springframework.hateoas.Resources;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -167,7 +167,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "") })
 				})
-	public Resources<?> find(
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -187,7 +187,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "") })
 				})
-	public Resources<?> findQuick(
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
@@ -207,7 +207,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_AUTOCOMPLETE, description = "") })
 				})
-	public Resources<?> autocomplete(
+	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
@@ -346,7 +346,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 		if (identity == null) {
 			throw new ResultCodeException(CoreResultCode.NOT_FOUND, ImmutableMap.of("entity", backendId));
 		}
-		return new ResponseEntity<>(toResource(identityService.enable(identity.getId(), IdentityBasePermission.MANUALLYENABLE)), HttpStatus.OK);
+		return new ResponseEntity<>(toModel(identityService.enable(identity.getId(), IdentityBasePermission.MANUALLYENABLE)), HttpStatus.OK);
 	}
 	
 	/**
@@ -377,7 +377,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 		if (identity == null) {
 			throw new ResultCodeException(CoreResultCode.NOT_FOUND, ImmutableMap.of("entity", backendId));
 		}
-		return new ResponseEntity<>(toResource(identityService.disable(identity.getId(), IdentityBasePermission.MANUALLYDISABLE)), HttpStatus.OK);
+		return new ResponseEntity<>(toModel(identityService.disable(identity.getId(), IdentityBasePermission.MANUALLYDISABLE)), HttpStatus.OK);
 	}
 
 	@Override
@@ -560,7 +560,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "") })
 				},
 			notes = "Incompatible roles are resolved from assigned identity roles, which can logged used read.")
-	public Resources<?> getIncompatibleRoles(
+	public CollectionModel<?> getIncompatibleRoles(
 			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
 			@PathVariable String backendId) {	
 		IdmIdentityDto identity = getDto(backendId);
@@ -583,7 +583,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 					.collect(Collectors.toList())
 				);
 		//
-		return toResources(incompatibleRoles, ResolvedIncompatibleRoleDto.class);
+		return toCollectionModel(incompatibleRoles, ResolvedIncompatibleRoleDto.class);
 	}
 	
 	/**
@@ -620,7 +620,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 		WorkPositionDto position = new WorkPositionDto(identity, primeContract);
 		if (primeContract.getWorkPosition() != null) {
 			IdmTreeNodeDto contractPosition = treeNodeService.get(primeContract.getWorkPosition());
-			position.getPath().addAll(treeNodeService.findAllParents(contractPosition.getId(), new Sort(Direction.ASC, "forestIndex.lft")));
+			position.getPath().addAll(treeNodeService.findAllParents(contractPosition.getId(), Sort.by(Direction.ASC, "forestIndex.lft")));
 			position.getPath().add(contractPosition);
 		}
 		return new ResponseEntity<WorkPositionDto>(position, HttpStatus.OK);
@@ -672,7 +672,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "") })
 				})
-	public Resources<?> findRevisions(
+	public CollectionModel<?> findRevisions(
 			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
 			@PathVariable("backendId") String backendId, 
 			Pageable pageable) {
@@ -682,7 +682,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 		}
 		// get original entity id
 		Page<IdmAuditDto> results = this.auditService.findRevisionsForEntity(IdmIdentity.class.getSimpleName(), originalEntity.getId(), pageable);
-		return toResources(results, IdmAuditDto.class);
+		return toCollectionModel(results, IdmAuditDto.class);
 	}
 	
 	@Override
@@ -721,7 +721,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "")})
 				})
-	public Resource<?> prepareFormValues(
+	public EntityModel<?> prepareFormValues(
 			@ApiParam(value = "Code of form definition (default will be used if no code is given).", required = false, defaultValue = FormService.DEFAULT_DEFINITION_CODE)
 			@RequestParam(name = IdmFormAttributeFilter.PARAMETER_FORM_DEFINITION_CODE, required = false) String definitionCode) {
 		return super.prepareFormValues(definitionCode);
@@ -746,7 +746,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "")})
 				})
-	public Resource<?> getFormValues(
+	public EntityModel<?> getFormValues(
 			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@ApiParam(value = "Code of form definition (default will be used if no code is given).", required = false, defaultValue = FormService.DEFAULT_DEFINITION_CODE)
@@ -788,7 +788,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_UPDATE, description = ""),
 						@AuthorizationScope(scope = CoreGroupPermission.FORM_VALUE_UPDATE, description = "")})
 				})
-	public Resource<?> saveFormValues(
+	public EntityModel<?> saveFormValues(
 			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId,
 			@ApiParam(value = "Code of form definition (default will be used if no code is given).", required = false, defaultValue = FormService.DEFAULT_DEFINITION_CODE)
@@ -832,7 +832,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 							@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_UPDATE, description = ""),
 							@AuthorizationScope(scope = CoreGroupPermission.FORM_VALUE_UPDATE, description = "")})
 					})
-	public Resource<?> saveFormValue(
+	public EntityModel<?> saveFormValue(
 			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @Valid IdmFormValueDto formValue) {		
@@ -1067,7 +1067,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 		context.setAddPermissions(true);
 		profile = profileController.getService().get(profile, context, IdmBasePermission.READ);
 		//
-		return new ResponseEntity<>(profileController.toResource(profile), HttpStatus.OK);
+		return new ResponseEntity<>(profileController.toModel(profile), HttpStatus.OK);
 	}
 	
 	/**
@@ -1101,7 +1101,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 		context.setAddPermissions(true);
 		profile = profileController.getService().get(profile, context, IdmBasePermission.READ);
 		//
-		return new ResponseEntity<>(profileController.toResource(profile), HttpStatus.OK);
+		return new ResponseEntity<>(profileController.toModel(profile), HttpStatus.OK);
 	}
 	
 	/**
@@ -1142,7 +1142,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 		context.setAddPermissions(true);
 		profile = profileController.getService().get(profile, context, IdmBasePermission.READ);
 		//
-		return new ResponseEntity<>(profileController.toResource(profile), HttpStatus.OK);
+		return new ResponseEntity<>(profileController.toModel(profile), HttpStatus.OK);
 	}
 	
 	/**
@@ -1183,7 +1183,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 		context.setAddPermissions(true);
 		profile = profileController.getService().get(profile, context, IdmBasePermission.READ);
 		//
-		return new ResponseEntity<>(profileController.toResource(profile), HttpStatus.OK);
+		return new ResponseEntity<>(profileController.toModel(profile), HttpStatus.OK);
 	}
 	
 	/**
@@ -1250,7 +1250,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 		if (passwordDto == null) {
 			return new ResponseEntity<InputStreamResource>(HttpStatus.NO_CONTENT);
 		}
-		return new ResponseEntity<>(passwordController.toResource(passwordDto), HttpStatus.OK);
+		return new ResponseEntity<>(passwordController.toModel(passwordDto), HttpStatus.OK);
 	}
 	
 	
@@ -1354,13 +1354,13 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	}
 	
 	@Override
-	public ResourceSupport toResource(IdmIdentityDto dto) {
-		ResourceSupport resource = super.toResource(dto);
+	public RepresentationModel toModel(IdmIdentityDto dto) {
+		RepresentationModel resource = super.toModel(dto);
 		//
 		// add additional links to enable / disable identity
 		resource.add(
-				ControllerLinkBuilder.linkTo(this.getClass()).slash(dto.getId()).slash("profile").withRel("profile"),
-				ControllerLinkBuilder.linkTo(this.getClass()).slash(dto.getId()).slash("form-values").withRel("form-values")
+				WebMvcLinkBuilder.linkTo(this.getClass()).slash(dto.getId()).slash("profile").withRel("profile"),
+				WebMvcLinkBuilder.linkTo(this.getClass()).slash(dto.getId()).slash("form-values").withRel("form-values")
 		);
 		//
 		return resource;

@@ -57,7 +57,7 @@ public class IdentityUniversalSearchType extends AbstractUniversalSearchType<Idm
 
 	@Override
 	protected Pageable getPageable(Pageable pageable) {
-		Sort sort = new Sort(Sort.Direction.ASC, IdmIdentity_.username.getName());
+		Sort sort = Sort.by(Sort.Direction.ASC, IdmIdentity_.username.getName());
 		
 		return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 	}

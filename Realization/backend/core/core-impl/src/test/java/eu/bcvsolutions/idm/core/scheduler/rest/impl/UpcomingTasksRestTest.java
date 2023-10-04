@@ -28,7 +28,6 @@ import eu.bcvsolutions.idm.core.scheduler.api.dto.Task;
 import eu.bcvsolutions.idm.core.scheduler.api.dto.filter.TaskFilter;
 import eu.bcvsolutions.idm.core.scheduler.api.service.SchedulableTaskExecutor;
 import eu.bcvsolutions.idm.core.scheduler.api.service.SchedulerManager;
-import eu.bcvsolutions.idm.core.scheduler.service.impl.TestSchedulableTask;
 import eu.bcvsolutions.idm.test.api.AbstractRestTest;
 import eu.bcvsolutions.idm.test.api.TestHelper;
 
@@ -52,7 +51,7 @@ public class UpcomingTasksRestTest extends AbstractRestTest {
 	@Test
 	public void testOneTaskWithCronTriggerQueryParams() {
 		String instanceId = getHelper().createName();
-		Task task = createTask(TestSchedulableTask.class, instanceId, "mock" + getHelper().createName());
+		Task task = createTask(UpcommingTestTask.class, instanceId, "mock" + getHelper().createName());
 
 		CronTaskTrigger cronTrigger = new CronTaskTrigger();
 		cronTrigger.setTaskId(task.getId());
@@ -91,7 +90,7 @@ public class UpcomingTasksRestTest extends AbstractRestTest {
 	@Test
 	public void testOneTaskWithSimpleTrigger() {
 		String instanceId = getHelper().createName();
-		Task task = createTask(TestSchedulableTask.class, instanceId, "mock" + getHelper().createName());
+		Task task = createTask(UpcommingTestTask.class, instanceId, "mock" + getHelper().createName());
 
 		SimpleTaskTrigger trigger = new SimpleTaskTrigger();
 		trigger.setTaskId(task.getId());
@@ -110,8 +109,8 @@ public class UpcomingTasksRestTest extends AbstractRestTest {
 	@Test
 	public void testTwoTasksCronAndDependent() {
 		String instanceId = getHelper().createName();
-		Task task = createTask(TestSchedulableTask.class, instanceId, "mock" + getHelper().createName());
-		Task taskDependent = createTask(TestSchedulableTask.class, getHelper().createName(), "mock" + getHelper().createName());
+		Task task = createTask(UpcommingTestTask.class, instanceId, "mock" + getHelper().createName());
+		Task taskDependent = createTask(UpcommingTestTask.class, getHelper().createName(), "mock" + getHelper().createName());
 
 		SimpleTaskTrigger simpleTaskTrigger = new SimpleTaskTrigger();
 		simpleTaskTrigger.setFireTime(ZonedDateTime.now().plusMinutes(5));
@@ -122,7 +121,7 @@ public class UpcomingTasksRestTest extends AbstractRestTest {
 		manager.createTrigger(taskDependent.getId(), trigger);
 
 		TaskFilter filter = new TaskFilter();
-		filter.setTaskType(TestSchedulableTask.class.getName());
+		filter.setTaskType(UpcommingTestTask.class.getName());
 		List<Task> results = find(filter);
 		//
 		Assert.assertEquals(1, results.size());
@@ -145,17 +144,17 @@ public class UpcomingTasksRestTest extends AbstractRestTest {
 	// C - E
 	@Test
 	public void testFiveTasksComplexScenario() {
-		Task taskA = createTask(TestSchedulableTask.class, getHelper().createName(), "mock" + getHelper().createName());
+		Task taskA = createTask(UpcommingTestTask.class, getHelper().createName(), "mock" + getHelper().createName());
 		SimpleTaskTrigger simpleTaskTriggerA = new SimpleTaskTrigger();
 		simpleTaskTriggerA.setFireTime(ZonedDateTime.now().plusMinutes(5));
 		manager.createTrigger(taskA.getId(), simpleTaskTriggerA);
 
-		Task taskB = createTask(TestSchedulableTask.class, getHelper().createName(), "mock" + getHelper().createName());
+		Task taskB = createTask(UpcommingTestTask.class, getHelper().createName(), "mock" + getHelper().createName());
 		SimpleTaskTrigger simpleTaskTriggerB = new SimpleTaskTrigger();
 		simpleTaskTriggerB.setFireTime(ZonedDateTime.now().plusMinutes(10));
 		manager.createTrigger(taskB.getId(), simpleTaskTriggerB);
 
-		Task taskC = createTask(TestSchedulableTask.class, getHelper().createName(), "mock" + getHelper().createName());
+		Task taskC = createTask(UpcommingTestTask.class, getHelper().createName(), "mock" + getHelper().createName());
 		SimpleTaskTrigger simpleTaskTriggerC = new SimpleTaskTrigger();
 		simpleTaskTriggerC.setFireTime(ZonedDateTime.now().plusMinutes(15));
 		manager.createTrigger(taskC.getId(), simpleTaskTriggerC);
@@ -163,12 +162,12 @@ public class UpcomingTasksRestTest extends AbstractRestTest {
 		dependentTaskTriggerC.setInitiatorTaskId(taskA.getId());
 		manager.createTrigger(taskC.getId(), dependentTaskTriggerC);
 
-		Task taskD = createTask(TestSchedulableTask.class, getHelper().createName(), "mock" + getHelper().createName());
+		Task taskD = createTask(UpcommingTestTask.class, getHelper().createName(), "mock" + getHelper().createName());
 		DependentTaskTrigger dependentTaskTriggerD = new DependentTaskTrigger();
 		dependentTaskTriggerD.setInitiatorTaskId(taskA.getId());
 		manager.createTrigger(taskD.getId(), dependentTaskTriggerD);
 
-		Task taskE = createTask(TestSchedulableTask.class, getHelper().createName(), "mock" + getHelper().createName());
+		Task taskE = createTask(UpcommingTestTask.class, getHelper().createName(), "mock" + getHelper().createName());
 		DependentTaskTrigger dependentTaskTriggerEA = new DependentTaskTrigger();
 		dependentTaskTriggerEA.setInitiatorTaskId(taskA.getId());
 		manager.createTrigger(taskE.getId(), dependentTaskTriggerEA);
@@ -177,7 +176,7 @@ public class UpcomingTasksRestTest extends AbstractRestTest {
 		manager.createTrigger(taskE.getId(), dependentTaskTriggerEC);
 
 		TaskFilter filter = new TaskFilter();
-		filter.setTaskType(TestSchedulableTask.class.getName());
+		filter.setTaskType(UpcommingTestTask.class.getName());
 		List<Task> results = find(filter);
 
 		// only A, B, C tasks are directly visible and sorted by nextFireTime
@@ -197,10 +196,10 @@ public class UpcomingTasksRestTest extends AbstractRestTest {
 	// a task with multiple triggers gets them sorted
 	@Test
 	public void testTaskWithMultipleTriggersGetsThemSorted() {
-		Task task = createTask(TestSchedulableTask.class, getHelper().createName(), "mock" + getHelper().createName());
+		Task task = createTask(UpcommingTestTask.class, getHelper().createName(), "mock" + getHelper().createName());
 
 		// add 4 triggers, NOT sorted by fireTime and one without fireTime (dependent task)
-		Task dependentTask = createTask(TestSchedulableTask.class, getHelper().createName(), "mock" + getHelper().createName());
+		Task dependentTask = createTask(UpcommingTestTask.class, getHelper().createName(), "mock" + getHelper().createName());
 		DependentTaskTrigger dependentTaskTrigger = new DependentTaskTrigger();
 		dependentTaskTrigger.setInitiatorTaskId(dependentTask.getId());
 		manager.createTrigger(task.getId(), dependentTaskTrigger);
@@ -218,7 +217,7 @@ public class UpcomingTasksRestTest extends AbstractRestTest {
 		manager.createTrigger(task.getId(), simpleTaskTriggerC);
 
 		TaskFilter filter = new TaskFilter();
-		filter.setTaskType(TestSchedulableTask.class.getName());
+		filter.setTaskType(UpcommingTestTask.class.getName());
 		List<Task> results = find(filter);
 
 		Assert.assertEquals(simpleTaskTriggerA.getId(), results.get(0).getTriggers().get(0).getId());
@@ -263,4 +262,5 @@ public class UpcomingTasksRestTest extends AbstractRestTest {
 		createdTasks.add(createdTask);
 		return createdTask;
 	}
+
 }

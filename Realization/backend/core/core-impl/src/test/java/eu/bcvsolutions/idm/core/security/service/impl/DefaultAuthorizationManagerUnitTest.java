@@ -1,8 +1,5 @@
 package eu.bcvsolutions.idm.core.security.service.impl;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -11,8 +8,6 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.context.ApplicationContext;
 
 import eu.bcvsolutions.idm.core.api.domain.ConfigurationMap;
@@ -26,6 +21,8 @@ import eu.bcvsolutions.idm.core.security.api.service.SecurityService;
 import eu.bcvsolutions.idm.core.security.evaluator.BasePermissionEvaluator;
 import eu.bcvsolutions.idm.core.security.evaluator.UuidEvaluator;
 import eu.bcvsolutions.idm.test.api.AbstractUnitTest;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 /**
  * Test for authorities evaluation
@@ -35,17 +32,17 @@ import eu.bcvsolutions.idm.test.api.AbstractUnitTest;
  */
 public class DefaultAuthorizationManagerUnitTest extends AbstractUnitTest {
 
-	@Mock private ApplicationContext context;
-	@Mock private IdmAuthorizationPolicyService service;
-	@Mock private SecurityService securityService;
-	@Mock private ModuleService moduleService;
-	@Mock private IdmCacheManager idmCacheManager;
+	private final ApplicationContext context = mock(ApplicationContext.class);
+	private final IdmAuthorizationPolicyService service = mock(IdmAuthorizationPolicyService.class);
+	private final SecurityService securityService = mock(SecurityService.class);
+	private final ModuleService moduleService = mock(ModuleService.class);
+	private final IdmCacheManager cacheManager = mock(IdmCacheManager.class);
+	private final UUID randomUUID = UUID.randomUUID();
 	//
 	private List<IdmAuthorizationPolicyDto> enabledPolicies;
 	private final BasePermissionEvaluator evaluator = new BasePermissionEvaluator();
 	//
-	@InjectMocks
-	private DefaultAuthorizationManager manager;
+	private final DefaultAuthorizationManager manager = spy(new DefaultAuthorizationManager(context, service, securityService, moduleService, cacheManager));
 	
 	@Before
 	public void init() {		
@@ -66,7 +63,8 @@ public class DefaultAuthorizationManagerUnitTest extends AbstractUnitTest {
 	public void testGetPermissions() {
 		when(service.getEnabledPolicies(any(), any())).thenReturn(enabledPolicies);
 		when(context.getBean(BasePermissionEvaluator.class)).thenReturn(evaluator);
-		when(securityService.getCurrentId()).thenReturn(UUID.randomUUID());
+		when(securityService.getCurrentId()).thenReturn(randomUUID);
+		when(cacheManager.getValue(any(String.class), any(Object.class))).thenReturn(null);
 		//
 		Set<String> basePermissions = manager.getPermissions(new IdmRole());
 		Assert.assertEquals(2, basePermissions.size());
@@ -79,6 +77,8 @@ public class DefaultAuthorizationManagerUnitTest extends AbstractUnitTest {
 		when(service.getEnabledPolicies(any(), any())).thenReturn(enabledPolicies);
 		when(context.getBean(BasePermissionEvaluator.class)).thenReturn(evaluator);
 		//
+		manager.evaluate(new IdmRole(), IdmBasePermission.READ);
+
 		Assert.assertTrue(manager.evaluate(new IdmRole(), IdmBasePermission.READ));
 		Assert.assertTrue(manager.evaluate(new IdmRole(), IdmBasePermission.UPDATE));
 		Assert.assertFalse(manager.evaluate(new IdmRole(), IdmBasePermission.ADMIN));

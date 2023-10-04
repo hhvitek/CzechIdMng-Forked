@@ -218,7 +218,7 @@ public class IdentityRoleByIdentityDeduplicationBulkAction
 		List<IdmIdentityRoleDto> identityRoles = identityRoleService
 				.find(
 						identityRoleFilter, 
-						PageRequest.of(0, Integer.MAX_VALUE, new Sort(Direction.DESC, IdmIdentityRole_.created.getName())),
+						PageRequest.of(0, Integer.MAX_VALUE, Sort.by(Direction.DESC, IdmIdentityRole_.created.getName())),
 						PermissionUtils.toPermissions(getAuthoritiesForIdentityRole()).toArray(new BasePermission[] {})).getContent();
 		//
 		// load eav instance, if eav values has to be checked

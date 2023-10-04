@@ -5,10 +5,6 @@ import java.util.concurrent.Executor;
 
 import javax.persistence.EntityManager;
 
-import eu.bcvsolutions.idm.core.api.config.datasource.CoreEntityManager;
-import eu.bcvsolutions.idm.core.model.repository.IdmAutomaticRoleRepository;
-import eu.bcvsolutions.idm.core.model.repository.filter.MonitoringIgnorableFilterBuilder;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -20,6 +16,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.plugin.core.PluginRegistry;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 
+import eu.bcvsolutions.idm.core.api.config.datasource.CoreEntityManager;
 import eu.bcvsolutions.idm.core.api.config.domain.ApplicationConfiguration;
 import eu.bcvsolutions.idm.core.api.config.domain.ContractSliceConfiguration;
 import eu.bcvsolutions.idm.core.api.config.domain.RoleConfiguration;
@@ -37,6 +34,7 @@ import eu.bcvsolutions.idm.core.api.service.EntityStateManager;
 import eu.bcvsolutions.idm.core.api.service.IdmAuthorizationPolicyService;
 import eu.bcvsolutions.idm.core.api.service.IdmAutomaticRoleAttributeRuleService;
 import eu.bcvsolutions.idm.core.api.service.IdmAutomaticRoleAttributeService;
+import eu.bcvsolutions.idm.core.api.service.IdmCacheManager;
 import eu.bcvsolutions.idm.core.api.service.IdmConceptRoleRequestService;
 import eu.bcvsolutions.idm.core.api.service.IdmConfidentialStorageValueService;
 import eu.bcvsolutions.idm.core.api.service.IdmConfigurationService;
@@ -104,6 +102,7 @@ import eu.bcvsolutions.idm.core.ecm.service.impl.DefaultAttachmentManager;
 import eu.bcvsolutions.idm.core.model.repository.IdmAuthorizationPolicyRepository;
 import eu.bcvsolutions.idm.core.model.repository.IdmAutomaticRoleAttributeRepository;
 import eu.bcvsolutions.idm.core.model.repository.IdmAutomaticRoleAttributeRuleRepository;
+import eu.bcvsolutions.idm.core.model.repository.IdmAutomaticRoleRepository;
 import eu.bcvsolutions.idm.core.model.repository.IdmConfidentialStorageValueRepository;
 import eu.bcvsolutions.idm.core.model.repository.IdmConfigurationRepository;
 import eu.bcvsolutions.idm.core.model.repository.IdmContractGuaranteeRepository;
@@ -128,6 +127,7 @@ import eu.bcvsolutions.idm.core.model.repository.IdmTokenRepository;
 import eu.bcvsolutions.idm.core.model.repository.IdmTreeNodeRepository;
 import eu.bcvsolutions.idm.core.model.repository.IdmTreeTypeRepository;
 import eu.bcvsolutions.idm.core.model.repository.filter.DefaultFilterManager;
+import eu.bcvsolutions.idm.core.model.repository.filter.MonitoringIgnorableFilterBuilder;
 import eu.bcvsolutions.idm.core.model.repository.thin.IdmIdentityRoleThinRepository;
 import eu.bcvsolutions.idm.core.model.service.impl.DefaultConfigurationService;
 import eu.bcvsolutions.idm.core.model.service.impl.DefaultEntityEventManager;
@@ -245,6 +245,7 @@ public class IdmServiceConfiguration {
 	@Autowired private IdmProfileRepository profileRepository;
 	@Autowired private IdmGenerateValueRepository generatedValueRepository;
 	@Autowired private MonitoringIgnorableFilterBuilder monitoringIgnorableFilterBuilder;
+	@Autowired private IdmCacheManager cacheManager;
 	//
 	// Auto registered beans (plugins)
 	@Autowired private PluginRegistry<ModuleDescriptor, String> moduleDescriptorRegistry;
@@ -429,7 +430,7 @@ public class IdmServiceConfiguration {
 	@Bean
 	@ConditionalOnMissingBean(AuthorizationManager.class)
 	public AuthorizationManager authorizationManager() {
-		return new DefaultAuthorizationManager(context, authorizationPolicyService(), securityService(), moduleService());
+		return new DefaultAuthorizationManager(context, authorizationPolicyService(), securityService(), moduleService(), cacheManager);
 	}
 	
 	/**

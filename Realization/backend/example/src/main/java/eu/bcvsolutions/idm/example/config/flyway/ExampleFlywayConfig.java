@@ -43,4 +43,9 @@ public class ExampleFlywayConfig extends AbstractFlywayConfiguration {
 		LOG.info("Starting flyway migration for example module [{}]: ", flyway.getConfiguration().getTable());
 		return flyway;
 	}
+
+	@Override
+	public String getPropertyPrefix() {
+		return "flyway.example";
+	}
 }

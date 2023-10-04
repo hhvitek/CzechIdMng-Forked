@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
@@ -67,7 +67,7 @@ public class WorkflowHistoricProcessInstanceController extends AbstractReadDtoCo
 			value = "Search historic process instances", 
 			nickname = "searchQuickHistoricProcessInstances", 
 			tags = { WorkflowHistoricProcessInstanceController.TAG })
-	public Resources<?> searchQuick(
+	public CollectionModel<?> searchQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return find(parameters, pageable);

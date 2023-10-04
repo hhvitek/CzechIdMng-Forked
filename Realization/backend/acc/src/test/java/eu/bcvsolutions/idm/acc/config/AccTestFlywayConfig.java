@@ -43,4 +43,9 @@ public class AccTestFlywayConfig extends AbstractFlywayConfiguration {
 		LOG.info("Starting flyway migration for module acc test [{}]: ", flyway.getConfiguration().getTable());
 		return flyway;
 	}
+
+	@Override
+	public String getPropertyPrefix() {
+		return "flyway.acctest";
+	}
 }

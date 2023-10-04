@@ -7,9 +7,9 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.ResourceSupport;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -83,7 +83,7 @@ public class IdmIdentityProjectionController implements BaseDtoController<IdmIde
 		if (dto == null) {
 			throw new EntityNotFoundException(identityService.getEntityClass(), backendId);
 		}
-		ResourceSupport resource = toResource(dto);
+		RepresentationModel resource = toModel(dto);
 		if (resource == null) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
@@ -109,7 +109,7 @@ public class IdmIdentityProjectionController implements BaseDtoController<IdmIde
 						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_UPDATE, description = "")})
 				})
 	public ResponseEntity<?> post(@Valid @RequestBody IdmIdentityProjectionDto dto) {
-		ResourceSupport resource = toResource(postDto(dto));
+		RepresentationModel resource = toModel(postDto(dto));
 		if (resource == null) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
@@ -137,12 +137,12 @@ public class IdmIdentityProjectionController implements BaseDtoController<IdmIde
 		return getDto(dto);
 	}
 	
-	protected ResourceSupport toResource(IdmIdentityProjectionDto dto) {
+	protected RepresentationModel toModel(IdmIdentityProjectionDto dto) {
 		if(dto == null) { 
 			return null;
 		} 
-		Link selfLink = ControllerLinkBuilder.linkTo(this.getClass()).slash(dto.getId()).withSelfRel();
+		Link selfLink = WebMvcLinkBuilder.linkTo(this.getClass()).slash(dto.getId()).withSelfRel();
 		//
-		return new Resource<IdmIdentityProjectionDto>(dto, selfLink);
+		return new EntityModel<IdmIdentityProjectionDto>(dto, selfLink);
 	}
 }

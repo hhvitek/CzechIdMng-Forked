@@ -3,7 +3,7 @@ package eu.bcvsolutions.idm.core.eav.rest.impl;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -63,7 +63,7 @@ public abstract class AbstractFormableDtoController<DTO extends FormableDto, F e
 	}
 	
 	@Override
-	public Resource<?> prepareFormValues(
+	public EntityModel<?> prepareFormValues(
 			@ApiParam(value = "Code of form definition (default will be used if no code is given).", required = false, defaultValue = FormService.DEFAULT_DEFINITION_CODE)
 			@RequestParam(name = IdmFormAttributeFilter.PARAMETER_FORM_DEFINITION_CODE, required = false) String definitionCode) {
 		IdmFormDefinitionDto formDefinition = formDefinitionController.getDefinition(
@@ -78,6 +78,6 @@ public abstract class AbstractFormableDtoController<DTO extends FormableDto, F e
 		// secure attributes
 		formDefinitionController.secureAttributes(formInstance);
 		//
-		return new Resource<>(formInstance);
+		return new EntityModel<>(formInstance);
 	}	
 }

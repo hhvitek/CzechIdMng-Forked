@@ -73,7 +73,7 @@ public interface TestHelper {
 	String ADMIN_PASSWORD = "admin";
 	String ADMIN_ROLE = "superAdminRole";
 	String DEFAULT_PASSWORD = "password";
-	String HAL_CONTENT_TYPE = "application/hal+json;charset=UTF-8";
+	String HAL_CONTENT_TYPE = "application/hal+json";
 	
 	/**
 	 * Login as test admin

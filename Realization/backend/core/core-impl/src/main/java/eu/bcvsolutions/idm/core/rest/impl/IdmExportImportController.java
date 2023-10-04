@@ -13,9 +13,9 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -92,7 +92,7 @@ public class IdmExportImportController extends AbstractReadWriteDtoController<Id
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.EXPORTIMPORT_READ, description = "") })
 				})
-	public Resources<?> find(
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -112,7 +112,7 @@ public class IdmExportImportController extends AbstractReadWriteDtoController<Id
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.EXPORTIMPORT_READ, description = "") })
 				})
-	public Resources<?> findQuick(
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
@@ -132,7 +132,7 @@ public class IdmExportImportController extends AbstractReadWriteDtoController<Id
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.EXPORTIMPORT_AUTOCOMPLETE, description = "") })
 				})
-	public Resources<?> autocomplete(
+	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
@@ -183,12 +183,12 @@ public class IdmExportImportController extends AbstractReadWriteDtoController<Id
 						@AuthorizationScope(scope = CoreGroupPermission.EXPORTIMPORT_CREATE, description = "")})
 				},
 			notes = "Upload new import zip. New import batch will be created.")
-	public Resource<IdmExportImportDto> uploadImport(String name, String fileName, MultipartFile data)
+	public EntityModel<IdmExportImportDto> uploadImport(String name, String fileName, MultipartFile data)
 			throws IOException {
 		IdmExportImportDto batch = importManager.uploadImport(name, fileName, data.getInputStream(), IdmBasePermission.CREATE);
-		Link selfLink = ControllerLinkBuilder.linkTo(this.getClass()).slash(batch.getId()).withSelfRel();
+		Link selfLink = WebMvcLinkBuilder.linkTo(this.getClass()).slash(batch.getId()).withSelfRel();
 		
-		return new Resource<IdmExportImportDto>(batch, selfLink);
+		return new EntityModel<IdmExportImportDto>(batch, selfLink);
 	}
 	
 	@Override
@@ -309,7 +309,7 @@ public class IdmExportImportController extends AbstractReadWriteDtoController<Id
 		}
 		
 		return new ResponseEntity<>(
-				toResource(importManager.executeImport(batch, dryRun, dryRun ? IdmBasePermission.UPDATE : IdmBasePermission.ADMIN)),
+				toModel(importManager.executeImport(batch, dryRun, dryRun ? IdmBasePermission.UPDATE : IdmBasePermission.ADMIN)),
 				HttpStatus.OK);
 	}
 	

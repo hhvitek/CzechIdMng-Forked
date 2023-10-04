@@ -3,7 +3,7 @@ package eu.bcvsolutions.idm.acc.dto;
 import eu.bcvsolutions.idm.core.api.domain.Embedded;
 import eu.bcvsolutions.idm.core.api.domain.Identifiable;
 import eu.bcvsolutions.idm.core.api.dto.AbstractConceptRoleRequestDto;
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 import java.util.UUID;
 

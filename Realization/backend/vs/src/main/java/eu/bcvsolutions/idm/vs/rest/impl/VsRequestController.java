@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.ResourceSupport;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -93,7 +93,7 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
 							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_READ, description = "") }),
 					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_READ, description = "") }) })
-	public Resources<?> find(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+	public CollectionModel<?> find(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -108,7 +108,7 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
 							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_READ, description = "") }),
 					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_READ, description = "") }) })
-	public Resources<?> findQuick(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+	public CollectionModel<?> findQuick(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -123,7 +123,7 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
 							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_AUTOCOMPLETE, description = "") }),
 					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_AUTOCOMPLETE, description = "") }) })
-	public Resources<?> autocomplete(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+	public CollectionModel<?> autocomplete(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -178,7 +178,7 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
 			}
 		}
 
-		ResourceSupport resource = toResource(request);
+		RepresentationModel resource = toModel(request);
 		if (resource == null) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}

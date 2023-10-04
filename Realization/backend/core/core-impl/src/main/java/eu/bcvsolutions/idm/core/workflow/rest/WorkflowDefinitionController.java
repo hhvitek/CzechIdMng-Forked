@@ -8,9 +8,9 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -95,8 +95,8 @@ public class WorkflowDefinitionController extends AbstractReadDtoController<Work
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "") })
 				})
-	public Resources<?> findAllProcessDefinitions() {
-		return toResources(definitionService.findAllProcessDefinitions(), getDtoClass());
+	public CollectionModel<?> findAllProcessDefinitions() {
+		return toCollectionModel(definitionService.findAllProcessDefinitions(), getDtoClass());
 	}
 
 	/**
@@ -123,7 +123,7 @@ public class WorkflowDefinitionController extends AbstractReadDtoController<Work
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "") })
 				})
-	public Resources<?> findQuick(
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -187,11 +187,11 @@ public class WorkflowDefinitionController extends AbstractReadDtoController<Work
 					+ " If definition with iven key exists, new deployment version is added."
 					+ " All running task instances process with their deployment version."
 					+ " Newly added version will be used for new instances.")
-	public Resource<WorkflowDeploymentDto> post(String name, String fileName, MultipartFile data)
+	public EntityModel<WorkflowDeploymentDto> post(String name, String fileName, MultipartFile data)
 			throws IOException {
 		WorkflowDeploymentDto deployment = deploymentService.create(name, fileName, data.getInputStream());
-		Link selfLink = ControllerLinkBuilder.linkTo(this.getClass()).slash(deployment.getId()).withSelfRel();
-		return new Resource<WorkflowDeploymentDto>(deployment, selfLink);
+		Link selfLink = WebMvcLinkBuilder.linkTo(this.getClass()).slash(deployment.getId()).withSelfRel();
+		return new EntityModel<WorkflowDeploymentDto>(deployment, selfLink);
 	}
 
 	/**

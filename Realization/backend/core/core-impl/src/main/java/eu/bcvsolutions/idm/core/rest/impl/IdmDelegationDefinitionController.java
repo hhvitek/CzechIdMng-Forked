@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -82,7 +82,7 @@ public class IdmDelegationDefinitionController extends AbstractReadWriteDtoContr
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.DELEGATIONDEFINITION_READ, description = "") })
 				})
-	public Resources<?> find(
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -102,7 +102,7 @@ public class IdmDelegationDefinitionController extends AbstractReadWriteDtoContr
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.DELEGATIONDEFINITION_READ, description = "") })
 				})
-	public Resources<?> findQuick(
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
@@ -122,7 +122,7 @@ public class IdmDelegationDefinitionController extends AbstractReadWriteDtoContr
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.DELEGATIONDEFINITION_AUTOCOMPLETE, description = "") })
 				})
-	public Resources<?> autocomplete(
+	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
@@ -248,8 +248,8 @@ public class IdmDelegationDefinitionController extends AbstractReadWriteDtoContr
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 			@AuthorizationScope(scope = CoreGroupPermission.DELEGATIONDEFINITION_READ, description = "")})
 			})
-	public Resources<DelegationTypeDto> getSupportedTypes() {
-		return new Resources<>(delegationManager.getSupportedTypes()
+	public CollectionModel<DelegationTypeDto> getSupportedTypes() {
+		return new CollectionModel<>(delegationManager.getSupportedTypes()
 				.stream()
 				.map(delegationType -> delegationManager.convertDelegationTypeToDto(delegationType))
 				.collect(Collectors.toList())

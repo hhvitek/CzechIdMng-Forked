@@ -236,7 +236,7 @@ public class DefaultWorkflowTaskInstanceService extends
 		return findIds(new WorkflowFilterDto(), pageable, permission);
 	}
 	
-	private WorkflowTaskInstanceDto toResource(TaskInfo task, BasePermission[] permission) {
+	private WorkflowTaskInstanceDto toModel(TaskInfo task, BasePermission[] permission) {
 		if (task == null) {
 			return null;
 		}
@@ -286,7 +286,7 @@ public class DefaultWorkflowTaskInstanceService extends
 		if (identityLinks != null) {
 			List<IdentityLinkDto> identityLinksDtos = new ArrayList<>(identityLinks.size());
 			identityLinks.forEach((il) -> {
-				identityLinksDtos.add(toResource(il));
+				identityLinksDtos.add(toModel(il));
 			});
 			dto.getIdentityLinks().addAll(identityLinksDtos);
 		}
@@ -351,9 +351,9 @@ public class DefaultWorkflowTaskInstanceService extends
 			}
 			Object values = formType.getInformation("values");
 			if (values instanceof Map<?, ?>) {
-				dto.getFormData().add(toResource(property, (Map<String, String>) values));
+				dto.getFormData().add(toModel(property, (Map<String, String>) values));
 			} else {
-				dto.getFormData().add(toResource(property, null));
+				dto.getFormData().add(toModel(property, null));
 			}
 		}
 	}
@@ -398,7 +398,7 @@ public class DefaultWorkflowTaskInstanceService extends
 		return dto;
 	}
 
-	private FormDataDto toResource(FormProperty property, Map<String, String> additionalInformations) {
+	private FormDataDto toModel(FormProperty property, Map<String, String> additionalInformations) {
 		FormDataDto dto = new FormDataDto();
 		dto.setId(property.getId());
 		dto.setName(property.getName());
@@ -424,7 +424,7 @@ public class DefaultWorkflowTaskInstanceService extends
 		return dto;
 	}
 
-	private IdentityLinkDto toResource(IdentityLink link) {
+	private IdentityLinkDto toModel(IdentityLink link) {
 		if (link == null) {
 			return null;
 		}
@@ -517,7 +517,7 @@ public class DefaultWorkflowTaskInstanceService extends
 		List<WorkflowTaskInstanceDto> dtos = new ArrayList<>();
 		if (tasks != null) {
 			tasks.forEach((task) -> {
-				dtos.add(toResource(task, permission));
+				dtos.add(toModel(task, permission));
 			});
 		}
 		return new PageImpl<>(dtos, pageable, count);

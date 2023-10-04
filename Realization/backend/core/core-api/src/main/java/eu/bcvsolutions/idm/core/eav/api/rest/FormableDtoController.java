@@ -2,7 +2,7 @@ package eu.bcvsolutions.idm.core.eav.api.rest;
 
 import javax.validation.constraints.NotNull;
 
-import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,7 +44,7 @@ public interface FormableDtoController<DTO extends FormableDto, F extends BaseFi
 	 * @param definitionCode [optional] form definition od default
 	 * @return
 	 */
-	Resource<?> prepareFormValues(
+	EntityModel<?> prepareFormValues(
 			@ApiParam(
 					value = "Code of form definition (default will be used if no code is given).",
 					required = false,

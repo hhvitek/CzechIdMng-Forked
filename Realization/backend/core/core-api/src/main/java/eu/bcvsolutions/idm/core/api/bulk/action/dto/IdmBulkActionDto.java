@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.core.Ordered;
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;

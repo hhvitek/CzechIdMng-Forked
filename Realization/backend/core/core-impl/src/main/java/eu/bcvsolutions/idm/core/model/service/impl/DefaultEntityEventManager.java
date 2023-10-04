@@ -1083,14 +1083,14 @@ public class DefaultEntityEventManager implements EntityEventManager {
 				executeDate,
 				PriorityType.HIGH,
 				exceptOwnerIds,
-				PageRequest.of(0, eventConfiguration.getBatchSize(), new Sort(Direction.ASC, Auditable.PROPERTY_CREATED)));
+				PageRequest.of(0, eventConfiguration.getBatchSize(), Sort.by(Direction.ASC, Auditable.PROPERTY_CREATED)));
 		// load created events - low priority
 		Page<IdmEntityEventDto> normalEvents = entityEventService.findToExecute(
 				instanceId,
 				executeDate,
 				PriorityType.NORMAL,
 				exceptOwnerIds,
-				PageRequest.of(0, eventConfiguration.getBatchSize(), new Sort(Direction.ASC, Auditable.PROPERTY_CREATED)));
+				PageRequest.of(0, eventConfiguration.getBatchSize(), Sort.by(Direction.ASC, Auditable.PROPERTY_CREATED)));
 		// merge events
 		List<IdmEntityEventDto> events = new ArrayList<>();
 		events.addAll(highEvents.getContent());

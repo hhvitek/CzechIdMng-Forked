@@ -45,7 +45,7 @@ public class SystemUniversalSearchType extends AbstractUniversalSearchType<SysSy
 
 	@Override
 	protected Pageable getPageable(Pageable pageable) {
-		Sort sort = new Sort(Sort.Direction.ASC, SysSystem_.name.getName());
+		Sort sort = Sort.by(Sort.Direction.ASC, SysSystem_.name.getName());
 
 		return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 	}

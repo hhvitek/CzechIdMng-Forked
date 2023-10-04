@@ -770,3 +770,72 @@ set system_mapping_id = (select ssm.id
                                   join sys_system_mapping ssm on ssm.object_class_id = oc.id
                          where aa.id = to_update.id and ssm.operation_type = 'PROVISIONING' and aa.entity_type = ssm.entity_type);
 ```
+
+# Migration Guide : CzechIdM 13.0.x to CzechIdM 13.1.x
+
+## 💡 Introduction
+
+This guide describes the various things that are needed when migrating from CzechIdM version 13.0.x to version 13.1.x.
+Version 13.1 brings updates to all major backend and frontend technologies.
+
+# 🌗 Backend
+
+### 🚀 Upgraded libraries
+- Spring Boot ``2.1.18.RELEASE`` => ``2.2.13.RELEASE``
+  - Spring ``5.1.9.RELEASE`` => ``5.2.0.RELEASE``
+  - Mockito ``3.1``
+  - Flyway ``5.2`` => ``6.0``
+- Swagger ``2.9.2`` => ``3.0.0``
+- ... *other minor and third party libraries*.
+
+## Update custom module
+
+Due to breaking changes above, custom module requires some refactoring, before it's compatible with CzechIdM version 13.1.x. Some refactoring can be done with replaces, but some places need to be changed manually.
+
+### Replaces
+
+> Case sensitive find is expected.
+
+- 🟠 ``org.springframework.hateoas.core.Relation`` ⇒ ``org.springframework.hateoas.server.core.Relation``
+- 🟠 ``org.springframework.hateoas.Resource`` ⇒ ``org.springframework.hateoas.EntityModel``
+- 🟠 ``Resource`` ⇒ ``EntityModel``
+- 🟠 ``toResource`` ⇒ ``toModel``
+- 🟠 ``org.springframework.hateoas.Resources`` ⇒ ``org.springframework.hateoas.CollectionModel``
+- 🟠 ``Resources`` ⇒ ``CollectionModel``
+- 🟠 ``toResources`` ⇒ ``toCollectionModel``
+- 🟠 ``org.springframework.hateoas.PagedResources`` ⇒ ``org.springframework.hateoas.PagedModel``
+- 🟠 ``PagedResources`` ⇒ ``PagedModel``
+- 🟠 ``org.springframework.hateoas.ResourceSupport`` ⇒ ``org.springframework.hateoas.RepresentationModel``
+- 🟠 ``ResourceSupport`` ⇒ ``RepresentationModel``
+- 🟠 ``org.springframework.hateoas.mvc.ControllerLinkBuilder`` ⇒ ``org.springframework.hateoas.server.mvc.WebMvcLinkBuilder``
+- 🟠 ``ControllerLinkBuilder`` ⇒ ``WebMvcLinkBuilder``
+
+### Manual changes / cookbook
+
+- *Replaces above are expected*
+- 🟠 **Flyway module configuration** usage:
+  - The way Flyway is configured changes. To resolve properties correctly, you must to override the getPropertyPrefix() method in <module>FlywayConfig.java:
+  - Example:
+  ```java
+    @Override
+    public String getPropertyPrefix() {
+      return "flyway.acc"; // the prefix of keys in flyway-<module>.properties
+    }
+  ```
+  - You also need to contifure Flyway to ignore if Flyway scripts are missing from a default location which we are not using. Edit the application-<>.properties and append:
+  ```
+  spring.flyway.check-location = false
+  ```
+- 🟠 **Plugin.getPluginFor()** usage:
+  - Plugin.getPluginFor() now returns an Optional. You need to handle the possible null value when retrieving the value, e. g.:
+  ```java
+    notificationSenders.getPluginFor(IdmConsoleLog.NOTIFICATION_TYPE).orElse(null);
+  ```
+  - Some further refactoring of this code is advised since Optional allows for better null handling.
+- 🟠 **Default lazy bean initialization** must be turned off:
+  - Spring Boot 2.2 introduces default lazy bean initialization as a default. This will cause issues with annotation handling and must be disabled. Files application-<>.properties must include:
+  ```
+  spring.main.lazy-initialization=false
+  ```
+- 🟠 **Changes in Mockito**:
+  - The new version of Mockito will no longer properly support using the @InjectMocks annotation. If you are using, rewrite the test following DefaultLongRunningTaskManagerUnitTest
