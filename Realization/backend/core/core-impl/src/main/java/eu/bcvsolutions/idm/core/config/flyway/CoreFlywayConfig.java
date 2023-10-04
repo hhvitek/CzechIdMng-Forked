@@ -36,7 +36,7 @@ public class CoreFlywayConfig extends AbstractFlywayConfiguration {
 	@Bean
 	@ConditionalOnMissingBean(name = NAME)
 	@DependsOn(IdmFlywayPostProcessor.NAME)
-	@ConditionalOnExpression("${flyway.enabled:true} && '${flyway.core.locations}'!=''")
+	@ConditionalOnExpression("${spring.flyway.enabled:true} && '${flyway.core.locations}'!=''")
 	@ConfigurationProperties(prefix = "flyway.core")
 	public Flyway flywayCore() {
 		Flyway flyway = super.createFlyway();
