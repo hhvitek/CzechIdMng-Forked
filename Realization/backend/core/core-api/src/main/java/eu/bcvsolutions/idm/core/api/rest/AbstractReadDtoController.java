@@ -395,16 +395,16 @@ public abstract class AbstractReadDtoController<DTO extends BaseDto, F extends B
 		return pageToResources(page, domainType);
 	}
 
-	@SuppressWarnings("unchecked")
-	protected CollectionModel<?> pageToResources(Page<Object> page, Class<?> domainType) {
-		Assert.notNull(page, "EntityModel page (content) is required.");
-		//
-		if (page.getContent().isEmpty()) {
-			return pagedResourcesAssembler.toEmptyModel(page, domainType);
-		}
-		//
-		return pagedResourcesAssembler.toModel(page);
-	}
+    @SuppressWarnings("unchecked")
+    protected CollectionModel<?> pageToResources(Page<Object> page, Class<?> domainType) {
+        Assert.notNull(page, "EntityModel page (content) is required.");
+        //
+        if (page.getContent().isEmpty()) {
+            return pagedResourcesAssembler.toEmptyModel(page, domainType);
+        }
+        //
+        return pagedResourcesAssembler.toModel(page);
+    }
 
 	/**
 	 * Transforms request parameters to:
