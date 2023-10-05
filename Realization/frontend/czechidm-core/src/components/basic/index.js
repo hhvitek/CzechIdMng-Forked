@@ -1,8 +1,10 @@
 import AbstractComponent from './AbstractComponent/AbstractComponent';
-import AbstractContextComponent from './AbstractContextComponent/AbstractContextComponent';
+import AbstractContextComponent
+from './AbstractContextComponent/AbstractContextComponent';
 import AbstractContent from './AbstractContent/AbstractContent';
 import AbstractForm from './AbstractForm/AbstractForm';
-import AbstractFormComponent from './AbstractFormComponent/AbstractFormComponent';
+import AbstractFormComponent
+from './AbstractFormComponent/AbstractFormComponent';
 import BasicForm from './BasicForm/BasicForm';
 import Checkbox from './Checkbox/Checkbox';
 import SelectBox from './SelectBox/SelectBox';
@@ -59,6 +61,8 @@ import Fab from './Fab/Fab';
 import Container from './Container/Container';
 import Typography from './Typography/Typography';
 import TextDivider from './TextDivider/TextDivider';
+import { Tree } from './Tree';
+import { TreeItem } from './TreeItem';
 
 const Components = {
   AbstractComponent,
@@ -108,7 +112,7 @@ const Components = {
   Col,
   Well,
   Tabs,
-  Tab: Tab,
+  Tab,
   PageHeader,
   ContentHeader,
   LabelWrapper,
@@ -123,6 +127,8 @@ const Components = {
   PasswordStrength,
   Link,
   ShortText,
+  Tree,
+  TreeItem,
   Div,
   ToggleSwitch,
   Wizard,

@@ -33,6 +33,7 @@ import {
   EXPAND_FILTER,
   COLLAPSE_FILTER
 } from './DataManager';
+import { TREE_NODE_COLLAPSE, TREE_NODE_EXPAND } from './TreeNodeManager';
 
 const INITIAL_STATE = {
   entity: {
@@ -126,8 +127,8 @@ export default function reduce(state = INITIAL_STATE, action) {
           // check trimmed and modified date
           const previousEntity = entities.get(entity.id);
           if (!previousEntity.modified
-              || moment(entity.modified).isAfter(previousEntity.modified) // by modified date
-              || entity.state !== previousEntity.state) { // by state (if defined)
+            || moment(entity.modified).isAfter(previousEntity.modified) // by modified date
+            || entity.state !== previousEntity.state) { // by state (if defined)
             entities = entities.set(entity.id, entity);
           }
         } else {
