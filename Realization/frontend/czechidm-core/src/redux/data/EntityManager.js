@@ -373,7 +373,7 @@ export default class EntityManager {
       //
       uiKey = this.resolveUiKey(uiKey, id);
       dispatch(this.requestEntity(id, uiKey));
-      
+
       this.getService()
         .getById(id)
         .then(json => {
@@ -1313,7 +1313,6 @@ export default class EntityManager {
    */
   getPermissions(state, uiKey = null, id = null) {
     let _entityOrId = id;
-    console.log('_entityOrId', _entityOrId);
     if (_entityOrId && !_.isObject(_entityOrId)) {
       // try to fint entity from state
       const entity = this.getEntity(state, _entityOrId);
@@ -1321,18 +1320,14 @@ export default class EntityManager {
         _entityOrId = entity;
       }
     }
-    console.log('_entityOrId', _entityOrId);
     if (!_.isObject(_entityOrId)) {
-      console.log('permissions 1', Utils.Permission.getPermissions(state, this.resolveUiKey(uiKey, _entityOrId)));
       return Utils.Permission.getPermissions(state, this.resolveUiKey(uiKey, _entityOrId));
     }
     const permissionsById = Utils.Permission.getPermissions(state, this.resolveUiKey(uiKey, _entityOrId.id));
     if (permissionsById || !this.getIdentifierAlias()) {
-      console.log('permissions 2', permissionsById);
       return permissionsById;
     }
     // permissions by alias
-    console.log('permissions 3', Utils.Permission.getPermissions(state, this.resolveUiKey(uiKey, _entityOrId[this.getIdentifierAlias()])));
     return Utils.Permission.getPermissions(state, this.resolveUiKey(uiKey, _entityOrId[this.getIdentifierAlias()]));
   }
 
