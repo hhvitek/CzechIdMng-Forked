@@ -45,11 +45,11 @@ import eu.bcvsolutions.idm.core.workflow.model.dto.WorkflowTaskInstanceAbstractD
 import eu.bcvsolutions.idm.core.workflow.model.dto.WorkflowFilterDto;
 import eu.bcvsolutions.idm.core.workflow.model.dto.WorkflowTaskInstanceDto;
 import eu.bcvsolutions.idm.core.workflow.service.WorkflowTaskInstanceService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -70,12 +70,14 @@ import org.springframework.data.domain.Page;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/workflow-tasks")
-@Api(
-		value = WorkflowTaskInstanceController.TAG,
-		tags = {WorkflowTaskInstanceController.TAG},
-		description = "Running WF tasks",
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(
+		name = WorkflowTaskInstanceController.TAG,
+		
+		description = "Running WF tasks"//,
+		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
+//consumes = MediaType.APPLICATION_JSON_VALUE
+)
 public class WorkflowTaskInstanceController extends AbstractReadDtoController<WorkflowTaskInstanceDto, WorkflowFilterDto> {
 
 	protected static final String TAG = "Workflow - task instances";
@@ -103,16 +105,19 @@ public class WorkflowTaskInstanceController extends AbstractReadDtoController<Wo
 	@ResponseBody
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.WORKFLOW_TASK_READ + "')")
-	@ApiOperation(
-			value = "Search task instances",
-			nickname = "searchTaskInstances",
-			tags = {WorkflowTaskInstanceController.TAG},
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-			@AuthorizationScope(scope = CoreGroupPermission.WORKFLOW_TASK_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-			@AuthorizationScope(scope = CoreGroupPermission.WORKFLOW_TASK_READ, description = "")})
-			})
+	@Operation(
+			summary = "Search task instances",
+			/* nickname = "searchTaskInstances", */
+			tags = {WorkflowTaskInstanceController.TAG})
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+			CoreGroupPermission.WORKFLOW_TASK_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+			CoreGroupPermission.WORKFLOW_TASK_READ})
+        }
+    )
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
@@ -120,27 +125,27 @@ public class WorkflowTaskInstanceController extends AbstractReadDtoController<Wo
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/{backendId}")
-	@ApiOperation(
-			value = "Historic task instance detail",
-			nickname = "getHistoricTaskInstance",
-			response = WorkflowTaskInstanceDto.class,
+	@Operation(
+			summary = "Historic task instance detail",
+			/* nickname = "getHistoricTaskInstance", */
+			/* response = WorkflowTaskInstanceDto.class, */
 			tags = {WorkflowTaskInstanceController.TAG})
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Task instance id.", required = true)
+			@Parameter(name = "Task instance id.", required = true)
 			@PathVariable String backendId) {
 		return super.get(backendId);
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/{backendId}/complete")
-	@ApiOperation(
-			value = "Complete task instance",
-			nickname = "completeTaskInstance",
+	@Operation(
+			summary = "Complete task instance",
+			/* nickname = "completeTaskInstance", */
 			tags = {WorkflowTaskInstanceController.TAG},
-			notes = "Complete task with given decision.")
+			description = "Complete task with given decision.")
 	public void completeTask(
-			@ApiParam(value = "Task instance id.", required = true)
+			@Parameter(name = "Task instance id.", required = true)
 			@PathVariable String backendId,
-			@ApiParam(value = "Complete decision, variables etc.", required = true)
+			@Parameter(name = "Complete decision, variables etc.", required = true)
 			@RequestBody FormDataWrapperDto formData) {
 		workflowTaskInstanceService.completeTask(backendId, formData.getDecision(), formData.getFormData(), formData.getVariables());
 		// 
@@ -149,14 +154,14 @@ public class WorkflowTaskInstanceController extends AbstractReadDtoController<Wo
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/{backendId}/permissions")
-	@ApiOperation(
-			value = "Historic task instance detail",
-			nickname = "getHistoricTaskInstance",
-			response = WorkflowTaskInstanceDto.class,
+	@Operation(
+			summary = "Historic task instance detail",
+			/* nickname = "getHistoricTaskInstance", */
+			/* response = WorkflowTaskInstanceDto.class, */
 			tags = {WorkflowTaskInstanceController.TAG})
 	@Override
 	public Set<String> getPermissions(
-			@ApiParam(value = "Task instance id.", required = true)
+			@Parameter(name = "Task instance id.", required = true)
 			@PathVariable String backendId) {
 		WorkflowFilterDto context = new WorkflowFilterDto();
 		context.setOnlyInvolved(Boolean.FALSE);
@@ -216,16 +221,19 @@ public class WorkflowTaskInstanceController extends AbstractReadDtoController<Wo
 	@ResponseBody
 	@RequestMapping(value = "/bulk/actions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.WORKFLOW_TASK_READ + "')")
-	@ApiOperation(
-			value = "Get available bulk actions", 
-			nickname = "availableBulkAction", 
-			tags = { WorkflowTaskInstanceController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-			@AuthorizationScope(scope = CoreGroupPermission.WORKFLOW_TASK_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-			@AuthorizationScope(scope = CoreGroupPermission.WORKFLOW_TASK_READ, description = "")})
-			})
+	@Operation(
+			summary = "Get available bulk actions",
+			/* nickname = "availableBulkAction", */ 
+			tags = { WorkflowTaskInstanceController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+			CoreGroupPermission.WORKFLOW_TASK_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+			CoreGroupPermission.WORKFLOW_TASK_READ})
+        }
+    )
 	@Override
 	public List<IdmBulkActionDto> getAvailableBulkActions() {
 		return bulkActionManager.getAvailableActionsForDto(WorkflowTaskInstanceAbstractDto.class);
@@ -234,17 +242,20 @@ public class WorkflowTaskInstanceController extends AbstractReadDtoController<Wo
 	@ResponseBody
 	@RequestMapping(path = "/bulk/action", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.WORKFLOW_TASK_READ + "')")
-	@ApiOperation(
-			value = "Process bulk action", 
-			nickname = "bulkAction", 
-			response = IdmBulkActionDto.class, 
-			tags = { WorkflowTaskInstanceController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-			@AuthorizationScope(scope = CoreGroupPermission.WORKFLOW_TASK_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-			@AuthorizationScope(scope = CoreGroupPermission.WORKFLOW_TASK_READ, description = "")})
-			})
+	@Operation(
+			summary = "Process bulk action",
+			/* nickname = "bulkAction", */ 
+			/* response = IdmBulkActionDto.class, */
+			tags = { WorkflowTaskInstanceController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+			CoreGroupPermission.WORKFLOW_TASK_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+			CoreGroupPermission.WORKFLOW_TASK_READ})
+        }
+    )
 	@Override
 	public ResponseEntity<IdmBulkActionDto> bulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		// Set DTO name to the action directly.
@@ -256,17 +267,20 @@ public class WorkflowTaskInstanceController extends AbstractReadDtoController<Wo
 	@ResponseBody
 	@RequestMapping(path = "/bulk/prevalidate", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.WORKFLOW_TASK_READ + "')")
-	@ApiOperation(
-			value = "Prevalidate bulk action", 
-			nickname = "prevalidateBulkAction", 
-			response = IdmBulkActionDto.class, 
-			tags = { WorkflowTaskInstanceController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-			@AuthorizationScope(scope = CoreGroupPermission.WORKFLOW_TASK_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-			@AuthorizationScope(scope = CoreGroupPermission.WORKFLOW_TASK_READ, description = "")})
-			})
+	@Operation(
+			summary = "Prevalidate bulk action",
+			/* nickname = "prevalidateBulkAction", */ 
+			/* response = IdmBulkActionDto.class, */
+			tags = { WorkflowTaskInstanceController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+			CoreGroupPermission.WORKFLOW_TASK_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+			CoreGroupPermission.WORKFLOW_TASK_READ})
+        }
+    )
 	@Override
 	public ResponseEntity<ResultModels> prevalidateBulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		// Set DTO name to the action directly.

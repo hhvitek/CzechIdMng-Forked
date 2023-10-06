@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,13 +56,13 @@ import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.model.entity.IdmIdentityRole;
 import eu.bcvsolutions.idm.core.model.entity.IdmIdentity_;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 
 /**
  * IdM audit endpoint.
@@ -72,12 +72,14 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/audits")
-@Api(
-		value = IdmAuditController.TAG, 
-		description = "Read / search audit log", 
-		tags = { IdmAuditController.TAG }, 
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(
+		name = IdmAuditController.TAG,
+		description = "Read / search audit log"//, 
+
+		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
+//consumes = MediaType.APPLICATION_JSON_VALUE
+)
 @Transactional(readOnly = true)
 public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditDto, IdmAuditFilter> {
 
@@ -98,16 +100,19 @@ public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditD
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUDIT_READ + "')")
 	@RequestMapping(value= "/search/quick", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Search audit logs", 
-			nickname = "searchQuickAudits", 
-			tags = { IdmAuditController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.AUDIT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.AUDIT_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search audit logs",
+			/* nickname = "searchQuickAudits", */ 
+			tags = { IdmAuditController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.AUDIT_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.AUDIT_READ })
+        }
+    )
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
@@ -128,28 +133,39 @@ public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditD
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUDIT_READ + "')")
 	@RequestMapping(value= "/search/entity", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Search audit logs related to entity", 
-			nickname = "searchEntity", 
-			tags = { IdmAuditController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.AUDIT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.AUDIT_READ, description = "") })
-				})
-	@ApiImplicitParams({
-		@ApiImplicitParam(name = "entity", allowMultiple = false, dataTypeClass = String.class, paramType = "query",
-				value = "Entity class - find related audit log to this class"),
-        @ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query",
-                value = "Results page you want to retrieve (0..N)"),
-        @ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query",
-                value = "Number of records per page."),
-        @ApiImplicitParam(name = "sort", allowMultiple = true, dataTypeClass = String.class, paramType = "query",
-                value = "Sorting criteria in the format: property(,asc|desc). " +
-                        "Default sort order is ascending. " +
-                        "Multiple sort criteria are supported.")
-	})
+	@Operation(
+			summary = "Search audit logs related to entity",
+			/* nickname = "searchEntity", */ 
+			tags = { IdmAuditController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.AUDIT_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.AUDIT_READ })
+        }
+    )
+    @Parameters({
+        @Parameter(name = "entity", schema = @Schema( implementation=String.class, type = "query"), description = "Entity class - find related audit log to this class"),
+        @Parameter(name = "page", schema = @Schema( implementation=String.class, type = "query"), description = "Results page you want to retrieve (0..N)"),
+        @Parameter(name = "size", schema = @Schema( implementation=String.class, type = "query"), description = "Number of records per page."),
+        @Parameter(name = "sort", schema = @Schema( implementation=String.class, type = "query"),
+                description = "Sorting criteria in the format: property(,asc|desc)." + "Default sort order is ascending. " + "Multiple sort criteria are supported."
+        ),
+    })
+	//@ApiImplicitParams({
+	//	@ApiImplicitParam(name = "entity", allowMultiple = false, dataTypeClass = String.class, paramType = "query",
+	//			value = "Entity class - find related audit log to this class"),
+    //    @ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query",
+    //            value = "Results page you want to retrieve (0..N)"),
+    //    @ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query",
+    //            value = "Number of records per page."),
+    //    @ApiImplicitParam(name = "sort", allowMultiple = true, dataTypeClass = String.class, paramType = "query",
+    //            value = "Sorting criteria in the format: property(,asc|desc). " +
+    //                    "Default sort order is ascending. " +
+    //                    "Multiple sort criteria are supported.")
+	//})
 	public CollectionModel<?> findEntity(
 			@RequestParam(required = false) String entityClass,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -181,16 +197,19 @@ public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditD
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUDIT_READ + "')")
 	@RequestMapping(value= "/search/login", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Search audit logs for login identities", 
-			nickname = "searchLoginAudits", 
-			tags = { IdmAuditController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.AUDIT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.AUDIT_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search audit logs for login identities",
+			/* nickname = "searchLoginAudits", */ 
+			tags = { IdmAuditController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.AUDIT_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.AUDIT_READ })
+        }
+    )
 	public CollectionModel<?> findLogin(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
@@ -201,18 +220,20 @@ public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditD
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUDIT_READ + "')")
 	@RequestMapping(value= "/search/entities", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Search audited entity classes", 
-			nickname = "findAllAuditedEntities", 
-			tags = { IdmAuditController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.AUDIT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.AUDIT_READ, description = "") })
-				},
-			notes = "Method return list of class simple name for which is audited."
+	@Operation(
+			summary = "Search audited entity classes",
+			/* nickname = "findAllAuditedEntities", */ 
+			tags = { IdmAuditController.TAG },
+			description = "Method return list of class simple name for which is audited."
 					+ " Must at least one attribute withannotation {@value Audited}")
+    @SecurityRequirements(
+            value = {
+                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+                            CoreGroupPermission.AUDIT_READ }),
+                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+                            CoreGroupPermission.AUDIT_READ })
+            }
+    )
 	public ResponseEntity<?> findAuditedEntity() {
 		List<String> entities = auditService.getAllAuditedEntitiesNames();
 		return new ResponseEntity<>(toCollectionModel(entities, null), HttpStatus.OK);
@@ -222,19 +243,22 @@ public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditD
 	@RequestMapping(method = RequestMethod.GET, value = "/{backendId}")
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUDIT_READ + "')")
 	@Override
-	@ApiOperation(
-			value = "Audit log detail", 
-			nickname = "getAuditLog", 
-			response = IdmAuditDto.class, 
-			tags = { IdmAuditController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.AUDIT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.AUDIT_READ, description = "") })
-				})
+	@Operation(
+			summary = "Audit log detail",
+			/* nickname = "getAuditLog", */ 
+			/* response = IdmAuditDto.class, */ 
+			tags = { IdmAuditController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.AUDIT_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.AUDIT_READ })
+        }
+    )
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Audit log's identifier.", required = true)
+			@Parameter(name = "Audit log's identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		IdmAuditDto audit = auditService.get(backendId);
 		
@@ -261,20 +285,23 @@ public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditD
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET, value = "/{revId}/diff/previous")
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUDIT_READ + "')")
-	@ApiOperation(
-			value = "Audit log detail", 
-			nickname = "getAuditLogPreviousVersion", 
-			response = IdmAuditDto.class, 
+	@Operation(
+			summary = "Audit log detail",
+			/* nickname = "getAuditLogPreviousVersion", */ 
+			/* response = IdmAuditDto.class, */ 
 			tags = { IdmAuditController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.AUDIT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.AUDIT_READ, description = "") })
-				},
-			notes = "Returns previous version for given audit log")
+						description = "Returns previous version for given audit log")
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.AUDIT_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.AUDIT_READ })
+        }
+    )
 	public ResponseEntity<?> previousVersion(
-			@ApiParam(value = "Audit log's identifier.", required = true)
+			@Parameter(name = "Audit log's identifier.", required = true)
 			@PathVariable @NotNull String revId) {
 		IdmAuditDto currentAudit = auditService.get(revId);
 		IdmAuditDto previousAudit;
@@ -309,22 +336,25 @@ public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditD
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET, value = "/{firstRevId}/diff/{secondRevId}")
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUDIT_READ + "')")
-	@ApiOperation(
-			value = "Audit log diff", 
-			nickname = "getAuditLogDiff", 
-			response = IdmAuditDiffDto.class, 
+	@Operation(
+			summary = "Audit log diff",
+			/* nickname = "getAuditLogDiff", */ 
+			/* response = IdmAuditDiffDto.class, */ 
 			tags = { IdmAuditController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.AUDIT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.AUDIT_READ, description = "") })
-				},
-			notes = "Returns diff between given audit logs versions")
+						description = "Returns diff between given audit logs versions")
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.AUDIT_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.AUDIT_READ })
+        }
+    )
 	public ResponseEntity<?> diff(
-			@ApiParam(value = "Audit log's identifier.", required = true)
+			@Parameter(name = "Audit log's identifier.", required = true)
 			@PathVariable @NotNull String firstRevId, 
-			@ApiParam(value = "Audit log's identifier.", required = true)
+			@Parameter(name = "Audit log's identifier.", required = true)
 			@PathVariable String secondRevId) {
 		IdmAuditDiffDto dto = new IdmAuditDiffDto();
 		dto.setDiffValues(auditService.getDiffBetweenVersion(Long.valueOf(firstRevId), Long.valueOf(secondRevId)));

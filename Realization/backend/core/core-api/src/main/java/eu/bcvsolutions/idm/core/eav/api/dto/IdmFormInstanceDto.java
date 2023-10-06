@@ -24,7 +24,7 @@ import eu.bcvsolutions.idm.core.api.dto.BaseDto;
 import eu.bcvsolutions.idm.core.api.exception.CoreException;
 import eu.bcvsolutions.idm.core.api.utils.EntityUtils;
 import eu.bcvsolutions.idm.core.eav.api.domain.PersistentType;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Used as value holder for form service - form definition + their values by owner.
@@ -39,7 +39,7 @@ public class IdmFormInstanceDto implements BaseDto {
 	public static final String PROPERTY_FORM_INSTANCE = "formInstance";
 	//
 	@JsonDeserialize(as = UUID.class)
-	@ApiModelProperty(required = true, notes = "Unique uuid identifier. It's ID of FormDefinition here.", dataType = "java.util.UUID")
+	@Schema(required = true, description = "Unique uuid identifier. It's ID of FormDefinition here.", type = "java.util.UUID")
 	private UUID id;
 	@NotNull
 	private IdmFormDefinitionDto formDefinition;
@@ -51,7 +51,7 @@ public class IdmFormInstanceDto implements BaseDto {
 	private Class<? extends Identifiable> ownerType;
 	private List<IdmFormValueDto> values;
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	@ApiModelProperty(accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
 	private List<InvalidFormAttributeDto> validationErrors;
 	
 	public IdmFormInstanceDto() {

@@ -12,7 +12,7 @@ import eu.bcvsolutions.idm.core.api.dto.filter.BaseFilter;
 import eu.bcvsolutions.idm.core.api.dto.filter.DataFilter;
 import eu.bcvsolutions.idm.core.eav.api.dto.filter.IdmFormAttributeFilter;
 import eu.bcvsolutions.idm.core.eav.api.service.FormService;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Parameter;
 
 /**
  * CRUD operations for formable DTO, which supports event processing.
@@ -35,7 +35,7 @@ public interface FormableDtoController<DTO extends FormableDto, F extends BaseFi
 	 * @return
 	 */
 	ResponseEntity<?> getFormDefinitions(
-			@ApiParam(value = "Backend entity identifier.", required = true)
+			@Parameter(name = "Backend entity identifier.", required = true)
 			@PathVariable @NotNull String backendId);
 	
 	/**
@@ -45,10 +45,10 @@ public interface FormableDtoController<DTO extends FormableDto, F extends BaseFi
 	 * @return
 	 */
 	EntityModel<?> prepareFormValues(
-			@ApiParam(
-					value = "Code of form definition (default will be used if no code is given).",
+			@Parameter(
+					name = "Code of form definition (default will be used if no code is given).",
 					required = false,
-					defaultValue = FormService.DEFAULT_DEFINITION_CODE)
+					example = FormService.DEFAULT_DEFINITION_CODE)
 			@RequestParam(
 					name = IdmFormAttributeFilter.PARAMETER_FORM_DEFINITION_CODE,
 					required = false)

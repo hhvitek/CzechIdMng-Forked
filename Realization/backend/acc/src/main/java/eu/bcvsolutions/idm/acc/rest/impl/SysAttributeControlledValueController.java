@@ -30,11 +30,12 @@ import eu.bcvsolutions.idm.core.api.rest.AbstractReadWriteDtoController;
 import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.security.api.domain.Enabled;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+
 
 /**
  * Rest controller - Controlled value for attribute DTO. Is using in the provisioning
@@ -46,12 +47,13 @@ import io.swagger.annotations.AuthorizationScope;;
 @RestController
 @Enabled(AccModuleDescriptor.MODULE_ID)
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/system-attribute-controlled-values")
-@Api(
-		value = SysAttributeControlledValueController.TAG, 
-		tags = SysAttributeControlledValueController.TAG, 
-		description = "Controlled values for attribute. Is using in the provisioning merge.",
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(
+		name = SysAttributeControlledValueController.TAG,
+		description = "Controlled values for attribute. Is using in the provisioning merge."//,
+		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
+//consumes = MediaType.APPLICATION_JSON_VALUE
+)
 public class SysAttributeControlledValueController extends AbstractReadWriteDtoController<SysAttributeControlledValueDto, SysAttributeControlledValueFilter> {
 
 	protected static final String TAG = "Controlled values for attribute";
@@ -65,16 +67,20 @@ public class SysAttributeControlledValueController extends AbstractReadWriteDtoC
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
-	@ApiOperation(
-			value = "Search attribute controlled values (/search/quick alias)", 
-			nickname = "searchAttributeControlledValues",
-			tags = { SysAttributeControlledValueController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")})
-				})
+	@Operation(
+			summary = "Search attribute controlled values (/search/quick alias)"
+			/* nickname = "searchAttributeControlledValues", */
+			 
+			)
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						AccGroupPermission.SYSTEM_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						AccGroupPermission.SYSTEM_READ})
+        }
+    )
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
@@ -84,16 +90,19 @@ public class SysAttributeControlledValueController extends AbstractReadWriteDtoC
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Search attribute controlled values", 
-			nickname = "searchQuickAttributeControlledValues",
-			tags = { SysAttributeControlledValueController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")})
-				})
+	@Operation(
+			summary = "Search attribute controlled values", 
+			/* nickname = "searchQuickAttributeControlledValues", */
+			tags = { SysAttributeControlledValueController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						AccGroupPermission.SYSTEM_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						AccGroupPermission.SYSTEM_READ})
+        }
+    )
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
@@ -104,19 +113,22 @@ public class SysAttributeControlledValueController extends AbstractReadWriteDtoC
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Attribute controlled values detail", 
-			nickname = "getSystemAttributeMapping", 
-			response = SysAttributeControlledValueDto.class, 
-			tags = { SysAttributeControlledValueController.TAG }, 
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")})
-					})
+	@Operation(
+			summary = "Attribute controlled values detail", 
+			/* nickname = "getSystemAttributeMapping", */
+			/* response = SysAttributeControlledValueDto.class, */ 
+			tags = { SysAttributeControlledValueController.TAG })
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+							AccGroupPermission.SYSTEM_READ}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+							AccGroupPermission.SYSTEM_READ})
+        }
+    )
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Attribute controlled value's uuid identifier.", required = true)
+			@Parameter(name = "Attribute controlled value's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -125,17 +137,20 @@ public class SysAttributeControlledValueController extends AbstractReadWriteDtoC
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_UPDATE + "')")
 	@RequestMapping(method = RequestMethod.POST)
-	@ApiOperation(
-			value = "Create / update attribute controlled values", 
-			nickname = "postAttributeControlledValues", 
-			response = SysAttributeControlledValueDto.class, 
-			tags = { SysAttributeControlledValueController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "")})
-				})
+	@Operation(
+			summary = "Create / update attribute controlled values", 
+			/* nickname = "postAttributeControlledValues", */
+			/* response = SysAttributeControlledValueDto.class, */ 
+			tags = { SysAttributeControlledValueController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.SYSTEM_UPDATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.SYSTEM_UPDATE})
+        }
+    )
 	public ResponseEntity<?> post(@RequestBody @NotNull SysAttributeControlledValueDto dto) {
 		return super.post(dto);
 	}
@@ -144,19 +159,22 @@ public class SysAttributeControlledValueController extends AbstractReadWriteDtoC
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_UPDATE + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
-	@ApiOperation(
-			value = "Update attribute controlled values",
-			nickname = "putAttributeControlledValues", 
-			response = SysAttributeControlledValueDto.class, 
-			tags = { SysAttributeControlledValueController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update attribute controlled values",
+			/* nickname = "putAttributeControlledValues", */
+			/* response = SysAttributeControlledValueDto.class, */ 
+			tags = { SysAttributeControlledValueController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						AccGroupPermission.SYSTEM_UPDATE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						AccGroupPermission.SYSTEM_UPDATE })
+        }
+    )
 	public ResponseEntity<?> put(
-			@ApiParam(value = "Attribute controlled value's uuid identifier.", required = true)
+			@Parameter(name = "Attribute controlled value's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @NotNull SysAttributeControlledValueDto dto) {
 		return super.put(backendId, dto);
@@ -166,18 +184,21 @@ public class SysAttributeControlledValueController extends AbstractReadWriteDtoC
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_DELETE + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
-	@ApiOperation(
-			value = "Delete attribute controlled values", 
-			nickname = "deleteAttributeControlledValues", 
-			tags = { SysAttributeControlledValueController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_DELETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_DELETE, description = "") })
-				})
+	@Operation(
+			summary = "Delete attribute controlled values", 
+			/* nickname = "deleteAttributeControlledValues", */
+			tags = { SysAttributeControlledValueController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						AccGroupPermission.SYSTEM_DELETE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						AccGroupPermission.SYSTEM_DELETE })
+        }
+    )
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "Attribute controlled value's uuid identifier.", required = true)
+			@Parameter(name = "Attribute controlled value's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysAttributeControlledValueDto dto = getService().get(backendId);
 		if(dto != null && !dto.isHistoricValue()) {

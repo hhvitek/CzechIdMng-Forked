@@ -36,13 +36,13 @@ import eu.bcvsolutions.idm.core.api.service.IdmRoleCatalogueService;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.model.entity.IdmTreeNode;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 
 /**
  * Role catalogue controller.
@@ -52,12 +52,14 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/role-catalogues")
-@Api(
-		value = IdmRoleCatalogueController.TAG, 
-		tags = { IdmRoleCatalogueController.TAG }, 
-		description = "Operations with role catalogues", 
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(
+		name = IdmRoleCatalogueController.TAG, 
+		 
+		description = "Operations with role catalogues"//, 
+		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
+//consumes = MediaType.APPLICATION_JSON_VALUE
+)
 public class IdmRoleCatalogueController extends AbstractEventableDtoController<IdmRoleCatalogueDto, IdmRoleCatalogueFilter> {
 	
 	protected static final String TAG = "Role catalogues";
@@ -71,16 +73,19 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUE_READ + "')")
-	@ApiOperation(
-			value = "Search role catalogues (/search/quick alias)", 
-			nickname = "searchRoleCatalogues", 
-			tags = { IdmRoleCatalogueController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUE_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search role catalogues (/search/quick alias)", 
+			/* nickname = "searchRoleCatalogues", */ 
+			tags = { IdmRoleCatalogueController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.ROLECATALOGUE_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.ROLECATALOGUE_READ })
+        }
+    )
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
@@ -91,16 +96,19 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
 	@ResponseBody
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUE_READ + "')")
-	@ApiOperation(
-			value = "Search role catalogues", 
-			nickname = "searchQuickRoleCatalogues", 
-			tags = { IdmRoleCatalogueController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUE_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search role catalogues", 
+			/* nickname = "searchQuickRoleCatalogues", */ 
+			tags = { IdmRoleCatalogueController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.ROLECATALOGUE_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.ROLECATALOGUE_READ })
+        }
+    )
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
@@ -111,16 +119,19 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
 	@ResponseBody
 	@RequestMapping(value = "/search/autocomplete", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUE_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "Autocomplete role catalogues (selectbox usage)", 
-			nickname = "autocompleteRoleCatalogues", 
-			tags = { IdmRoleCatalogueController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUE_AUTOCOMPLETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUE_AUTOCOMPLETE, description = "") })
-				})
+	@Operation(
+			summary = "Autocomplete role catalogues (selectbox usage)", 
+			/* nickname = "autocompleteRoleCatalogues", */ 
+			tags = { IdmRoleCatalogueController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.ROLECATALOGUE_AUTOCOMPLETE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.ROLECATALOGUE_AUTOCOMPLETE })
+        }
+    )
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
@@ -131,16 +142,19 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
 	@ResponseBody
 	@RequestMapping(value = "/search/count", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUE_COUNT + "')")
-	@ApiOperation(
-			value = "The number of entities that match the filter", 
-			nickname = "countRoleCatalogues", 
-			tags = { IdmRoleCatalogueController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUE_COUNT, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUE_COUNT, description = "") })
-				})
+	@Operation(
+			summary = "The number of entities that match the filter", 
+			/* nickname = "countRoleCatalogues", */ 
+			tags = { IdmRoleCatalogueController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.ROLECATALOGUE_COUNT }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.ROLECATALOGUE_COUNT })
+        }
+    )
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -149,19 +163,22 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUE_READ + "')")
-	@ApiOperation(
-			value = "RoleCatalogue detail", 
-			nickname = "getRoleCatalogue", 
-			response = IdmRoleCatalogueDto.class, 
-			tags = { IdmRoleCatalogueController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUE_READ, description = "") })
-				})
+	@Operation(
+			summary = "RoleCatalogue detail", 
+			/* nickname = "getRoleCatalogue", */ 
+			/* response = IdmRoleCatalogueDto.class, */ 
+			tags = { IdmRoleCatalogueController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.ROLECATALOGUE_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.ROLECATALOGUE_READ })
+        }
+    )
 	public ResponseEntity<?> get(
-			@ApiParam(value = "RoleCatalogue's uuid identifier or username.", required = true)
+			@Parameter(name = "RoleCatalogue's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -171,19 +188,22 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUE_CREATE + "')"
 			+ " or hasAuthority('" + CoreGroupPermission.ROLECATALOGUE_UPDATE + "')")
-	@ApiOperation(
-			value = "Create / update role catalogue", 
-			nickname = "postRoleCatalogue", 
-			response = IdmRoleCatalogueDto.class, 
-			tags = { IdmRoleCatalogueController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUE_CREATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUE_UPDATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUE_CREATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUE_UPDATE, description = "")})
-				})
+	@Operation(
+			summary = "Create / update role catalogue", 
+			/* nickname = "postRoleCatalogue", */ 
+			/* response = IdmRoleCatalogueDto.class, */ 
+			tags = { IdmRoleCatalogueController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.ROLECATALOGUE_CREATE,
+						CoreGroupPermission.ROLECATALOGUE_UPDATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.ROLECATALOGUE_CREATE,
+						CoreGroupPermission.ROLECATALOGUE_UPDATE})
+        }
+    )
 	public ResponseEntity<?> post(@Valid @RequestBody IdmRoleCatalogueDto dto) {		
 		return super.post(dto);
 	}
@@ -192,19 +212,22 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUE_UPDATE + "')")
-	@ApiOperation(
-			value = "Update role catalogue", 
-			nickname = "putRoleCatalogue", 
-			response = IdmRoleCatalogueDto.class, 
-			tags = { IdmRoleCatalogueController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUE_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUE_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update role catalogue", 
+			/* nickname = "putRoleCatalogue", */ 
+			/* response = IdmRoleCatalogueDto.class, */ 
+			tags = { IdmRoleCatalogueController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.ROLECATALOGUE_UPDATE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.ROLECATALOGUE_UPDATE })
+        }
+    )
 	public ResponseEntity<?> put(
-			@ApiParam(value = "Role catalogue's uuid identifier.", required = true)
+			@Parameter(name = "Role catalogue's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmRoleCatalogueDto dto) {
 		return super.put(backendId, dto);
@@ -214,19 +237,22 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PATCH)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUE_UPDATE + "')")
-	@ApiOperation(
-			value = "Update role catalogue", 
-			nickname = "patchRoleCatalogue	", 
-			response = IdmRoleCatalogueDto.class, 
-			tags = { IdmRoleCatalogueController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUE_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUE_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update role catalogue", 
+			/* nickname = "patchRoleCatalogue	", */ 
+			/* response = IdmRoleCatalogueDto.class, */ 
+			tags = { IdmRoleCatalogueController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.ROLECATALOGUE_UPDATE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.ROLECATALOGUE_UPDATE })
+        }
+    )
 	public ResponseEntity<?> patch(
-			@ApiParam(value = "Role catalogue's uuid identifier.", required = true)
+			@Parameter(name = "Role catalogue's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -237,18 +263,21 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUE_DELETE + "')")
-	@ApiOperation(
-			value = "Delete role catalogue", 
-			nickname = "deleteRoleCatalogue", 
-			tags = { IdmRoleCatalogueController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUE_DELETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUE_DELETE, description = "") })
-				})
+	@Operation(
+			summary = "Delete role catalogue", 
+			/* nickname = "deleteRoleCatalogue", */ 
+			tags = { IdmRoleCatalogueController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.ROLECATALOGUE_DELETE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.ROLECATALOGUE_DELETE })
+        }
+    )
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "Role catalogue's uuid identifier.", required = true)
+			@Parameter(name = "Role catalogue's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -258,20 +287,23 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUE_READ + "')"
 			+ " or hasAuthority('" + CoreGroupPermission.ROLECATALOGUE_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "What logged identity can do with given record", 
-			nickname = "getPermissionsOnRoleCatalogue", 
-			tags = { IdmRoleCatalogueController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUE_READ, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUE_AUTOCOMPLETE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUE_READ, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUE_AUTOCOMPLETE, description = "")})
-				})
+	@Operation(
+			summary = "What logged identity can do with given record", 
+			/* nickname = "getPermissionsOnRoleCatalogue", */ 
+			tags = { IdmRoleCatalogueController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.ROLECATALOGUE_READ,
+						CoreGroupPermission.ROLECATALOGUE_AUTOCOMPLETE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.ROLECATALOGUE_READ,
+						CoreGroupPermission.ROLECATALOGUE_AUTOCOMPLETE})
+        }
+    )
 	public Set<String> getPermissions(
-			@ApiParam(value = "RoleCatalogue's uuid identifier or username.", required = true)
+			@Parameter(name = "RoleCatalogue's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -280,16 +312,19 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
 	@ResponseBody
 	@RequestMapping(value = "/bulk/actions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUE_READ + "')")
-	@ApiOperation(
-			value = "Get available bulk actions", 
-			nickname = "availableBulkAction", 
-			tags = { IdmRoleCatalogueController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUE_READ, description = "") })
-				})
+	@Operation(
+			summary = "Get available bulk actions", 
+			/* nickname = "availableBulkAction", */ 
+			tags = { IdmRoleCatalogueController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.ROLECATALOGUE_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.ROLECATALOGUE_READ })
+        }
+    )
 	public List<IdmBulkActionDto> getAvailableBulkActions() {
 		return super.getAvailableBulkActions();
 	}
@@ -298,17 +333,20 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
 	@ResponseBody
 	@RequestMapping(path = "/bulk/action", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUE_READ + "')")
-	@ApiOperation(
-			value = "Process bulk action for role catalogue", 
-			nickname = "bulkAction", 
-			response = IdmBulkActionDto.class, 
-			tags = { IdmRoleCatalogueController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUE_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUE_READ, description = "")})
-				})
+	@Operation(
+			summary = "Process bulk action for role catalogue", 
+			/* nickname = "bulkAction", */ 
+			/* response = IdmBulkActionDto.class, */ 
+			tags = { IdmRoleCatalogueController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.ROLECATALOGUE_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.ROLECATALOGUE_READ})
+        }
+    )
 	public ResponseEntity<IdmBulkActionDto> bulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.bulkAction(bulkAction);
 	}
@@ -317,17 +355,20 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
 	@ResponseBody
 	@RequestMapping(path = "/bulk/prevalidate", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUE_READ + "')")
-	@ApiOperation(
-			value = "Prevalidate bulk action for role catalogue", 
-			nickname = "prevalidateBulkAction", 
-			response = IdmBulkActionDto.class, 
-			tags = { IdmRoleCatalogueController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUE_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUE_READ, description = "")})
-				})
+	@Operation(
+			summary = "Prevalidate bulk action for role catalogue", 
+			/* nickname = "prevalidateBulkAction", */ 
+			/* response = IdmBulkActionDto.class, */ 
+			tags = { IdmRoleCatalogueController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.ROLECATALOGUE_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.ROLECATALOGUE_READ})
+        }
+    )
 	public ResponseEntity<ResultModels> prevalidateBulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.prevalidateBulkAction(bulkAction);
 	}
@@ -335,20 +376,27 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
 	@ResponseBody
 	@RequestMapping(value = "/search/roots", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUE_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "Search root catalogues", 
-			nickname = "searchRootRoleCatalogues", 
+	@Operation(
+			summary = "Search root catalogues", 
+			/* nickname = "searchRootRoleCatalogues", */ 
 			tags = { IdmRoleCatalogueController.TAG })
-	@ApiImplicitParams({
-        @ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query",
-                value = "Results page you want to retrieve (0..N)"),
-        @ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query",
-                value = "Number of records per page."),
-        @ApiImplicitParam(name = "sort", allowMultiple = true, dataTypeClass = String.class, paramType = "query",
-                value = "Sorting criteria in the format: property(,asc|desc). " +
-                        "Default sort order is ascending. " +
-                        "Multiple sort criteria are supported.")
-	})
+    @Parameters({
+            @Parameter(name = "page", schema = @Schema( implementation=String.class, type = "query"), description = "Results page you want to retrieve (0..N)"),
+            @Parameter(name = "size", schema = @Schema( implementation=String.class, type = "query"), description = "Number of records per page."),
+            @Parameter(name = "sort", schema = @Schema( implementation=String.class, type = "query"),
+                    description = "Sorting criteria in the format: property(,asc|desc)." + "Default sort order is ascending. " + "Multiple sort criteria are supported."
+            ),
+    })
+	//@ApiImplicitParams({
+    //    @ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query",
+    //            value = "Results page you want to retrieve (0..N)"),
+    //    @ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query",
+    //            value = "Number of records per page."),
+    //    @ApiImplicitParam(name = "sort", allowMultiple = true, dataTypeClass = String.class, paramType = "query",
+    //            value = "Sorting criteria in the format: property(,asc|desc). " +
+    //                    "Default sort order is ascending. " +
+    //                    "Multiple sort criteria are supported.")
+	//})
 	public CollectionModel<?> findRoots(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
@@ -361,21 +409,28 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
 	@ResponseBody
 	@RequestMapping(value = "/search/children", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUE_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "Search sub catalogues", 
-			nickname = "searchChildrenRoleCatalogues", 
+	@Operation(
+			summary = "Search sub catalogues", 
+			/* nickname = "searchChildrenRoleCatalogues", */ 
 			tags = { IdmRoleCatalogueController.TAG },
-			notes = "Finds direct chilren by given parent node uuid identifier. Set 'parent' parameter.")
-	@ApiImplicitParams({
-        @ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query",
-                value = "Results page you want to retrieve (0..N)"),
-        @ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query",
-                value = "Number of records per page."),
-        @ApiImplicitParam(name = "sort", allowMultiple = true, dataTypeClass = String.class, paramType = "query",
-                value = "Sorting criteria in the format: property(,asc|desc). " +
-                        "Default sort order is ascending. " +
-                        "Multiple sort criteria are supported.")
-	})
+			description = "Finds direct chilren by given parent node uuid identifier. Set 'parent' parameter.")
+    @Parameters({
+            @Parameter(name = "page", schema = @Schema( implementation=String.class, type = "query"), description = "Results page you want to retrieve (0..N)"),
+            @Parameter(name = "size", schema = @Schema( implementation=String.class, type = "query"), description = "Number of records per page."),
+            @Parameter(name = "sort", schema = @Schema( implementation=String.class, type = "query"),
+                    description = "Sorting criteria in the format: property(,asc|desc)." + "Default sort order is ascending. " + "Multiple sort criteria are supported."
+            ),
+    })
+	//@ApiImplicitParams({
+    //    @ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query",
+    //            value = "Results page you want to retrieve (0..N)"),
+    //    @ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query",
+    //            value = "Number of records per page."),
+    //    @ApiImplicitParam(name = "sort", allowMultiple = true, dataTypeClass = String.class, paramType = "query",
+    //            value = "Sorting criteria in the format: property(,asc|desc). " +
+    //                    "Default sort order is ascending. " +
+    //                    "Multiple sort criteria are supported.")
+	//})
 	public CollectionModel<?> findChildren(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {

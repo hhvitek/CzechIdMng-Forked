@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import eu.bcvsolutions.idm.core.security.api.domain.GuardedString;
 import eu.bcvsolutions.idm.core.security.api.domain.GuardedStringDeserializer;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Request for validate or change password. DTO is not persisted
@@ -27,21 +27,21 @@ public class AccPasswordFilterRequestDto implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@JsonDeserialize(using = GuardedStringDeserializer.class)
-	@ApiModelProperty(notes = "New password.", dataType = "string")
+	@Schema(description = "New password.", type = "string")
 	private GuardedString password;
 
 	@NotEmpty
-	@ApiModelProperty(notes = "Identifier of identity on end system. The attribute may be sAMAccountName.", dataType = "string")
+	@Schema(description = "Identifier of identity on end system. The attribute may be sAMAccountName.", type = "string")
 	private String username;
 
 	@NotEmpty
-	@ApiModelProperty(notes = "EntityModel system identifier.", dataType = "string")
+	@Schema(description = "EntityModel system identifier.", type = "string")
 	private String resource;
 
-	@ApiModelProperty(notes = "Log identifier that connect request from end system to IdM.", dataType = "string")
+	@Schema(description = "Log identifier that connect request from end system to IdM.", type = "string")
 	private String logIdentifier;
 
-	@ApiModelProperty(notes = "Password filter version from end system to IdM.", dataType = "string")
+	@Schema(description = "Password filter version from end system to IdM.", type = "string")
 	private String version;
 
 	public GuardedString getPassword() {

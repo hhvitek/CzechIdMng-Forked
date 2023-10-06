@@ -29,11 +29,11 @@ import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.rest.AbstractRequestDtoController;
 import eu.bcvsolutions.idm.core.security.api.domain.Enabled;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 
 /**
  * Role-system request - Role could assign identity account on target system.
@@ -44,12 +44,13 @@ import io.swagger.annotations.AuthorizationScope;;
 @RestController
 @Enabled(AccModuleDescriptor.MODULE_ID)
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/requests")
-@Api(
-		value = SysRequestRoleSystemController.TAG, 
-		tags = SysRequestRoleSystemController.TAG, 
-		description = "Reqeusts for - Assign system to role",
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(
+		name = SysRequestRoleSystemController.TAG,
+		description = "Reqeusts for - Assign system to role"//,
+		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
+//consumes = MediaType.APPLICATION_JSON_VALUE
+)
 public class SysRequestRoleSystemController extends AbstractRequestDtoController<SysRoleSystemDto, SysRoleSystemFilter> {
 	
 	protected static final String TAG = "Role system - mappings";
@@ -69,16 +70,20 @@ public class SysRequestRoleSystemController extends AbstractRequestDtoController
 	@ResponseBody
 	@RequestMapping(value= "/{requestId}"+REQUEST_SUB_PATH, method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_READ + "')")
-	@ApiOperation(
-			value = "Search role systems (/search/quick alias)", 
-			nickname = "searchRoleSystems",
-			tags = { SysRequestRoleSystemController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLE_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search role systems (/search/quick alias)"
+			/* nickname = "searchRoleSystems", */
+			 
+			)
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.ROLE_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.ROLE_READ })
+        }
+    )
 	public CollectionModel<?> find(
 			@PathVariable @NotNull String requestId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -90,16 +95,19 @@ public class SysRequestRoleSystemController extends AbstractRequestDtoController
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_READ + "')")
 	@RequestMapping(value= "/{requestId}"+REQUEST_SUB_PATH+"/search/quick", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Search role systems", 
-			nickname = "searchQuickRoleSystems",
-			tags = { SysRequestRoleSystemController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLE_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search role systems",
+			/* nickname = "searchQuickRoleSystems", */
+			tags = { SysRequestRoleSystemController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.ROLE_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.ROLE_READ })
+        }
+    )
 	public CollectionModel<?> findQuick(
 			@PathVariable @NotNull String requestId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -111,20 +119,23 @@ public class SysRequestRoleSystemController extends AbstractRequestDtoController
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_READ + "')")
 	@RequestMapping(value = "/{requestId}" + REQUEST_SUB_PATH + "/{backendId}", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Role system detail", 
-			nickname = "getRoleSystem", 
-			response = SysRoleSystemDto.class, 
-			tags = { SysRequestRoleSystemController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLE_READ, description = "") })
-				})
+	@Operation(
+			summary = "Role system detail",
+			/* nickname = "getRoleSystem", */ 
+			/* response = SysRoleSystemDto.class, */ 
+			tags = { SysRequestRoleSystemController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.ROLE_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.ROLE_READ })
+        }
+    )
 	public ResponseEntity<?> get(
 			@PathVariable @NotNull String requestId,
-			@ApiParam(value = "Role system mapping's uuid identifier.", required = true)
+			@Parameter(name = "Role system mapping's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(requestId, backendId);
 	}
@@ -133,17 +144,20 @@ public class SysRequestRoleSystemController extends AbstractRequestDtoController
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_UPDATE + "')")
 	@RequestMapping(value = "/{requestId}" + REQUEST_SUB_PATH, method = RequestMethod.POST)
-	@ApiOperation(
-			value = "Create / update role system", 
-			nickname = "postRoleSystem", 
-			response = SysRoleSystemDto.class, 
-			tags = { SysRequestRoleSystemController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = CoreGroupPermission.ROLE_UPDATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = CoreGroupPermission.ROLE_UPDATE, description = "")})
-				})
+	@Operation(
+			summary = "Create / update role system",
+			/* nickname = "postRoleSystem", */ 
+			/* response = SysRoleSystemDto.class, */ 
+			tags = { SysRequestRoleSystemController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.ROLE_UPDATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.ROLE_UPDATE})
+        }
+    )
 	public ResponseEntity<?> post(@PathVariable @NotNull String requestId, @RequestBody @NotNull SysRoleSystemDto dto) {
 		return super.post(requestId, dto);
 	}
@@ -152,20 +166,23 @@ public class SysRequestRoleSystemController extends AbstractRequestDtoController
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_UPDATE + "')")
 	@RequestMapping(value = "/{requestId}" + REQUEST_SUB_PATH +"/{backendId}", method = RequestMethod.PUT)
-	@ApiOperation(
-			value = "Update role system",
-			nickname = "putRoleSystem", 
-			response = SysRoleSystemDto.class, 
-			tags = { SysRequestRoleSystemController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLE_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLE_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update role system",
+			/* nickname = "putRoleSystem", */ 
+			/* response = SysRoleSystemDto.class, */ 
+			tags = { SysRequestRoleSystemController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.ROLE_UPDATE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.ROLE_UPDATE })
+        }
+    )
 	public ResponseEntity<?> put(
 			@PathVariable @NotNull String requestId,
-			@ApiParam(value = "Role system mapping's uuid identifier.", required = true)
+			@Parameter(name = "Role system mapping's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @NotNull SysRoleSystemDto dto) {
 		return super.put(requestId, backendId, dto);
@@ -175,19 +192,19 @@ public class SysRequestRoleSystemController extends AbstractRequestDtoController
 //	@ResponseBody
 //	@RequestMapping(value = "/{backendId}", method = RequestMethod.PATCH)
 //	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_UPDATE + "')")
-//	@ApiOperation(
-//			value = "Update role system", 
-//			nickname = "patchRoleSystem", 
-//			response = SysRoleSystemDto.class, 
+//	@Operation(
+//			summary = "Update role system",
+//			/* nickname = "patchRoleSystem", */ 
+//			/* response = SysRoleSystemDto.class, */ 
 //			tags = { SysRequestRoleSystemController.TAG }, 
 //			authorizations = { 
-//				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-//						@AuthorizationScope(scope = CoreGroupPermission.ROLE_UPDATE, description = "") }),
-//				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-//						@AuthorizationScope(scope = CoreGroupPermission.ROLE_UPDATE, description = "") })
+//				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+//						CoreGroupPermission.ROLE_UPDATE }),
+//				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+//						CoreGroupPermission.ROLE_UPDATE })
 //				})
 //	public ResponseEntity<?> patch(
-//			@ApiParam(value = "Role system mapping's uuid identifier.", required = true)
+//			@Parameter(name = "Role system mapping's uuid identifier.", required = true)
 //			@PathVariable @NotNull String backendId,
 //			HttpServletRequest nativeRequest)
 //			throws HttpMessageNotReadableException {
@@ -198,19 +215,22 @@ public class SysRequestRoleSystemController extends AbstractRequestDtoController
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_UPDATE + "')")
 	@RequestMapping(value = "/{requestId}" + REQUEST_SUB_PATH + "/{backendId}", method = RequestMethod.DELETE)
-	@ApiOperation(
-			value = "Delete role system", 
-			nickname = "deleteRoleSystem", 
-			tags = { SysRequestRoleSystemController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLE_DELETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLE_DELETE, description = "") })
-				})
+	@Operation(
+			summary = "Delete role system",
+			/* nickname = "deleteRoleSystem", */ 
+			tags = { SysRequestRoleSystemController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.ROLE_DELETE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.ROLE_DELETE })
+        }
+    )
 	public ResponseEntity<?> delete(
 			@PathVariable @NotNull String requestId,
-			@ApiParam(value = "Role system mapping's uuid identifier.", required = true)
+			@Parameter(name = "Role system mapping's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(requestId, backendId);
 	}
@@ -220,19 +240,21 @@ public class SysRequestRoleSystemController extends AbstractRequestDtoController
 	@RequestMapping(value = REQUEST_SUB_PATH, method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_CREATE + "')" + " or hasAuthority('"
 			+ CoreGroupPermission.ROLE_UPDATE + "')")
-	@ApiOperation( //
-			value = "Create request for role system", //
-			nickname = "createRequestForRoleSystem", //
-			response = SysRoleSystemDto.class, //
-			tags = { SysRequestRoleSystemController.TAG }, //
-			authorizations = { //
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { //
-							@AuthorizationScope(scope = CoreGroupPermission.ROLE_CREATE, description = ""), //
-							@AuthorizationScope(scope = CoreGroupPermission.ROLE_UPDATE, description = "") }), //
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { //
-							@AuthorizationScope(scope = CoreGroupPermission.ROLE_CREATE, description = ""), //
-							@AuthorizationScope(scope = CoreGroupPermission.ROLE_UPDATE, description = "") }) //
-			}) //
+	@Operation(
+			summary = "Create request for role system",
+			/* nickname = "createRequestForRoleSystem", */
+			/* response = SysRoleSystemDto.class, */
+			tags = { SysRequestRoleSystemController.TAG })
+    @SecurityRequirements(
+        value = {
+            @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+                    CoreGroupPermission.ROLE_CREATE,
+                    CoreGroupPermission.ROLE_UPDATE }),
+            @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+                    CoreGroupPermission.ROLE_CREATE,
+                    CoreGroupPermission.ROLE_UPDATE })
+        }
+    )
 	public ResponseEntity<?> createRequest(@Valid @RequestBody SysRoleSystemDto dto) {
 		return super.createRequest(dto);
 	}

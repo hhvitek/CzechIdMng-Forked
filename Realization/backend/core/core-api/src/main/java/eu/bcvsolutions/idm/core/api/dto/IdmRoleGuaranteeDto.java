@@ -11,7 +11,7 @@ import eu.bcvsolutions.idm.core.api.domain.DefaultFieldLengths;
 import eu.bcvsolutions.idm.core.api.domain.Embedded;
 import eu.bcvsolutions.idm.core.api.domain.ExternalIdentifiable;
 import eu.bcvsolutions.idm.core.api.domain.Requestable;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Dto for role guarantee - identity
@@ -25,7 +25,7 @@ public class IdmRoleGuaranteeDto extends AbstractDto implements ExternalIdentifi
 	private static final long serialVersionUID = 1L;
 
 	@Size(max = DefaultFieldLengths.NAME)
-	@ApiModelProperty(notes = "Unique external identifier.")
+	@Schema(description = "Unique external identifier.")
 	private String externalId;
 	@NotNull
 	@Embedded(dtoClass = IdmRoleDto.class)
@@ -33,7 +33,7 @@ public class IdmRoleGuaranteeDto extends AbstractDto implements ExternalIdentifi
 	@NotNull
 	@Embedded(dtoClass = IdmIdentityDto.class)
 	private UUID guarantee; // guarantee as identity
-	@ApiModelProperty(notes = "Type (codelist)")
+	@Schema(description = "Type (codelist)")
 	@Size(max = DefaultFieldLengths.NAME)
 	private String type; //Type - codelist
 	@Embedded(dtoClass = IdmRequestItemDto.class)

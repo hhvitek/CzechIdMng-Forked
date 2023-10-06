@@ -12,7 +12,7 @@ import org.springframework.hateoas.server.core.Relation;
 import eu.bcvsolutions.idm.core.api.domain.ConfigurationMap;
 import eu.bcvsolutions.idm.core.api.domain.DefaultFieldLengths;
 import eu.bcvsolutions.idm.core.api.entity.UnmodifiableEntity;
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Base DTO for generated values
@@ -21,7 +21,7 @@ import io.swagger.annotations.ApiModel;
  * @since 9.2.0
  */
 @Relation(collectionRelation = "generateValues")
-@ApiModel(description = "Definition for configured generator")
+@Schema(description = "Definition for configured generator")
 public class IdmGenerateValueDto extends AbstractDto implements UnmodifiableEntity {
 
 	private static final long serialVersionUID = 1L;

@@ -35,11 +35,12 @@ import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.security.api.domain.Enabled;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
 import eu.bcvsolutions.idm.ic.api.IcConnectorObject;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+
 
 /**
  * Entities on target system.
@@ -50,12 +51,13 @@ import io.swagger.annotations.AuthorizationScope;;
 @RestController
 @Enabled(AccModuleDescriptor.MODULE_ID)
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/system-entities")
-@Api(
-		value = SysSystemEntityController.TAG, 
-		tags = SysSystemEntityController.TAG, 
-		description = "Raw entities on target system",
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(
+		name = SysSystemEntityController.TAG,
+		description = "Raw entities on target system"//,
+		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
+//consumes = MediaType.APPLICATION_JSON_VALUE
+)
 public class SysSystemEntityController extends AbstractReadWriteDtoController<SysSystemEntityDto, SysSystemEntityFilter> {
 
 	protected static final String TAG = "System entities";
@@ -69,16 +71,20 @@ public class SysSystemEntityController extends AbstractReadWriteDtoController<Sy
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
-	@ApiOperation(
-			value = "Search system entities (/search/quick alias)", 
-			nickname = "searchSystemEntities",
-			tags = { SysSystemEntityController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")})
-				})
+	@Operation(
+			summary = "Search system entities (/search/quick alias)"
+			/* nickname = "searchSystemEntities", */
+			 
+			)
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.SYSTEM_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.SYSTEM_READ})
+        }
+    )
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
@@ -88,16 +94,19 @@ public class SysSystemEntityController extends AbstractReadWriteDtoController<Sy
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
 	@RequestMapping(value= "/search/quick", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Search system entities", 
-			nickname = "searchQuickSystemEntities",
-			tags = { SysSystemEntityController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")})
-				})
+	@Operation(
+			summary = "Search system entities", 
+			/* nickname = "searchQuickSystemEntities", */
+			tags = { SysSystemEntityController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.SYSTEM_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.SYSTEM_READ})
+        }
+    )
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
@@ -108,19 +117,22 @@ public class SysSystemEntityController extends AbstractReadWriteDtoController<Sy
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "System entity detail", 
-			nickname = "getSystemEntity", 
-			response = SysSystemEntityDto.class, 
-			tags = { SysSystemEntityController.TAG }, 
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")})
-					})
+	@Operation(
+			summary = "System entity detail", 
+			/* nickname = "getSystemEntity", */
+			/* response = SysSystemEntityDto.class, */ 
+			tags = { SysSystemEntityController.TAG })
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							AccGroupPermission.SYSTEM_READ}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							AccGroupPermission.SYSTEM_READ})
+        }
+    )
 	public ResponseEntity<?> get(
-			@ApiParam(value = "System entity's uuid identifier.", required = true)
+			@Parameter(name = "System entity's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -130,19 +142,22 @@ public class SysSystemEntityController extends AbstractReadWriteDtoController<Sy
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_CREATE + "')"
 			+ " or hasAuthority('" + AccGroupPermission.SYSTEM_UPDATE + "')")
 	@RequestMapping(method = RequestMethod.POST)
-	@ApiOperation(
-			value = "Create / update system entity", 
-			nickname = "postSystemEntity", 
-			response = SysSystemEntityDto.class, 
-			tags = { SysSystemEntityController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_CREATE, description = ""),
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_CREATE, description = ""),
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "")})
-				})
+	@Operation(
+			summary = "Create / update system entity", 
+			/* nickname = "postSystemEntity", */
+			/* response = SysSystemEntityDto.class, */ 
+			tags = { SysSystemEntityController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.SYSTEM_CREATE,
+						AccGroupPermission.SYSTEM_UPDATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.SYSTEM_CREATE,
+						AccGroupPermission.SYSTEM_UPDATE})
+        }
+    )
 	public ResponseEntity<?> post(@RequestBody @NotNull SysSystemEntityDto dto) {
 		return super.post(dto);
 	}
@@ -151,19 +166,22 @@ public class SysSystemEntityController extends AbstractReadWriteDtoController<Sy
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_UPDATE + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
-	@ApiOperation(
-			value = "Update system entity",
-			nickname = "putSystemEntity", 
-			response = SysSystemEntityDto.class, 
-			tags = { SysSystemEntityController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update system entity",
+			/* nickname = "putSystemEntity", */
+			/* response = SysSystemEntityDto.class, */ 
+			tags = { SysSystemEntityController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.SYSTEM_UPDATE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.SYSTEM_UPDATE })
+        }
+    )
 	public ResponseEntity<?> put(
-			@ApiParam(value = "System entity's uuid identifier.", required = true)
+			@Parameter(name = "System entity's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @NotNull SysSystemEntityDto dto) {
 		return super.put(backendId, dto);
@@ -173,18 +191,21 @@ public class SysSystemEntityController extends AbstractReadWriteDtoController<Sy
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_DELETE + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
-	@ApiOperation(
-			value = "Delete system entity", 
-			nickname = "deleteSystemEntity", 
-			tags = { SysSystemEntityController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_DELETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_DELETE, description = "") })
-				})
+	@Operation(
+			summary = "Delete system entity", 
+			/* nickname = "deleteSystemEntity", */
+			tags = { SysSystemEntityController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.SYSTEM_DELETE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.SYSTEM_DELETE })
+        }
+    )
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "System entity's uuid identifier.", required = true)
+			@Parameter(name = "System entity's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -192,19 +213,22 @@ public class SysSystemEntityController extends AbstractReadWriteDtoController<Sy
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
 	@RequestMapping(value = "/{backendId}/connector-object", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Connector object for the system entity", 
-			nickname = "getConnectorObject", 
-			response = IcConnectorObject.class, 
-			tags = { SysSystemEntityController.TAG }, 
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")})
-					})
+	@Operation(
+			summary = "Connector object for the system entity", 
+			/* nickname = "getConnectorObject", */
+			/* response = IcConnectorObject.class, */ 
+			tags = { SysSystemEntityController.TAG })
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							AccGroupPermission.SYSTEM_READ}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							AccGroupPermission.SYSTEM_READ})
+        }
+    )
 	public ResponseEntity<IcConnectorObject> getConnectorObject(
-			@ApiParam(value = "System entity's uuid identifier.", required = true)
+			@Parameter(name = "System entity's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysSystemEntityDto systemEntity = this.getDto(backendId);
 		if (systemEntity == null) {

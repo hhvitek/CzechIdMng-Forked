@@ -9,11 +9,11 @@ import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.api.service.IdmRoleSystemService;
 import eu.bcvsolutions.idm.core.api.service.ReadDtoService;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import java.util.Set;
 import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,12 +40,14 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/core/role-systems")
-@Api(
-		value = IdmRoleSystemController.TAG,
-		description = "IdM role-system controller - (we need to work with role-system also in the core module)",
-		tags = {IdmRoleSystemController.TAG},
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(
+		name = IdmRoleSystemController.TAG,
+		description = "IdM role-system controller - (we need to work with role-system also in the core module)"//,
+
+		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+
+//consumes = MediaType.APPLICATION_JSON_VALUE
+)
 public class IdmRoleSystemController extends AbstractReadDtoController<IdmRoleSystemDto, IdmRoleSystemFilter> {
 
 	protected static final String TAG = "IdM role-system controller - (we need to work with role-system also in the core module).";
@@ -60,16 +62,19 @@ public class IdmRoleSystemController extends AbstractReadDtoController<IdmRoleSy
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_READ + "')")
-	@ApiOperation(
-			value = "Search system roles (/search/quick alias)",
-			nickname = "searchSystemRoles",
-			tags = {IdmRoleSystemController.TAG},
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.ROLE_READ, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.ROLE_READ, description = "")})
-			})
+	@Operation(
+			summary = "Search system roles (/search/quick alias)",
+			/* nickname = "searchSystemRoles", */
+			tags = {IdmRoleSystemController.TAG})
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							CoreGroupPermission.ROLE_READ}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							CoreGroupPermission.ROLE_READ})
+        }
+    )
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
@@ -79,16 +84,19 @@ public class IdmRoleSystemController extends AbstractReadDtoController<IdmRoleSy
 	@ResponseBody
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_READ + "')")
-	@ApiOperation(
-			value = "Search system roles",
-			nickname = "searchQuickSystemRoles",
-			tags = {IdmRoleSystemController.TAG},
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.ROLE_READ, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.ROLE_READ, description = "")})
-			})
+	@Operation(
+			summary = "Search system roles",
+			/* nickname = "searchQuickSystemRoles", */
+			tags = {IdmRoleSystemController.TAG})
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							CoreGroupPermission.ROLE_READ}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							CoreGroupPermission.ROLE_READ})
+        }
+    )
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
@@ -98,16 +106,19 @@ public class IdmRoleSystemController extends AbstractReadDtoController<IdmRoleSy
 	@ResponseBody
 	@RequestMapping(value = "/search/autocomplete", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "Autocomplete system roles (selectbox usage)",
-			nickname = "autocompleteSystemRoles",
-			tags = {IdmRoleSystemController.TAG},
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.ROLE_AUTOCOMPLETE, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.ROLE_AUTOCOMPLETE, description = "")})
-			})
+	@Operation(
+			summary = "Autocomplete system roles (selectbox usage)",
+			/* nickname = "autocompleteSystemRoles", */
+			tags = {IdmRoleSystemController.TAG})
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							CoreGroupPermission.ROLE_AUTOCOMPLETE}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							CoreGroupPermission.ROLE_AUTOCOMPLETE})
+        }
+    )
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
@@ -117,15 +128,15 @@ public class IdmRoleSystemController extends AbstractReadDtoController<IdmRoleSy
 //	@ResponseBody
 //	@RequestMapping(value= "/search/can-be-requested", method = RequestMethod.GET)
 //	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_CANBEREQUESTED + "')")
-//	@ApiOperation(
-//			value = "Find assigned roles, which can be requested", 
-//			nickname = "findCanBeRequestedSystemRoles", 
+//	@Operation(
+//			summary = "Find assigned roles, which can be requested",
+//			/* nickname = "findCanBeRequestedSystemRoles", */ 
 //			tags = { IdmRoleSystemController.TAG }, 
 //			authorizations = { 
-//				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-//						@AuthorizationScope(scope = CoreGroupPermission.ROLE_CANBEREQUESTED, description = "") }),
-//				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-//						@AuthorizationScope(scope = CoreGroupPermission.ROLE_CANBEREQUESTED, description = "") })
+//				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+//						CoreGroupPermission.ROLE_CANBEREQUESTED }),
+//				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+//						CoreGroupPermission.ROLE_CANBEREQUESTED })
 //				})
 //	public CollectionModel<?> findCanBeRequested(
 //			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -137,16 +148,19 @@ public class IdmRoleSystemController extends AbstractReadDtoController<IdmRoleSy
 	@ResponseBody
 	@RequestMapping(value = "/search/count", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_COUNT + "')")
-	@ApiOperation(
-			value = "The number of entities that match the filter",
-			nickname = "countSystemRoles",
-			tags = {IdmRoleSystemController.TAG},
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.ROLE_COUNT, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.ROLE_COUNT, description = "")})
-			})
+	@Operation(
+			summary = "The number of entities that match the filter",
+			/* nickname = "countSystemRoles", */
+			tags = {IdmRoleSystemController.TAG})
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							CoreGroupPermission.ROLE_COUNT}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							CoreGroupPermission.ROLE_COUNT})
+        }
+    )
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -155,19 +169,22 @@ public class IdmRoleSystemController extends AbstractReadDtoController<IdmRoleSy
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_READ + "')")
-	@ApiOperation(
-			value = "System role detail",
-			nickname = "getSystemRole",
-			response = IdmRoleSystemDto.class,
-			tags = {IdmRoleSystemController.TAG},
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.ROLE_READ, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.ROLE_READ, description = "")})
-			})
+	@Operation(
+			summary = "System role detail",
+			/* nickname = "getSystemRole", */
+			/* response = IdmRoleSystemDto.class, */
+			tags = {IdmRoleSystemController.TAG})
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							CoreGroupPermission.ROLE_READ}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							CoreGroupPermission.ROLE_READ})
+        }
+    )
 	public ResponseEntity<?> get(
-			@ApiParam(value = "System role's uuid identifier.", required = true)
+			@Parameter(name = "System role's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -176,18 +193,21 @@ public class IdmRoleSystemController extends AbstractReadDtoController<IdmRoleSy
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_READ + "')")
-	@ApiOperation(
-			value = "What logged identity can do with given record",
-			nickname = "getPermissionsOnRoleSystem",
-			tags = {IdmRoleSystemController.TAG},
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.ROLE_READ, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.ROLE_READ, description = "")})
-			})
+	@Operation(
+			summary = "What logged identity can do with given record",
+			/* nickname = "getPermissionsOnRoleSystem", */
+			tags = {IdmRoleSystemController.TAG})
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							CoreGroupPermission.ROLE_READ}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							CoreGroupPermission.ROLE_READ})
+        }
+    )
 	public Set<String> getPermissions(
-			@ApiParam(value = "System role's uuid identifier.", required = true)
+			@Parameter(name = "System role's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}

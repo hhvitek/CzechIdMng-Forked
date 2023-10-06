@@ -27,11 +27,11 @@ import eu.bcvsolutions.idm.core.api.dto.filter.FilterBuilderFilter;
 import eu.bcvsolutions.idm.core.api.repository.filter.FilterManager;
 import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 
 /**
  * Filter builder administration.
@@ -41,12 +41,14 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseController.BASE_PATH + "/filter-builders")
-@Api(
-		value = FilterBuilderController.TAG,
-		description = "Configure filter builders",
-		tags = { FilterBuilderController.TAG },
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(
+		name = FilterBuilderController.TAG,
+		description = "Configure filter builders"//,
+		
+		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
+//consumes = MediaType.APPLICATION_JSON_VALUE
+)
 public class FilterBuilderController  {
 
 	protected static final String TAG = "filter builders filters";
@@ -57,17 +59,20 @@ public class FilterBuilderController  {
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.MODULE_READ + "')")
-	@ApiOperation(
-			value = "Find all filter builders",
-			nickname = "findAllFilterBuilders",
+	@Operation(
+			summary = "Find all filter builders",
+			/* nickname = "findAllFilterBuilders", */
 			tags = { FilterBuilderController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = CoreGroupPermission.MODULE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = CoreGroupPermission.MODULE_READ, description = "") })
-				},
-			notes = "Returns all registered filter builders.")
+						description = "Returns all registered filter builders.")
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.MODULE_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.MODULE_READ })
+        }
+    )
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
@@ -87,18 +92,21 @@ public class FilterBuilderController  {
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	@RequestMapping(value = "/{filterId}/enable", method = { RequestMethod.PATCH, RequestMethod.PUT })
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.MODULE_UPDATE + "')")
-	@ApiOperation(
-			value = "Activate filter builder",
-			nickname = "activateFilterBuilder",
-			tags = { FilterBuilderController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.MODULE_UPDATE, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.MODULE_UPDATE, description = "") })
-			})
+	@Operation(
+			summary = "Activate filter builder",
+			/* nickname = "activateFilterBuilder", */
+			tags = { FilterBuilderController.TAG })
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							CoreGroupPermission.MODULE_UPDATE }),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							CoreGroupPermission.MODULE_UPDATE })
+        }
+    )
 	public void enable(
-			@ApiParam(value = "Filter builder's identifier.", required = true)
+			@Parameter(name = "Filter builder's identifier.", required = true)
 			@PathVariable @NotNull String filterId) {
 		filterManager.enable(filterId);
 	}

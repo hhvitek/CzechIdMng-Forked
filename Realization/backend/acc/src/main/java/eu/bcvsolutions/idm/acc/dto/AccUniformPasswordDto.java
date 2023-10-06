@@ -5,7 +5,7 @@ import org.springframework.hateoas.server.core.Relation;
 import eu.bcvsolutions.idm.core.api.domain.Codeable;
 import eu.bcvsolutions.idm.core.api.domain.Disableable;
 import eu.bcvsolutions.idm.core.api.dto.AbstractDto;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Uniform password definition dto
@@ -22,7 +22,7 @@ public class AccUniformPasswordDto extends AbstractDto implements Codeable, Disa
 	private String code;
 	private String description;
 	private boolean disabled;
-	@ApiModelProperty(notes = "Change password also in IdM.")
+	@Schema(description = "Change password also in IdM.")
 	private boolean changeInIdm;
 
 	public String getCode() {

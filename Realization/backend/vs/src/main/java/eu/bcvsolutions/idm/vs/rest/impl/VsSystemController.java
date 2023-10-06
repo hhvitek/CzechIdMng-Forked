@@ -21,10 +21,10 @@ import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.vs.dto.VsSystemDto;
 import eu.bcvsolutions.idm.vs.service.api.VsSystemService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 
 /**
  * Rest methods for create virtual system (only for create for now)
@@ -34,12 +34,14 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/vs/systems")
-@Api(
-		value = VsSystemController.TAG, 
-		tags = { VsSystemController.TAG }, 
-		description = "Operations with virtual system (only for create now)", 
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE, 
-		consumes = MediaType.APPLICATION_JSON_VALUE) 
+@Tag(
+		name = VsSystemController.TAG, 
+		 
+		description = "Operations with virtual system (only for create now)"//, 
+		//produces = BaseController.APPLICATION_HAL_JSON_VALUE 
+		
+//consumes = MediaType.APPLICATION_JSON_VALUE
+) 
 public class VsSystemController {
 
 	private final VsSystemService service;
@@ -54,12 +56,17 @@ public class VsSystemController {
 	@ResponseBody
 	@RequestMapping(value = "/", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_CREATE + "')")
-	@ApiOperation(value = "Create new virtual system", nickname = "createVsSystem", response = SysSystemDto.class, tags = {
-			VsSystemController.TAG }, authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_CREATE, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_CREATE, description = "") }) })
+	@Operation(summary = "Create new virtual system", /* nickname = "createVsSystem", */ /* response = SysSystemDto.class, */ tags = {
+			VsSystemController.TAG })
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							AccGroupPermission.SYSTEM_CREATE }),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							AccGroupPermission.SYSTEM_CREATE })
+        }
+    )
 	public ResponseEntity<?> create(@RequestBody @NotNull VsSystemDto dto) {
 		SysSystemDto system = this.service.create(dto);
 		return new ResponseEntity<>(system, HttpStatus.OK);

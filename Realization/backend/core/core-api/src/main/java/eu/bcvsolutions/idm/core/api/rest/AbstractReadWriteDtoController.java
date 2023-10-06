@@ -30,9 +30,13 @@ import eu.bcvsolutions.idm.core.api.exception.ResultCodeException;
 import eu.bcvsolutions.idm.core.api.service.ReadWriteDtoService;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.annotations.security.SecuritySchemes;
 
 /**
  * CRUD operations for DTO.
@@ -43,6 +47,8 @@ import io.swagger.annotations.Authorization;
  * @author Svanda
  * @author Radek Tomiška
  */
+//@SecurityScheme(name=SwaggerConfig.AUTHENTICATION_BASIC, type = SecuritySchemeType.DEFAULT)
+//@SecurityScheme(name=SwaggerConfig.AUTHENTICATION_CIDMST, type = SecuritySchemeType.DEFAULT)
 public abstract class AbstractReadWriteDtoController<DTO extends BaseDto, F extends BaseFilter>
 		extends AbstractReadDtoController<DTO, F> {
 	
@@ -102,11 +108,14 @@ public abstract class AbstractReadWriteDtoController<DTO extends BaseDto, F exte
 	 * @param dto
 	 * @return
 	 */
-	@ApiOperation(value = "Create / update record", authorizations = { 
-			@Authorization(SwaggerConfig.AUTHENTICATION_BASIC),
-			@Authorization(SwaggerConfig.AUTHENTICATION_CIDMST)
-			})
-	public ResponseEntity<?> post(@ApiParam(value = "Record (dto).", required = true) DTO dto) {
+	@Operation(summary = "Create / update record")
+    @SecurityRequirements(
+            value = {
+                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
+            }
+    )
+	public ResponseEntity<?> post(@Parameter(name = "Record (dto).", required = true) DTO dto) {
 		RepresentationModel resource = toModel(postDto(dto));
 		if (resource == null) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -131,14 +140,17 @@ public abstract class AbstractReadWriteDtoController<DTO extends BaseDto, F exte
 	 * @param dto
 	 * @return
 	 */
-	@ApiOperation(value = "Update record", authorizations = { 
-			@Authorization(SwaggerConfig.AUTHENTICATION_BASIC),
-			@Authorization(SwaggerConfig.AUTHENTICATION_CIDMST)
-			})
+	@Operation(summary = "Update record")
+    @SecurityRequirements(
+            value = {
+                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
+            }
+    )
 	public ResponseEntity<?> put(
-			@ApiParam(value = "Record's uuid identifier or unique code, if record supports <pre>Codeable</pre> interface.", required = true) 
+			@Parameter(name = "Record's uuid identifier or unique code, if record supports <pre>Codeable</pre> interface.", required = true) 
 			String backendId,
-			@ApiParam(value = "Record (dto).", required = true) DTO dto) {
+			@Parameter(name = "Record (dto).", required = true) DTO dto) {
 		DTO updateDto = getDto(backendId);
 		if (updateDto == null) {
 			throw new EntityNotFoundException(getService().getEntityClass(), backendId);
@@ -198,12 +210,15 @@ public abstract class AbstractReadWriteDtoController<DTO extends BaseDto, F exte
 	 * @param backendId
 	 * @return
 	 */
-	@ApiOperation(value = "Delete record", authorizations = { 
-			@Authorization(SwaggerConfig.AUTHENTICATION_BASIC),
-			@Authorization(SwaggerConfig.AUTHENTICATION_CIDMST)
-			})
+	@Operation(summary = "Delete record")
+    @SecurityRequirements(
+            value = {
+                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
+            }
+    )
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "Record's uuid identifier or unique code, if record supports <pre>Codeable</pre> interface.", required = true)
+			@Parameter(name = "Record's uuid identifier or unique code, if record supports <pre>Codeable</pre> interface.", required = true)
 			String backendId) {
 		DTO dto = getDto(backendId);
 		if (dto == null) {

@@ -25,11 +25,11 @@ import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.api.service.IdmPasswordHistoryService;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 
 /**
  * Password history controller. Controller is in read only mode.
@@ -43,12 +43,13 @@ import io.swagger.annotations.AuthorizationScope;
 
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/password-histories")
-@Api(
-		value = IdmPasswordHistoryController.TAG, 
-		tags = IdmPasswordHistoryController.TAG, 
-		description = "Get password history",
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(
+		name = IdmPasswordHistoryController.TAG,
+		description = "Get password history"//,
+		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
+//consumes = MediaType.APPLICATION_JSON_VALUE
+)
 public class IdmPasswordHistoryController extends AbstractReadDtoController<IdmPasswordHistoryDto, IdmPasswordHistoryFilter> {
 
 	protected static final String TAG = "Password histories";
@@ -62,16 +63,20 @@ public class IdmPasswordHistoryController extends AbstractReadDtoController<IdmP
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUDIT_READ + "')")
-	@ApiOperation(
-			value = "Search password histories (/search/quick alias)", 
-			nickname = "searchPasswordHistories",
-			tags = { IdmPasswordHistoryController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.AUDIT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.AUDIT_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search password histories (/search/quick alias)"
+			/* nickname = "searchPasswordHistories", */
+
+			)
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.AUDIT_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.AUDIT_READ })
+        }
+    )
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
@@ -81,16 +86,19 @@ public class IdmPasswordHistoryController extends AbstractReadDtoController<IdmP
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUDIT_READ + "')")
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Search password history items", 
-			nickname = "searchQuickPasswordHistories",
-			tags = { IdmPasswordHistoryController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.AUDIT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.AUDIT_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search password history items", 
+			/* nickname = "searchQuickPasswordHistories", */
+			tags = { IdmPasswordHistoryController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.AUDIT_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.AUDIT_READ })
+        }
+    )
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
@@ -101,19 +109,22 @@ public class IdmPasswordHistoryController extends AbstractReadDtoController<IdmP
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUDIT_READ + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Password history item detail", 
-			nickname = "getPasswordHistory", 
-			response = IdmPasswordHistoryDto.class, 
-			tags = { IdmPasswordHistoryController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.AUDIT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.AUDIT_READ, description = "") })
-				})
+	@Operation(
+			summary = "Password history item detail", 
+			/* nickname = "getPasswordHistory", */ 
+			/* response = IdmPasswordHistoryDto.class, */ 
+			tags = { IdmPasswordHistoryController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.AUDIT_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.AUDIT_READ })
+        }
+    )
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Passsword history item's uuid identifier.", required = true)
+			@Parameter(name = "Passsword history item's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}

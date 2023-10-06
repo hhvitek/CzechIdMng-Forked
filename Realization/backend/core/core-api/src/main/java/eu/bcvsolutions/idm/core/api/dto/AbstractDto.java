@@ -28,8 +28,8 @@ import eu.bcvsolutions.idm.core.api.domain.Codeable;
 import eu.bcvsolutions.idm.core.api.domain.DefaultFieldLengths;
 import eu.bcvsolutions.idm.core.api.utils.DtoUtils;
 import eu.bcvsolutions.idm.core.api.utils.EntityUtils;
-import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.ApiModelProperty.AccessMode;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 
 /**
  * Common dto.
@@ -43,50 +43,50 @@ public abstract class AbstractDto implements BaseDto, Auditable {
 	public static final String PROPERTY_DTO_TYPE = "_dtotype";
 	//
 	@JsonDeserialize(as = UUID.class)
-	@ApiModelProperty(required = true, notes = "Unique uuid identifier. Used as identifier in rest endpoints", dataType = "java.util.UUID")
+	@Schema(required = true, description = "Unique uuid identifier. Used as identifier in rest endpoints", type = "java.util.UUID")
 	private UUID id;
-	@ApiModelProperty(accessMode = AccessMode.READ_ONLY)
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
 	private ZonedDateTime created;
-	@ApiModelProperty(accessMode = AccessMode.READ_ONLY)
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
 	private ZonedDateTime modified;
 	@Size(max = DefaultFieldLengths.NAME)
-	@ApiModelProperty(accessMode = AccessMode.READ_ONLY)
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
 	private String creator;
-	@ApiModelProperty(accessMode = AccessMode.READ_ONLY)
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
 	private UUID creatorId;
 	@Size(max = DefaultFieldLengths.NAME)
-	@ApiModelProperty(accessMode = AccessMode.READ_ONLY)
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
 	private String modifier;
-	@ApiModelProperty(accessMode = AccessMode.READ_ONLY)
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
 	private UUID modifierId;
 	@Size(max = DefaultFieldLengths.NAME)
-	@ApiModelProperty(accessMode = AccessMode.READ_ONLY)
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
 	private String originalCreator;
-	@ApiModelProperty(accessMode = AccessMode.READ_ONLY)
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
 	private UUID originalCreatorId;
 	@Size(max = DefaultFieldLengths.NAME)
-	@ApiModelProperty(accessMode = AccessMode.READ_ONLY)
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
 	private String originalModifier;
-	@ApiModelProperty(accessMode = AccessMode.READ_ONLY)
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
 	private UUID originalModifierId;
-	@ApiModelProperty(accessMode = AccessMode.READ_ONLY)
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
 	private UUID transactionId;
 	@JsonIgnore
-	@ApiModelProperty(accessMode = AccessMode.READ_ONLY)
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
 	private UUID realmId;
 	//
 	@JsonProperty(value = "_trimmed", access = Access.READ_ONLY)
-	@ApiModelProperty(accessMode = AccessMode.READ_ONLY)
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
 	private boolean trimmed = false;
 	@JsonProperty(value = EmbeddedDto.PROPERTY_EMBEDDED, access = Access.READ_ONLY)
-	@ApiModelProperty(accessMode = AccessMode.READ_ONLY)
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
 	private Map<String, BaseDto> embedded;
 	@JsonProperty(value = PROPERTY_DTO_TYPE, access = Access.READ_ONLY)
 	private Class<? extends BaseDto> type = this.getClass();
 	@JsonProperty(value = "_permissions", access = Access.READ_ONLY)
-	@ApiModelProperty(
-			accessMode = AccessMode.READ_ONLY,
-			notes = "What currently logged identity can do with given dto.")
+	@Schema(
+			accessMode = Schema.AccessMode.READ_ONLY,
+			description = "What currently logged identity can do with given dto.")
 	private Set<String> permissions;
 
 	public AbstractDto() {

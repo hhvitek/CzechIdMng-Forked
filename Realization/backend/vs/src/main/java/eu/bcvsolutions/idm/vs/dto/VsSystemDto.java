@@ -11,8 +11,7 @@ import org.springframework.hateoas.server.core.Relation;
 
 import eu.bcvsolutions.idm.core.api.domain.DefaultFieldLengths;
 import eu.bcvsolutions.idm.core.api.dto.AbstractDto;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * DTO for create new virtual system
@@ -21,22 +20,22 @@ import io.swagger.annotations.ApiModelProperty;
  *
  */
 @Relation(collectionRelation = "vs-systems")
-@ApiModel(description = "Dto for create new virtual system")
+@Schema(description = "Dto for create new virtual system")
 public class VsSystemDto extends AbstractDto {
 
 	private static final long serialVersionUID = 1L;
 
 	@NotEmpty
 	@Size(min = 1, max = DefaultFieldLengths.NAME)
-	@ApiModelProperty(required = true, notes = "Name of vs system")
+	@Schema(required = true, description = "Name of vs system")
 	private String name;
-	@ApiModelProperty(required = false, notes = "Identities in IdM. Will be implementers for this system.")
+	@Schema(required = false, description = "Identities in IdM. Will be implementers for this system.")
 	private List<UUID> implementers;
-	@ApiModelProperty(required = false, notes = "Roles where his identities will be implementers for this system.")
+	@Schema(required = false, description = "Roles where his identities will be implementers for this system.")
 	private List<UUID> implementerRoles;
-	@ApiModelProperty(required = false, notes = "Attributes of systems, if is empty then will be used default attributes.")
+	@Schema(required = false, description = "Attributes of systems, if is empty then will be used default attributes.")
 	private List<String> attributes;
-	@ApiModelProperty(required = true, notes = "For virtula system will be created and mapped new role.")
+	@Schema(required = true, description = "For virtula system will be created and mapped new role.")
 	private boolean createDefaultRole = false;
 	private String roleName;
 

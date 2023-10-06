@@ -23,10 +23,10 @@ import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.ecm.api.dto.IdmAttachmentDto;
 import eu.bcvsolutions.idm.core.ecm.api.entity.AttachableEntity;
 import eu.bcvsolutions.idm.core.ecm.api.service.AttachmentManager;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 
 /**
  * Controller for CSV connector wizard.
@@ -36,12 +36,14 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/connector-types/csv-connector-type")
-@Api(
-		value = CsvConnectorTypeController.TAG,
-		tags = {CsvConnectorTypeController.TAG},
-		description = "Controller for CSV connector wizard.",
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(
+		name = CsvConnectorTypeController.TAG,
+		
+		description = "Controller for CSV connector wizard."//,
+		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
+//consumes = MediaType.APPLICATION_JSON_VALUE
+)
 public class CsvConnectorTypeController {
 
 	protected static final String TAG = "CSV Wizard";
@@ -63,19 +65,22 @@ public class CsvConnectorTypeController {
 	@RequestMapping(value = "/deploy", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_CREATE + "')"
 			+ " or hasAuthority('" + AccGroupPermission.SYSTEM_UPDATE + "')")
-	@ApiOperation(
-			value = "Upload CSV file.",
-			nickname = "uploadCSV",
+	@Operation(
+			summary = "Upload CSV file.",
+			/* nickname = "uploadCSV", */
 			tags = {CsvConnectorTypeController.TAG},
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_CREATE, description = ""),
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_CREATE, description = ""),
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "")})
-			},
-			notes = "CSV file for system wizard.")
+						description = "CSV file for system wizard.")
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							AccGroupPermission.SYSTEM_CREATE,
+							AccGroupPermission.SYSTEM_UPDATE}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							AccGroupPermission.SYSTEM_CREATE,
+							AccGroupPermission.SYSTEM_UPDATE})
+        }
+    )
 	public ResponseEntity<ConnectorTypeDto> deploy(String fileName, String goalPath, MultipartFile data) throws IOException {
 		// save attachment
 		IdmAttachmentDto attachment = new IdmAttachmentDto();

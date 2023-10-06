@@ -21,16 +21,17 @@ import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.scheduler.api.dto.Task;
 import eu.bcvsolutions.idm.core.scheduler.api.dto.filter.TaskFilter;
 import eu.bcvsolutions.idm.core.scheduler.api.service.SchedulerManager;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 
 @RestController
 @RequestMapping(UpcomingTasksController.BASE_PATH + "/upcoming-tasks")
-@Api(value = UpcomingTasksController.TAG, description = "Upcoming tasks for task dashboard", tags = { UpcomingTasksController.TAG })
+@Tag(name = UpcomingTasksController.TAG, description = "Upcoming tasks for task dashboard")
 public class UpcomingTasksController implements BaseController {
 
 	protected static final String TAG = "Upcoming tasks";
@@ -53,26 +54,35 @@ public class UpcomingTasksController implements BaseController {
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_READ + "')")
-	@ApiOperation(
-			value = "Search upcoming scheduled tasks",
-			nickname = "searchUpcomingSchedulerTasks",
-			tags={ UpcomingTasksController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_READ, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_READ, description = "") })
-			})
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query",
-					value = "Results page you want to retrieve (0..N)"),
-			@ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query",
-					value = "Number of records per page."),
-			@ApiImplicitParam(name = "nextFireTimesLimitSeconds", dataTypeClass = String.class, paramType = "query",
-					value = "Limit number of seconds in the future for cron trigger"),
-			@ApiImplicitParam(name = "nextFireTimesLimitCount", dataTypeClass = String.class, paramType = "query",
-					value = "Limit size of nextFireTimes list"),
-	})
+	@Operation(
+			summary = "Search upcoming scheduled tasks",
+			/* nickname = "searchUpcomingSchedulerTasks", */
+			tags={ UpcomingTasksController.TAG })
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							CoreGroupPermission.SCHEDULER_READ }),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							CoreGroupPermission.SCHEDULER_READ })
+        }
+    )
+    @Parameters({
+            @Parameter(name = "page", schema = @Schema( implementation=String.class, type = "query"), description = "Results page you want to retrieve (0..N)"),
+            @Parameter(name = "size", schema = @Schema( implementation=String.class, type = "query"), description = "Number of records per page."),
+            @Parameter(name = "nextFireTimesLimitSeconds", schema = @Schema( implementation=String.class, type = "query"), description = "Limit number of seconds in the future for cron trigger"),
+            @Parameter(name = "nextFireTimesLimitCount", schema = @Schema( implementation=String.class, type = "query"), description = "Limit size of nextFireTimes list"),
+    })
+	//@ApiImplicitParams({
+	//		@ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query",
+	//				value = "Results page you want to retrieve (0..N)"),
+	//		@ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query",
+	//				value = "Number of records per page."),
+	//		@ApiImplicitParam(name = "nextFireTimesLimitSeconds", dataTypeClass = String.class, paramType = "query",
+	//				value = "Limit number of seconds in the future for cron trigger"),
+	//		@ApiImplicitParam(name = "nextFireTimesLimitCount", dataTypeClass = String.class, paramType = "query",
+	//				value = "Limit size of nextFireTimes list"),
+	//})
 	public CollectionModel<?> findUpcomingTasks(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {

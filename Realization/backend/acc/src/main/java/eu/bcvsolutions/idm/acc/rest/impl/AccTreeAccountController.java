@@ -30,11 +30,11 @@ import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.api.service.ReadWriteDtoService;
 import eu.bcvsolutions.idm.core.security.api.domain.Enabled;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 
 /**
  * Tree node accounts on target system
@@ -45,12 +45,14 @@ import io.swagger.annotations.AuthorizationScope;
 @RestController
 @Enabled(AccModuleDescriptor.MODULE_ID)
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/tree-accounts")
-@Api(
-		value = AccTreeAccountController.TAG,
-		tags = { AccTreeAccountController.TAG },
-		description = "Assigned tree node accounts on target system",
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(
+		name = AccTreeAccountController.TAG,
+		
+		description = "Assigned tree node accounts on target system"//,
+		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
+//consumes = MediaType.APPLICATION_JSON_VALUE
+)
 public class AccTreeAccountController extends AbstractReadWriteDtoController<AccTreeAccountDto, AccTreeAccountFilter> {
 	protected static final String TAG = "Tree accounts";
 
@@ -63,16 +65,19 @@ public class AccTreeAccountController extends AbstractReadWriteDtoController<Acc
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.TREE_ACCOUNT_READ + "')")
-	@ApiOperation(
-			value = "Search tree accounts (/search/quick alias)", 
-			nickname = "searchTreeAccounts", 
-			tags = { AccTreeAccountController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.TREE_ACCOUNT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.TREE_ACCOUNT_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search tree accounts (/search/quick alias)", 
+			/* nickname = "searchTreeAccounts", */
+			tags = { AccTreeAccountController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.TREE_ACCOUNT_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.TREE_ACCOUNT_READ })
+        }
+    )
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
@@ -83,16 +88,19 @@ public class AccTreeAccountController extends AbstractReadWriteDtoController<Acc
 	@ResponseBody
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.TREE_ACCOUNT_READ + "')")
-	@ApiOperation(
-			value = "Search tree accounts", 
-			nickname = "searchQuickTreeAccounts", 
-			tags = { AccTreeAccountController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.TREE_ACCOUNT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.TREE_ACCOUNT_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search tree accounts", 
+			/* nickname = "searchQuickTreeAccounts", */
+			tags = { AccTreeAccountController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.TREE_ACCOUNT_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.TREE_ACCOUNT_READ })
+        }
+    )
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
@@ -102,19 +110,22 @@ public class AccTreeAccountController extends AbstractReadWriteDtoController<Acc
 	@Override
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.TREE_ACCOUNT_READ + "')")
-	@ApiOperation(
-			value = "Tree node account detail",
-			nickname = "getTreeNodeAccount",
-			response = AccTreeAccountDto.class,
-			tags = { AccTreeAccountController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.TREE_ACCOUNT_READ, description = "")	}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.TREE_ACCOUNT_READ, description = "")	})
-			})
+	@Operation(
+			summary = "Tree node account detail",
+			/* nickname = "getTreeNodeAccount", */
+			/* response = AccTreeAccountDto.class, */
+			tags = { AccTreeAccountController.TAG })
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							AccGroupPermission.TREE_ACCOUNT_READ	}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							AccGroupPermission.TREE_ACCOUNT_READ	})
+        }
+    )
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Tree node account's uuid identifier.", required = true)
+			@Parameter(name = "Tree node account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -123,19 +134,22 @@ public class AccTreeAccountController extends AbstractReadWriteDtoController<Acc
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.TREE_ACCOUNT_CREATE + "')"
 			+ "or hasAuthority('" + AccGroupPermission.TREE_ACCOUNT_UPDATE + "')")
-	@ApiOperation(
-			value = "Create / update tree node account",
-			nickname = "postTreeNodeAccount",
-			response = AccTreeAccountDto.class,
-			tags = { AccTreeAccountController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.TREE_ACCOUNT_CREATE, description = ""),
-							@AuthorizationScope(scope = AccGroupPermission.TREE_ACCOUNT_UPDATE, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.TREE_ACCOUNT_CREATE, description = ""),
-							@AuthorizationScope(scope = AccGroupPermission.TREE_ACCOUNT_UPDATE, description = "")})
-			})
+	@Operation(
+			summary = "Create / update tree node account",
+			/* nickname = "postTreeNodeAccount", */
+			/* response = AccTreeAccountDto.class, */
+			tags = { AccTreeAccountController.TAG })
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							AccGroupPermission.TREE_ACCOUNT_CREATE,
+							AccGroupPermission.TREE_ACCOUNT_UPDATE}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							AccGroupPermission.TREE_ACCOUNT_CREATE,
+							AccGroupPermission.TREE_ACCOUNT_UPDATE})
+        }
+    )
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<?> post(@RequestBody @NotNull AccTreeAccountDto dto) {
 		return super.post(dto);
@@ -145,19 +159,22 @@ public class AccTreeAccountController extends AbstractReadWriteDtoController<Acc
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.TREE_ACCOUNT_UPDATE + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
-	@ApiOperation(
-			value = "Update tree node account",
-			nickname = "putTreeNodeAccount",
-			response = AccTreeAccountDto.class,
-			tags = { AccTreeAccountController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.TREE_ACCOUNT_UPDATE, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.TREE_ACCOUNT_UPDATE, description = "")})
-			})
+	@Operation(
+			summary = "Update tree node account",
+			/* nickname = "putTreeNodeAccount", */
+			/* response = AccTreeAccountDto.class, */
+			tags = { AccTreeAccountController.TAG })
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							AccGroupPermission.TREE_ACCOUNT_UPDATE}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							AccGroupPermission.TREE_ACCOUNT_UPDATE})
+        }
+    )
 	public ResponseEntity<?> put(
-			@ApiParam(value = "Tree node's uuid identifier.", required = true)
+			@Parameter(name = "Tree node's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @NotNull AccTreeAccountDto dto) {
 		return super.put(backendId, dto);
@@ -167,18 +184,21 @@ public class AccTreeAccountController extends AbstractReadWriteDtoController<Acc
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.TREE_ACCOUNT_DELETE + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
-	@ApiOperation(
-			value = "Delete tree node account",
-			nickname = "deleteTreeNodeAccount",
-			tags = { AccTreeAccountController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.TREE_ACCOUNT_DELETE, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.TREE_ACCOUNT_DELETE, description = "")})
-			})
+	@Operation(
+			summary = "Delete tree node account",
+			/* nickname = "deleteTreeNodeAccount", */
+			tags = { AccTreeAccountController.TAG })
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							AccGroupPermission.TREE_ACCOUNT_DELETE}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							AccGroupPermission.TREE_ACCOUNT_DELETE})
+        }
+    )
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "Tree node's account uuid identifier", required = true)
+			@Parameter(name = "Tree node's account uuid identifier", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -187,18 +207,21 @@ public class AccTreeAccountController extends AbstractReadWriteDtoController<Acc
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.TREE_ACCOUNT_READ + "')")
-	@ApiOperation(
-			value = "What logged identity can do with given record", 
-			nickname = "getPermissionsOnTreeAccount", 
-			tags = { AccTreeAccountController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.TREE_ACCOUNT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.TREE_ACCOUNT_READ, description = "") })
-				})
+	@Operation(
+			summary = "What logged identity can do with given record", 
+			/* nickname = "getPermissionsOnTreeAccount", */
+			tags = { AccTreeAccountController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.TREE_ACCOUNT_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.TREE_ACCOUNT_READ })
+        }
+    )
 	public Set<String> getPermissions(
-			@ApiParam(value = "Tree account's uuid identifier.", required = true)
+			@Parameter(name = "Tree account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}

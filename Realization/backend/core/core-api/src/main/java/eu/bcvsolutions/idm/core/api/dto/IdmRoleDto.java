@@ -14,7 +14,7 @@ import eu.bcvsolutions.idm.core.api.domain.ExternalIdentifiable;
 import eu.bcvsolutions.idm.core.api.domain.Requestable;
 import eu.bcvsolutions.idm.core.api.domain.RoleType;
 import eu.bcvsolutions.idm.core.eav.api.dto.IdmFormDefinitionDto;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * DTO for role
@@ -27,19 +27,19 @@ public class IdmRoleDto extends FormableDto implements Disableable, Codeable, Ex
 
     private static final long serialVersionUID = 1L;
     //
-    @ApiModelProperty(notes = "Code with environment (baseCode - environment).")
+    @Schema(description = "Code with environment (baseCode - environment).")
     @Size(max = DefaultFieldLengths.NAME)
     private String code;
     @Size(max = DefaultFieldLengths.NAME)
-	@ApiModelProperty(notes = "Base code without environment.")
+	@Schema(description = "Base code without environment.")
     private String baseCode;
-    @ApiModelProperty(notes = "Environment.")
+    @Schema(description = "Environment.")
     @Size(max = DefaultFieldLengths.NAME)
     private String environment;
     @Size(max = DefaultFieldLengths.NAME)
     private String name;
     @Size(max = DefaultFieldLengths.NAME)
-	@ApiModelProperty(notes = "Unique external identifier.")
+	@Schema(description = "Unique external identifier.")
 	private String externalId;
     private boolean disabled;
     private boolean canBeRequested;

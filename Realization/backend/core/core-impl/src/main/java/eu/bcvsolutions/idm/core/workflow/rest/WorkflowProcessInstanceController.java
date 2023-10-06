@@ -24,9 +24,9 @@ import eu.bcvsolutions.idm.core.api.service.LookupService;
 import eu.bcvsolutions.idm.core.workflow.model.dto.WorkflowFilterDto;
 import eu.bcvsolutions.idm.core.workflow.model.dto.WorkflowProcessInstanceDto;
 import eu.bcvsolutions.idm.core.workflow.service.WorkflowProcessInstanceService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 
 /**
  * Rest controller for workflow instance processes
@@ -38,12 +38,14 @@ import io.swagger.annotations.ApiParam;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/workflow-processes")
-@Api(
-		value = WorkflowProcessInstanceController.TAG,  
-		tags = { WorkflowProcessInstanceController.TAG }, 
-		description = "Running WF processes",
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(
+		name = WorkflowProcessInstanceController.TAG,
+
+		description = "Running WF processes"//,
+		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
+//consumes = MediaType.APPLICATION_JSON_VALUE
+)
 public class WorkflowProcessInstanceController extends AbstractReadWriteDtoController<WorkflowProcessInstanceDto, WorkflowFilterDto> {
 
 	protected static final String TAG = "Workflow - process instances";
@@ -74,9 +76,9 @@ public class WorkflowProcessInstanceController extends AbstractReadWriteDtoContr
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/search/quick")
-	@ApiOperation(
-			value = "Search process instances", 
-			nickname = "searchQuickProcessInstances", 
+	@Operation(
+			summary = "Search process instances",
+			/* nickname = "searchQuickProcessInstances", */
 			tags = { WorkflowProcessInstanceController.TAG })
 	public CollectionModel<?> searchQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -85,12 +87,12 @@ public class WorkflowProcessInstanceController extends AbstractReadWriteDtoContr
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{backendId}")
-	@ApiOperation(
-			value = "Delete process instances", 
-			nickname = "deleteProcessInstances", 
+	@Operation(
+			summary = "Delete process instances",
+			/* nickname = "deleteProcessInstances", */
 			tags = { WorkflowProcessInstanceController.TAG })
 	public ResponseEntity<WorkflowProcessInstanceDto> delete(
-			@ApiParam(value = "Process instance id.", required = true)
+			@Parameter(name = "Process instance id.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return new ResponseEntity<WorkflowProcessInstanceDto>(
 				workflowProcessInstanceService.delete(backendId, null), HttpStatus.OK);

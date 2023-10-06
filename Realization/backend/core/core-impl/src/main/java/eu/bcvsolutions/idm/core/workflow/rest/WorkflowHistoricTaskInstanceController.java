@@ -38,9 +38,9 @@ import eu.bcvsolutions.idm.core.workflow.model.dto.WorkflowHistoricTaskInstanceD
 import eu.bcvsolutions.idm.core.workflow.model.dto.WorkflowTaskInstanceDto;
 import eu.bcvsolutions.idm.core.workflow.service.WorkflowHistoricTaskInstanceService;
 import eu.bcvsolutions.idm.core.workflow.service.WorkflowProcessInstanceService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 
 
 /**
@@ -53,12 +53,14 @@ import io.swagger.annotations.ApiParam;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/workflow-history-tasks")
-@Api(
-		value = WorkflowHistoricTaskInstanceController.TAG,
-		tags = {WorkflowHistoricTaskInstanceController.TAG},
-		description = "Read WF audit",
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(
+		name = WorkflowHistoricTaskInstanceController.TAG,
+		
+		description = "Read WF audit"//,
+		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
+//consumes = MediaType.APPLICATION_JSON_VALUE
+)
 public class WorkflowHistoricTaskInstanceController extends AbstractReadDtoController<WorkflowHistoricTaskInstanceDto, WorkflowFilterDto> {
 
 	protected static final String TAG = "Workflow - task instances history";
@@ -83,9 +85,9 @@ public class WorkflowHistoricTaskInstanceController extends AbstractReadDtoContr
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/search/quick")
-	@ApiOperation(
-			value = "Search historic task instances",
-			nickname = "searchQuickHistoricTaskInstances",
+	@Operation(
+			summary = "Search historic task instances",
+			/* nickname = "searchQuickHistoricTaskInstances", */
 			tags = {WorkflowHistoricTaskInstanceController.TAG})
 	public CollectionModel<?> searchQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -99,14 +101,14 @@ public class WorkflowHistoricTaskInstanceController extends AbstractReadDtoContr
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/{backendId}")
-	@ApiOperation(
-			value = "Historic task instance detail",
-			nickname = "getHistoricTaskInstance",
-			response = WorkflowHistoricTaskInstanceDto.class,
+	@Operation(
+			summary = "Historic task instance detail",
+			/* nickname = "getHistoricTaskInstance", */
+			/* response = WorkflowHistoricTaskInstanceDto.class, */
 			tags = {WorkflowHistoricTaskInstanceController.TAG})
 	@Override
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Historic task instance id.", required = true)
+			@Parameter(name = "Historic task instance id.", required = true)
 			@PathVariable String backendId) {
 		return super.get(backendId);
 	}

@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import eu.bcvsolutions.idm.core.security.api.domain.GuardedString;
 import eu.bcvsolutions.idm.core.security.api.domain.GuardedStringDeserializer;
 import eu.bcvsolutions.idm.core.security.api.domain.TwoFactorAuthenticationType;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Two factor registration confirmation.
@@ -20,17 +20,17 @@ import io.swagger.annotations.ApiModelProperty;
 public class TwoFactorRegistrationConfirmDto {
 
 	@NotNull
-	@ApiModelProperty(required = true, notes = "Two factor verification secret.")
+	@Schema(required = true, description = "Two factor verification secret.")
 	@JsonProperty(access = Access.WRITE_ONLY)
 	@JsonDeserialize(using = GuardedStringDeserializer.class)
 	private GuardedString verificationSecret;
 	@NotNull
-	@ApiModelProperty(required = true, notes = "Two factor authentication verify 6-digit code.", example = "123456")
+	@Schema(required = true, description = "Two factor authentication verify 6-digit code.", example = "123456")
 	@JsonProperty(access = Access.WRITE_ONLY)
 	@JsonDeserialize(using = GuardedStringDeserializer.class)
 	private GuardedString verificationCode;
 	@NotNull
-	@ApiModelProperty(required = true, notes = "Two factor authentication type.", example = "APPLICATION")
+	@Schema(required = true, description = "Two factor authentication type.", example = "APPLICATION")
 	private TwoFactorAuthenticationType twoFactorAuthenticationType;
 	
 	public GuardedString getVerificationSecret() {

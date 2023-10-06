@@ -33,11 +33,11 @@ import eu.bcvsolutions.idm.core.eav.api.event.IdentityProjectionEvent.IdentityPr
 import eu.bcvsolutions.idm.core.eav.api.service.IdentityProjectionManager;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 
 /**
  * Projection controller - get & post is supported only.
@@ -49,12 +49,14 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/identity-projection")
-@Api(
-		value = IdmIdentityProjectionController.TAG,  
-		tags = { IdmIdentityProjectionController.TAG }, 
-		description = "Operations with identity projection",
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(
+		name = IdmIdentityProjectionController.TAG,  
+		 
+		description = "Operations with identity projection"//,
+		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
+//consumes = MediaType.APPLICATION_JSON_VALUE
+)
 public class IdmIdentityProjectionController implements BaseDtoController<IdmIdentityProjectionDto> {
 
 	protected static final String TAG = "Identity projection";
@@ -65,19 +67,22 @@ public class IdmIdentityProjectionController implements BaseDtoController<IdmIde
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_READ + "')")
-	@ApiOperation(
-			value = "Identity projection detail", 
-			nickname = "getIdentityProjection", 
-			response = IdmIdentityProjectionDto.class, 
-			tags = { IdmIdentityProjectionController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "") })
-				})
+	@Operation(
+			summary = "Identity projection detail", 
+			/* nickname = "getIdentityProjection", */ 
+			/* response = IdmIdentityProjectionDto.class, */ 
+			tags = { IdmIdentityProjectionController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.IDENTITY_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.IDENTITY_READ })
+        }
+    )
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
+			@Parameter(name = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		IdmIdentityProjectionDto dto = getDto(backendId);
 		if (dto == null) {
@@ -95,19 +100,22 @@ public class IdmIdentityProjectionController implements BaseDtoController<IdmIde
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_CREATE + "')"
 			+ " or hasAuthority('" + CoreGroupPermission.IDENTITY_UPDATE + "')")
-	@ApiOperation(
-			value = "Create / update identity projection", 
-			nickname = "postIdentity", 
-			response = IdmIdentityProjectionDto.class, 
-			tags = { IdmIdentityProjectionController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_CREATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_UPDATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_CREATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_UPDATE, description = "")})
-				})
+	@Operation(
+			summary = "Create / update identity projection", 
+			/* nickname = "postIdentity", */ 
+			/* response = IdmIdentityProjectionDto.class, */ 
+			tags = { IdmIdentityProjectionController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.IDENTITY_CREATE,
+						CoreGroupPermission.IDENTITY_UPDATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.IDENTITY_CREATE,
+						CoreGroupPermission.IDENTITY_UPDATE})
+        }
+    )
 	public ResponseEntity<?> post(@Valid @RequestBody IdmIdentityProjectionDto dto) {
 		RepresentationModel resource = toModel(postDto(dto));
 		if (resource == null) {

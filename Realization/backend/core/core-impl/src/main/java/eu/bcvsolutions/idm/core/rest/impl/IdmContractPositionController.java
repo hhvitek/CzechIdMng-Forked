@@ -32,11 +32,11 @@ import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.api.service.IdmContractPositionService;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 
 /**
  * Contract position controller
@@ -46,12 +46,14 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/contract-positions")
-@Api(
-		value = IdmContractPositionController.TAG, 
-		description = "Operations with identity contract positions", 
-		tags = { IdmContractPositionController.TAG }, 
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(
+		name = IdmContractPositionController.TAG,
+		description = "Operations with identity contract positions"//, 
+
+		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
+//consumes = MediaType.APPLICATION_JSON_VALUE
+)
 public class IdmContractPositionController extends AbstractEventableDtoController<IdmContractPositionDto, IdmContractPositionFilter> {
 	
 	protected static final String TAG = "Contract positions";
@@ -65,16 +67,19 @@ public class IdmContractPositionController extends AbstractEventableDtoControlle
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTPOSITION_READ + "')")
-	@ApiOperation(
-			value = "Search contract positions (/search/quick alias)", 
-			nickname = "searchContractPositions", 
-			tags = { IdmContractPositionController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTPOSITION_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTPOSITION_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search contract positions (/search/quick alias)",
+			/* nickname = "searchContractPositions", */ 
+			tags = { IdmContractPositionController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.CONTRACTPOSITION_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.CONTRACTPOSITION_READ })
+        }
+    )
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
@@ -84,16 +89,19 @@ public class IdmContractPositionController extends AbstractEventableDtoControlle
 	@ResponseBody
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTPOSITION_READ + "')")
-	@ApiOperation(
-			value = "Search contract positions", 
-			nickname = "searchQuickContractPositions", 
-			tags = { IdmContractPositionController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTPOSITION_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTPOSITION_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search contract positions",
+			/* nickname = "searchQuickContractPositions", */ 
+			tags = { IdmContractPositionController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.CONTRACTPOSITION_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.CONTRACTPOSITION_READ })
+        }
+    )
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
@@ -103,16 +111,19 @@ public class IdmContractPositionController extends AbstractEventableDtoControlle
 	@ResponseBody
 	@RequestMapping(value = "/search/autocomplete", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTPOSITION_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "Autocomplete contract positions (selectbox usage)", 
-			nickname = "autocompleteContractPositions", 
-			tags = { IdmContractPositionController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTPOSITION_AUTOCOMPLETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTPOSITION_AUTOCOMPLETE, description = "") })
-				})
+	@Operation(
+			summary = "Autocomplete contract positions (selectbox usage)",
+			/* nickname = "autocompleteContractPositions", */ 
+			tags = { IdmContractPositionController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.CONTRACTPOSITION_AUTOCOMPLETE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.CONTRACTPOSITION_AUTOCOMPLETE })
+        }
+    )
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
@@ -123,16 +134,19 @@ public class IdmContractPositionController extends AbstractEventableDtoControlle
 	@ResponseBody
 	@RequestMapping(value = "/search/count", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTPOSITION_COUNT + "')")
-	@ApiOperation(
-			value = "The number of entities that match the filter", 
-			nickname = "countContractPositions", 
-			tags = { IdmContractPositionController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTPOSITION_COUNT, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTPOSITION_COUNT, description = "") })
-				})
+	@Operation(
+			summary = "The number of entities that match the filter",
+			/* nickname = "countContractPositions", */ 
+			tags = { IdmContractPositionController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.CONTRACTPOSITION_COUNT }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.CONTRACTPOSITION_COUNT })
+        }
+    )
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -141,19 +155,22 @@ public class IdmContractPositionController extends AbstractEventableDtoControlle
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTPOSITION_READ + "')")
-	@ApiOperation(
-			value = "Contract position detail", 
-			nickname = "getContractPosition", 
-			response = IdmContractPositionDto.class, 
-			tags = { IdmContractPositionController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTPOSITION_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTPOSITION_READ, description = "") })
-				})
+	@Operation(
+			summary = "Contract position detail",
+			/* nickname = "getContractPosition", */ 
+			/* response = IdmContractPositionDto.class, */ 
+			tags = { IdmContractPositionController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.CONTRACTPOSITION_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.CONTRACTPOSITION_READ })
+        }
+    )
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Contract position's uuid identifier.", required = true)
+			@Parameter(name = "Contract position's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -163,19 +180,22 @@ public class IdmContractPositionController extends AbstractEventableDtoControlle
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTPOSITION_CREATE + "')"
 			+ " or hasAuthority('" + CoreGroupPermission.CONTRACTPOSITION_UPDATE + "')")
-	@ApiOperation(
-			value = "Create / update contract position", 
-			nickname = "postContractPosition", 
-			response = IdmContractPositionDto.class, 
-			tags = { IdmContractPositionController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTPOSITION_CREATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTPOSITION_UPDATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTPOSITION_CREATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTPOSITION_UPDATE, description = "")})
-				})
+	@Operation(
+			summary = "Create / update contract position",
+			/* nickname = "postContractPosition", */ 
+			/* response = IdmContractPositionDto.class, */ 
+			tags = { IdmContractPositionController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.CONTRACTPOSITION_CREATE,
+						CoreGroupPermission.CONTRACTPOSITION_UPDATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.CONTRACTPOSITION_CREATE,
+						CoreGroupPermission.CONTRACTPOSITION_UPDATE})
+        }
+    )
 	public ResponseEntity<?> post(@Valid @RequestBody IdmContractPositionDto dto) {
 		return super.post(dto);
 	}
@@ -184,19 +204,22 @@ public class IdmContractPositionController extends AbstractEventableDtoControlle
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTPOSITION_UPDATE + "')")
-	@ApiOperation(
-			value = "Update contract position", 
-			nickname = "putContractPosition", 
-			response = IdmContractPositionDto.class, 
-			tags = { IdmContractPositionController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTPOSITION_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTPOSITION_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update contract position",
+			/* nickname = "putContractPosition", */ 
+			/* response = IdmContractPositionDto.class, */ 
+			tags = { IdmContractPositionController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.CONTRACTPOSITION_UPDATE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.CONTRACTPOSITION_UPDATE })
+        }
+    )
 	public ResponseEntity<?> put(
-			@ApiParam(value = "Contract position's uuid identifier.", required = true)
+			@Parameter(name = "Contract position's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmContractPositionDto dto) {
 		return super.put(backendId, dto);
@@ -206,19 +229,22 @@ public class IdmContractPositionController extends AbstractEventableDtoControlle
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PATCH)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTPOSITION_UPDATE + "')")
-	@ApiOperation(
-			value = "Update contract position", 
-			nickname = "patchContractPosition", 
-			response = IdmContractPositionDto.class, 
-			tags = { IdmContractPositionController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTPOSITION_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTPOSITION_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update contract position",
+			/* nickname = "patchContractPosition", */ 
+			/* response = IdmContractPositionDto.class, */ 
+			tags = { IdmContractPositionController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.CONTRACTPOSITION_UPDATE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.CONTRACTPOSITION_UPDATE })
+        }
+    )
 	public ResponseEntity<?> patch(
-			@ApiParam(value = "Contract position's uuid identifier.", required = true)
+			@Parameter(name = "Contract position's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -229,18 +255,21 @@ public class IdmContractPositionController extends AbstractEventableDtoControlle
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTPOSITION_DELETE + "')")
-	@ApiOperation(
-			value = "Delete contract position", 
-			nickname = "deleteContractPosition", 
-			tags = { IdmContractPositionController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTPOSITION_DELETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTPOSITION_DELETE, description = "") })
-				})
+	@Operation(
+			summary = "Delete contract position",
+			/* nickname = "deleteContractPosition", */ 
+			tags = { IdmContractPositionController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.CONTRACTPOSITION_DELETE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.CONTRACTPOSITION_DELETE })
+        }
+    )
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "Contract position's uuid identifier.", required = true)
+			@Parameter(name = "Contract position's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -249,18 +278,21 @@ public class IdmContractPositionController extends AbstractEventableDtoControlle
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTPOSITION_READ + "')")
-	@ApiOperation(
-			value = "What logged identity can do with given record", 
-			nickname = "getPermissionsOnContractPosition", 
-			tags = { IdmContractPositionController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTPOSITION_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTPOSITION_READ, description = "") })
-				})
+	@Operation(
+			summary = "What logged identity can do with given record",
+			/* nickname = "getPermissionsOnContractPosition", */ 
+			tags = { IdmContractPositionController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.CONTRACTPOSITION_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.CONTRACTPOSITION_READ })
+        }
+    )
 	public Set<String> getPermissions(
-			@ApiParam(value = "Contract position's uuid identifier.", required = true)
+			@Parameter(name = "Contract position's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}

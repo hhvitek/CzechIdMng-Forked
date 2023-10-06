@@ -10,8 +10,7 @@ import org.springframework.hateoas.server.core.Relation;
 import eu.bcvsolutions.idm.acc.dto.SysAttributeDifferenceDto;
 import eu.bcvsolutions.idm.core.api.domain.DefaultFieldLengths;
 import eu.bcvsolutions.idm.core.api.dto.AbstractDto;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * DTO for account object in virtual system with marked changes (against specific VS request)
@@ -20,16 +19,16 @@ import io.swagger.annotations.ApiModelProperty;
  *
  */
 @Relation(collectionRelation = "objects")
-@ApiModel(description = "Account object in virtual system with marked changes (against specific VS request)")
+@Schema(description = "Account object in virtual system with marked changes (against specific VS request)")
 public class VsConnectorObjectDto extends AbstractDto {
 
 	private static final long serialVersionUID = 1L;
 	
 	@NotEmpty
 	@Size(min = 1, max = DefaultFieldLengths.NAME)
-	@ApiModelProperty(required = true, notes = "Unique account identifier. UID on system and for connector.")
+	@Schema(required = true, description = "Unique account identifier. UID on system and for connector.")
 	private String uid;
-	@ApiModelProperty(required = false, notes = "Object attributes with mark changes")
+	@Schema(required = false, description = "Object attributes with mark changes")
 	private List<SysAttributeDifferenceDto> attributes;
 
 	public String getUid() {

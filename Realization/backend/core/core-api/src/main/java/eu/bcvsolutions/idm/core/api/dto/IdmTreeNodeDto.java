@@ -12,7 +12,7 @@ import eu.bcvsolutions.idm.core.api.domain.DefaultFieldLengths;
 import eu.bcvsolutions.idm.core.api.domain.Disableable;
 import eu.bcvsolutions.idm.core.api.domain.Embedded;
 import eu.bcvsolutions.idm.core.api.domain.ExternalIdentifiable;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Tree node dto
@@ -25,7 +25,7 @@ public class IdmTreeNodeDto extends FormableDto implements Disableable, External
     private static final long serialVersionUID = 1337282508070610164L;
     //
     @Size(max = DefaultFieldLengths.NAME)
-	@ApiModelProperty(notes = "Unique external identifier.")
+	@Schema(description = "Unique external identifier.")
 	private String externalId;
     @Size(min = 1, max = DefaultFieldLengths.NAME)
     private String code;

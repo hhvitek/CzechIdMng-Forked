@@ -33,11 +33,11 @@ import eu.bcvsolutions.idm.core.eav.api.dto.IdmCodeListDto;
 import eu.bcvsolutions.idm.core.eav.api.dto.filter.IdmCodeListFilter;
 import eu.bcvsolutions.idm.core.eav.api.service.IdmCodeListService;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 
 /**
  * Code lists
@@ -47,11 +47,11 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/code-lists")
-@Api(
-		value = IdmCodeListController.TAG, 
-		description = "Operations with code lists", 
-		tags = { IdmCodeListController.TAG }, 
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE)
+@Tag(
+		name = IdmCodeListController.TAG,
+		description = "Operations with code lists"
+		 
+		/*produces = BaseController.APPLICATION_HAL_JSON_VALUE*/)
 public class IdmCodeListController extends AbstractReadWriteDtoController<IdmCodeListDto, IdmCodeListFilter>  {
 
 	protected static final String TAG = "Code lists";
@@ -65,16 +65,19 @@ public class IdmCodeListController extends AbstractReadWriteDtoController<IdmCod
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CODE_LIST_READ + "')")
-	@ApiOperation(
-			value = "Search code lists (/search/quick alias)", 
-			nickname = "searchCodeLists",
-			tags = { IdmCodeListController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CODE_LIST_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CODE_LIST_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search code lists (/search/quick alias)",
+			/* nickname = "searchCodeLists", */
+			tags = { IdmCodeListController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.CODE_LIST_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.CODE_LIST_READ })
+        }
+    )
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
@@ -84,16 +87,19 @@ public class IdmCodeListController extends AbstractReadWriteDtoController<IdmCod
 	@ResponseBody
 	@RequestMapping(value= "/search/quick", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CODE_LIST_READ + "')")
-	@ApiOperation(
-			value = "Search code lists", 
-			nickname = "searchQuickCodeLists", 
-			tags = { IdmCodeListController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CODE_LIST_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CODE_LIST_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search code lists",
+			/* nickname = "searchQuickCodeLists", */ 
+			tags = { IdmCodeListController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.CODE_LIST_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.CODE_LIST_READ })
+        }
+    )
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
@@ -104,16 +110,19 @@ public class IdmCodeListController extends AbstractReadWriteDtoController<IdmCod
 	@ResponseBody
 	@RequestMapping(value = "/search/autocomplete", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CODE_LIST_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "Autocomplete code lists (selectbox usage)", 
-			nickname = "autocompleteCodeLists", 
-			tags = { IdmFormAttributeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CODE_LIST_AUTOCOMPLETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CODE_LIST_AUTOCOMPLETE, description = "") })
-				})
+	@Operation(
+			summary = "Autocomplete code lists (selectbox usage)",
+			/* nickname = "autocompleteCodeLists", */ 
+			tags = { IdmFormAttributeController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.CODE_LIST_AUTOCOMPLETE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.CODE_LIST_AUTOCOMPLETE })
+        }
+    )
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
@@ -124,16 +133,19 @@ public class IdmCodeListController extends AbstractReadWriteDtoController<IdmCod
 	@ResponseBody
 	@RequestMapping(value = "/search/count", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CODE_LIST_COUNT + "')")
-	@ApiOperation(
-			value = "The number of entities that match the filter", 
-			nickname = "countCodeLists", 
-			tags = { IdmFormAttributeController.TAG },
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CODE_LIST_COUNT, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CODE_LIST_COUNT, description = "") })
-				})
+	@Operation(
+			summary = "The number of entities that match the filter",
+			/* nickname = "countCodeLists", */ 
+			tags = { IdmFormAttributeController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.CODE_LIST_COUNT }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.CODE_LIST_COUNT })
+        }
+    )
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -142,19 +154,22 @@ public class IdmCodeListController extends AbstractReadWriteDtoController<IdmCod
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CODE_LIST_READ + "')")
-	@ApiOperation(
-			value = "Form definition detail", 
-			nickname = "getFormDefiniton", 
-			response = IdmCodeListDto.class, 
-			tags = { IdmCodeListController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CODE_LIST_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CODE_LIST_READ, description = "") })
-				})
+	@Operation(
+			summary = "Form definition detail",
+			/* nickname = "getFormDefiniton", */ 
+			/* response = IdmCodeListDto.class, */ 
+			tags = { IdmCodeListController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.CODE_LIST_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.CODE_LIST_READ })
+        }
+    )
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Code list's uuid identifier.", required = true)
+			@Parameter(name = "Code list's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -163,19 +178,22 @@ public class IdmCodeListController extends AbstractReadWriteDtoController<IdmCod
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CODE_LIST_CREATE + "') or hasAuthority('" + CoreGroupPermission.CODE_LIST_UPDATE + "')")
-	@ApiOperation(
-			value = "Create / update code list", 
-			nickname = "postCodeList", 
-			response = IdmCodeListDto.class, 
-			tags = { IdmCodeListController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CODE_LIST_CREATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.CODE_LIST_UPDATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CODE_LIST_CREATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.CODE_LIST_UPDATE, description = "")})
-				})
+	@Operation(
+			summary = "Create / update code list",
+			/* nickname = "postCodeList", */ 
+			/* response = IdmCodeListDto.class, */ 
+			tags = { IdmCodeListController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.CODE_LIST_CREATE,
+						CoreGroupPermission.CODE_LIST_UPDATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.CODE_LIST_CREATE,
+						CoreGroupPermission.CODE_LIST_UPDATE})
+        }
+    )
 	public ResponseEntity<?> post(@Valid @RequestBody IdmCodeListDto dto) {
 		return super.post(dto);
 	}
@@ -184,19 +202,22 @@ public class IdmCodeListController extends AbstractReadWriteDtoController<IdmCod
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CODE_LIST_UPDATE + "')")
-	@ApiOperation(
-			value = "Update code list",
-			nickname = "putCodeList", 
-			response = IdmCodeListDto.class, 
-			tags = { IdmCodeListController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CODE_LIST_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CODE_LIST_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update code list",
+			/* nickname = "putCodeList", */ 
+			/* response = IdmCodeListDto.class, */ 
+			tags = { IdmCodeListController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.CODE_LIST_UPDATE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.CODE_LIST_UPDATE })
+        }
+    )
 	public ResponseEntity<?> put(
-			@ApiParam(value = "Code list's uuid identifier", required = true)
+			@Parameter(name = "Code list's uuid identifier", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmCodeListDto dto) {
 		return super.put(backendId, dto);
@@ -206,19 +227,22 @@ public class IdmCodeListController extends AbstractReadWriteDtoController<IdmCod
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PATCH)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CODE_LIST_UPDATE + "')")
-	@ApiOperation(
-			value = "Patch code list", 
-			nickname = "patchCodeList", 
-			response = IdmCodeListDto.class, 
-			tags = { IdmCodeListController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CODE_LIST_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CODE_LIST_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Patch code list",
+			/* nickname = "patchCodeList", */ 
+			/* response = IdmCodeListDto.class, */ 
+			tags = { IdmCodeListController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.CODE_LIST_UPDATE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.CODE_LIST_UPDATE })
+        }
+    )
 	public ResponseEntity<?> patch(
-			@ApiParam(value = "Code list's uuid identifier", required = true)
+			@Parameter(name = "Code list's uuid identifier", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -229,18 +253,21 @@ public class IdmCodeListController extends AbstractReadWriteDtoController<IdmCod
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CODE_LIST_DELETE + "')")
-	@ApiOperation(
-			value = "Delete code list", 
-			nickname = "deleteCodeList", 
-			tags = { IdmCodeListController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CODE_LIST_DELETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CODE_LIST_DELETE, description = "") })
-				})
+	@Operation(
+			summary = "Delete code list",
+			/* nickname = "deleteCodeList", */ 
+			tags = { IdmCodeListController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.CODE_LIST_DELETE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.CODE_LIST_DELETE })
+        }
+    )
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "Code list's uuid identifier or code.", required = true)
+			@Parameter(name = "Code list's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -249,18 +276,21 @@ public class IdmCodeListController extends AbstractReadWriteDtoController<IdmCod
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CODE_LIST_READ + "')")
-	@ApiOperation(
-			value = "What logged identity can do with given record", 
-			nickname = "getPermissionsOnCodeList", 
-			tags = { IdmCodeListController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CODE_LIST_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CODE_LIST_READ, description = "") })
-				})
+	@Operation(
+			summary = "What logged identity can do with given record",
+			/* nickname = "getPermissionsOnCodeList", */ 
+			tags = { IdmCodeListController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.CODE_LIST_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.CODE_LIST_READ })
+        }
+    )
 	public Set<String> getPermissions(
-			@ApiParam(value = "Code list's uuid identifier.", required = true)
+			@Parameter(name = "Code list's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -268,16 +298,19 @@ public class IdmCodeListController extends AbstractReadWriteDtoController<IdmCod
 	@ResponseBody
 	@RequestMapping(value = "/bulk/actions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CODE_LIST_READ + "')")
-	@ApiOperation(
-			value = "Get available bulk actions", 
-			nickname = "availableBulkAction", 
-			tags = { IdmCodeListController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CODE_LIST_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CODE_LIST_READ, description = "") })
-				})
+	@Operation(
+			summary = "Get available bulk actions",
+			/* nickname = "availableBulkAction", */ 
+			tags = { IdmCodeListController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.CODE_LIST_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.CODE_LIST_READ })
+        }
+    )
 	public List<IdmBulkActionDto> getAvailableBulkActions() {
 		return super.getAvailableBulkActions();
 	}
@@ -285,17 +318,20 @@ public class IdmCodeListController extends AbstractReadWriteDtoController<IdmCod
 	@ResponseBody
 	@RequestMapping(path = "/bulk/action", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CODE_LIST_READ + "')")
-	@ApiOperation(
-			value = "Process bulk action for code lists", 
-			nickname = "bulkAction", 
-			response = IdmBulkActionDto.class, 
-			tags = { IdmCodeListController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CODE_LIST_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CODE_LIST_READ, description = "")})
-				})
+	@Operation(
+			summary = "Process bulk action for code lists",
+			/* nickname = "bulkAction", */ 
+			/* response = IdmBulkActionDto.class, */ 
+			tags = { IdmCodeListController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.CODE_LIST_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.CODE_LIST_READ})
+        }
+    )
 	public ResponseEntity<IdmBulkActionDto> bulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.bulkAction(bulkAction);
 	}
@@ -303,17 +339,20 @@ public class IdmCodeListController extends AbstractReadWriteDtoController<IdmCod
 	@ResponseBody
 	@RequestMapping(path = "/bulk/prevalidate", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CODE_LIST_READ + "')")
-	@ApiOperation(
-			value = "Prevalidate bulk action for code lists", 
-			nickname = "prevalidateBulkAction", 
-			response = IdmBulkActionDto.class, 
-			tags = { IdmCodeListController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CODE_LIST_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CODE_LIST_READ, description = "")})
-				})
+	@Operation(
+			summary = "Prevalidate bulk action for code lists",
+			/* nickname = "prevalidateBulkAction", */ 
+			/* response = IdmBulkActionDto.class, */ 
+			tags = { IdmCodeListController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.CODE_LIST_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.CODE_LIST_READ})
+        }
+    )
 	public ResponseEntity<ResultModels> prevalidateBulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.prevalidateBulkAction(bulkAction);
 	}

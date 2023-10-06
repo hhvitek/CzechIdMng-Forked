@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import eu.bcvsolutions.idm.core.security.api.domain.GuardedString;
 import eu.bcvsolutions.idm.core.security.api.domain.GuardedStringDeserializer;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -23,17 +23,17 @@ public class PasswordChangeDto implements Serializable {
     private static final long serialVersionUID = 8418885222359043739L;
     //
     @JsonDeserialize(using = GuardedStringDeserializer.class)
-    @ApiModelProperty(notes = "Current password.", dataType = "java.lang.String", example = "admin")
+    @Schema(description = "Current password.", type = "java.lang.String", example = "admin")
     private GuardedString oldPassword;
     @NotNull
     @JsonDeserialize(using = GuardedStringDeserializer.class)
-    @ApiModelProperty(required = true, notes = "New password.", dataType = "java.lang.String", example = "admin")
+    @Schema(required = true, description = "New password.", type = "java.lang.String", example = "admin")
     private GuardedString newPassword;
-    @ApiModelProperty(notes = "Change IdM password.")
+    @Schema(description = "Change IdM password.")
     private boolean idm = false; // change in idm
-    @ApiModelProperty(notes = "Change all identity's passwords on all target accounts (account's system has to support change password). IdM password is controlled by attribute 'idm' separatelly.")
+    @Schema(description = "Change all identity's passwords on all target accounts (account's system has to support change password). IdM password is controlled by attribute 'idm' separatelly.")
     private boolean all = false; // all - all target accounts
-    @ApiModelProperty(notes = "Selected AccAccounts uuids.")
+    @Schema(description = "Selected AccAccounts uuids.")
     private List<String> accounts; // selected AccAccounts uuids
     @JsonIgnore
     private ZonedDateTime maxPasswordAge = null; // max password age for new password, get by password policy

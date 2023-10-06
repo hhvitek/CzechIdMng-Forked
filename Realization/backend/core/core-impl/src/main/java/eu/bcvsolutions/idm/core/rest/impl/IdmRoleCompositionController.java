@@ -35,11 +35,11 @@ import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.api.service.IdmRoleCompositionService;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 
 /**
  * Role composition - defines business roles.
@@ -49,12 +49,14 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/role-compositions")
-@Api(
-		value = IdmRoleCompositionController.TAG, 
-		description = "Operations with role composition - defines business roles", 
-		tags = { IdmRoleCompositionController.TAG }, 
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(
+		name = IdmRoleCompositionController.TAG,
+		description = "Operations with role composition - defines business roles"//,
+
+		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
+//consumes = MediaType.APPLICATION_JSON_VALUE
+)
 public class IdmRoleCompositionController extends AbstractEventableDtoController<IdmRoleCompositionDto, IdmRoleCompositionFilter> {
 	
 	protected static final String TAG = "Role compositions - by roles";
@@ -68,16 +70,19 @@ public class IdmRoleCompositionController extends AbstractEventableDtoController
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECOMPOSITION_READ + "')")
-	@ApiOperation(
-			value = "Search role composition roles (/search/quick alias)", 
-			nickname = "searchRoleCompositions", 
-			tags = { IdmRoleCompositionController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECOMPOSITION_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECOMPOSITION_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search role composition roles (/search/quick alias)",
+			/* nickname = "searchRoleCompositions", */
+			tags = { IdmRoleCompositionController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.ROLECOMPOSITION_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.ROLECOMPOSITION_READ })
+        }
+    )
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
@@ -87,16 +92,19 @@ public class IdmRoleCompositionController extends AbstractEventableDtoController
 	@ResponseBody
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECOMPOSITION_READ + "')")
-	@ApiOperation(
-			value = "Search role composition roles", 
-			nickname = "searchQuickRoleCompositions", 
-			tags = { IdmRoleCompositionController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECOMPOSITION_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECOMPOSITION_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search role composition roles",
+			/* nickname = "searchQuickRoleCompositions", */
+			tags = { IdmRoleCompositionController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.ROLECOMPOSITION_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.ROLECOMPOSITION_READ })
+        }
+    )
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
@@ -106,16 +114,19 @@ public class IdmRoleCompositionController extends AbstractEventableDtoController
 	@ResponseBody
 	@RequestMapping(value = "/search/autocomplete", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECOMPOSITION_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "Autocomplete role composition roles (selectbox usage)", 
-			nickname = "autocompleteRoleCompositions", 
-			tags = { IdmRoleCompositionController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECOMPOSITION_AUTOCOMPLETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECOMPOSITION_AUTOCOMPLETE, description = "") })
-				})
+	@Operation(
+			summary = "Autocomplete role composition roles (selectbox usage)",
+			/* nickname = "autocompleteRoleCompositions", */
+			tags = { IdmRoleCompositionController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.ROLECOMPOSITION_AUTOCOMPLETE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.ROLECOMPOSITION_AUTOCOMPLETE })
+        }
+    )
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
@@ -126,16 +137,19 @@ public class IdmRoleCompositionController extends AbstractEventableDtoController
 	@ResponseBody
 	@RequestMapping(value = "/search/count", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECOMPOSITION_COUNT + "')")
-	@ApiOperation(
-			value = "The number of entities that match the filter", 
-			nickname = "countRoleCompositions", 
-			tags = { IdmRoleCompositionController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECOMPOSITION_COUNT, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECOMPOSITION_COUNT, description = "") })
-				})
+	@Operation(
+			summary = "The number of entities that match the filter",
+			/* nickname = "countRoleCompositions", */
+			tags = { IdmRoleCompositionController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.ROLECOMPOSITION_COUNT }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.ROLECOMPOSITION_COUNT })
+        }
+    )
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -144,19 +158,22 @@ public class IdmRoleCompositionController extends AbstractEventableDtoController
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECOMPOSITION_READ + "')")
-	@ApiOperation(
-			value = "Role composition role detail", 
-			nickname = "getRoleComposition", 
-			response = IdmRoleCompositionDto.class, 
-			tags = { IdmRoleCompositionController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECOMPOSITION_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECOMPOSITION_READ, description = "") })
-				})
+	@Operation(
+			summary = "Role composition role detail",
+			/* nickname = "getRoleComposition", */
+			/* response = IdmRoleCompositionDto.class, */ 
+			tags = { IdmRoleCompositionController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.ROLECOMPOSITION_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.ROLECOMPOSITION_READ })
+        }
+    )
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Role composition's uuid identifier.", required = true)
+			@Parameter(name = "Role composition's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -166,19 +183,22 @@ public class IdmRoleCompositionController extends AbstractEventableDtoController
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECOMPOSITION_CREATE + "')"
 			+ " or hasAuthority('" + CoreGroupPermission.ROLECOMPOSITION_UPDATE + "')")
-	@ApiOperation(
-			value = "Create / update role composition role", 
-			nickname = "postRoleComposition", 
-			response = IdmRoleCompositionDto.class, 
-			tags = { IdmRoleCompositionController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECOMPOSITION_CREATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECOMPOSITION_UPDATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECOMPOSITION_CREATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECOMPOSITION_UPDATE, description = "")})
-				})
+	@Operation(
+			summary = "Create / update role composition role",
+			/* nickname = "postRoleComposition", */
+			/* response = IdmRoleCompositionDto.class, */ 
+			tags = { IdmRoleCompositionController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.ROLECOMPOSITION_CREATE,
+						CoreGroupPermission.ROLECOMPOSITION_UPDATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.ROLECOMPOSITION_CREATE,
+						CoreGroupPermission.ROLECOMPOSITION_UPDATE})
+        }
+    )
 	public ResponseEntity<?> post(@Valid @RequestBody IdmRoleCompositionDto dto) {
 		return super.post(dto);
 	}
@@ -187,19 +207,22 @@ public class IdmRoleCompositionController extends AbstractEventableDtoController
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECOMPOSITION_UPDATE + "')")
-	@ApiOperation(
-			value = "Update role composition role", 
-			nickname = "putRoleComposition", 
-			response = IdmRoleCompositionDto.class, 
-			tags = { IdmRoleCompositionController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECOMPOSITION_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECOMPOSITION_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update role composition role",
+			/* nickname = "putRoleComposition", */
+			/* response = IdmRoleCompositionDto.class, */ 
+			tags = { IdmRoleCompositionController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.ROLECOMPOSITION_UPDATE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.ROLECOMPOSITION_UPDATE })
+        }
+    )
 	public ResponseEntity<?> put(
-			@ApiParam(value = "Role composition's uuid identifier.", required = true)
+			@Parameter(name = "Role composition's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmRoleCompositionDto dto) {
 		return super.put(backendId, dto);
@@ -209,19 +232,22 @@ public class IdmRoleCompositionController extends AbstractEventableDtoController
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PATCH)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECOMPOSITION_UPDATE + "')")
-	@ApiOperation(
-			value = "Update role composition role", 
-			nickname = "patchRoleComposition", 
-			response = IdmRoleCompositionDto.class, 
-			tags = { IdmRoleCompositionController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECOMPOSITION_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECOMPOSITION_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update role composition role",
+			/* nickname = "patchRoleComposition", */
+			/* response = IdmRoleCompositionDto.class, */ 
+			tags = { IdmRoleCompositionController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.ROLECOMPOSITION_UPDATE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.ROLECOMPOSITION_UPDATE })
+        }
+    )
 	public ResponseEntity<?> patch(
-			@ApiParam(value = "Role composition's uuid identifier.", required = true)
+			@Parameter(name = "Role composition's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -232,18 +258,21 @@ public class IdmRoleCompositionController extends AbstractEventableDtoController
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECOMPOSITION_DELETE + "')")
-	@ApiOperation(
-			value = "Delete role composition role", 
-			nickname = "deleteRoleComposition", 
-			tags = { IdmRoleCompositionController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECOMPOSITION_DELETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECOMPOSITION_DELETE, description = "") })
-				})
+	@Operation(
+			summary = "Delete role composition role",
+			/* nickname = "deleteRoleComposition", */
+			tags = { IdmRoleCompositionController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.ROLECOMPOSITION_DELETE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.ROLECOMPOSITION_DELETE })
+        }
+    )
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "Role composition's uuid identifier.", required = true)
+			@Parameter(name = "Role composition's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		super.delete(backendId);
 		//
@@ -254,18 +283,21 @@ public class IdmRoleCompositionController extends AbstractEventableDtoController
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECOMPOSITION_READ + "')")
-	@ApiOperation(
-			value = "What logged identity can do with given record", 
-			nickname = "getPermissionsOnRoleComposition", 
-			tags = { IdmRoleCompositionController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECOMPOSITION_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECOMPOSITION_READ, description = "") })
-				})
+	@Operation(
+			summary = "What logged identity can do with given record",
+			/* nickname = "getPermissionsOnRoleComposition", */
+			tags = { IdmRoleCompositionController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.ROLECOMPOSITION_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.ROLECOMPOSITION_READ })
+        }
+    )
 	public Set<String> getPermissions(
-			@ApiParam(value = "Role composition's uuid identifier.", required = true)
+			@Parameter(name = "Role composition's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -279,16 +311,19 @@ public class IdmRoleCompositionController extends AbstractEventableDtoController
 	@ResponseBody
 	@RequestMapping(value = "/bulk/actions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECOMPOSITION_READ + "')")
-	@ApiOperation(
-			value = "Get available bulk actions",
-			nickname = "availableBulkAction",
-			tags = { IdmRoleCompositionController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.ROLECOMPOSITION_READ, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.ROLECOMPOSITION_READ, description = "") })
-			})
+	@Operation(
+			summary = "Get available bulk actions",
+			/* nickname = "availableBulkAction", */
+			tags = { IdmRoleCompositionController.TAG })
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							CoreGroupPermission.ROLECOMPOSITION_READ }),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							CoreGroupPermission.ROLECOMPOSITION_READ })
+        }
+    )
 	public List<IdmBulkActionDto> getAvailableBulkActions() {
 		return super.getAvailableBulkActions();
 	}
@@ -303,17 +338,20 @@ public class IdmRoleCompositionController extends AbstractEventableDtoController
 	@ResponseBody
 	@RequestMapping(path = "/bulk/action", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECOMPOSITION_READ + "')")
-	@ApiOperation(
-			value = "Process bulk action for role composition",
-			nickname = "bulkAction",
-			response = IdmBulkActionDto.class,
-			tags = { IdmRoleCompositionController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.ROLECOMPOSITION_READ, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.ROLECOMPOSITION_READ, description = "")})
-			})
+	@Operation(
+			summary = "Process bulk action for role composition",
+			/* nickname = "bulkAction", */
+			/* response = IdmBulkActionDto.class, */
+			tags = { IdmRoleCompositionController.TAG })
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							CoreGroupPermission.ROLECOMPOSITION_READ}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							CoreGroupPermission.ROLECOMPOSITION_READ})
+        }
+    )
 	public ResponseEntity<IdmBulkActionDto> bulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.bulkAction(bulkAction);
 	}
@@ -328,17 +366,20 @@ public class IdmRoleCompositionController extends AbstractEventableDtoController
 	@ResponseBody
 	@RequestMapping(path = "/bulk/prevalidate", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECOMPOSITION_READ + "')")
-	@ApiOperation(
-			value = "Prevalidate bulk action for role compositions",
-			nickname = "prevalidateBulkAction",
-			response = IdmBulkActionDto.class,
-			tags = { IdmRoleCompositionController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.ROLECOMPOSITION_READ, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.ROLECOMPOSITION_READ, description = "")})
-			})
+	@Operation(
+			summary = "Prevalidate bulk action for role compositions",
+			/* nickname = "prevalidateBulkAction", */
+			/* response = IdmBulkActionDto.class, */
+			tags = { IdmRoleCompositionController.TAG })
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							CoreGroupPermission.ROLECOMPOSITION_READ}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							CoreGroupPermission.ROLECOMPOSITION_READ})
+        }
+    )
 	public ResponseEntity<ResultModels> prevalidateBulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.prevalidateBulkAction(bulkAction);
 	}
@@ -347,17 +388,20 @@ public class IdmRoleCompositionController extends AbstractEventableDtoController
 	@ResponseBody
 	@RequestMapping(path = "/bulk/preprocess", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECOMPOSITION_READ + "')")
-	@ApiOperation(
-			value = "Preprocess bulk action for role compositions",
-			nickname = "preprocessBulkAction",
-			response = IdmBulkActionDto.class,
-			tags = { IdmRoleCompositionController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.ROLECOMPOSITION_READ, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.ROLECOMPOSITION_READ, description = "")})
-			})
+	@Operation(
+			summary = "Preprocess bulk action for role compositions",
+			/* nickname = "preprocessBulkAction", */
+			/* response = IdmBulkActionDto.class, */
+			tags = { IdmRoleCompositionController.TAG })
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							CoreGroupPermission.ROLECOMPOSITION_READ}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							CoreGroupPermission.ROLECOMPOSITION_READ})
+        }
+    )
 	public ResponseEntity<IdmBulkActionDto> preprocessBulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.preprocessBulkAction(bulkAction);
 	}

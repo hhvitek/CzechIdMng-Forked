@@ -11,7 +11,7 @@ import eu.bcvsolutions.idm.core.api.domain.Embedded;
 import eu.bcvsolutions.idm.core.api.dto.AbstractDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmIdentityDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmRoleDto;
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * DTO for system-implementer in virtual system
@@ -20,7 +20,7 @@ import io.swagger.annotations.ApiModel;
  *
  */
 @Relation(collectionRelation = "implementers")
-@ApiModel(description = "Relation between virtual system and identity or role")
+@Schema(description = "Relation between virtual system and identity or role")
 public class VsSystemImplementerDto extends AbstractDto {
 
 	private static final long serialVersionUID = 1L;

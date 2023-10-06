@@ -26,11 +26,11 @@ import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.audit.entity.IdmLoggingEvent;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 
 /**
  * Controller for {@link IdmLoggingEvent} entity and their DTO.
@@ -41,12 +41,14 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/logging-events")
-@Api(
-		value = IdmLoggingEventController.TAG, 
-		description = "Read / search log from LOG4J", 
-		tags = { IdmLoggingEventController.TAG }, 
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(
+		name = IdmLoggingEventController.TAG, 
+		description = "Read / search log from LOG4J"//, 
+		 
+		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
+//consumes = MediaType.APPLICATION_JSON_VALUE
+)
 public class IdmLoggingEventController extends AbstractReadDtoController<IdmLoggingEventDto, IdmLoggingEventFilter> {
 
 	protected static final String TAG = "Logging events";
@@ -59,16 +61,19 @@ public class IdmLoggingEventController extends AbstractReadDtoController<IdmLogg
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUDIT_READ + "')")
 	@RequestMapping(value= "/search/quick", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Search logging events", 
-			nickname = "searchQuickLoggingEvents", 
-			tags = { IdmLoggingEventController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.AUDIT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.AUDIT_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search logging events",
+			/* nickname = "searchQuickLoggingEvents", */ 
+			tags = { IdmLoggingEventController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.AUDIT_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.AUDIT_READ })
+        }
+    )
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
@@ -79,19 +84,22 @@ public class IdmLoggingEventController extends AbstractReadDtoController<IdmLogg
 	@RequestMapping(method = RequestMethod.GET, value = "/{backendId}")
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUDIT_READ + "')")
 	@Override
-	@ApiOperation(
-			value = "Logging event detail", 
-			nickname = "getLoggingEvent", 
-			response = IdmLoggingEventDto.class, 
-			tags = { IdmLoggingEventController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.AUDIT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.AUDIT_READ, description = "") })
-				})
+	@Operation(
+			summary = "Logging event detail",
+			/* nickname = "getLoggingEvent", */ 
+			/* response = IdmLoggingEventDto.class, */ 
+			tags = { IdmLoggingEventController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.AUDIT_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.AUDIT_READ })
+        }
+    )
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Logging event's identifier.", required = true)
+			@Parameter(name = "Logging event's identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}

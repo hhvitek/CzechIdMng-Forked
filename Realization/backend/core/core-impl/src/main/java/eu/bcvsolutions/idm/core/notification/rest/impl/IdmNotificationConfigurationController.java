@@ -33,11 +33,11 @@ import eu.bcvsolutions.idm.core.notification.api.dto.NotificationConfigurationDt
 import eu.bcvsolutions.idm.core.notification.api.dto.filter.IdmNotificationConfigurationFilter;
 import eu.bcvsolutions.idm.core.notification.api.service.IdmNotificationConfigurationService;
 import eu.bcvsolutions.idm.core.notification.domain.NotificationGroupPermission;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 
 /**
  * Configuration for notification routing.
@@ -47,12 +47,14 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/notification-configurations")
-@Api(
-		value = IdmNotificationConfigurationController.TAG, 
-		description = "Configure message sending",
-		tags = { IdmNotificationConfigurationController.TAG }, 
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(
+		name = IdmNotificationConfigurationController.TAG, 
+		description = "Configure message sending"//,
+
+		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+
+//consumes = MediaType.APPLICATION_JSON_VALUE
+)
 public class IdmNotificationConfigurationController extends AbstractReadWriteDtoController<NotificationConfigurationDto, IdmNotificationConfigurationFilter> {
 
 	protected static final String TAG = "Notification configuration";
@@ -68,16 +70,19 @@ public class IdmNotificationConfigurationController extends AbstractReadWriteDto
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATIONCONFIGURATION_READ + "')")
-	@ApiOperation(
-			value = "Search notification configuration items (/search/quick alias)", 
-			nickname = "searchNotificationConfigurations", 
-			tags = { IdmNotificationConfigurationController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATIONCONFIGURATION_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATIONCONFIGURATION_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search notification configuration items (/search/quick alias)", 
+			/* nickname = "searchNotificationConfigurations", */ 
+			tags = { IdmNotificationConfigurationController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						NotificationGroupPermission.NOTIFICATIONCONFIGURATION_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						NotificationGroupPermission.NOTIFICATIONCONFIGURATION_READ })
+        }
+    )
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
@@ -87,16 +92,19 @@ public class IdmNotificationConfigurationController extends AbstractReadWriteDto
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATIONCONFIGURATION_READ + "')")
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Search notification configuration items", 
-			nickname = "searchQuickNotificationConfigurations", 
-			tags = { IdmNotificationConfigurationController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATIONCONFIGURATION_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATIONCONFIGURATION_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search notification configuration items", 
+			/* nickname = "searchQuickNotificationConfigurations", */ 
+			tags = { IdmNotificationConfigurationController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						NotificationGroupPermission.NOTIFICATIONCONFIGURATION_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						NotificationGroupPermission.NOTIFICATIONCONFIGURATION_READ })
+        }
+    )
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
@@ -107,19 +115,22 @@ public class IdmNotificationConfigurationController extends AbstractReadWriteDto
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATIONCONFIGURATION_READ + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Notification configuration item detail", 
-			nickname = "getNotificationConfiguration", 
-			response = NotificationConfigurationDto.class, 
-			tags = { IdmNotificationConfigurationController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATIONCONFIGURATION_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATIONCONFIGURATION_READ, description = "") })
-				})
+	@Operation(
+			summary = "Notification configuration item detail", 
+			/* nickname = "getNotificationConfiguration", */ 
+			/* response = NotificationConfigurationDto.class, */ 
+			tags = { IdmNotificationConfigurationController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						NotificationGroupPermission.NOTIFICATIONCONFIGURATION_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						NotificationGroupPermission.NOTIFICATIONCONFIGURATION_READ })
+        }
+    )
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Item's uuid identifier.", required = true)
+			@Parameter(name = "Item's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -129,19 +140,22 @@ public class IdmNotificationConfigurationController extends AbstractReadWriteDto
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATIONCONFIGURATION_CREATE + "')"
 			+ " or hasAuthority('" + NotificationGroupPermission.NOTIFICATIONCONFIGURATION_UPDATE + "')")
 	@RequestMapping(method = RequestMethod.POST)
-	@ApiOperation(
-			value = "Create / update notification configuration item", 
-			nickname = "postNotificationConfiguration", 
-			response = NotificationConfigurationDto.class, 
-			tags = { IdmNotificationConfigurationController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATIONCONFIGURATION_CREATE, description = ""),
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATIONCONFIGURATION_UPDATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATIONCONFIGURATION_CREATE, description = ""),
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATIONCONFIGURATION_UPDATE, description = "")})
-				})
+	@Operation(
+			summary = "Create / update notification configuration item", 
+			/* nickname = "postNotificationConfiguration", */ 
+			/* response = NotificationConfigurationDto.class, */ 
+			tags = { IdmNotificationConfigurationController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						NotificationGroupPermission.NOTIFICATIONCONFIGURATION_CREATE,
+						NotificationGroupPermission.NOTIFICATIONCONFIGURATION_UPDATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						NotificationGroupPermission.NOTIFICATIONCONFIGURATION_CREATE,
+						NotificationGroupPermission.NOTIFICATIONCONFIGURATION_UPDATE})
+        }
+    )
 	public ResponseEntity<?> post(@Valid @RequestBody @NotNull NotificationConfigurationDto dto) {
 		return super.post(dto);
 	}
@@ -150,19 +164,22 @@ public class IdmNotificationConfigurationController extends AbstractReadWriteDto
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATIONCONFIGURATION_UPDATE + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
-	@ApiOperation(
-			value = "Update notification configuration item", 
-			nickname = "putNotificationConfiguration", 
-			response = NotificationConfigurationDto.class, 
-			tags = { IdmNotificationConfigurationController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATIONCONFIGURATION_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATIONCONFIGURATION_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update notification configuration item", 
+			/* nickname = "putNotificationConfiguration", */ 
+			/* response = NotificationConfigurationDto.class, */ 
+			tags = { IdmNotificationConfigurationController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						NotificationGroupPermission.NOTIFICATIONCONFIGURATION_UPDATE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						NotificationGroupPermission.NOTIFICATIONCONFIGURATION_UPDATE })
+        }
+    )
 	public ResponseEntity<?> put(
-			@ApiParam(value = "Item's uuid identifier.", required = true)
+			@Parameter(name = "Item's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody @NotNull NotificationConfigurationDto dto){
 		return super.put(backendId, dto);
@@ -172,18 +189,21 @@ public class IdmNotificationConfigurationController extends AbstractReadWriteDto
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATIONCONFIGURATION_DELETE + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
-	@ApiOperation(
-			value = "Delete notification configuration item", 
-			nickname = "deleteNotificationConfiguration", 
-			tags = { IdmNotificationConfigurationController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATIONCONFIGURATION_DELETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATIONCONFIGURATION_DELETE, description = "") })
-				})
+	@Operation(
+			summary = "Delete notification configuration item", 
+			/* nickname = "deleteNotificationConfiguration", */ 
+			tags = { IdmNotificationConfigurationController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						NotificationGroupPermission.NOTIFICATIONCONFIGURATION_DELETE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						NotificationGroupPermission.NOTIFICATIONCONFIGURATION_DELETE })
+        }
+    )
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "Item's uuid identifier.", required = true)
+			@Parameter(name = "Item's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -195,11 +215,11 @@ public class IdmNotificationConfigurationController extends AbstractReadWriteDto
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/all/notification-types", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Supported notification (sender) type", 
-			nickname = "getSupportedNotificationTypes",
+	@Operation(
+			summary = "Supported notification (sender) type", 
+			/* nickname = "getSupportedNotificationTypes", */
 			tags = { IdmNotificationConfigurationController.TAG },
-			notes = "Returns registered senders notification types.")
+			description = "Returns registered senders notification types.")
 	public List<String> getSupportedNotificationTypes() {
 		Set<String> types = configurationService.getSupportedNotificationTypes();
 		List<String> results = Lists.newArrayList(types);

@@ -17,7 +17,7 @@ import eu.bcvsolutions.idm.core.api.domain.DefaultFieldLengths;
 import eu.bcvsolutions.idm.core.api.domain.Disableable;
 import eu.bcvsolutions.idm.core.api.domain.InstanceIdentifiable;
 import eu.bcvsolutions.idm.core.api.dto.AbstractDto;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Configured monitoring evaluator.
@@ -30,7 +30,7 @@ public class IdmMonitoringDto extends AbstractDto implements Disableable, Instan
 
 	private static final long serialVersionUID = 1L;
 	//
-	@ApiModelProperty(required = true, notes = "Monitoring code.")
+	@Schema(required = true, description = "Monitoring code.")
     @Size(max = DefaultFieldLengths.NAME)
     private String code;
 	@NotNull

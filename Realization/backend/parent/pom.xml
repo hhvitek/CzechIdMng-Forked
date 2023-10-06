@@ -428,28 +428,11 @@
 		</dependency>
 
 		<!-- Rest api documentation -->
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-boot-starter</artifactId>
-			<version>${swagger.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-bean-validators</artifactId>
-			<version>${swagger.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.github.swagger2markup</groupId>
-			<artifactId>swagger2markup</artifactId>
-			<version>${swagger2markup.version}</version>
-			<exclusions>
-				<!-- Unable to send emails see https://redmine.czechidm.com/issues/655 -->
-				<exclusion>
-					<groupId>javax.mail</groupId>
-					<artifactId>mailapi</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>1.7.0</version>
+        </dependency>
 
 		<!-- Excel -->
 		<dependency>

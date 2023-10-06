@@ -69,11 +69,11 @@ import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
 import eu.bcvsolutions.idm.core.security.api.utils.PermissionUtils;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 
 /**
  * EAV Form definitions.
@@ -83,11 +83,11 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/form-definitions")
-@Api(
-		value = IdmFormDefinitionController.TAG, 
-		description = "Operations with form definitions (eav)", 
-		tags = { IdmFormDefinitionController.TAG }, 
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE)
+@Tag(
+		name = IdmFormDefinitionController.TAG, 
+		description = "Operations with form definitions (eav)"
+
+		/*produces = BaseController.APPLICATION_HAL_JSON_VALUE*/)
 public class IdmFormDefinitionController extends AbstractReadWriteDtoController<IdmFormDefinitionDto, IdmFormDefinitionFilter>  {
 
 	protected static final String TAG = "Form definitions";
@@ -104,16 +104,19 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_DEFINITION_READ + "')")
-	@ApiOperation(
-			value = "Search form definitions (/search/quick alias)", 
-			nickname = "searchFormDefinitions",
-			tags = { IdmFormDefinitionController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search form definitions (/search/quick alias)", 
+			/* nickname = "searchFormDefinitions", */
+			tags = { IdmFormDefinitionController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.FORM_DEFINITION_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.FORM_DEFINITION_READ })
+        }
+    )
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
@@ -123,16 +126,19 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 	@ResponseBody
 	@RequestMapping(value= "/search/quick", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_DEFINITION_READ + "')")
-	@ApiOperation(
-			value = "Search form definitions", 
-			nickname = "searchQuickFormDefinitions", 
-			tags = { IdmFormDefinitionController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search form definitions", 
+			/* nickname = "searchQuickFormDefinitions", */ 
+			tags = { IdmFormDefinitionController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.FORM_DEFINITION_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.FORM_DEFINITION_READ })
+        }
+    )
 	@Override
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -144,16 +150,19 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 	@ResponseBody
 	@RequestMapping(value = "/search/autocomplete", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_DEFINITION_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "Autocomplete form definitions (selectbox usage)", 
-			nickname = "autocompleteFormDefinitions", 
-			tags = { IdmFormDefinitionController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_AUTOCOMPLETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_AUTOCOMPLETE, description = "") })
-				})
+	@Operation(
+			summary = "Autocomplete form definitions (selectbox usage)", 
+			/* nickname = "autocompleteFormDefinitions", */ 
+			tags = { IdmFormDefinitionController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.FORM_DEFINITION_AUTOCOMPLETE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.FORM_DEFINITION_AUTOCOMPLETE })
+        }
+    )
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
@@ -164,16 +173,19 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 	@ResponseBody
 	@RequestMapping(value = "/search/count", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_DEFINITION_COUNT + "')")
-	@ApiOperation(
-			value = "The number of entities that match the filter", 
-			nickname = "countFormDefinitions", 
-			tags = { IdmFormDefinitionController.TAG },
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_COUNT, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_COUNT, description = "") })
-				})
+	@Operation(
+			summary = "The number of entities that match the filter", 
+			/* nickname = "countFormDefinitions", */ 
+			tags = { IdmFormDefinitionController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.FORM_DEFINITION_COUNT }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.FORM_DEFINITION_COUNT })
+        }
+    )
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -182,19 +194,22 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_DEFINITION_READ + "')")
-	@ApiOperation(
-			value = "Form definition detail", 
-			nickname = "getFormDefiniton", 
-			response = IdmFormDefinitionDto.class, 
-			tags = { IdmFormDefinitionController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_READ, description = "") })
-				})
+	@Operation(
+			summary = "Form definition detail", 
+			/* nickname = "getFormDefiniton", */ 
+			/* response = IdmFormDefinitionDto.class, */ 
+			tags = { IdmFormDefinitionController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.FORM_DEFINITION_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.FORM_DEFINITION_READ })
+        }
+    )
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Definition's uuid identifier.", required = true)
+			@Parameter(name = "Definition's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -203,19 +218,22 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_DEFINITION_CREATE + "') or hasAuthority('" + CoreGroupPermission.FORM_DEFINITION_UPDATE + "')")
-	@ApiOperation(
-			value = "Create / update form definition", 
-			nickname = "postFormDefinition", 
-			response = IdmFormDefinitionDto.class, 
-			tags = { IdmFormDefinitionController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_CREATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_UPDATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_CREATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_UPDATE, description = "")})
-				})
+	@Operation(
+			summary = "Create / update form definition", 
+			/* nickname = "postFormDefinition", */ 
+			/* response = IdmFormDefinitionDto.class, */ 
+			tags = { IdmFormDefinitionController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.FORM_DEFINITION_CREATE,
+						CoreGroupPermission.FORM_DEFINITION_UPDATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.FORM_DEFINITION_CREATE,
+						CoreGroupPermission.FORM_DEFINITION_UPDATE})
+        }
+    )
 	public ResponseEntity<?> post(@Valid @RequestBody IdmFormDefinitionDto dto) {
 		return super.post(dto);
 	}
@@ -224,19 +242,22 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_DEFINITION_UPDATE + "')")
-	@ApiOperation(
-			value = "Update form definition",
-			nickname = "putFormDefinition", 
-			response = IdmFormDefinitionDto.class, 
-			tags = { IdmFormDefinitionController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update form definition",
+			/* nickname = "putFormDefinition", */ 
+			/* response = IdmFormDefinitionDto.class, */ 
+			tags = { IdmFormDefinitionController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.FORM_DEFINITION_UPDATE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.FORM_DEFINITION_UPDATE })
+        }
+    )
 	public ResponseEntity<?> put(
-			@ApiParam(value = "Form definition's uuid identifier", required = true)
+			@Parameter(name = "Form definition's uuid identifier", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmFormDefinitionDto dto) {
 		return super.put(backendId, dto);
@@ -246,19 +267,22 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PATCH)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_DEFINITION_UPDATE + "')")
-	@ApiOperation(
-			value = "Patch form definition", 
-			nickname = "patchFormDefinition", 
-			response = IdmFormDefinitionDto.class, 
-			tags = { IdmFormDefinitionController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Patch form definition", 
+			/* nickname = "patchFormDefinition", */ 
+			/* response = IdmFormDefinitionDto.class, */ 
+			tags = { IdmFormDefinitionController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.FORM_DEFINITION_UPDATE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.FORM_DEFINITION_UPDATE })
+        }
+    )
 	public ResponseEntity<?> patch(
-			@ApiParam(value = "Form definition's uuid identifier", required = true)
+			@Parameter(name = "Form definition's uuid identifier", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -269,18 +293,21 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_DEFINITION_DELETE + "')")
-	@ApiOperation(
-			value = "Delete form definition", 
-			nickname = "deleteFormDefinition", 
-			tags = { IdmFormDefinitionController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_DELETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_DELETE, description = "") })
-				})
+	@Operation(
+			summary = "Delete form definition", 
+			/* nickname = "deleteFormDefinition", */ 
+			tags = { IdmFormDefinitionController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.FORM_DEFINITION_DELETE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.FORM_DEFINITION_DELETE })
+        }
+    )
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "Form definition's uuid identifier or code.", required = true)
+			@Parameter(name = "Form definition's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -289,18 +316,21 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_DEFINITION_READ + "')")
-	@ApiOperation(
-			value = "What logged identity can do with given record", 
-			nickname = "getPermissionsOnFormDefinition", 
-			tags = { IdmFormDefinitionController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_READ, description = "") })
-				})
+	@Operation(
+			summary = "What logged identity can do with given record", 
+			/* nickname = "getPermissionsOnFormDefinition", */ 
+			tags = { IdmFormDefinitionController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.FORM_DEFINITION_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.FORM_DEFINITION_READ })
+        }
+    )
 	public Set<String> getPermissions(
-			@ApiParam(value = "Definition's uuid identifier.", required = true)
+			@Parameter(name = "Definition's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -308,17 +338,20 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 	@ResponseBody
 	@RequestMapping(value = "/search/types", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_DEFINITION_READ + "')")
-	@ApiOperation(
-			value = "Form definition owner types", 
-			nickname = "getFormDefinitionOwnerTypes", 
+	@Operation(
+			summary = "Form definition owner types", 
+			/* nickname = "getFormDefinitionOwnerTypes", */ 
 			tags = { IdmFormDefinitionController.TAG },
-			notes = "Returns all supported form definition owner types (FormableEntity descendants).", 
-			authorizations = { 
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_READ, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_READ, description = "") })
-					})
+			description = "Returns all supported form definition owner types (FormableEntity descendants).")
+    @SecurityRequirements(
+        value = {
+ 
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+							CoreGroupPermission.FORM_DEFINITION_READ }),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+							CoreGroupPermission.FORM_DEFINITION_READ })
+        }
+    )
 	public List<String> getOwnerTypes() {
 		return formService.getOwnerTypes();
 	}
@@ -331,16 +364,19 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 	@ResponseBody
 	@RequestMapping(value = "/bulk/actions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_DEFINITION_READ + "')")
-	@ApiOperation(
-			value = "Get available bulk actions for form definitions", 
-			nickname = "availableBulkAction", 
-			tags = { IdmFormDefinitionController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_READ, description = "") })
-				})
+	@Operation(
+			summary = "Get available bulk actions for form definitions", 
+			/* nickname = "availableBulkAction", */ 
+			tags = { IdmFormDefinitionController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.FORM_DEFINITION_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.FORM_DEFINITION_READ })
+        }
+    )
 	@Override
 	public List<IdmBulkActionDto> getAvailableBulkActions() {
 		return super.getAvailableBulkActions();
@@ -355,17 +391,20 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 	@ResponseBody
 	@RequestMapping(path = "/bulk/action", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_DEFINITION_READ + "')")
-	@ApiOperation(
-			value = "Process bulk action for form definition", 
-			nickname = "bulkAction", 
-			response = IdmBulkActionDto.class, 
-			tags = { IdmFormDefinitionController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_READ, description = "")})
-				})
+	@Operation(
+			summary = "Process bulk action for form definition", 
+			/* nickname = "bulkAction", */ 
+			/* response = IdmBulkActionDto.class, */ 
+			tags = { IdmFormDefinitionController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.FORM_DEFINITION_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.FORM_DEFINITION_READ})
+        }
+    )
 	@Override
 	public ResponseEntity<IdmBulkActionDto> bulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.bulkAction(bulkAction);
@@ -380,17 +419,20 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 	@ResponseBody
 	@RequestMapping(path = "/bulk/prevalidate", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_DEFINITION_READ + "')")
-	@ApiOperation(
-			value = "Prevalidate bulk action for form definition", 
-			nickname = "prevalidateBulkAction", 
-			response = IdmBulkActionDto.class, 
-			tags = { IdmFormDefinitionController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_READ, description = "")})
-				})
+	@Operation(
+			summary = "Prevalidate bulk action for form definition", 
+			/* nickname = "prevalidateBulkAction", */ 
+			/* response = IdmBulkActionDto.class, */ 
+			tags = { IdmFormDefinitionController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.FORM_DEFINITION_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.FORM_DEFINITION_READ})
+        }
+    )
 	@Override
 	public ResponseEntity<ResultModels> prevalidateBulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.prevalidateBulkAction(bulkAction);

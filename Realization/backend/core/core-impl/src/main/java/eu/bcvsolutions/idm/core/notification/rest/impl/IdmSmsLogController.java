@@ -25,11 +25,11 @@ import eu.bcvsolutions.idm.core.notification.api.dto.IdmSmsLogDto;
 import eu.bcvsolutions.idm.core.notification.api.dto.filter.IdmNotificationFilter;
 import eu.bcvsolutions.idm.core.notification.api.service.IdmSmsLogService;
 import eu.bcvsolutions.idm.core.notification.domain.NotificationGroupPermission;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 
 /**
  * Read sms logs
@@ -39,12 +39,14 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/notification-sms")
-@Api(
-		value = IdmSmsLogController.TAG, 
-		description = "Sms history", 
-		tags = { IdmSmsLogController.TAG }, 
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(
+		name = IdmSmsLogController.TAG, 
+		description = "Sms history"//, 
+		
+		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
+//consumes = MediaType.APPLICATION_JSON_VALUE
+)
 public class IdmSmsLogController extends AbstractReadDtoController<IdmSmsLogDto, IdmNotificationFilter> {
 
 	protected static final String TAG = "Notification logs - sms";
@@ -58,16 +60,19 @@ public class IdmSmsLogController extends AbstractReadDtoController<IdmSmsLogDto,
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATION_READ + "')")
-	@ApiOperation(
-			value = "Search sms logs (/search/quick alias)", 
-			nickname = "searchSmsLogs", 
-			tags = { IdmSmsLogController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATION_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATION_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search sms logs (/search/quick alias)", 
+			/* nickname = "searchSmsLogs", */ 
+			tags = { IdmSmsLogController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						NotificationGroupPermission.NOTIFICATION_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						NotificationGroupPermission.NOTIFICATION_READ })
+        }
+    )
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
@@ -77,16 +82,19 @@ public class IdmSmsLogController extends AbstractReadDtoController<IdmSmsLogDto,
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATION_READ + "')")
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Search sms logs", 
-			nickname = "searchQuickSmsLogs", 
-			tags = { IdmSmsLogController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATION_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATION_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search sms logs", 
+			/* nickname = "searchQuickSmsLogs", */ 
+			tags = { IdmSmsLogController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						NotificationGroupPermission.NOTIFICATION_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						NotificationGroupPermission.NOTIFICATION_READ })
+        }
+    )
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
@@ -97,19 +105,22 @@ public class IdmSmsLogController extends AbstractReadDtoController<IdmSmsLogDto,
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATION_READ + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Sms log detail", 
-			nickname = "getSmsLog", 
-			response = IdmSmsLogDto.class, 
-			tags = { IdmSmsLogController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATION_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATION_READ, description = "") })
-				})
+	@Operation(
+			summary = "Sms log detail", 
+			/* nickname = "getSmsLog", */ 
+			/* response = IdmSmsLogDto.class, */ 
+			tags = { IdmSmsLogController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						NotificationGroupPermission.NOTIFICATION_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						NotificationGroupPermission.NOTIFICATION_READ })
+        }
+    )
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Sms log's uuid identifier.", required = true)
+			@Parameter(name = "Sms log's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}

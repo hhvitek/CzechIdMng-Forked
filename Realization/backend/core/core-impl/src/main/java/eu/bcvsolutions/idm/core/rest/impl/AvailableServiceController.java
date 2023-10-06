@@ -21,10 +21,10 @@ import eu.bcvsolutions.idm.core.api.dto.filter.AvailableServiceFilter;
 import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.service.IdmScriptAuthorityService;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 
 /**
  * available service administration.
@@ -34,12 +34,14 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseController.BASE_PATH + "/available-service")
-@Api(
-		value = AvailableServiceController.TAG,
-		description = "Displays available services",
-		tags = { AvailableServiceController.TAG },
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(
+		name = AvailableServiceController.TAG,
+		description = "Displays available services"//,
+		
+		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
+//consumes = MediaType.APPLICATION_JSON_VALUE
+)
 public class AvailableServiceController  {
 
 	protected static final String TAG = "available service";
@@ -49,17 +51,20 @@ public class AvailableServiceController  {
 
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Find all available services",
-			nickname = "findAllAvailableServices",
+	@Operation(
+			summary = "Find all available services",
+			/* nickname = "findAllAvailableServices", */
 			tags = { AvailableServiceController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = CoreGroupPermission.MODULE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = CoreGroupPermission.MODULE_READ, description = "") })
-				},
-			notes = "Returns all available services.")
+						description = "Returns all available services.")
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.MODULE_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.MODULE_READ })
+        }
+    )
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters) {

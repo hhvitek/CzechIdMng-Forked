@@ -29,11 +29,11 @@ import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.api.service.IdmRoleFormAttributeService;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.rest.AbstractRequestDtoController;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 
 /**
  * Request controller for relation between role and definition of form-attribution. Is elementary part
@@ -44,12 +44,14 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/requests")
-@Api(
-		value = IdmRoleFormAttributeController.TAG, 
-		description = "Operations with role form attributes", 
-		tags = { IdmRoleFormAttributeController.TAG }, 
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(
+		name = IdmRoleFormAttributeController.TAG, 
+		description = "Operations with role form attributes"//, 
+		 
+		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
+//consumes = MediaType.APPLICATION_JSON_VALUE
+)
 public class IdmRequestRoleFormAttributeController extends AbstractRequestDtoController<IdmRoleFormAttributeDto, IdmRoleFormAttributeFilter> {
 	
 	protected static final String TAG = "Role attributes";
@@ -69,16 +71,19 @@ public class IdmRequestRoleFormAttributeController extends AbstractRequestDtoCon
 	@ResponseBody
 	@RequestMapping(value = "/{requestId}"+ REQUEST_SUB_PATH +   "/{requestId}"+ REQUEST_SUB_PATH , method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLEFORMATTRIBUTE_READ + "')")
-	@ApiOperation(
-			value = "Search role attributes (/search/quick alias)", 
-			nickname = "searchRoleFormAttributes", 
-			tags = { IdmRoleFormAttributeController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEFORMATTRIBUTE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEFORMATTRIBUTE_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search role attributes (/search/quick alias)",
+			/* nickname = "searchRoleFormAttributes", */
+			tags = { IdmRoleFormAttributeController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.ROLEFORMATTRIBUTE_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.ROLEFORMATTRIBUTE_READ })
+        }
+    )
 	public CollectionModel<?> find(
 			@PathVariable @NotNull String requestId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -89,16 +94,19 @@ public class IdmRequestRoleFormAttributeController extends AbstractRequestDtoCon
 	@ResponseBody
 	@RequestMapping(value = "/{requestId}"+ REQUEST_SUB_PATH +   "/search/quick", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLEFORMATTRIBUTE_READ + "')")
-	@ApiOperation(
-			value = "Search role attributes", 
-			nickname = "searchQuickRoleFormAttributes", 
-			tags = { IdmRoleFormAttributeController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEFORMATTRIBUTE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEFORMATTRIBUTE_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search role attributes",
+			/* nickname = "searchQuickRoleFormAttributes", */
+			tags = { IdmRoleFormAttributeController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.ROLEFORMATTRIBUTE_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.ROLEFORMATTRIBUTE_READ })
+        }
+    )
 	public CollectionModel<?> findQuick(
 			@PathVariable @NotNull String requestId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -109,16 +117,19 @@ public class IdmRequestRoleFormAttributeController extends AbstractRequestDtoCon
 	@ResponseBody
 	@RequestMapping(value = "/{requestId}"+ REQUEST_SUB_PATH +   "/search/autocomplete", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLEFORMATTRIBUTE_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "Autocomplete role attributes (selectbox usage)", 
-			nickname = "autocompleteRoleFormAttributes", 
-			tags = { IdmRoleFormAttributeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEFORMATTRIBUTE_AUTOCOMPLETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEFORMATTRIBUTE_AUTOCOMPLETE, description = "") })
-				})
+	@Operation(
+			summary = "Autocomplete role attributes (selectbox usage)",
+			/* nickname = "autocompleteRoleFormAttributes", */
+			tags = { IdmRoleFormAttributeController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.ROLEFORMATTRIBUTE_AUTOCOMPLETE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.ROLEFORMATTRIBUTE_AUTOCOMPLETE })
+        }
+    )
 	public CollectionModel<?> autocomplete(
 			@PathVariable @NotNull String requestId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -130,16 +141,19 @@ public class IdmRequestRoleFormAttributeController extends AbstractRequestDtoCon
 	@ResponseBody
 	@RequestMapping(value = "/{requestId}"+ REQUEST_SUB_PATH +   "/search/count", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLEFORMATTRIBUTE_COUNT + "')")
-	@ApiOperation(
-			value = "The number of entities that match the filter", 
-			nickname = "countRoleFormAttributes", 
-			tags = { IdmRoleFormAttributeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEFORMATTRIBUTE_COUNT, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEFORMATTRIBUTE_COUNT, description = "") })
-				})
+	@Operation(
+			summary = "The number of entities that match the filter",
+			/* nickname = "countRoleFormAttributes", */
+			tags = { IdmRoleFormAttributeController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.ROLEFORMATTRIBUTE_COUNT }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.ROLEFORMATTRIBUTE_COUNT })
+        }
+    )
 	public long count(@PathVariable @NotNull String requestId, @RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(requestId, parameters);
 	}
@@ -148,20 +162,23 @@ public class IdmRequestRoleFormAttributeController extends AbstractRequestDtoCon
 	@ResponseBody
 	@RequestMapping(value = "/{requestId}"+ REQUEST_SUB_PATH +   "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLEFORMATTRIBUTE_READ + "')")
-	@ApiOperation(
-			value = "Role attribute detail", 
-			nickname = "getRoleFormAttribute", 
-			response = IdmRoleFormAttributeDto.class, 
-			tags = { IdmRoleFormAttributeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEFORMATTRIBUTE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEFORMATTRIBUTE_READ, description = "") })
-				})
+	@Operation(
+			summary = "Role attribute detail",
+			/* nickname = "getRoleFormAttribute", */
+			/* response = IdmRoleFormAttributeDto.class, */ 
+			tags = { IdmRoleFormAttributeController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.ROLEFORMATTRIBUTE_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.ROLEFORMATTRIBUTE_READ })
+        }
+    )
 	public ResponseEntity<?> get(
 			@PathVariable @NotNull String requestId,
-			@ApiParam(value = "Role attribute's uuid identifier.", required = true)
+			@Parameter(name = "Role attribute's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(requestId, backendId);
 	}
@@ -171,19 +188,22 @@ public class IdmRequestRoleFormAttributeController extends AbstractRequestDtoCon
 	@RequestMapping(value = "/{requestId}"+ REQUEST_SUB_PATH, method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLEFORMATTRIBUTE_CREATE + "')"
 			+ " or hasAuthority('" + CoreGroupPermission.ROLEFORMATTRIBUTE_UPDATE + "')")
-	@ApiOperation(
-			value = "Create / update role attribute", 
-			nickname = "postRoleFormAttribute", 
-			response = IdmRoleFormAttributeDto.class, 
-			tags = { IdmRoleFormAttributeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEFORMATTRIBUTE_CREATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEFORMATTRIBUTE_UPDATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEFORMATTRIBUTE_CREATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEFORMATTRIBUTE_UPDATE, description = "")})
-				})
+	@Operation(
+			summary = "Create / update role attribute",
+			/* nickname = "postRoleFormAttribute", */
+			/* response = IdmRoleFormAttributeDto.class, */ 
+			tags = { IdmRoleFormAttributeController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.ROLEFORMATTRIBUTE_CREATE,
+						CoreGroupPermission.ROLEFORMATTRIBUTE_UPDATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.ROLEFORMATTRIBUTE_CREATE,
+						CoreGroupPermission.ROLEFORMATTRIBUTE_UPDATE})
+        }
+    )
 	public ResponseEntity<?> post(@PathVariable @NotNull String requestId, @Valid @RequestBody IdmRoleFormAttributeDto dto) {
 		return super.post(requestId, dto);
 	}
@@ -192,20 +212,23 @@ public class IdmRequestRoleFormAttributeController extends AbstractRequestDtoCon
 	@ResponseBody
 	@RequestMapping(value = "/{requestId}"+ REQUEST_SUB_PATH +   "/{backendId}", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLEFORMATTRIBUTE_UPDATE + "')")
-	@ApiOperation(
-			value = "Update role attribute", 
-			nickname = "putRoleFormAttribute", 
-			response = IdmRoleFormAttributeDto.class, 
-			tags = { IdmRoleFormAttributeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEFORMATTRIBUTE_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEFORMATTRIBUTE_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update role attribute",
+			/* nickname = "putRoleFormAttribute", */
+			/* response = IdmRoleFormAttributeDto.class, */ 
+			tags = { IdmRoleFormAttributeController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.ROLEFORMATTRIBUTE_UPDATE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.ROLEFORMATTRIBUTE_UPDATE })
+        }
+    )
 	public ResponseEntity<?> put(
 			@PathVariable @NotNull String requestId,
-			@ApiParam(value = "Role attribute's uuid identifier.", required = true)
+			@Parameter(name = "Role attribute's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmRoleFormAttributeDto dto) {
 		return super.put(requestId, backendId, dto);
@@ -215,19 +238,22 @@ public class IdmRequestRoleFormAttributeController extends AbstractRequestDtoCon
 	@ResponseBody
 	@RequestMapping(value = "/{requestId}"+ REQUEST_SUB_PATH +   "/{backendId}", method = RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLEFORMATTRIBUTE_DELETE + "')")
-	@ApiOperation(
-			value = "Delete role attribute", 
-			nickname = "deleteRoleFormAttribute", 
-			tags = { IdmRoleFormAttributeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEFORMATTRIBUTE_DELETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEFORMATTRIBUTE_DELETE, description = "") })
-				})
+	@Operation(
+			summary = "Delete role attribute",
+			/* nickname = "deleteRoleFormAttribute", */
+			tags = { IdmRoleFormAttributeController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.ROLEFORMATTRIBUTE_DELETE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.ROLEFORMATTRIBUTE_DELETE })
+        }
+    )
 	public ResponseEntity<?> delete(
 			@PathVariable @NotNull String requestId,
-			@ApiParam(value = "Role attribute's uuid identifier.", required = true)
+			@Parameter(name = "Role attribute's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(requestId, backendId);
 	}
@@ -236,19 +262,22 @@ public class IdmRequestRoleFormAttributeController extends AbstractRequestDtoCon
 	@ResponseBody
 	@RequestMapping(value = "/{requestId}"+ REQUEST_SUB_PATH +   "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLEFORMATTRIBUTE_READ + "')")
-	@ApiOperation(
-			value = "What logged identity can do with given record", 
-			nickname = "getPermissionsOnRoleFormAttribute", 
-			tags = { IdmRoleFormAttributeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEFORMATTRIBUTE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEFORMATTRIBUTE_READ, description = "") })
-				})
+	@Operation(
+			summary = "What logged identity can do with given record",
+			/* nickname = "getPermissionsOnRoleFormAttribute", */
+			tags = { IdmRoleFormAttributeController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.ROLEFORMATTRIBUTE_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.ROLEFORMATTRIBUTE_READ })
+        }
+    )
 	public Set<String> getPermissions(
 			@PathVariable @NotNull String requestId,
-			@ApiParam(value = "Role attribute's uuid identifier.", required = true)
+			@Parameter(name = "Role attribute's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(requestId, backendId);
 	}

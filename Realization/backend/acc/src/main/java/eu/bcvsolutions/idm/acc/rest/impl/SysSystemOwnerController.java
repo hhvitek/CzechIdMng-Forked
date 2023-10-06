@@ -34,11 +34,11 @@ import eu.bcvsolutions.idm.acc.service.api.SysSystemOwnerService;
 import eu.bcvsolutions.idm.core.api.config.swagger.SwaggerConfig;
 import eu.bcvsolutions.idm.core.api.rest.AbstractReadWriteDtoController;
 import eu.bcvsolutions.idm.core.api.rest.BaseController;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 
 /**
  * System owner controller
@@ -48,12 +48,14 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseController.BASE_PATH + "/system-owners")
-@Api(
-		value = SysSystemOwnerController.TAG, 
-		description = "Operations with identity system owners", 
-		tags = { SysSystemOwnerController.TAG }, 
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(
+		name = SysSystemOwnerController.TAG, 
+		description = "Operations with identity system owners"//, 
+		 
+		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
+//consumes = MediaType.APPLICATION_JSON_VALUE
+)
 public class SysSystemOwnerController extends AbstractReadWriteDtoController<SysSystemOwnerDto, SysSystemOwnerFilter> {
 	
 	protected static final String TAG = "System owners";
@@ -67,16 +69,19 @@ public class SysSystemOwnerController extends AbstractReadWriteDtoController<Sys
 	@ResponseBody
 	@GetMapping
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEMOWNER_READ + "')")
-	@ApiOperation(
-			value = "Search system owners (/search/quick alias)", 
-			nickname = "searchSystemOwners", 
-			tags = { SysSystemOwnerController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEMOWNER_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEMOWNER_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search system owners (/search/quick alias)",
+			/* nickname = "searchSystemOwners", */ 
+			tags = { SysSystemOwnerController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						AccGroupPermission.SYSTEMOWNER_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						AccGroupPermission.SYSTEMOWNER_READ })
+        }
+    )
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
@@ -87,16 +92,19 @@ public class SysSystemOwnerController extends AbstractReadWriteDtoController<Sys
 	@ResponseBody
 	@GetMapping(value = "/search/quick")
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEMOWNER_READ + "')")
-	@ApiOperation(
-			value = "Search system owners", 
-			nickname = "searchQuickSystemOwners", 
-			tags = { SysSystemOwnerController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEMOWNER_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEMOWNER_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search system owners",
+			/* nickname = "searchQuickSystemOwners", */ 
+			tags = { SysSystemOwnerController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						AccGroupPermission.SYSTEMOWNER_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						AccGroupPermission.SYSTEMOWNER_READ })
+        }
+    )
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
@@ -107,16 +115,19 @@ public class SysSystemOwnerController extends AbstractReadWriteDtoController<Sys
 	@ResponseBody
 	@GetMapping(value = "/search/autocomplete")
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEMOWNER_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "Autocomplete system owners (selectbox usage)",
-			nickname = "autocompleteSystemOwners",
-			tags = { SysSystemOwnerController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEMOWNER_AUTOCOMPLETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEMOWNER_AUTOCOMPLETE, description = "") })
-				})
+	@Operation(
+			summary = "Autocomplete system owners (selectbox usage)",
+			/* nickname = "autocompleteSystemOwners", */
+			tags = { SysSystemOwnerController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						AccGroupPermission.SYSTEMOWNER_AUTOCOMPLETE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						AccGroupPermission.SYSTEMOWNER_AUTOCOMPLETE })
+        }
+    )
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
@@ -127,16 +138,19 @@ public class SysSystemOwnerController extends AbstractReadWriteDtoController<Sys
 	@ResponseBody
 	@GetMapping(value = "/search/count")
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEMOWNER_COUNT + "')")
-	@ApiOperation(
-			value = "The number of entities that match the filter", 
-			nickname = "countSystemOwners",
-			tags = { SysSystemOwnerController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEMOWNER_COUNT, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEMOWNER_COUNT, description = "") })
-				})
+	@Operation(
+			summary = "The number of entities that match the filter",
+			/* nickname = "countSystemOwners", */
+			tags = { SysSystemOwnerController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						AccGroupPermission.SYSTEMOWNER_COUNT }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						AccGroupPermission.SYSTEMOWNER_COUNT })
+        }
+    )
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -145,19 +159,22 @@ public class SysSystemOwnerController extends AbstractReadWriteDtoController<Sys
 	@ResponseBody
 	@GetMapping(value = "/{backendId}")
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEMOWNER_READ + "')")
-	@ApiOperation(
-			value = "System owner detail",
-			nickname = "getSystemOwner",
-			response = SysSystemOwnerDto.class, 
-			tags = { SysSystemOwnerController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEMOWNER_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEMOWNER_READ, description = "") })
-				})
+	@Operation(
+			summary = "System owner detail",
+			/* nickname = "getSystemOwner", */
+			/* response = SysSystemOwnerDto.class, */ 
+			tags = { SysSystemOwnerController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						AccGroupPermission.SYSTEMOWNER_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						AccGroupPermission.SYSTEMOWNER_READ })
+        }
+    )
 	public ResponseEntity<?> get(
-			@ApiParam(value = "System owner's uuid identifier.", required = true)
+			@Parameter(name = "System owner's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -167,19 +184,22 @@ public class SysSystemOwnerController extends AbstractReadWriteDtoController<Sys
 	@PostMapping
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEMOWNER_CREATE + "')"
 			+ " or hasAuthority('" + AccGroupPermission.SYSTEMOWNER_UPDATE + "')")
-	@ApiOperation(
-			value = "Create / update system owner",
-			nickname = "postSystemOwner",
-			response = SysSystemOwnerDto.class, 
-			tags = { SysSystemOwnerController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEMOWNER_CREATE, description = ""),
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEMOWNER_UPDATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEMOWNER_CREATE, description = ""),
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEMOWNER_UPDATE, description = "")})
-				})
+	@Operation(
+			summary = "Create / update system owner",
+			/* nickname = "postSystemOwner", */
+			/* response = SysSystemOwnerDto.class, */ 
+			tags = { SysSystemOwnerController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						AccGroupPermission.SYSTEMOWNER_CREATE,
+						AccGroupPermission.SYSTEMOWNER_UPDATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						AccGroupPermission.SYSTEMOWNER_CREATE,
+						AccGroupPermission.SYSTEMOWNER_UPDATE})
+        }
+    )
 	public ResponseEntity<?> post(@Valid @RequestBody SysSystemOwnerDto dto) {
 		return super.post(dto);
 	}
@@ -188,19 +208,22 @@ public class SysSystemOwnerController extends AbstractReadWriteDtoController<Sys
 	@ResponseBody
 	@PutMapping(value = "/{backendId}")
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEMOWNER_UPDATE + "')")
-	@ApiOperation(
-			value = "Update system owner",
-			nickname = "putSystemOwner",
-			response = SysSystemOwnerDto.class, 
-			tags = { SysSystemOwnerController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEMOWNER_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEMOWNER_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update system owner",
+			/* nickname = "putSystemOwner", */
+			/* response = SysSystemOwnerDto.class, */ 
+			tags = { SysSystemOwnerController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						AccGroupPermission.SYSTEMOWNER_UPDATE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						AccGroupPermission.SYSTEMOWNER_UPDATE })
+        }
+    )
 	public ResponseEntity<?> put(
-			@ApiParam(value = "System owner's uuid identifier.", required = true)
+			@Parameter(name = "System owner's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody SysSystemOwnerDto dto) {
 		return super.put(backendId, dto);
@@ -210,19 +233,22 @@ public class SysSystemOwnerController extends AbstractReadWriteDtoController<Sys
 	@ResponseBody
 	@PatchMapping(value = "/{backendId}")
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEMOWNER_UPDATE + "')")
-	@ApiOperation(
-			value = "Update system owner",
-			nickname = "patchSystemOwner",
-			response = SysSystemOwnerDto.class, 
-			tags = { SysSystemOwnerController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEMOWNER_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEMOWNER_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update system owner",
+			/* nickname = "patchSystemOwner", */
+			/* response = SysSystemOwnerDto.class, */ 
+			tags = { SysSystemOwnerController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						AccGroupPermission.SYSTEMOWNER_UPDATE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						AccGroupPermission.SYSTEMOWNER_UPDATE })
+        }
+    )
 	public ResponseEntity<?> patch(
-			@ApiParam(value = "System owner's uuid identifier.", required = true)
+			@Parameter(name = "System owner's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -233,18 +259,21 @@ public class SysSystemOwnerController extends AbstractReadWriteDtoController<Sys
 	@ResponseBody
 	@DeleteMapping(value = "/{backendId}")
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEMOWNER_DELETE + "')")
-	@ApiOperation(
-			value = "Delete system owner",
-			nickname = "deleteSystemOwner",
-			tags = { SysSystemOwnerController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEMOWNER_DELETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEMOWNER_DELETE, description = "") })
-				})
+	@Operation(
+			summary = "Delete system owner",
+			/* nickname = "deleteSystemOwner", */
+			tags = { SysSystemOwnerController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						AccGroupPermission.SYSTEMOWNER_DELETE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						AccGroupPermission.SYSTEMOWNER_DELETE })
+        }
+    )
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "System owner's uuid identifier.", required = true)
+			@Parameter(name = "System owner's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -253,18 +282,21 @@ public class SysSystemOwnerController extends AbstractReadWriteDtoController<Sys
 	@ResponseBody
 	@GetMapping(value = "/{backendId}/permissions")
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEMOWNER_READ + "')")
-	@ApiOperation(
-			value = "What logged identity can do with given record", 
-			nickname = "getPermissionsOnSystemOwner",
-			tags = { SysSystemOwnerController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEMOWNER_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEMOWNER_READ, description = "") })
-				})
+	@Operation(
+			summary = "What logged identity can do with given record",
+			/* nickname = "getPermissionsOnSystemOwner", */
+			tags = { SysSystemOwnerController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						AccGroupPermission.SYSTEMOWNER_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						AccGroupPermission.SYSTEMOWNER_READ })
+        }
+    )
 	public Set<String> getPermissions(
-			@ApiParam(value = "System owner's uuid identifier.", required = true)
+			@Parameter(name = "System owner's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}

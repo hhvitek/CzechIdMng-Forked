@@ -36,11 +36,12 @@ import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.security.api.domain.Enabled;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+
 
 /**
  * Rest controller for standard CRUD operation for uniform password definitions,
@@ -53,12 +54,13 @@ import io.swagger.annotations.AuthorizationScope;;
 @RestController
 @Enabled(AccModuleDescriptor.MODULE_ID)
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/uniform-passwords")
-@Api(
-		value = AccUniformPasswordController.TAG, 
-		tags = AccUniformPasswordController.TAG, 
-		description = "Uniform password definitions and method for check a valid",
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(
+		name = AccUniformPasswordController.TAG,
+		description = "Uniform password definitions and method for check a valid"//,
+		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
+//consumes = MediaType.APPLICATION_JSON_VALUE
+)
 public class AccUniformPasswordController extends AbstractReadWriteDtoController<AccUniformPasswordDto, AccUniformPasswordFilter> {
 
 	@Autowired
@@ -75,16 +77,20 @@ public class AccUniformPasswordController extends AbstractReadWriteDtoController
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.UNIFORM_PASSWORD_READ + "')")
-	@ApiOperation(
-			value = "Search definition for uniform password (/search/quick alias)", 
-			nickname = "searchUniformPasswords",
-			tags = { AccUniformPasswordController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.UNIFORM_PASSWORD_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.UNIFORM_PASSWORD_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search definition for uniform password (/search/quick alias)"
+			/* nickname = "searchUniformPasswords", */
+
+			)
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.UNIFORM_PASSWORD_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.UNIFORM_PASSWORD_READ })
+        }
+    )
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
@@ -94,16 +100,19 @@ public class AccUniformPasswordController extends AbstractReadWriteDtoController
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.UNIFORM_PASSWORD_READ + "')")
 	@RequestMapping(value= "/search/quick", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Search definition for uniform password", 
-			nickname = "searchQuickUniformPasswords",
-			tags = { AccUniformPasswordController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.UNIFORM_PASSWORD_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.UNIFORM_PASSWORD_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search definition for uniform password", 
+			/* nickname = "searchQuickUniformPasswords", */
+			tags = { AccUniformPasswordController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.UNIFORM_PASSWORD_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.UNIFORM_PASSWORD_READ })
+        }
+    )
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
@@ -114,16 +123,19 @@ public class AccUniformPasswordController extends AbstractReadWriteDtoController
 	@ResponseBody
 	@RequestMapping(value = "/search/autocomplete", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.UNIFORM_PASSWORD_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "Autocomplete uniform passwords (selectbox usage)", 
-			nickname = "autocompleteUniformPasswords", 
-			tags = { AccUniformPasswordController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.UNIFORM_PASSWORD_AUTOCOMPLETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.UNIFORM_PASSWORD_AUTOCOMPLETE, description = "") })
-				})
+	@Operation(
+			summary = "Autocomplete uniform passwords (selectbox usage)", 
+			/* nickname = "autocompleteUniformPasswords", */
+			tags = { AccUniformPasswordController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.UNIFORM_PASSWORD_AUTOCOMPLETE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.UNIFORM_PASSWORD_AUTOCOMPLETE })
+        }
+    )
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
@@ -134,19 +146,22 @@ public class AccUniformPasswordController extends AbstractReadWriteDtoController
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.UNIFORM_PASSWORD_READ + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Uniform password detail", 
-			nickname = "getUniformPassword", 
-			response = AccUniformPasswordDto.class, 
-			tags = { AccUniformPasswordController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.UNIFORM_PASSWORD_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.UNIFORM_PASSWORD_READ, description = "") })
-				})
+	@Operation(
+			summary = "Uniform password detail", 
+			/* nickname = "getUniformPassword", */
+			/* response = AccUniformPasswordDto.class, */ 
+			tags = { AccUniformPasswordController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.UNIFORM_PASSWORD_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.UNIFORM_PASSWORD_READ })
+        }
+    )
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Uniform password's uuid identifier.", required = true)
+			@Parameter(name = "Uniform password's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -156,19 +171,22 @@ public class AccUniformPasswordController extends AbstractReadWriteDtoController
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.UNIFORM_PASSWORD_CREATE + "')"
 			+ " or hasAuthority('" + AccGroupPermission.UNIFORM_PASSWORD_UPDATE + "')")
 	@RequestMapping(method = RequestMethod.POST)
-	@ApiOperation(
-			value = "Create / update uniform password definition", 
-			nickname = "postUniformPassword", 
-			response = AccUniformPasswordDto.class, 
-			tags = { AccUniformPasswordController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.UNIFORM_PASSWORD_CREATE, description = ""),
-						@AuthorizationScope(scope = AccGroupPermission.UNIFORM_PASSWORD_UPDATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.UNIFORM_PASSWORD_CREATE, description = ""),
-						@AuthorizationScope(scope = AccGroupPermission.UNIFORM_PASSWORD_UPDATE, description = "")})
-				})
+	@Operation(
+			summary = "Create / update uniform password definition", 
+			/* nickname = "postUniformPassword", */
+			/* response = AccUniformPasswordDto.class, */ 
+			tags = { AccUniformPasswordController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.UNIFORM_PASSWORD_CREATE,
+						AccGroupPermission.UNIFORM_PASSWORD_UPDATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.UNIFORM_PASSWORD_CREATE,
+						AccGroupPermission.UNIFORM_PASSWORD_UPDATE})
+        }
+    )
 	public ResponseEntity<?> post(@RequestBody @NotNull AccUniformPasswordDto dto) {
 		return super.post(dto);
 	}
@@ -177,19 +195,22 @@ public class AccUniformPasswordController extends AbstractReadWriteDtoController
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.UNIFORM_PASSWORD_UPDATE + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
-	@ApiOperation(
-			value = "Update uniform password definition",
-			nickname = "putUniformPassword", 
-			response = AccUniformPasswordDto.class, 
-			tags = { AccUniformPasswordController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.UNIFORM_PASSWORD_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.UNIFORM_PASSWORD_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update uniform password definition",
+			/* nickname = "putUniformPassword", */
+			/* response = AccUniformPasswordDto.class, */ 
+			tags = { AccUniformPasswordController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.UNIFORM_PASSWORD_UPDATE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.UNIFORM_PASSWORD_UPDATE })
+        }
+    )
 	public ResponseEntity<?> put(
-			@ApiParam(value = "Uniform password's uuid identifier.", required = true)
+			@Parameter(name = "Uniform password's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @NotNull AccUniformPasswordDto dto) {
 		return super.put(backendId, dto);
@@ -199,19 +220,22 @@ public class AccUniformPasswordController extends AbstractReadWriteDtoController
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PATCH)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.UNIFORM_PASSWORD_UPDATE + "')")
-	@ApiOperation(
-			value = "Update uniform password definition", 
-			nickname = "patchUnifromPassword", 
-			response = AccUniformPasswordDto.class, 
-			tags = { AccUniformPasswordController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.UNIFORM_PASSWORD_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.UNIFORM_PASSWORD_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update uniform password definition", 
+			/* nickname = "patchUnifromPassword", */
+			/* response = AccUniformPasswordDto.class, */ 
+			tags = { AccUniformPasswordController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.UNIFORM_PASSWORD_UPDATE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.UNIFORM_PASSWORD_UPDATE })
+        }
+    )
 	public ResponseEntity<?> patch(
-			@ApiParam(value = "Uniform password's uuid identifier.", required = true)
+			@Parameter(name = "Uniform password's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -222,18 +246,21 @@ public class AccUniformPasswordController extends AbstractReadWriteDtoController
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.UNIFORM_PASSWORD_DELETE + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
-	@ApiOperation(
-			value = "Delete uniform password definition", 
-			nickname = "deleteUniformPassword", 
-			tags = { AccUniformPasswordController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.UNIFORM_PASSWORD_DELETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.UNIFORM_PASSWORD_DELETE, description = "") })
-				})
+	@Operation(
+			summary = "Delete uniform password definition", 
+			/* nickname = "deleteUniformPassword", */
+			tags = { AccUniformPasswordController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.UNIFORM_PASSWORD_DELETE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.UNIFORM_PASSWORD_DELETE })
+        }
+    )
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "Uniform password's uuid identifier.", required = true)
+			@Parameter(name = "Uniform password's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -242,18 +269,21 @@ public class AccUniformPasswordController extends AbstractReadWriteDtoController
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.UNIFORM_PASSWORD_READ + "')")
-	@ApiOperation(
-			value = "What logged identity can do with given record", 
-			nickname = "getPermissionsOnUniformPassword", 
-			tags = { AccUniformPasswordController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.UNIFORM_PASSWORD_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.UNIFORM_PASSWORD_READ, description = "") })
-				})
+	@Operation(
+			summary = "What logged identity can do with given record", 
+			/* nickname = "getPermissionsOnUniformPassword", */
+			tags = { AccUniformPasswordController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.UNIFORM_PASSWORD_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.UNIFORM_PASSWORD_READ })
+        }
+    )
 	public Set<String> getPermissions(
-			@ApiParam(value = "Uniform password's uuid identifier.", required = true)
+			@Parameter(name = "Uniform password's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -268,16 +298,19 @@ public class AccUniformPasswordController extends AbstractReadWriteDtoController
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ACCOUNT_READ + "')")
 	@RequestMapping(value= "/search/password-change-options/{identityIdentifier}", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Search available password change options for given identity. For call this method must be permissions for read account!", 
-			nickname = "searchPasswordChangeOptions",
-			tags = { AccUniformPasswordController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search available password change options for given identity. For call this method must be permissions for read account!", 
+			/* nickname = "searchPasswordChangeOptions", */
+			tags = { AccUniformPasswordController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.ACCOUNT_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.ACCOUNT_READ })
+        }
+    )
 	public CollectionModel<?> findPasswordChangeOptions(@PathVariable @NotNull String identityIdentifier) {
 
 		BaseDto identityDto = getLookupService().lookupDto(IdmIdentityDto.class, identityIdentifier);

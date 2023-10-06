@@ -25,11 +25,11 @@ import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.api.service.IdmConfidentialStorageValueService;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 
 /**
  * Confidential storage value controller
@@ -38,12 +38,14 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/confidential-storage-values")
-@Api(
-		value = IdmConfidentialStorageValueController.TAG,
-		description = "Confidential storage value",
-		tags = { IdmConfidentialStorageValueController.TAG },
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(
+		name = IdmConfidentialStorageValueController.TAG,
+		description = "Confidential storage value"//,
+
+		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
+//consumes = MediaType.APPLICATION_JSON_VALUE
+)
 public class IdmConfidentialStorageValueController
 		extends AbstractReadDtoController<IdmConfidentialStorageValueDto, IdmConfidentialStorageValueFilter> {
 
@@ -58,12 +60,17 @@ public class IdmConfidentialStorageValueController
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONFIDENTIAL_STORAGE_VALUE_READ + "')")
-	@ApiOperation(value = "Search confidential storage value items (/search/quick alias)", nickname = "searchConfidentialStorageValue", tags = {
-			IdmConfidentialStorageValueController.TAG }, authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.CONFIDENTIAL_STORAGE_VALUE_READ, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.CONFIDENTIAL_STORAGE_VALUE_READ, description = "") }) })
+	@Operation(summary = "Search confidential storage value items (/search/quick alias)", /* nickname = "searchConfidentialStorageValue", */ tags = {
+			IdmConfidentialStorageValueController.TAG })
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							CoreGroupPermission.CONFIDENTIAL_STORAGE_VALUE_READ }),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							CoreGroupPermission.CONFIDENTIAL_STORAGE_VALUE_READ })
+        }
+    )
 	public CollectionModel<?> find(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -73,12 +80,17 @@ public class IdmConfidentialStorageValueController
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONFIDENTIAL_STORAGE_VALUE_READ + "')")
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
-	@ApiOperation(value = "Search confidential storage value items", nickname = "searchConfidentailStorageValue", tags = {
-			IdmConfidentialStorageValueController.TAG }, authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.CONFIDENTIAL_STORAGE_VALUE_READ, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.CONFIDENTIAL_STORAGE_VALUE_READ, description = "") }) })
+	@Operation(summary = "Search confidential storage value items", /* nickname = "searchConfidentailStorageValue", */ tags = {
+			IdmConfidentialStorageValueController.TAG })
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							CoreGroupPermission.CONFIDENTIAL_STORAGE_VALUE_READ }),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							CoreGroupPermission.CONFIDENTIAL_STORAGE_VALUE_READ })
+        }
+    )
 	public CollectionModel<?> findQuick(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -88,14 +100,19 @@ public class IdmConfidentialStorageValueController
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONFIDENTIAL_STORAGE_VALUE_READ + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
-	@ApiOperation(value = "Confidential storage value item detail", nickname = "getConfidentailStorageValue", response = IdmConfidentialStorageValueDto.class, tags = {
-			IdmConfidentialStorageValueController.TAG }, authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.CONFIDENTIAL_STORAGE_VALUE_READ, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.CONFIDENTIAL_STORAGE_VALUE_READ, description = "") }) })
+	@Operation(summary = "Confidential storage value item detail", /* nickname = "getConfidentailStorageValue", */ /* response = IdmConfidentialStorageValueDto.class, */ tags = {
+			IdmConfidentialStorageValueController.TAG })
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							CoreGroupPermission.CONFIDENTIAL_STORAGE_VALUE_READ }),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							CoreGroupPermission.CONFIDENTIAL_STORAGE_VALUE_READ })
+        }
+    )
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Item's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
+			@Parameter(name = "Item's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
 }

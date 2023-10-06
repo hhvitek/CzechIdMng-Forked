@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -57,11 +57,12 @@ import eu.bcvsolutions.idm.ic.exception.IcRemoteServerException;
 import eu.bcvsolutions.idm.ic.exception.IcServerNotFoundException;
 import eu.bcvsolutions.idm.ic.service.api.IcConfigurationFacade;
 import eu.bcvsolutions.idm.ic.service.api.IcConfigurationService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+
 
 /**
  * Remote server with connectors.
@@ -72,12 +73,13 @@ import io.swagger.annotations.AuthorizationScope;;
 @RestController
 @Enabled(AccModuleDescriptor.MODULE_ID)
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/remote-servers")
-@Api(
-		value = SysRemoteServerController.TAG, 
-		tags = SysRemoteServerController.TAG, 
-		description = "Remote server with connectors",
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(
+		name = SysRemoteServerController.TAG,
+		description = "Remote server with connectors"//,
+		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
+//consumes = MediaType.APPLICATION_JSON_VALUE
+)
 public class SysRemoteServerController extends AbstractReadWriteDtoController<SysConnectorServerDto, SysRemoteServerFilter> {
 
 	protected static final String TAG = "Remote servers";
@@ -98,16 +100,20 @@ public class SysRemoteServerController extends AbstractReadWriteDtoController<Sy
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.REMOTESERVER_READ + "')")
-	@ApiOperation(
-			value = "Search remote servers (/search/quick alias)", 
-			nickname = "searchRemoteServers",
-			tags = { SysRemoteServerController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_READ, description = "")})
-				})
+	@Operation(
+			summary = "Search remote servers (/search/quick alias)"
+			/* nickname = "searchRemoteServers", */
+			 
+			)
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						AccGroupPermission.REMOTESERVER_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						AccGroupPermission.REMOTESERVER_READ})
+        }
+    )
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
@@ -117,16 +123,19 @@ public class SysRemoteServerController extends AbstractReadWriteDtoController<Sy
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.REMOTESERVER_READ + "')")
 	@RequestMapping(value= "/search/quick", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Search remote servers", 
-			nickname = "searchQuickRemoteServers",
-			tags = { SysRemoteServerController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_READ, description = "")})
-				})
+	@Operation(
+			summary = "Search remote servers",
+			/* nickname = "searchQuickRemoteServers", */
+			tags = { SysRemoteServerController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						AccGroupPermission.REMOTESERVER_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						AccGroupPermission.REMOTESERVER_READ})
+        }
+    )
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
@@ -137,16 +146,19 @@ public class SysRemoteServerController extends AbstractReadWriteDtoController<Sy
 	@ResponseBody
 	@RequestMapping(value = "/search/autocomplete", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.REMOTESERVER_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "Autocomplete remote servers (selectbox usage)",
-			nickname = "autocompleteRemoteServers",
-			tags = { SysRemoteServerController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_AUTOCOMPLETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_AUTOCOMPLETE, description = "") })
-				})
+	@Operation(
+			summary = "Autocomplete remote servers (selectbox usage)",
+			/* nickname = "autocompleteRemoteServers", */
+			tags = { SysRemoteServerController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.REMOTESERVER_AUTOCOMPLETE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.REMOTESERVER_AUTOCOMPLETE })
+        }
+    )
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
@@ -157,16 +169,19 @@ public class SysRemoteServerController extends AbstractReadWriteDtoController<Sy
 	@ResponseBody
 	@RequestMapping(value = "/search/count", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.REMOTESERVER_COUNT + "')")
-	@ApiOperation(
-			value = "The number of entities that match the filter",
-			nickname = "countRemoteServers",
-			tags = { SysRemoteServerController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_COUNT, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_COUNT, description = "") })
-				})
+	@Operation(
+			summary = "The number of entities that match the filter",
+			/* nickname = "countRemoteServers", */
+			tags = { SysRemoteServerController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.REMOTESERVER_COUNT }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.REMOTESERVER_COUNT })
+        }
+    )
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -175,19 +190,22 @@ public class SysRemoteServerController extends AbstractReadWriteDtoController<Sy
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.REMOTESERVER_READ + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Remote server detail", 
-			nickname = "getRemoteServer", 
-			response = SysConnectorServerDto.class, 
-			tags = { SysRemoteServerController.TAG }, 
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_READ, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_READ, description = "")})
-					})
+	@Operation(
+			summary = "Remote server detail",
+			/* nickname = "getRemoteServer", */ 
+			/* response = SysConnectorServerDto.class, */ 
+			tags = { SysRemoteServerController.TAG })
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+							AccGroupPermission.REMOTESERVER_READ}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+							AccGroupPermission.REMOTESERVER_READ})
+        }
+    )
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Remote server's uuid identifier.", required = true)
+			@Parameter(name = "Remote server's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -197,19 +215,22 @@ public class SysRemoteServerController extends AbstractReadWriteDtoController<Sy
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.REMOTESERVER_CREATE + "')"
 			+ " or hasAuthority('" + AccGroupPermission.REMOTESERVER_UPDATE + "')")
 	@RequestMapping(method = RequestMethod.POST)
-	@ApiOperation(
-			value = "Create / update remote server", 
-			nickname = "postRemoteServer", 
-			response = SysConnectorServerDto.class, 
-			tags = { SysRemoteServerController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_CREATE, description = ""),
-						@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_UPDATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_CREATE, description = ""),
-						@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_UPDATE, description = "")})
-				})
+	@Operation(
+			summary = "Create / update remote server",
+			/* nickname = "postRemoteServer", */ 
+			/* response = SysConnectorServerDto.class, */ 
+			tags = { SysRemoteServerController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						AccGroupPermission.REMOTESERVER_CREATE,
+						AccGroupPermission.REMOTESERVER_UPDATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						AccGroupPermission.REMOTESERVER_CREATE,
+						AccGroupPermission.REMOTESERVER_UPDATE})
+        }
+    )
 	public ResponseEntity<?> post(@RequestBody @NotNull SysConnectorServerDto dto) {
 		return super.post(dto);
 	}
@@ -218,19 +239,22 @@ public class SysRemoteServerController extends AbstractReadWriteDtoController<Sy
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.REMOTESERVER_UPDATE + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
-	@ApiOperation(
-			value = "Update remote server",
-			nickname = "putRemoteServer", 
-			response = SysConnectorServerDto.class, 
-			tags = { SysRemoteServerController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update remote server",
+			/* nickname = "putRemoteServer", */ 
+			/* response = SysConnectorServerDto.class, */ 
+			tags = { SysRemoteServerController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						AccGroupPermission.REMOTESERVER_UPDATE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						AccGroupPermission.REMOTESERVER_UPDATE })
+        }
+    )
 	public ResponseEntity<?> put(
-			@ApiParam(value = "Remote server's uuid identifier.", required = true)
+			@Parameter(name = "Remote server's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @NotNull SysConnectorServerDto dto) {
 		return super.put(backendId, dto);
@@ -240,19 +264,22 @@ public class SysRemoteServerController extends AbstractReadWriteDtoController<Sy
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PATCH)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.REMOTESERVER_UPDATE + "')")
-	@ApiOperation(
-			value = "Patch remote server",
-			nickname = "patchRemote server",
-			response = SysConnectorServerDto.class,
-			tags = { SysRemoteServerController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Patch remote server",
+			/* nickname = "patchRemote server", */
+			/* response = SysConnectorServerDto.class, */
+			tags = { SysRemoteServerController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.REMOTESERVER_UPDATE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.REMOTESERVER_UPDATE })
+        }
+    )
 	public ResponseEntity<?> patch(
-			@ApiParam(value = "Remote server uuid identifier.", required = true)
+			@Parameter(name = "Remote server uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -263,18 +290,21 @@ public class SysRemoteServerController extends AbstractReadWriteDtoController<Sy
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.REMOTESERVER_DELETE + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
-	@ApiOperation(
-			value = "Delete remote server", 
-			nickname = "deleteRemoteServer", 
-			tags = { SysRemoteServerController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_DELETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_DELETE, description = "") })
-				})
+	@Operation(
+			summary = "Delete remote server",
+			/* nickname = "deleteRemoteServer", */ 
+			tags = { SysRemoteServerController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						AccGroupPermission.REMOTESERVER_DELETE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						AccGroupPermission.REMOTESERVER_DELETE })
+        }
+    )
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "Remote server's uuid identifier.", required = true)
+			@Parameter(name = "Remote server's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -284,20 +314,23 @@ public class SysRemoteServerController extends AbstractReadWriteDtoController<Sy
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.REMOTESERVER_READ + "')"
 			+ " or hasAuthority('" + AccGroupPermission.REMOTESERVER_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "What logged identity can do with given record",
-			nickname = "getPermissionsOnRemoteServer",
-			tags = { SysRemoteServerController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_READ, description = ""),
-						@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_AUTOCOMPLETE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_READ, description = ""),
-						@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_AUTOCOMPLETE, description = "")})
-				})
+	@Operation(
+			summary = "What logged identity can do with given record",
+			/* nickname = "getPermissionsOnRemoteServer", */
+			tags = { SysRemoteServerController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.REMOTESERVER_READ,
+						AccGroupPermission.REMOTESERVER_AUTOCOMPLETE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.REMOTESERVER_READ,
+						AccGroupPermission.REMOTESERVER_AUTOCOMPLETE})
+        }
+    )
 	public Set<String> getPermissions(
-			@ApiParam(value = "Remote server uuid identifier.", required = true)
+			@Parameter(name = "Remote server uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -306,16 +339,19 @@ public class SysRemoteServerController extends AbstractReadWriteDtoController<Sy
 	@ResponseBody
 	@RequestMapping(value = "/bulk/actions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.REMOTESERVER_READ + "')")
-	@ApiOperation(
-			value = "Get available bulk actions",
-			nickname = "availableBulkAction",
-			tags = { SysRemoteServerController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_READ, description = "") })
-				})
+	@Operation(
+			summary = "Get available bulk actions",
+			/* nickname = "availableBulkAction", */
+			tags = { SysRemoteServerController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.REMOTESERVER_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.REMOTESERVER_READ })
+        }
+    )
 	public List<IdmBulkActionDto> getAvailableBulkActions() {
 		return super.getAvailableBulkActions();
 	}
@@ -324,17 +360,20 @@ public class SysRemoteServerController extends AbstractReadWriteDtoController<Sy
 	@ResponseBody
 	@RequestMapping(path = "/bulk/action", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.REMOTESERVER_READ + "')")
-	@ApiOperation(
-			value = "Process bulk action for remote server",
-			nickname = "bulkAction",
-			response = IdmBulkActionDto.class,
-			tags = { SysRemoteServerController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_READ, description = "")})
-				})
+	@Operation(
+			summary = "Process bulk action for remote server",
+			/* nickname = "bulkAction", */
+			/* response = IdmBulkActionDto.class, */
+			tags = { SysRemoteServerController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.REMOTESERVER_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.REMOTESERVER_READ})
+        }
+    )
 	public ResponseEntity<IdmBulkActionDto> bulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.bulkAction(bulkAction);
 	}
@@ -343,17 +382,20 @@ public class SysRemoteServerController extends AbstractReadWriteDtoController<Sy
 	@ResponseBody
 	@RequestMapping(path = "/bulk/prevalidate", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.REMOTESERVER_READ + "')")
-	@ApiOperation(
-			value = "Prevalidate bulk action for remote server",
-			nickname = "prevalidateBulkAction",
-			response = IdmBulkActionDto.class,
-			tags = { SysRemoteServerController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_READ, description = "")})
-				})
+	@Operation(
+			summary = "Prevalidate bulk action for remote server",
+			/* nickname = "prevalidateBulkAction", */
+			/* response = IdmBulkActionDto.class, */
+			tags = { SysRemoteServerController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.REMOTESERVER_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.REMOTESERVER_READ})
+        }
+    )
 	public ResponseEntity<ResultModels> prevalidateBulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.prevalidateBulkAction(bulkAction);
 	}
@@ -363,19 +405,22 @@ public class SysRemoteServerController extends AbstractReadWriteDtoController<Sy
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/{backendId}/frameworks")
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.REMOTESERVER_READ + "')")
-	@ApiOperation(
-			value = "Get available connectors",
-			nickname = "getAvailableConnectors",
+	@Operation(
+			summary = "Get available connectors",
+			/* nickname = "getAvailableConnectors", */
 			tags = { SysRemoteServerController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_READ, description = "") })
-				},
-			notes = "Available connector frameworks with connectors on remote connector server.")
+						description = "Available connector frameworks with connectors on remote connector server.")
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.REMOTESERVER_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.REMOTESERVER_READ })
+        }
+    )
 	public ResponseEntity<Map<String, Set<IcConnectorInfo>>> getConnectorFrameworks(
-			@ApiParam(value = "Remote server uuid identifier or code.", required = true)
+			@Parameter(name = "Remote server uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysConnectorServerDto connectorServer = getDto(backendId);
 		if (connectorServer == null) {
@@ -413,18 +458,21 @@ public class SysRemoteServerController extends AbstractReadWriteDtoController<Sy
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET, value = "/{backendId}/connector-types")
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.REMOTESERVER_READ + "')")
-	@ApiOperation(
-			value = "Get supported connector types",
-			nickname = "getConnectorTypes",
-			tags = {SysRemoteServerController.TAG},
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_READ, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.REMOTESERVER_READ, description = "")})
-			})
+	@Operation(
+			summary = "Get supported connector types",
+			/* nickname = "getConnectorTypes", */
+			tags = {SysRemoteServerController.TAG})
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							AccGroupPermission.REMOTESERVER_READ}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							AccGroupPermission.REMOTESERVER_READ})
+        }
+    )
 	public CollectionModel<ConnectorTypeDto> getConnectorTypes(
-			@ApiParam(value = "Remote server uuid identifier or code.", required = true)
+			@Parameter(name = "Remote server uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysConnectorServerDto connectorServer = getDto(backendId);
 		if (connectorServer == null) {

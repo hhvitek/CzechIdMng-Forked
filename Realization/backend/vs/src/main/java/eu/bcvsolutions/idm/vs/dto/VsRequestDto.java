@@ -24,8 +24,7 @@ import eu.bcvsolutions.idm.ic.api.IcConnectorConfiguration;
 import eu.bcvsolutions.idm.ic.api.IcConnectorObject;
 import eu.bcvsolutions.idm.vs.domain.VsOperationType;
 import eu.bcvsolutions.idm.vs.domain.VsRequestState;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * DTO for request in virtual system
@@ -34,19 +33,19 @@ import io.swagger.annotations.ApiModelProperty;
  *
  */
 @Relation(collectionRelation = "requests")
-@ApiModel(description = "Request in virtual system")
+@Schema(description = "Request in virtual system")
 public class VsRequestDto extends AbstractDto implements ExternalIdentifiable {
 
 	private static final long serialVersionUID = 1L;
 
 	@NotEmpty
 	@Size(min = 1, max = DefaultFieldLengths.NAME)
-	@ApiModelProperty(required = true, notes = "Unique account identifier. UID on system and for connector.")
+	@Schema(required = true, description = "Unique account identifier. UID on system and for connector.")
 	private String uid;
-	@ApiModelProperty(required = true, notes = "CzechIdM system identifier. UID on system and for connector.")
+	@Schema(required = true, description = "CzechIdM system identifier. UID on system and for connector.")
 	@Embedded(dtoClass = SysSystemDto.class)
 	private UUID system;
-	@ApiModelProperty(required = true, notes = "Connector identifier. UID on system and for connector.")
+	@Schema(required = true, description = "Connector identifier. UID on system and for connector.")
 	private String connectorKey;
 	private VsOperationType operationType;
 	@NotNull
@@ -65,7 +64,7 @@ public class VsRequestDto extends AbstractDto implements ExternalIdentifiable {
 	// ID of request, without DB relation on the request -> Request can be null or doesn't have to exist!
     private UUID roleRequestId;
     @Size(max = DefaultFieldLengths.NAME)
-	@ApiModelProperty(notes = "Unique external identifier.")
+	@Schema(description = "Unique external identifier.")
 	private String externalId;
 	@JsonProperty(access = Access.READ_ONLY)
 	private BaseDto targetEntity;

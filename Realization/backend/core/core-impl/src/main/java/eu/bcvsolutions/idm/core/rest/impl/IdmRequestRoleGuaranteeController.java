@@ -29,11 +29,11 @@ import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.api.service.IdmRoleGuaranteeService;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.rest.AbstractRequestDtoController;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 
 /**
  * Request for role guarantee controller
@@ -43,12 +43,14 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/requests")
-@Api(
-		value = IdmRequestRoleGuaranteeController.TAG, 
-		description = "Operations with identity role guarantees", 
-		tags = { IdmRequestRoleGuaranteeController.TAG }, 
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(
+		name = IdmRequestRoleGuaranteeController.TAG,
+		description = "Operations with identity role guarantees"//, 
+		 
+		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
+//consumes = MediaType.APPLICATION_JSON_VALUE
+)
 public class IdmRequestRoleGuaranteeController extends AbstractRequestDtoController<IdmRoleGuaranteeDto, IdmRoleGuaranteeFilter> {
 	
 	protected static final String TAG = "Role guarantees";
@@ -68,16 +70,19 @@ public class IdmRequestRoleGuaranteeController extends AbstractRequestDtoControl
 	@ResponseBody
 	@RequestMapping(value = "/{requestId}"+ REQUEST_SUB_PATH , method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLEGUARANTEE_READ + "')")
-	@ApiOperation(
-			value = "Search role guarantees (/search/quick alias)", 
-			nickname = "searchRoleGuarantees", 
-			tags = { IdmRequestRoleGuaranteeController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEGUARANTEE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEGUARANTEE_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search role guarantees (/search/quick alias)",
+			/* nickname = "searchRoleGuarantees", */ 
+			tags = { IdmRequestRoleGuaranteeController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.ROLEGUARANTEE_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.ROLEGUARANTEE_READ })
+        }
+    )
 	public CollectionModel<?> find(
 			@PathVariable @NotNull String requestId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -88,16 +93,19 @@ public class IdmRequestRoleGuaranteeController extends AbstractRequestDtoControl
 	@ResponseBody
 	@RequestMapping(value = "/{requestId}"+ REQUEST_SUB_PATH +  "/search/quick", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLEGUARANTEE_READ + "')")
-	@ApiOperation(
-			value = "Search role guarantees", 
-			nickname = "searchQuickRoleGuarantees", 
-			tags = { IdmRequestRoleGuaranteeController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEGUARANTEE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEGUARANTEE_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search role guarantees",
+			/* nickname = "searchQuickRoleGuarantees", */ 
+			tags = { IdmRequestRoleGuaranteeController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.ROLEGUARANTEE_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.ROLEGUARANTEE_READ })
+        }
+    )
 	public CollectionModel<?> findQuick(
 			@PathVariable @NotNull String requestId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -108,16 +116,19 @@ public class IdmRequestRoleGuaranteeController extends AbstractRequestDtoControl
 	@ResponseBody
 	@RequestMapping(value = "/{requestId}"+ REQUEST_SUB_PATH +  "/search/autocomplete", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLEGUARANTEE_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "Autocomplete role guarantees (selectbox usage)", 
-			nickname = "autocompleteRoleGuarantees", 
-			tags = { IdmRequestRoleGuaranteeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEGUARANTEE_AUTOCOMPLETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEGUARANTEE_AUTOCOMPLETE, description = "") })
-				})
+	@Operation(
+			summary = "Autocomplete role guarantees (selectbox usage)",
+			/* nickname = "autocompleteRoleGuarantees", */ 
+			tags = { IdmRequestRoleGuaranteeController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.ROLEGUARANTEE_AUTOCOMPLETE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.ROLEGUARANTEE_AUTOCOMPLETE })
+        }
+    )
 	public CollectionModel<?> autocomplete(
 			@PathVariable @NotNull String requestId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -129,16 +140,19 @@ public class IdmRequestRoleGuaranteeController extends AbstractRequestDtoControl
 	@ResponseBody
 	@RequestMapping(value = "/{requestId}"+ REQUEST_SUB_PATH +  "/search/count", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLEGUARANTEE_COUNT + "')")
-	@ApiOperation(
-			value = "The number of entities that match the filter", 
-			nickname = "countRoleGuarantees", 
-			tags = { IdmRequestRoleGuaranteeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEGUARANTEE_COUNT, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEGUARANTEE_COUNT, description = "") })
-				})
+	@Operation(
+			summary = "The number of entities that match the filter",
+			/* nickname = "countRoleGuarantees", */ 
+			tags = { IdmRequestRoleGuaranteeController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.ROLEGUARANTEE_COUNT }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.ROLEGUARANTEE_COUNT })
+        }
+    )
 	public long count(@PathVariable @NotNull String requestId, @RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(requestId, parameters);
 	}
@@ -147,20 +161,23 @@ public class IdmRequestRoleGuaranteeController extends AbstractRequestDtoControl
 	@ResponseBody
 	@RequestMapping(value = "/{requestId}"+ REQUEST_SUB_PATH +  "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLEGUARANTEE_READ + "')")
-	@ApiOperation(
-			value = "Role guarantee detail", 
-			nickname = "getRoleGuarantee", 
-			response = IdmRoleGuaranteeDto.class, 
-			tags = { IdmRequestRoleGuaranteeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEGUARANTEE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEGUARANTEE_READ, description = "") })
-				})
+	@Operation(
+			summary = "Role guarantee detail",
+			/* nickname = "getRoleGuarantee", */ 
+			/* response = IdmRoleGuaranteeDto.class, */ 
+			tags = { IdmRequestRoleGuaranteeController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.ROLEGUARANTEE_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.ROLEGUARANTEE_READ })
+        }
+    )
 	public ResponseEntity<?> get(
 			@PathVariable @NotNull String requestId,
-			@ApiParam(value = "Role guarantee's uuid identifier.", required = true)
+			@Parameter(name = "Role guarantee's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(requestId, backendId);
 	}
@@ -170,19 +187,22 @@ public class IdmRequestRoleGuaranteeController extends AbstractRequestDtoControl
 	@RequestMapping(value = "/{requestId}"+ REQUEST_SUB_PATH, method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLEGUARANTEE_CREATE + "')"
 			+ " or hasAuthority('" + CoreGroupPermission.ROLEGUARANTEE_UPDATE + "')")
-	@ApiOperation(
-			value = "Create / update role guarantee", 
-			nickname = "postRoleGuarantee", 
-			response = IdmRoleGuaranteeDto.class, 
-			tags = { IdmRequestRoleGuaranteeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEGUARANTEE_CREATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEGUARANTEE_UPDATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEGUARANTEE_CREATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEGUARANTEE_UPDATE, description = "")})
-				})
+	@Operation(
+			summary = "Create / update role guarantee",
+			/* nickname = "postRoleGuarantee", */ 
+			/* response = IdmRoleGuaranteeDto.class, */ 
+			tags = { IdmRequestRoleGuaranteeController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.ROLEGUARANTEE_CREATE,
+						CoreGroupPermission.ROLEGUARANTEE_UPDATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.ROLEGUARANTEE_CREATE,
+						CoreGroupPermission.ROLEGUARANTEE_UPDATE})
+        }
+    )
 	public ResponseEntity<?> post(
 			@PathVariable @NotNull String requestId, 
 			@Valid @RequestBody IdmRoleGuaranteeDto dto) {
@@ -193,20 +213,23 @@ public class IdmRequestRoleGuaranteeController extends AbstractRequestDtoControl
 	@ResponseBody
 	@RequestMapping(value = "/{requestId}"+ REQUEST_SUB_PATH +  "/{backendId}", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLEGUARANTEE_UPDATE + "')")
-	@ApiOperation(
-			value = "Update role guarantee", 
-			nickname = "putRoleGuarantee", 
-			response = IdmRoleGuaranteeDto.class, 
-			tags = { IdmRequestRoleGuaranteeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEGUARANTEE_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEGUARANTEE_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update role guarantee",
+			/* nickname = "putRoleGuarantee", */ 
+			/* response = IdmRoleGuaranteeDto.class, */ 
+			tags = { IdmRequestRoleGuaranteeController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.ROLEGUARANTEE_UPDATE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.ROLEGUARANTEE_UPDATE })
+        }
+    )
 	public ResponseEntity<?> put(
 			@PathVariable @NotNull String requestId,
-			@ApiParam(value = "Role guarantee's uuid identifier.", required = true)
+			@Parameter(name = "Role guarantee's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmRoleGuaranteeDto dto) {
 		return super.put(requestId, backendId, dto);
@@ -216,19 +239,19 @@ public class IdmRequestRoleGuaranteeController extends AbstractRequestDtoControl
 //	@ResponseBody
 //	@RequestMapping(value = "/{requestId}"+ REQUEST_SUB_PATH +  "/{backendId}", method = RequestMethod.PATCH)
 //	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLEGUARANTEE_UPDATE + "')")
-//	@ApiOperation(
-//			value = "Update role guarantee", 
-//			nickname = "patchRoleGuarantee", 
-//			response = IdmRoleGuaranteeDto.class, 
+//	@Operation(
+//			summary = "Update role guarantee",
+//			/* nickname = "patchRoleGuarantee", */ 
+//			/* response = IdmRoleGuaranteeDto.class, */ 
 //			tags = { IdmRequestRoleGuaranteeController.TAG }, 
 //			authorizations = { 
-//				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-//						@AuthorizationScope(scope = CoreGroupPermission.ROLEGUARANTEE_UPDATE, description = "") }),
-//				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-//						@AuthorizationScope(scope = CoreGroupPermission.ROLEGUARANTEE_UPDATE, description = "") })
+//				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+//						CoreGroupPermission.ROLEGUARANTEE_UPDATE }),
+//				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+//						CoreGroupPermission.ROLEGUARANTEE_UPDATE })
 //				})
 //	public ResponseEntity<?> patch(
-//			@ApiParam(value = "Role guarantee's uuid identifier.", required = true)
+//			@Parameter(name = "Role guarantee's uuid identifier.", required = true)
 //			@PathVariable @NotNull String backendId,
 //			HttpServletRequest nativeRequest)
 //			throws HttpMessageNotReadableException {
@@ -239,19 +262,22 @@ public class IdmRequestRoleGuaranteeController extends AbstractRequestDtoControl
 	@ResponseBody
 	@RequestMapping(value = "/{requestId}"+ REQUEST_SUB_PATH +  "/{backendId}", method = RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLEGUARANTEE_DELETE + "')")
-	@ApiOperation(
-			value = "Delete role guarantee", 
-			nickname = "deleteRoleGuarantee", 
-			tags = { IdmRequestRoleGuaranteeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEGUARANTEE_DELETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEGUARANTEE_DELETE, description = "") })
-				})
+	@Operation(
+			summary = "Delete role guarantee",
+			/* nickname = "deleteRoleGuarantee", */ 
+			tags = { IdmRequestRoleGuaranteeController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.ROLEGUARANTEE_DELETE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.ROLEGUARANTEE_DELETE })
+        }
+    )
 	public ResponseEntity<?> delete(
 			@PathVariable @NotNull String requestId,
-			@ApiParam(value = "Role guarantee's uuid identifier.", required = true)
+			@Parameter(name = "Role guarantee's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(requestId, backendId);
 	}
@@ -260,19 +286,22 @@ public class IdmRequestRoleGuaranteeController extends AbstractRequestDtoControl
 	@ResponseBody
 	@RequestMapping(value = "/{requestId}"+ REQUEST_SUB_PATH +  "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLEGUARANTEE_READ + "')")
-	@ApiOperation(
-			value = "What logged identity can do with given record", 
-			nickname = "getPermissionsOnRoleGuarantee", 
-			tags = { IdmRequestRoleGuaranteeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEGUARANTEE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLEGUARANTEE_READ, description = "") })
-				})
+	@Operation(
+			summary = "What logged identity can do with given record",
+			/* nickname = "getPermissionsOnRoleGuarantee", */ 
+			tags = { IdmRequestRoleGuaranteeController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.ROLEGUARANTEE_READ }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.ROLEGUARANTEE_READ })
+        }
+    )
 	public Set<String> getPermissions(
 			@PathVariable @NotNull String requestId,
-			@ApiParam(value = "Role guarantee's uuid identifier.", required = true)
+			@Parameter(name = "Role guarantee's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(requestId, backendId);
 	}

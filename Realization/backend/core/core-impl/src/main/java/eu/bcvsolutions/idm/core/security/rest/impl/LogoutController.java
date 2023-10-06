@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.security.api.authentication.AuthenticationManager;
 import eu.bcvsolutions.idm.core.security.api.dto.LoginDto;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
 
 /**
  * Logout
@@ -21,17 +21,17 @@ import io.swagger.annotations.ApiOperation;
  */
 @RestController
 @RequestMapping(value = BaseController.BASE_PATH + "/logout")
-@Api(value = LogoutController.TAG, description = "Logout endpoint", tags = { LogoutController.TAG })
+@Tag(name = LogoutController.TAG, description = "Logout endpoint")
 public class LogoutController implements BaseController {
 	
 	protected static final String TAG = "Logout";
 	//
 	@Autowired private AuthenticationManager authenticationManager;
 	
-	@ApiOperation(
-			value = "Logout", 
-			notes= "Logout currently logged identity and disable currently used token.",
-			response = LoginDto.class,
+	@Operation(
+			summary = "Logout",
+			description= "Logout currently logged identity and disable currently used token.",
+			/* response = LoginDto.class, */
 			tags = { LogoutController.TAG })
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@RequestMapping(method = RequestMethod.DELETE)

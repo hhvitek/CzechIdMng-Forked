@@ -21,8 +21,8 @@ import eu.bcvsolutions.idm.core.api.dto.BaseDto;
 import eu.bcvsolutions.idm.core.api.service.ConfigurationService;
 import eu.bcvsolutions.idm.core.eav.api.dto.IdmFormDefinitionDto;
 import eu.bcvsolutions.idm.core.scheduler.api.service.SchedulableTaskExecutor;
-import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.ApiModelProperty.AccessMode;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 
 /**
  * Scheduled task with unique id 
@@ -52,15 +52,15 @@ public class Task implements BaseDto {
 	@Size(max = DefaultFieldLengths.DESCRIPTION)
 	private String description;
 	private boolean disabled; // task is disabled
-	@ApiModelProperty(accessMode = AccessMode.READ_ONLY)
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
 	private List<AbstractTaskTrigger> triggers;
 	private Map<String, String> parameters;
 	private IdmFormDefinitionDto formDefinition;
 	private boolean supportsDryRun;
 	private boolean recoverable;
-	@ApiModelProperty(accessMode = AccessMode.READ_ONLY)
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
 	private ZonedDateTime modified;
-	@ApiModelProperty(accessMode = AccessMode.READ_ONLY)
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
 	private List<Task> dependentTasks;
 	
 	@Override
@@ -249,9 +249,9 @@ public class Task implements BaseDto {
 	 * @since 10.8.0
 	 */
 	@JsonProperty(value = "_trimmed", access = Access.READ_ONLY)
-	@ApiModelProperty(
-			accessMode = AccessMode.READ_ONLY, 
-			notes = "Task is persisted in external scheduler, we don't have task modifications in our hands => reload is needed all time."
+	@Schema(
+			accessMode = Schema.AccessMode.READ_ONLY,
+            description = "Task is persisted in external scheduler, we don't have task modifications in our hands => reload is needed all time."
 	)
 	public boolean isTrimmed() {
 		return true;

@@ -29,11 +29,11 @@ import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.security.api.domain.Enabled;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 
 /**
  * Configuration for provisioning break
@@ -45,11 +45,12 @@ import io.swagger.annotations.AuthorizationScope;
 @RestController
 @Enabled(AccModuleDescriptor.MODULE_ID)
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/provisioning-break-configs")
-@Api(value = SysProvisioningBreakConfigController.TAG,
-	tags = SysProvisioningBreakConfigController.TAG,
-	description = "Configuration for provisioning break.",
-	produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-	consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = SysProvisioningBreakConfigController.TAG,
+	description = "Configuration for provisioning break."//,
+	//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+	
+//consumes = MediaType.APPLICATION_JSON_VALUE
+)
 public class SysProvisioningBreakConfigController
 		extends AbstractReadWriteDtoController<SysProvisioningBreakConfigDto, SysProvisioningBreakConfigFilter> {
 
@@ -65,16 +66,20 @@ public class SysProvisioningBreakConfigController
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
-	@ApiOperation(
-			value = "Search provisioning break configurations (/search/quick alias)", 
-			nickname = "searchProvisioningBreakConfiguration",
-			tags = { SysProvisioningBreakConfigController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")})
-				})
+	@Operation(
+			summary = "Search provisioning break configurations (/search/quick alias)"
+			/* nickname = "searchProvisioningBreakConfiguration", */
+			 
+			)
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.SYSTEM_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						AccGroupPermission.SYSTEM_READ})
+        }
+    )
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
@@ -84,16 +89,19 @@ public class SysProvisioningBreakConfigController
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Search provisioning break configurations", 
-			nickname = "searchQuickProvisioningBreakConfiguration",
-			tags = { SysProvisioningBreakConfigController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")})
-				})
+	@Operation(
+			summary = "Search provisioning break configurations", 
+			/* nickname = "searchQuickProvisioningBreakConfiguration", */
+			tags = { SysProvisioningBreakConfigController.TAG })
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						AccGroupPermission.SYSTEM_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						AccGroupPermission.SYSTEM_READ})
+        }
+    )
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
@@ -105,19 +113,22 @@ public class SysProvisioningBreakConfigController
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')"
 			+ " or hasAuthority('" + CoreGroupPermission.ROLE_READ + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Provisionign break configuration detail", 
-			nickname = "getProvisioningBreakConfig", 
-			response = SysProvisioningBreakConfigDto.class, 
-			tags = { SysProvisioningBreakConfigController.TAG }, 
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")})
-					})
+	@Operation(
+			summary = "Provisionign break configuration detail", 
+			/* nickname = "getProvisioningBreakConfig", */ 
+			/* response = SysProvisioningBreakConfigDto.class, */ 
+			tags = { SysProvisioningBreakConfigController.TAG })
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+							AccGroupPermission.SYSTEM_READ}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+							AccGroupPermission.SYSTEM_READ})
+        }
+    )
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Provisioning break config's uuid identifier.", required = true)
+			@Parameter(name = "Provisioning break config's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -127,19 +138,22 @@ public class SysProvisioningBreakConfigController
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_CREATE + "')"
 			+ " or hasAuthority('" + AccGroupPermission.SYSTEM_UPDATE + "')")
 	@RequestMapping(method = RequestMethod.POST)
-	@ApiOperation(
-			value = "Create / update provisioning break configuration", 
-			nickname = "postProvisioningBreakConfig", 
-			response = SysProvisioningBreakConfigDto.class, 
-			tags = { SysProvisioningBreakConfigController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_CREATE, description = ""),
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_CREATE, description = ""),
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "")})
-				})
+	@Operation(
+			summary = "Create / update provisioning break configuration", 
+			/* nickname = "postProvisioningBreakConfig", */ 
+			/* response = SysProvisioningBreakConfigDto.class, */ 
+			tags = { SysProvisioningBreakConfigController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						AccGroupPermission.SYSTEM_CREATE,
+						AccGroupPermission.SYSTEM_UPDATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						AccGroupPermission.SYSTEM_CREATE,
+						AccGroupPermission.SYSTEM_UPDATE})
+        }
+    )
 	public ResponseEntity<?> post(@RequestBody @NotNull SysProvisioningBreakConfigDto dto) {
 		return super.post(dto);
 	}
@@ -148,19 +162,22 @@ public class SysProvisioningBreakConfigController
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_UPDATE + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
-	@ApiOperation(
-			value = "Update provisioning break configuration",
-			nickname = "putProvisioningBreakConfig", 
-			response = SysProvisioningBreakConfigDto.class, 
-			tags = { SysProvisioningBreakConfigController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update provisioning break configuration",
+			/* nickname = "putProvisioningBreakConfig", */ 
+			/* response = SysProvisioningBreakConfigDto.class, */ 
+			tags = { SysProvisioningBreakConfigController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						AccGroupPermission.SYSTEM_UPDATE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						AccGroupPermission.SYSTEM_UPDATE })
+        }
+    )
 	public ResponseEntity<?> put(
-			@ApiParam(value = "Provisioning break config's uuid identifier.", required = true)
+			@Parameter(name = "Provisioning break config's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, @RequestBody @NotNull SysProvisioningBreakConfigDto dto) {
 		return super.put(backendId, dto);
 	}
@@ -169,18 +186,21 @@ public class SysProvisioningBreakConfigController
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_DELETE + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
-	@ApiOperation(
-			value = "Delete provisioning break configuration", 
-			nickname = "deleteProvisioningBreakConfig", 
-			tags = { SysProvisioningBreakConfigController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_DELETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_DELETE, description = "") })
-				})
+	@Operation(
+			summary = "Delete provisioning break configuration", 
+			/* nickname = "deleteProvisioningBreakConfig", */ 
+			tags = { SysProvisioningBreakConfigController.TAG })
+    @SecurityRequirements(
+        value = {
+ 
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						AccGroupPermission.SYSTEM_DELETE }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						AccGroupPermission.SYSTEM_DELETE })
+        }
+    )
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "Provisioning break config's uuid identifier.", required = true)
+			@Parameter(name = "Provisioning break config's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}

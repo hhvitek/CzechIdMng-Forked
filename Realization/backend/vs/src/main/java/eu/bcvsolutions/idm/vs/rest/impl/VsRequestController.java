@@ -50,11 +50,11 @@ import eu.bcvsolutions.idm.vs.dto.VsRequestDto;
 import eu.bcvsolutions.idm.vs.dto.filter.VsRequestFilter;
 import eu.bcvsolutions.idm.vs.service.api.VsRequestService;
 import eu.bcvsolutions.idm.vs.service.api.VsSystemImplementerService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 
 /**
  * Rest methods for virtual system request
@@ -65,8 +65,9 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/vs/requests")
-@Api(value = VsRequestController.TAG, tags = {
-		VsRequestController.TAG }, description = "Operations with requests (in virtual system)", produces = BaseController.APPLICATION_HAL_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = VsRequestController.TAG, description = "Operations with requests (in virtual system)"//, //produces = BaseController.APPLICATION_HAL_JSON_VALUE
+//consumes = MediaType.APPLICATION_JSON_VALUE
+)
 public class VsRequestController extends AbstractReadWriteDtoController<VsRequestDto, VsRequestFilter> {
 
 	protected static final String TAG = "Requests";
@@ -87,12 +88,17 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_REQUEST_READ + "')")
-	@ApiOperation(value = "Search requests (/search/quick alias)", nickname = "searchRequests", tags = {
-			VsRequestController.TAG }, authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_READ, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_READ, description = "") }) })
+	@Operation(summary = "Search requests (/search/quick alias)", /* nickname = "searchRequests", */ tags = {
+			VsRequestController.TAG })
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							VirtualSystemGroupPermission.VS_REQUEST_READ }),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							VirtualSystemGroupPermission.VS_REQUEST_READ })
+        }
+    )
 	public CollectionModel<?> find(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -102,12 +108,17 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
 	@ResponseBody
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_REQUEST_READ + "')")
-	@ApiOperation(value = "Search requests", nickname = "searchQuickRequests", tags = {
-			VsRequestController.TAG }, authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_READ, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_READ, description = "") }) })
+	@Operation(summary = "Search requests", /* nickname = "searchQuickRequests", */ tags = {
+			VsRequestController.TAG })
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							VirtualSystemGroupPermission.VS_REQUEST_READ }),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							VirtualSystemGroupPermission.VS_REQUEST_READ })
+        }
+    )
 	public CollectionModel<?> findQuick(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
@@ -117,12 +128,17 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
 	@ResponseBody
 	@RequestMapping(value = "/search/autocomplete", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_REQUEST_AUTOCOMPLETE + "')")
-	@ApiOperation(value = "Autocomplete requests (selectbox usage)", nickname = "autocompleteRequests", tags = {
-			VsRequestController.TAG }, authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_AUTOCOMPLETE, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_AUTOCOMPLETE, description = "") }) })
+	@Operation(summary = "Autocomplete requests (selectbox usage)", /* nickname = "autocompleteRequests", */ tags = {
+			VsRequestController.TAG })
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							VirtualSystemGroupPermission.VS_REQUEST_AUTOCOMPLETE }),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							VirtualSystemGroupPermission.VS_REQUEST_AUTOCOMPLETE })
+        }
+    )
 	public CollectionModel<?> autocomplete(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
@@ -132,16 +148,20 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
 	@ResponseBody
 	@RequestMapping(value = "/search/count", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_REQUEST_COUNT + "')")
-	@ApiOperation(
-			value = "The number of entities that match the filter",
-			nickname = "countRequests",
-			tags = { VsRequestController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_COUNT, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_COUNT, description = "") })
-				})
+	@Operation(
+			summary = "The number of entities that match the filter"
+			/* nickname = "countRequests", */
+			
+			)
+    @SecurityRequirements(
+        value = {
+
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						VirtualSystemGroupPermission.VS_REQUEST_COUNT }),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						VirtualSystemGroupPermission.VS_REQUEST_COUNT })
+        }
+    )
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -150,14 +170,19 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_REQUEST_READ + "')")
-	@ApiOperation(value = "Request detail", nickname = "getRequest", response = VsRequestDto.class, tags = {
-			VsRequestController.TAG }, authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_READ, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_READ, description = "") }) })
+	@Operation(summary = "Request detail", /* nickname = "getRequest", */ /* response = VsRequestDto.class, */ tags = {
+			VsRequestController.TAG })
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							VirtualSystemGroupPermission.VS_REQUEST_READ }),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							VirtualSystemGroupPermission.VS_REQUEST_READ })
+        }
+    )
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Request's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
+			@Parameter(name = "Request's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		VsRequestDto request = this.getDto(backendId);
 		if (request == null) {
 			throw new EntityNotFoundException(getService().getEntityClass(), backendId);
@@ -189,15 +214,20 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/realize", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_REQUEST_UPDATE + "')")
-	@ApiOperation(value = "Realize request", nickname = "realizeRequest", response = VsRequestDto.class, tags = {
-			VsRequestController.TAG }, authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_UPDATE, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_UPDATE, description = "") }) })
+	@Operation(summary = "Realize request", /* nickname = "realizeRequest", */ /* response = VsRequestDto.class, */ tags = {
+			VsRequestController.TAG })
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							VirtualSystemGroupPermission.VS_REQUEST_UPDATE }),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							VirtualSystemGroupPermission.VS_REQUEST_UPDATE })
+        }
+    )
 	public ResponseEntity<?> realize(
-			@ApiParam(value = "Request's uuid identifier.", required = true) @PathVariable @NotNull String backendId,
-			@ApiParam(value = "Reason in request DTO. Reason is optional.", required = false) @RequestBody(required = false) VsRequestDto reason){
+			@Parameter(name = "Request's uuid identifier.", required = true) @PathVariable @NotNull String backendId,
+			@Parameter(name = "Reason in request DTO. Reason is optional.", required = false) @RequestBody(required = false) VsRequestDto reason){
 		VsRequestDto request = ((VsRequestService) getService()).realize(getService().get(backendId), reason == null ? null : reason.getReason());
 		return new ResponseEntity<>(request, HttpStatus.OK);
 	}
@@ -205,15 +235,20 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/cancel", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_REQUEST_UPDATE + "')")
-	@ApiOperation(value = "Cancel request", nickname = "cancelRequest", response = VsRequestDto.class, tags = {
-			VsRequestController.TAG }, authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_UPDATE, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_UPDATE, description = "") }) })
+	@Operation(summary = "Cancel request", /* nickname = "cancelRequest", */ /* response = VsRequestDto.class, */ tags = {
+			VsRequestController.TAG })
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							VirtualSystemGroupPermission.VS_REQUEST_UPDATE }),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							VirtualSystemGroupPermission.VS_REQUEST_UPDATE })
+        }
+    )
 	public ResponseEntity<?> cancel(
-			@ApiParam(value = "Request's uuid identifier.", required = true) @PathVariable @NotNull String backendId,
-			@ApiParam(value = "Reason in request DTO. Reason must be filled!", required = true) @RequestBody(required = true) VsRequestDto reason) {
+			@Parameter(name = "Request's uuid identifier.", required = true) @PathVariable @NotNull String backendId,
+			@Parameter(name = "Reason in request DTO. Reason must be filled!", required = true) @RequestBody(required = true) VsRequestDto reason) {
 		VsRequestDto request = ((VsRequestService) getService()).cancel(getService().get(backendId),
 				reason.getReason());
 		return new ResponseEntity<>(request, HttpStatus.OK);
@@ -223,14 +258,19 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_REQUEST_DELETE + "')")
-	@ApiOperation(value = "Delete request", nickname = "deleteRequest", tags = {
-			VsRequestController.TAG }, authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_DELETE, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_DELETE, description = "") }) })
+	@Operation(summary = "Delete request", /* nickname = "deleteRequest", */ tags = {
+			VsRequestController.TAG })
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							VirtualSystemGroupPermission.VS_REQUEST_DELETE }),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							VirtualSystemGroupPermission.VS_REQUEST_DELETE })
+        }
+    )
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "Request's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
+			@Parameter(name = "Request's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
 
@@ -239,31 +279,41 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_REQUEST_READ + "')" + " or hasAuthority('"
 			+ VirtualSystemGroupPermission.VS_REQUEST_AUTOCOMPLETE + "')")
-	@ApiOperation(value = "What logged request can do with given record", nickname = "getPermissionsOnRequest", tags = {
-			VsRequestController.TAG }, authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_READ, description = ""),
-							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_AUTOCOMPLETE, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_READ, description = ""),
-							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_AUTOCOMPLETE, description = "") }) })
+	@Operation(summary = "What logged request can do with given record", /* nickname = "getPermissionsOnRequest", */ tags = {
+			VsRequestController.TAG })
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							VirtualSystemGroupPermission.VS_REQUEST_READ,
+							VirtualSystemGroupPermission.VS_REQUEST_AUTOCOMPLETE }),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							VirtualSystemGroupPermission.VS_REQUEST_READ,
+							VirtualSystemGroupPermission.VS_REQUEST_AUTOCOMPLETE })
+        }
+    )
 
 	public Set<String> getPermissions(
-			@ApiParam(value = "Request's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
+			@Parameter(name = "Request's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/connector-object", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_REQUEST_READ + "')")
-	@ApiOperation(value = "Read connector object", nickname = "getConnectorObject", response = IcConnectorObject.class, tags = {
-			VsRequestController.TAG }, authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_READ, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_READ, description = "") }) })
+	@Operation(summary = "Read connector object", /* nickname = "getConnectorObject", */ /* response = IcConnectorObject.class, */ tags = {
+			VsRequestController.TAG })
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							VirtualSystemGroupPermission.VS_REQUEST_READ }),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							VirtualSystemGroupPermission.VS_REQUEST_READ })
+        }
+    )
 	public ResponseEntity<?> getConnectorObject(
-			@ApiParam(value = "Request's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
+			@Parameter(name = "Request's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		IcConnectorObject connectorObject = ((VsRequestService) getService())
 				.getVsConnectorObject(getService().get(backendId));
 		if (connectorObject != null) {
@@ -276,14 +326,19 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/wish-connector-object", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_REQUEST_READ + "')")
-	@ApiOperation(value = "Read wish connector object. Object contains current attributes from virtual system + changed attributes from given request.", nickname = "getVsConnectorObject", response = VsConnectorObjectDto.class, tags = {
-			VsRequestController.TAG }, authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_READ, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_READ, description = "") }) })
+	@Operation(summary = "Read wish connector object. Object contains current attributes from virtual system + changed attributes from given request.", /* nickname = "getVsConnectorObject", */ /* response = VsConnectorObjectDto.class, */ tags = {
+			VsRequestController.TAG })
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							VirtualSystemGroupPermission.VS_REQUEST_READ }),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							VirtualSystemGroupPermission.VS_REQUEST_READ })
+        }
+    )
 	public ResponseEntity<?> getWishConnectorObject(
-			@ApiParam(value = "Request's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
+			@Parameter(name = "Request's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		VsConnectorObjectDto connectorObject = ((VsRequestService) getService())
 				.getWishConnectorObject(getService().get(backendId));
 		if (connectorObject != null) {
@@ -303,16 +358,19 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
 	@ResponseBody
 	@RequestMapping(value = "/bulk/actions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_REQUEST_READ + "')")
-	@ApiOperation(
-			value = "Get available bulk actions",
-			nickname = "availableBulkAction",
-			tags = { VsRequestController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_READ, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_READ, description = "") })
-			})
+	@Operation(
+			summary = "Get available bulk actions",
+			/* nickname = "availableBulkAction", */
+			tags = { VsRequestController.TAG })
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							VirtualSystemGroupPermission.VS_REQUEST_READ }),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							VirtualSystemGroupPermission.VS_REQUEST_READ })
+        }
+    )
 	public List<IdmBulkActionDto> getAvailableBulkActions() {
 		return super.getAvailableBulkActions();
 	}
@@ -327,17 +385,20 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
 	@ResponseBody
 	@RequestMapping(path = "/bulk/action", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_REQUEST_READ + "')")
-	@ApiOperation(
-			value = "Process bulk action for request",
-			nickname = "bulkAction",
-			response = IdmBulkActionDto.class,
-			tags = { VsRequestController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_READ, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_READ, description = "")})
-			})
+	@Operation(
+			summary = "Process bulk action for request",
+			/* nickname = "bulkAction", */
+			/* response = IdmBulkActionDto.class, */
+			tags = { VsRequestController.TAG })
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							VirtualSystemGroupPermission.VS_REQUEST_READ}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							VirtualSystemGroupPermission.VS_REQUEST_READ})
+        }
+    )
 	public ResponseEntity<IdmBulkActionDto> bulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.bulkAction(bulkAction);
 	}
@@ -352,17 +413,20 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
 	@ResponseBody
 	@RequestMapping(path = "/bulk/prevalidate", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_REQUEST_READ + "')")
-	@ApiOperation(
-			value = "Prevalidate bulk action for identities",
-			nickname = "prevalidateBulkAction",
-			response = IdmBulkActionDto.class,
-			tags = { VsRequestController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_READ, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_REQUEST_READ, description = "")})
-			})
+	@Operation(
+			summary = "Prevalidate bulk action for identities",
+			/* nickname = "prevalidateBulkAction", */
+			/* response = IdmBulkActionDto.class, */
+			tags = { VsRequestController.TAG })
+    @SecurityRequirements(
+        value = {
+
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							VirtualSystemGroupPermission.VS_REQUEST_READ}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							VirtualSystemGroupPermission.VS_REQUEST_READ})
+        }
+    )
 	public ResponseEntity<ResultModels> prevalidateBulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.prevalidateBulkAction(bulkAction);
 	}
