@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
 
 import eu.bcvsolutions.idm.core.api.dto.IdmPasswordDto;
+import eu.bcvsolutions.idm.core.api.event.CoreEvent;
 import eu.bcvsolutions.idm.core.api.event.CoreEventProcessor;
 import eu.bcvsolutions.idm.core.api.event.DefaultEventResult;
 import eu.bcvsolutions.idm.core.api.event.EntityEvent;
@@ -27,7 +28,7 @@ public class PasswordSaveProcessor extends CoreEventProcessor<IdmPasswordDto> {
 	private IdmPasswordService service;
 
 	public PasswordSaveProcessor() {
-		super(PasswordEventType.CREATE, PasswordEventType.UPDATE);
+		super(CoreEvent.CoreEventType.CREATE, CoreEvent.CoreEventType.UPDATE);
 	}
 
 	@Override

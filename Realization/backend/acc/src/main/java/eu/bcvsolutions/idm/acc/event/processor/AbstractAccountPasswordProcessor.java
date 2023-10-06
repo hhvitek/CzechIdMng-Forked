@@ -48,24 +48,22 @@ public abstract class AbstractAccountPasswordProcessor
 		PasswordChangeDto passwordChangeDto = (PasswordChangeDto) event.getProperties().get(PROPERTY_PASSWORD_CHANGE_DTO);
 		Assert.notNull(passwordChangeDto, "Password change DTO is required for processing password change.");
 		//
-		if (passwordChangeDto.isIdm()) { // change identity's password
-			savePassword(account, passwordChangeDto);
-			Map<String, Object> parameters = new LinkedHashMap<>();
-			parameters.put("account", new IdmAccountDto(
-					account.getId(),
-					true, 
-					account.getUid()));
-			return new DefaultEventResult.Builder<>(event, this).setResult(
-					new OperationResult.Builder(OperationState.EXECUTED)
-						.setModel(new DefaultResultModel(CoreResultCode.PASSWORD_CHANGE_ACCOUNT_SUCCESS, parameters))
-						.build()
-					).build();
-		}
-		return new DefaultEventResult<>(event, this);
+		savePassword(account, passwordChangeDto);
+		Map<String, Object> parameters = new LinkedHashMap<>();
+		parameters.put("account", new IdmAccountDto(
+				account.getId(),
+				true,
+				account.getUid()));
+		return new DefaultEventResult.Builder<>(event, this).setResult(
+				new OperationResult.Builder(OperationState.EXECUTED)
+					.setModel(new DefaultResultModel(CoreResultCode.PASSWORD_CHANGE_ACCOUNT_SUCCESS, parameters))
+					.build()
+				).build();
+		// return new DefaultEventResult<>(event, this);
 	}
 
 	/**
-	 * Saves identity's password
+	 * Saves account password
 	 *
 	 * @param account
 	 * @param newPassword
