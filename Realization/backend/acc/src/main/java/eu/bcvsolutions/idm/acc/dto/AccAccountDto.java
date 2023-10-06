@@ -10,13 +10,17 @@ import org.springframework.hateoas.core.Relation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.common.annotations.Beta;
 
 import eu.bcvsolutions.idm.core.api.domain.DefaultFieldLengths;
 import eu.bcvsolutions.idm.core.api.domain.Embedded;
 import eu.bcvsolutions.idm.core.api.domain.ExternalIdentifiable;
+import eu.bcvsolutions.idm.core.api.domain.PasswordManageable;
 import eu.bcvsolutions.idm.core.api.dto.FormableDto;
 import eu.bcvsolutions.idm.core.eav.api.dto.IdmFormDefinitionDto;
+import eu.bcvsolutions.idm.core.security.api.domain.GuardedString;
+import eu.bcvsolutions.idm.core.security.api.domain.GuardedStringDeserializer;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -29,7 +33,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 
 @Relation(collectionRelation = "accounts")
-public class AccAccountDto extends FormableDto implements ExternalIdentifiable, Serializable {
+public class AccAccountDto extends FormableDto implements ExternalIdentifiable, Serializable, PasswordManageable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -177,4 +181,5 @@ public class AccAccountDto extends FormableDto implements ExternalIdentifiable, 
 	public String getExternalId() {
 		return externalId;
 	}
+
 }

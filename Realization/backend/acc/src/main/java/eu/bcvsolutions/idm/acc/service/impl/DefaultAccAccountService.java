@@ -2,6 +2,8 @@ package eu.bcvsolutions.idm.acc.service.impl;
 
 import java.text.MessageFormat;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -61,6 +63,7 @@ import eu.bcvsolutions.idm.acc.entity.SysSystemMapping_;
 import eu.bcvsolutions.idm.acc.entity.SysSystem_;
 import eu.bcvsolutions.idm.acc.event.AccountEvent;
 import eu.bcvsolutions.idm.acc.event.AccountEvent.AccountEventType;
+import eu.bcvsolutions.idm.acc.event.processor.AccountPasswordProcessor;
 import eu.bcvsolutions.idm.acc.repository.AccAccountRepository;
 import eu.bcvsolutions.idm.acc.service.api.AccAccountService;
 import eu.bcvsolutions.idm.acc.service.api.AccIdentityAccountService;
@@ -74,12 +77,19 @@ import eu.bcvsolutions.idm.acc.service.api.SysSchemaObjectClassService;
 import eu.bcvsolutions.idm.acc.service.api.SysSystemEntityTypeManager;
 import eu.bcvsolutions.idm.acc.service.api.SysSystemService;
 import eu.bcvsolutions.idm.acc.system.entity.SystemEntityTypeRegistrable;
+import eu.bcvsolutions.idm.core.api.domain.CoreResultCode;
 import eu.bcvsolutions.idm.core.api.dto.BaseDto;
+import eu.bcvsolutions.idm.core.api.dto.IdmAccountDto;
+import eu.bcvsolutions.idm.core.api.dto.PasswordChangeDto;
 import eu.bcvsolutions.idm.core.api.entity.AbstractEntity_;
+import eu.bcvsolutions.idm.core.api.entity.OperationResult;
+import eu.bcvsolutions.idm.core.api.event.CoreEvent;
+import eu.bcvsolutions.idm.core.api.event.EventContext;
 import eu.bcvsolutions.idm.core.api.exception.ResultCodeException;
 import eu.bcvsolutions.idm.core.api.service.EntityEventManager;
 import eu.bcvsolutions.idm.core.api.service.LookupService;
 import eu.bcvsolutions.idm.core.api.utils.DtoUtils;
+import eu.bcvsolutions.idm.core.api.utils.ExceptionUtils;
 import eu.bcvsolutions.idm.core.eav.api.service.AbstractFormableService;
 import eu.bcvsolutions.idm.core.eav.api.service.FormService;
 import eu.bcvsolutions.idm.core.eav.entity.IdmFormDefinition_;
@@ -108,6 +118,7 @@ import eu.bcvsolutions.idm.ic.impl.IcConnectorObjectImpl;
 public class DefaultAccAccountService extends AbstractFormableService<AccAccountDto, AccAccount, AccAccountFilter>
 		implements AccAccountService {
 
+	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(DefaultAccAccountService.class);
 	private final AccAccountRepository accountRepository;
 	private final AccIdentityAccountService identityAccountService;
 	private final SysSystemService systemService;
@@ -572,4 +583,54 @@ public class DefaultAccAccountService extends AbstractFormableService<AccAccount
 		return executor;
 	}
 
+	@Override
+	@Transactional
+	public List<OperationResult> passwordChange(AccAccountDto account, PasswordChangeDto passwordChangeDto) {
+		Assert.notNull(account, "Account is required.");
+		//
+		return passwordChange(new AccountEvent(
+				AccountEvent.AccountEventType.PASSWORD,
+				account,
+				ImmutableMap.of(AccountPasswordProcessor.PROPERTY_PASSWORD_CHANGE_DTO, passwordChangeDto)));
+	}
+
+	@Override
+	@Transactional
+	public List<OperationResult> passwordChange(CoreEvent<AccAccountDto> passwordChangeEvent) {
+		Assert.notNull(passwordChangeEvent, "Password change event is required.");
+		Assert.notNull(passwordChangeEvent.getProperties().get(AccountPasswordProcessor.PROPERTY_PASSWORD_CHANGE_DTO),
+				"Password change DTO is required.");
+		//
+		LOG.debug("Changing password for account [{}]", passwordChangeEvent.getContent().getUid());
+		EventContext<AccAccountDto> context = publish(passwordChangeEvent);
+		//
+		// get all password change results
+		// more provisioning operation can be executed for one password change - we need to distinct them by account id
+		Map<UUID, OperationResult> passwordChangeResults = new HashMap<>(); // accountId / result
+		context.getResults().forEach(eventResult -> {
+			eventResult.getResults().forEach(result -> {
+				if (result.getModel() != null) {
+					boolean success = result.getModel().getStatusEnum().equals(CoreResultCode.PASSWORD_CHANGE_ACCOUNT_SUCCESS.name());
+					boolean failure = result.getModel().getStatusEnum().equals(CoreResultCode.PASSWORD_CHANGE_ACCOUNT_FAILED.name());
+					if (success || failure) {
+						IdmAccountDto resultAccount = (IdmAccountDto) result.getModel().getParameters().get(IdmAccountDto.PARAMETER_NAME);
+						if (!passwordChangeResults.containsKey(resultAccount.getId())) {
+							passwordChangeResults.put(resultAccount.getId(), result);
+						} else if (failure) {
+					        // failure has higher priority
+							passwordChangeResults.put(resultAccount.getId(), result);
+						}
+					}
+				}
+			});
+		});
+		// logging
+		passwordChangeResults
+				.values()
+				.stream()
+				.forEach(result -> {
+					ExceptionUtils.log(LOG, result.getModel(), result.getException());
+				});
+		return new ArrayList<>(passwordChangeResults.values());
+	}
 }

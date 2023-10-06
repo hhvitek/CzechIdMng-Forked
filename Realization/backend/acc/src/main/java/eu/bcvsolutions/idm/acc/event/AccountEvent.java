@@ -24,7 +24,8 @@ public class AccountEvent extends CoreEvent<AccAccountDto> {
 	public enum AccountEventType implements EventType {
 		CREATE, 
 		UPDATE, 
-		DELETE;
+		DELETE,
+		PASSWORD // password change
 	}
 	
 	public AccountEvent(AccountEventType operation, AccAccountDto content) {

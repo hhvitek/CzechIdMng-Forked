@@ -24,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import eu.bcvsolutions.idm.core.api.domain.DefaultFieldLengths;
 import eu.bcvsolutions.idm.core.api.domain.ExternalIdentifiable;
+import eu.bcvsolutions.idm.core.api.domain.PasswordManageable;
 import eu.bcvsolutions.idm.core.api.entity.AbstractEntity;
 import eu.bcvsolutions.idm.core.eav.api.entity.FormableEntity;
 import eu.bcvsolutions.idm.core.eav.entity.IdmFormDefinition;
@@ -45,7 +46,7 @@ import eu.bcvsolutions.idm.core.eav.entity.IdmFormDefinition;
 		@Index(name = "idx_acc_account_sys_mapping", columnList = "system_mapping_id"),
 		@Index(name = "idx_acc_account_form_def", columnList = "form_definition_id")
 		})
-public class AccAccount extends AbstractEntity implements FormableEntity, ExternalIdentifiable {
+public class AccAccount extends AbstractEntity implements FormableEntity, ExternalIdentifiable, PasswordManageable {
 	
 	private static final long serialVersionUID = -565558977675057360L;
 

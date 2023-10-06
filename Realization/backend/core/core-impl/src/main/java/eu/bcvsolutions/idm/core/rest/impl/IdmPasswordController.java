@@ -79,7 +79,7 @@ public class IdmPasswordController extends AbstractReadWriteDtoController<IdmPas
 						@AuthorizationScope(scope = CoreGroupPermission.PASSWORD_READ, description = "") })
 				})
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Passsword uuid identifier.", required = true)
+			@ApiParam(value = "Password uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
