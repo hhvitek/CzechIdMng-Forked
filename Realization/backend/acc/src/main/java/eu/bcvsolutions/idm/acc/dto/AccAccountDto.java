@@ -10,7 +10,6 @@ import org.springframework.hateoas.core.Relation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.common.annotations.Beta;
 
 import eu.bcvsolutions.idm.core.api.domain.DefaultFieldLengths;
@@ -19,8 +18,6 @@ import eu.bcvsolutions.idm.core.api.domain.ExternalIdentifiable;
 import eu.bcvsolutions.idm.core.api.domain.PasswordManageable;
 import eu.bcvsolutions.idm.core.api.dto.FormableDto;
 import eu.bcvsolutions.idm.core.eav.api.dto.IdmFormDefinitionDto;
-import eu.bcvsolutions.idm.core.security.api.domain.GuardedString;
-import eu.bcvsolutions.idm.core.security.api.domain.GuardedStringDeserializer;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -104,7 +101,6 @@ public class AccAccountDto extends FormableDto implements ExternalIdentifiable, 
 	/**
 	 * Check if account is in protection. Validate end of protection too.
 	 * 
-	 * @param account
 	 * @return
 	 */
 	public boolean isAccountProtectedAndValid() {
@@ -182,4 +178,8 @@ public class AccAccountDto extends FormableDto implements ExternalIdentifiable, 
 		return externalId;
 	}
 
+	@Override
+	public String getName() {
+		return getUid();
+	}
 }

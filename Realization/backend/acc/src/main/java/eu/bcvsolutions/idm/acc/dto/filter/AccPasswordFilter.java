@@ -1,10 +1,8 @@
 package eu.bcvsolutions.idm.acc.dto.filter;
 
-import java.time.LocalDate;
 import java.util.UUID;
 
 import eu.bcvsolutions.idm.core.api.dto.filter.AbstractPasswordFilter;
-import eu.bcvsolutions.idm.core.api.dto.filter.QuickFilter;
 
 /**
  * Account password filtering

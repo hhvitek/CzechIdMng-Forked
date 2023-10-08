@@ -8,7 +8,6 @@ import org.springframework.hateoas.core.Relation;
 
 import eu.bcvsolutions.idm.core.api.domain.Embedded;
 import eu.bcvsolutions.idm.core.api.dto.AbstractPasswordDto;
-import eu.bcvsolutions.idm.core.api.entity.ValidableEntity;
 
 /**
  * Account password dto.
@@ -17,7 +16,7 @@ import eu.bcvsolutions.idm.core.api.entity.ValidableEntity;
  *
  */
 @Relation(collectionRelation = "passwords")
-public class AccPasswordDto extends AbstractPasswordDto implements ValidableEntity  {
+public class AccPasswordDto extends AbstractPasswordDto  {
 
 	private static final long serialVersionUID = -4519101848124842809L;
 	@NotNull
@@ -32,13 +31,4 @@ public class AccPasswordDto extends AbstractPasswordDto implements ValidableEnti
         this.account = account;
     }
 
-	@Override
-	public UUID getEntity() {
-		return getAccount();
-	}
-
-	@Override
-	public void setEntity(UUID entity) {
-		setAccount(entity);
-	}
 }

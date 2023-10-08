@@ -304,4 +304,9 @@ public class IdmIdentityDto extends FormableDto implements Disableable, Codeable
 	public String toString() {
 		return "IdmIdentityDto [username=" + username + "]";
 	}
+
+	@Override
+	public String getName() {
+		return getUsername();
+	}
 }

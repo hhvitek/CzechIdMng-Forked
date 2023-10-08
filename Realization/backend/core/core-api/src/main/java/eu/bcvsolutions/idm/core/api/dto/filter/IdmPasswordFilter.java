@@ -1,5 +1,6 @@
 package eu.bcvsolutions.idm.core.api.dto.filter;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 /**
@@ -14,6 +15,9 @@ public class IdmPasswordFilter extends AbstractPasswordFilter {
     private UUID identityId;
     private String identityUsername;
     private Boolean identityDisabled;
+	private LocalDate validTill;
+	private LocalDate validFrom;
+	private Boolean mustChange;
 
     public UUID getIdentityId() {
         return identityId;
@@ -39,6 +43,28 @@ public class IdmPasswordFilter extends AbstractPasswordFilter {
 		this.identityUsername = identityUsername;
 	}
 
+	public LocalDate getValidTill() {
+		return validTill;
+	}
+
+	public void setValidTill(LocalDate validTill) {
+		this.validTill = validTill;
+	}
+
+	public LocalDate getValidFrom() {
+		return validFrom;
+	}
+
+	public void setValidFrom(LocalDate validFrom) {
+		this.validFrom = validFrom;
+	}
+	public Boolean getMustChange() {
+		return mustChange;
+	}
+
+	public void setMustChange(Boolean mustChange) {
+		this.mustChange = mustChange;
+	}
 	@Override
 	public UUID getEntityId() { return getIdentityId(); }
 

@@ -1,9 +1,7 @@
 package eu.bcvsolutions.idm.acc.service.impl;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -35,7 +33,6 @@ import eu.bcvsolutions.idm.core.api.service.LookupService;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.security.api.domain.GuardedString;
 import eu.bcvsolutions.idm.core.security.api.dto.AuthorizableType;
-import eu.bcvsolutions.idm.core.security.api.service.SecurityService;
 
 /**
  * Service for working with account password.
@@ -47,12 +44,8 @@ public class DefaultAccPasswordService
 		extends AbstractEventableDtoService<AccPasswordDto, AccPassword, AccPasswordFilter>
 		implements AccPasswordService {
 
-	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(DefaultAccPasswordService.class);
-	//
 	private final AccPasswordHistoryService passwordHistoryService;
 	private final LookupService lookupService;
-	//
-	@Autowired private SecurityService securityService;
 
 	@Autowired
 	public DefaultAccPasswordService(
@@ -75,20 +68,8 @@ public class DefaultAccPasswordService
 			predicates.add(builder.equal(root.get(AccPassword_.password), filter.getPassword()));
 		}
 		//
-		if (filter.getMustChange() != null) {
-			predicates.add(builder.equal(root.get(AccPassword_.mustChange), filter.getMustChange()));
-		}
-		//
 		if (filter.getAccountId() != null) {
 			predicates.add(builder.equal(root.get(AccPassword_.account).get(AccAccount_.id), filter.getAccountId()));
-		}
-		//
-		if (filter.getValidFrom() != null) {
-			predicates.add(builder.greaterThanOrEqualTo(root.get(AccPassword_.validFrom), filter.getValidFrom()));
-		}
-		//
-		if (filter.getValidTill() != null) {
-			predicates.add(builder.lessThanOrEqualTo(root.get(AccPassword_.validTill), filter.getValidTill()));
 		}
 		//
 		if (StringUtils.isNotEmpty(filter.getText())) {
@@ -114,38 +95,7 @@ public class DefaultAccPasswordService
 			password.setAccount(account.getId());
 		}
 		//
-		if (passwordChangeDto.getMaxPasswordAge() != null) {
-			password.setValidTill(passwordChangeDto.getMaxPasswordAge().toLocalDate());
-		} else {
-			password.setValidTill(null);
-		}
-		//
-		UUID ownerId = password.getAccount();
-		UUID currentId = securityService.getCurrentId();
-		//
-		// resolve password valid from, if password is saved by other logged identity
-		if (!Objects.equals(currentId, password.getAccount()) // currentId can be null => system
-				&& !passwordChangeDto.isSkipResetValidFrom()) {
-			password.setValidFrom(null);
-			LOG.debug("Password owner [{}] is different than logged identity [{}], "
-					+ "password will not be checked for minimum days, when password is changed next time by password owner",
-					ownerId, currentId);
-		} else { // set new password validity ~ creation date
-			LocalDate now = LocalDate.now();
-			password.setValidFrom(now);
-			LOG.trace("Password (for password owner [{}])  valid from [{}] set.", ownerId, now);
-		}
-		//
 		password.setPassword(this.generateHash(newPassword, getSalt()));
-		//
-		// set must change password to false
-		password.setMustChange(false);
-		//
-		// reset unsuccessful attempts, after password is changed
-		password.resetUnsuccessfulAttempts();
-		//
-		// Clear block loging date
-		password.setBlockLoginDate(null);
 		//
 		// create new password history with currently changed password
 		createPasswordHistory(password);
@@ -212,8 +162,6 @@ public class DefaultAccPasswordService
 		// TODO: two passwords can be created in multi thread access (lock by account before the get)
 		passwordDto = new AccPasswordDto();
 		passwordDto.setAccount(accountId);
-		passwordDto.setMustChange(false);
-		passwordDto.setValidFrom(LocalDate.now());
 		//
 		return this.save(passwordDto);
 	}

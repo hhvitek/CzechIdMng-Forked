@@ -14,7 +14,7 @@ import eu.bcvsolutions.idm.core.model.event.PasswordEvent.PasswordEventType;
 
 /**
  * Delete processor for {@link AccPasswordDto}
- * @author Ondrej Kopr <kopr@xyxy.cz>
+ * @author Jirka Koula
  *
  */
 @Component

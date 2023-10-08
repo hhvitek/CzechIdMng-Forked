@@ -42,23 +42,23 @@ public class AccountPasswordProcessor extends AbstractAccountPasswordProcessor {
 	/**
 	 * Saves account password
 	 * 
-	 * @param account
+	 * @param entity
 	 * @param passwordChangeDto
 	 */
-	protected void savePassword(AccAccountDto account, PasswordChangeDto passwordChangeDto) {
-		LOG.debug("Saving password for account [{}].", account.getUid());
+	protected void savePassword(AccAccountDto entity, PasswordChangeDto passwordChangeDto) {
+		LOG.debug("Saving password for account [{}].", entity.getUid());
 		// 
-		this.passwordService.save(account, passwordChangeDto);
+		this.passwordService.save(entity, passwordChangeDto);
 	}
 
 	/**
 	 * Delete account password from confidential storage
 	 * 
-	 * @param account
+	 * @param entity
 	 */
-	protected void deletePassword(AccAccountDto account) {
-		LOG.debug("Deleting password for account [{}]. ", account.getUid());
-		this.passwordService.delete(account);
+	protected void deletePassword(AccAccountDto entity) {
+		LOG.debug("Deleting password for account [{}]. ", entity.getUid());
+		this.passwordService.delete(entity);
 	}
 
 	@Override

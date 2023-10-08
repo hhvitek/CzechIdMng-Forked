@@ -6,11 +6,7 @@ import java.util.UUID;
 import eu.bcvsolutions.idm.acc.dto.AccAccountDto;
 import eu.bcvsolutions.idm.acc.dto.AccPasswordDto;
 import eu.bcvsolutions.idm.acc.dto.filter.AccPasswordFilter;
-import eu.bcvsolutions.idm.core.api.dto.PasswordChangeDto;
-import eu.bcvsolutions.idm.core.api.script.ScriptEnabled;
-import eu.bcvsolutions.idm.core.api.service.EventableDtoService;
-import eu.bcvsolutions.idm.core.security.api.domain.GuardedString;
-import eu.bcvsolutions.idm.core.security.api.service.AuthorizableService;
+import eu.bcvsolutions.idm.core.api.service.AbstractPasswordService;
 
 /**
  * Service for working with technical account password.
@@ -19,27 +15,8 @@ import eu.bcvsolutions.idm.core.security.api.service.AuthorizableService;
  *
  */
 
-public interface AccPasswordService extends
-		EventableDtoService<AccPasswordDto, AccPasswordFilter>,
-		ScriptEnabled,
-		AuthorizableService<AccPasswordDto> {
+public interface AccPasswordService extends AbstractPasswordService<AccPasswordDto, AccAccountDto, AccPasswordFilter> {
 
-	/**
-	 * Save password to account. This method not validate password.
-	 * 
-	 * @param account
-	 * @param passwordDto
-	 * @return
-	 */
-	AccPasswordDto save(AccAccountDto account, PasswordChangeDto passwordDto);
-	
-	/**
-	 * Delete password by given account
-	 * 
-	 * @param account
-	 */
-	void delete(AccAccountDto account);
-	
 	/**
 	 * Return password for given account
 	 * 
@@ -56,29 +33,5 @@ public interface AccPasswordService extends
 	 * @return
 	 */
 	AccPasswordDto findOrCreateByAccount(Serializable codeable);
-
-	/**
-	 * Check password matches a passwordToCheck
-	 * 
-	 * @param passwordToCheck
-	 * @param password
-	 * @return true if matches
-	 */
-	boolean checkPassword(GuardedString passwordToCheck, AccPasswordDto password);
-	
-	/**
-	 * Method generate password and return hash
-	 * 
-	 * @param password
-	 * @return
-	 */
-	String generateHash(GuardedString password, String salt);
-	
-	/**
-	 * Get salt
-	 *
-	 * @return
-	 */
-	String getSalt();
 
 }

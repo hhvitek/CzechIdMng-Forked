@@ -52,11 +52,11 @@ public class IdentityPasswordProcessor extends AbstractIdentityPasswordProcessor
 	/**
 	 * Saves identity's password and fill valid till from password policy.
 	 * 
-	 * @param identity
+	 * @param entity
 	 * @param newPassword
 	 */
-	protected void savePassword(IdmIdentityDto identity, PasswordChangeDto passwordChangeDto) {
-		LOG.debug("Saving password for identity [{}].", identity.getUsername());
+	protected void savePassword(IdmIdentityDto entity, PasswordChangeDto passwordChangeDto) {
+		LOG.debug("Saving password for identity [{}].", entity.getUsername());
 		// 
 		if (passwordChangeDto.getMaxPasswordAge() == null) {
 			IdmPasswordPolicyDto defaultValidatePolicy = passwordPolicyService
@@ -67,20 +67,20 @@ public class IdentityPasswordProcessor extends AbstractIdentityPasswordProcessor
 			} else {
 				passwordChangeDto.setMaxPasswordAge(null);
 				LOG.info("Default validate password policy not exists or max password age is not filled."
-						+ " For identity username [{}] will be valid till null.", identity.getUsername());
+						+ " For identity username [{}] will be valid till null.", entity.getUsername());
 			}
 		}
-		this.passwordService.save(identity, passwordChangeDto);
+		this.passwordService.save(entity, passwordChangeDto);
 	}
 
 	/**
 	 * Delete identity's password from confidential storage
 	 * 
-	 * @param identity
+	 * @param entity
 	 */
-	protected void deletePassword(IdmIdentityDto identity) {
-		LOG.debug("Deleting password for identity [{}]. ", identity.getUsername());
-		this.passwordService.delete(identity);
+	protected void deletePassword(IdmIdentityDto entity) {
+		LOG.debug("Deleting password for identity [{}]. ", entity.getUsername());
+		this.passwordService.delete(entity);
 	}
 
 	@Override
