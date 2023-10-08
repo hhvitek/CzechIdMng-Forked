@@ -12,7 +12,7 @@ import eu.bcvsolutions.idm.core.api.dto.IdmPasswordPolicyDto;
 import eu.bcvsolutions.idm.core.api.dto.PasswordChangeDto;
 import eu.bcvsolutions.idm.core.api.service.IdmPasswordPolicyService;
 import eu.bcvsolutions.idm.core.api.service.IdmPasswordService;
-import eu.bcvsolutions.idm.core.model.event.IdentityEvent.IdentityEventType;
+import eu.bcvsolutions.idm.core.model.event.EntityPasswordEvent.EntityPasswordEventType;
 
 /**
  * Save identity's password
@@ -35,7 +35,7 @@ public class IdentityPasswordProcessor extends AbstractIdentityPasswordProcessor
 	public IdentityPasswordProcessor(
 			IdmPasswordService passwordService,
 			IdmPasswordPolicyService passwordPolicyService) {
-		super(passwordService, IdentityEventType.PASSWORD);
+		super(passwordService, EntityPasswordEventType.PASSWORD);
 		//
 		Assert.notNull(passwordService, "Password service is required for password processor.");
 		Assert.notNull(passwordPolicyService, "Password policy service is required for password processor.");

@@ -20,8 +20,8 @@ import eu.bcvsolutions.idm.core.api.entity.OperationResult;
 import eu.bcvsolutions.idm.core.api.service.EntityEventManager;
 import eu.bcvsolutions.idm.core.api.service.IdmPasswordService;
 import eu.bcvsolutions.idm.core.model.entity.IdmPassword_;
-import eu.bcvsolutions.idm.core.model.event.IdentityEvent;
-import eu.bcvsolutions.idm.core.model.event.IdentityEvent.IdentityEventType;
+import eu.bcvsolutions.idm.core.model.event.EntityPasswordEvent;
+import eu.bcvsolutions.idm.core.model.event.EntityPasswordEvent.EntityPasswordEventType;
 import eu.bcvsolutions.idm.core.scheduler.api.service.AbstractSchedulableStatefulExecutor;
 
 /**
@@ -51,7 +51,7 @@ public class PasswordExpiredTaskExecutor extends AbstractSchedulableStatefulExec
 	public void init(Map<String, Object> properties) {
 		super.init(properties);
 		expiration = LocalDate.now();
-		LOG.debug("Publishing [{}] event to identities after password expired. Check date [{}]", IdentityEventType.PASSWORD_EXPIRED, expiration);
+		LOG.debug("Publishing [{}] event to identities after password expired. Check date [{}]", EntityPasswordEventType.PASSWORD_EXPIRED, expiration);
 	}
 
 	@Override
@@ -74,14 +74,14 @@ public class PasswordExpiredTaskExecutor extends AbstractSchedulableStatefulExec
 		}
 		//
 		IdmIdentityDto identity = getLookupService().lookupEmbeddedDto(dto, IdmPassword_.identity);
-		LOG.info("Publishing [{}] event to identity [{}], password expired in [{}]", 
-				IdentityEventType.PASSWORD_EXPIRED, identity.getUsername(), dto.getValidTill());
+		LOG.info("Publishing [{}] event to identity [{}], password expired in [{}]",
+				EntityPasswordEventType.PASSWORD_EXPIRED, identity.getUsername(), dto.getValidTill());
 		try {
-			entityEventManager.process(new IdentityEvent(IdentityEventType.PASSWORD_EXPIRED, identity));
+			entityEventManager.process(new EntityPasswordEvent<IdmIdentityDto>(EntityPasswordEventType.PASSWORD_EXPIRED, identity));
 			return Optional.of(new OperationResult.Builder(OperationState.EXECUTED).build());
 		} catch (Exception ex) {
-			LOG.error("Publishing [{}] event to identity [{}], password expired in [{}] failed", 
-					IdentityEventType.PASSWORD_EXPIRED, dto.getIdentity(), dto.getValidTill(), ex);
+			LOG.error("Publishing [{}] event to identity [{}], password expired in [{}] failed",
+					EntityPasswordEventType.PASSWORD_EXPIRED, dto.getIdentity(), dto.getValidTill(), ex);
 			return Optional.of(new OperationResult.Builder(OperationState.EXCEPTION)
 					.setCause(ex)
 					// TODO: set model

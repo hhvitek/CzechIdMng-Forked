@@ -6,9 +6,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import eu.bcvsolutions.idm.acc.dto.AccAccountDto;
-import eu.bcvsolutions.idm.acc.event.AccountEvent;
 import eu.bcvsolutions.idm.acc.service.api.AccPasswordService;
 import eu.bcvsolutions.idm.core.api.dto.PasswordChangeDto;
+import eu.bcvsolutions.idm.core.model.event.EntityPasswordEvent.EntityPasswordEventType;
 
 /**
  * Save account password
@@ -27,7 +27,7 @@ public class AccountPasswordProcessor extends AbstractAccountPasswordProcessor {
 
 	@Autowired
 	public AccountPasswordProcessor(AccPasswordService passwordService) {
-		super(passwordService, AccountEvent.AccountEventType.PASSWORD);
+		super(passwordService, EntityPasswordEventType.PASSWORD);
 		//
 		Assert.notNull(passwordService, "Password service is required for password processor.");
 		//

@@ -15,7 +15,7 @@ import eu.bcvsolutions.idm.core.api.event.EntityEvent;
 import eu.bcvsolutions.idm.core.api.event.EventResult;
 import eu.bcvsolutions.idm.core.api.event.processor.IdentityProcessor;
 import eu.bcvsolutions.idm.core.api.service.IdmPasswordService;
-import eu.bcvsolutions.idm.core.model.event.IdentityEvent.IdentityEventType;
+import eu.bcvsolutions.idm.core.model.event.EntityPasswordEvent.EntityPasswordEventType;
 import eu.bcvsolutions.idm.core.notification.api.domain.NotificationLevel;
 import eu.bcvsolutions.idm.core.notification.api.dto.IdmMessageDto;
 import eu.bcvsolutions.idm.core.notification.api.service.NotificationManager;
@@ -39,7 +39,7 @@ public class IdentityPasswordExpiredProcessor
 	@Autowired private NotificationManager notificationManager;
 
 	public IdentityPasswordExpiredProcessor() {
-		super(IdentityEventType.PASSWORD_EXPIRED);
+		super(EntityPasswordEventType.PASSWORD_EXPIRED);
 	}
 	
 	@Override

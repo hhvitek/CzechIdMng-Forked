@@ -97,6 +97,8 @@ import eu.bcvsolutions.idm.core.model.entity.IdmIdentityRole;
 import eu.bcvsolutions.idm.core.model.entity.IdmIdentityRole_;
 import eu.bcvsolutions.idm.core.model.entity.IdmIdentity_;
 import eu.bcvsolutions.idm.core.model.entity.IdmRole_;
+import eu.bcvsolutions.idm.core.model.event.EntityPasswordEvent;
+import eu.bcvsolutions.idm.core.model.event.EntityPasswordEvent.EntityPasswordEventType;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
 import eu.bcvsolutions.idm.core.security.api.dto.AuthorizableType;
 import eu.bcvsolutions.idm.ic.api.IcAttribute;
@@ -588,8 +590,8 @@ public class DefaultAccAccountService extends AbstractFormableService<AccAccount
 	public List<OperationResult> passwordChange(AccAccountDto account, PasswordChangeDto passwordChangeDto) {
 		Assert.notNull(account, "Account is required.");
 		//
-		return passwordChange(new AccountEvent(
-				AccountEvent.AccountEventType.PASSWORD,
+		return passwordChange(new EntityPasswordEvent<AccAccountDto>(
+				EntityPasswordEventType.PASSWORD,
 				account,
 				ImmutableMap.of(AccountPasswordProcessor.PROPERTY_PASSWORD_CHANGE_DTO, passwordChangeDto)));
 	}

@@ -13,7 +13,7 @@ import eu.bcvsolutions.idm.core.api.event.EventResult;
 import eu.bcvsolutions.idm.core.api.event.processor.IdentityProcessor;
 import eu.bcvsolutions.idm.core.api.service.EntityEventManager;
 import eu.bcvsolutions.idm.core.api.service.IdmIdentityService;
-import eu.bcvsolutions.idm.core.model.event.IdentityEvent.IdentityEventType;
+import eu.bcvsolutions.idm.core.model.event.EntityPasswordEvent.EntityPasswordEventType;
 import eu.bcvsolutions.idm.core.notification.api.domain.NotificationLevel;
 import eu.bcvsolutions.idm.core.notification.api.dto.IdmMessageDto;
 import eu.bcvsolutions.idm.core.notification.api.service.NotificationManager;
@@ -44,7 +44,7 @@ public class IdentityPasswordChangeNotificationProcessor extends CoreEventProces
 	@Autowired private NotificationManager notificationManager;
 
 	public IdentityPasswordChangeNotificationProcessor() {
-		super(IdentityEventType.PASSWORD);
+		super(EntityPasswordEventType.PASSWORD);
 	}
 	
 	@Override
