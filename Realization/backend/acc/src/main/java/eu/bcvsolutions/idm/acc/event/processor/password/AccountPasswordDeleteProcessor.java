@@ -6,11 +6,7 @@ import org.springframework.stereotype.Component;
 
 import eu.bcvsolutions.idm.acc.dto.AccPasswordDto;
 import eu.bcvsolutions.idm.acc.service.api.AccPasswordService;
-import eu.bcvsolutions.idm.core.api.event.CoreEventProcessor;
-import eu.bcvsolutions.idm.core.api.event.DefaultEventResult;
-import eu.bcvsolutions.idm.core.api.event.EntityEvent;
-import eu.bcvsolutions.idm.core.api.event.EventResult;
-import eu.bcvsolutions.idm.core.model.event.PasswordEvent.PasswordEventType;
+import eu.bcvsolutions.idm.core.model.event.processor.password.AbstractPasswordDeleteProcessor;
 
 /**
  * Delete processor for {@link AccPasswordDto}
@@ -19,14 +15,13 @@ import eu.bcvsolutions.idm.core.model.event.PasswordEvent.PasswordEventType;
  */
 @Component
 @Description("Delete password for account.")
-public class AccountPasswordDeleteProcessor extends CoreEventProcessor<AccPasswordDto> {
+public class AccountPasswordDeleteProcessor extends AbstractPasswordDeleteProcessor<AccPasswordDto, AccPasswordService> {
 
 	private static final String PROCESSOR_NAME = "account-password-delete-processor";
-	@Autowired
-	private AccPasswordService service;
 
-	public AccountPasswordDeleteProcessor() {
-		super(PasswordEventType.DELETE);
+	@Autowired
+	public AccountPasswordDeleteProcessor(AccPasswordService service) {
+		super(service);
 	}
 
 	@Override
@@ -34,12 +29,4 @@ public class AccountPasswordDeleteProcessor extends CoreEventProcessor<AccPasswo
 		return PROCESSOR_NAME;
 	}
 
-	@Override
-	public EventResult<AccPasswordDto> process(EntityEvent<AccPasswordDto> event) {
-		AccPasswordDto passwordDto = event.getContent();
-		//
-		service.deleteInternal(passwordDto);
-		//
-		return new DefaultEventResult<>(event, this);
-	}
 }
