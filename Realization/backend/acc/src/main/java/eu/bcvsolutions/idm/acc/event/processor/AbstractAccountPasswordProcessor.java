@@ -12,13 +12,7 @@ import eu.bcvsolutions.idm.core.model.event.processor.AbstractPasswordProcessor;
  * @author Jirka Koula
  */
 public abstract class AbstractAccountPasswordProcessor extends AbstractPasswordProcessor<AccAccountDto, AccPasswordService> implements AccountProcessor {
-
-	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(AbstractAccountPasswordProcessor.class);
-	public static final String PROPERTY_PASSWORD_CHANGE_DTO = "acc:password-change-dto";
-	//
-
 	protected AbstractAccountPasswordProcessor(AccPasswordService passwordService, EventType... types) {
-		super(passwordService, LOG, PROPERTY_PASSWORD_CHANGE_DTO, types);
+		super(passwordService, types);
 	}
-
 }

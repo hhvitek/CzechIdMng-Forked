@@ -26,7 +26,7 @@ import eu.bcvsolutions.idm.core.model.event.EntityPasswordEvent.EntityPasswordEv
 public class IdentityPasswordProcessor extends AbstractIdentityPasswordProcessor {
 
 	public static final String PROCESSOR_NAME = "identity-password-processor";
-	public static final String PROPERTY_PASSWORD_CHANGE_DTO = "idm:password-change-dto";
+	public static final String PROPERTY_PASSWORD_CHANGE_DTO = "password-change-dto";
 	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(IdentityPasswordProcessor.class);
 	private final IdmPasswordService passwordService;
 	private final IdmPasswordPolicyService passwordPolicyService;

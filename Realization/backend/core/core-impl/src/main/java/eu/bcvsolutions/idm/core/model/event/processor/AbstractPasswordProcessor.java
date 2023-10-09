@@ -29,19 +29,17 @@ import eu.bcvsolutions.idm.core.api.service.AbstractPasswordService;
 public abstract class AbstractPasswordProcessor<DTO extends AbstractDto & PasswordManageable, S extends AbstractPasswordService<?, DTO, ?>>
 		extends CoreEventProcessor<DTO> {
 
-	private final org.slf4j.Logger LOG;
-	public final String PROPERTY_PASSWORD_CHANGE_DTO;
+	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(AbstractPasswordProcessor.class);
+	public static final String PROPERTY_PASSWORD_CHANGE_DTO = "password-change-dto";
 	//
 	private final S passwordService;
 
-	public AbstractPasswordProcessor(S passwordService, org.slf4j.Logger LOG, String PROPERTY_PASSWORD_CHANGE_DTO, EventType... types) {
+	public AbstractPasswordProcessor(S passwordService, EventType... types) {
 		super(types);
 		//
 		Assert.notNull(passwordService, "Password service is required for password processor.");
 		//
 		this.passwordService = passwordService;
-		this.LOG = LOG;
-		this.PROPERTY_PASSWORD_CHANGE_DTO = PROPERTY_PASSWORD_CHANGE_DTO;
 	}
 
 	@Override
