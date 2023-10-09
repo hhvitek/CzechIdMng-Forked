@@ -9,14 +9,11 @@ import org.springframework.data.domain.Pageable;
 
 import eu.bcvsolutions.idm.acc.dto.AccAccountDto;
 import eu.bcvsolutions.idm.acc.dto.filter.AccAccountFilter;
-import eu.bcvsolutions.idm.core.api.dto.IdmIdentityDto;
-import eu.bcvsolutions.idm.core.api.dto.PasswordChangeDto;
-import eu.bcvsolutions.idm.core.api.entity.OperationResult;
-import eu.bcvsolutions.idm.core.api.event.CoreEvent;
 import eu.bcvsolutions.idm.core.api.script.ScriptEnabled;
 import eu.bcvsolutions.idm.core.eav.api.service.FormableDtoService;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
 import eu.bcvsolutions.idm.core.security.api.service.AuthorizableService;
+import eu.bcvsolutions.idm.core.api.service.PasswordManageableService;
 import eu.bcvsolutions.idm.ic.api.IcConnectorObject;
 
 /**
@@ -29,7 +26,8 @@ import eu.bcvsolutions.idm.ic.api.IcConnectorObject;
 public interface AccAccountService extends//
 		FormableDtoService<AccAccountDto, AccAccountFilter>, //
 		ScriptEnabled, //
-		AuthorizableService<AccAccountDto> {
+		AuthorizableService<AccAccountDto>,
+		PasswordManageableService<AccAccountDto> {
 
 	/**
 	 * DeleteTargetAccount If is true, then will be call provisioning
@@ -87,21 +85,4 @@ public interface AccAccountService extends//
 	 * @return
 	 */
 	SynchronizationEntityExecutor getSyncExecutor(String entityType);
-
-	/**
-	 * Changes given account password by the event processing. New password property has to be set in event properties.
-	 *
-	 * @param passwordChangeEvent
-	 * @return
-	 */
-	List<OperationResult> passwordChange(CoreEvent<AccAccountDto> passwordChangeEvent);
-
-	/**
-	 * Changes given account password
-	 *
-	 * @param account
-	 * @param passwordChangeDto
-	 * @return - change on account
-	 */
-	List<OperationResult> passwordChange(AccAccountDto account, PasswordChangeDto passwordChangeDto);
 }
