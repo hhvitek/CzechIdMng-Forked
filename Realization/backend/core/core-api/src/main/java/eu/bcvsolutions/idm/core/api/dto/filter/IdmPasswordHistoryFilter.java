@@ -30,4 +30,8 @@ public class IdmPasswordHistoryFilter extends AbstractPasswordHistoryFilter {
 		this.identityUsername = identityUsername;
 	}
 
+	@Override
+	public void setEntityId(UUID entityId) {
+		setIdentityId(entityId);
+	}
 }

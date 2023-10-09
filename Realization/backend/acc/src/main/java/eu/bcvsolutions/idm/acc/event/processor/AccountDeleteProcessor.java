@@ -212,7 +212,7 @@ public class AccountDeleteProcessor
 		// remove password
 		passwordProcessor.deletePassword(account);
 		// delete password history for identity
-		passwordHistoryService.deleteAllByAccount(account.getId());
+		passwordHistoryService.deleteAllByEntity(account.getId());
 
 		//
 		AccAccountDto refreshAccount = accountService.get(account.getId());

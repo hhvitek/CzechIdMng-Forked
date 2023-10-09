@@ -140,7 +140,7 @@ public class IdentityDeleteProcessor
 		// remove password
 		passwordProcessor.deletePassword(identity);
 		// delete password history for identity
-		passwordHistoryService.deleteAllByIdentity(identityId);
+		passwordHistoryService.deleteAllByEntity(identityId);
 		// disable related tokens - tokens has to be disabled to prevent their usage (when tokens are deleted, then token is recreated)
 		tokenManager.disableTokens(identity);
 		//

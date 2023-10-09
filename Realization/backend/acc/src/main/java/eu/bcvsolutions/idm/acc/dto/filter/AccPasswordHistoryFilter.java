@@ -22,4 +22,8 @@ public class AccPasswordHistoryFilter extends AbstractPasswordHistoryFilter {
 		this.accountId = accountId;
 	}
 
+	@Override
+	public void setEntityId(UUID entityId) {
+		setAccountId(entityId);
+	}
 }

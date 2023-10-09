@@ -1,6 +1,7 @@
 package eu.bcvsolutions.idm.core.api.dto.filter;
 
 import java.time.ZonedDateTime;
+import java.util.UUID;
 
 /**
  * Filter for password history
@@ -38,4 +39,5 @@ public abstract class AbstractPasswordHistoryFilter implements BaseFilter {
 		this.creator = creator;
 	}
 
+	public abstract void setEntityId(UUID entityId);
 }
