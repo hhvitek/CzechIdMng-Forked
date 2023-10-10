@@ -400,7 +400,7 @@ public class DefaultSynchronizationService implements SynchronizationService {
 
 	private SynchronizationEntityExecutor getExecutor(String entityType, UUID syncConfigId) {
 		SystemEntityTypeRegistrable systemEntityType = systemEntityManager.getSystemEntityByCode(entityType);
-		SynchronizationEntityExecutor executor = pluginExecutors.getPluginFor(systemEntityType);
+		SynchronizationEntityExecutor executor = pluginExecutors.getPluginFor(systemEntityType).orElse(null);
 		if (executor == null) {
 			throw new UnsupportedOperationException(MessageFormat
 					.format("Synchronization executor for SystemEntityType {0} is not supported!", entityType));

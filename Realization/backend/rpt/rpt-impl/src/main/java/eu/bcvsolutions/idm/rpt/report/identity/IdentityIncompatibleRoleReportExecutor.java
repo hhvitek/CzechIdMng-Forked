@@ -79,7 +79,7 @@ public class IdentityIncompatibleRoleReportExecutor extends AbstractReportExecut
 				// json will be array of identities
 				jGenerator.writeStartArray();		
 				// form instance has useful methods to transform form values
-				Pageable pageable = PageRequest.of(0, 100, new Sort(Direction.ASC, IdmIdentity_.username.getName()));
+				Pageable pageable = PageRequest.of(0, 100, Sort.by(Direction.ASC, IdmIdentity_.username.getName()));
 
 				//
 				counter = 0L;

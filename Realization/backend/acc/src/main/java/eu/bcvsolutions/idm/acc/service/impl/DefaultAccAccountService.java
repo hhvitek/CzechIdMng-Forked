@@ -577,7 +577,7 @@ public class DefaultAccAccountService extends AbstractFormableService<AccAccount
 			this.pluginExecutors = OrderAwarePluginRegistry.create(executors);
 		}
 		SystemEntityTypeRegistrable systemEntityType = systemEntityManager.getSystemEntityByCode(entityType);
-		SynchronizationEntityExecutor executor = this.pluginExecutors.getPluginFor(systemEntityType);
+		SynchronizationEntityExecutor executor = this.pluginExecutors.getPluginFor(systemEntityType).orElse(null);
 		if (executor == null) {
 			throw new UnsupportedOperationException(MessageFormat
 					.format("Synchronization executor for SystemEntityType {0} is not supported!", entityType));

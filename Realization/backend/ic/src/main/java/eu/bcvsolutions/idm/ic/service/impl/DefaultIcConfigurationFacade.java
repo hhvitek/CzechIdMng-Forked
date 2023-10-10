@@ -86,7 +86,7 @@ public class DefaultIcConfigurationFacade implements IcConfigurationFacade {
 		Assert.notNull(connectorInstance.getConnectorKey(), "Connector key is required.");
 		checkIcType(connectorInstance.getConnectorKey());
 		//
-		return configurationServices.getPluginFor(connectorInstance.getConnectorKey().getFramework()).getSchema(connectorInstance, connectorConfiguration);
+		return configurationServices.getPluginFor(connectorInstance.getConnectorKey().getFramework()).orElse(null).getSchema(connectorInstance, connectorConfiguration);
 	}
 	
 	@Override
@@ -96,7 +96,7 @@ public class DefaultIcConfigurationFacade implements IcConfigurationFacade {
 		if (connectorInstance.isRemote()) {
 			Assert.notNull(connectorInstance.getConnectorServer(), "Connector server is required.");
 		}
-		configurationServices.getPluginFor(connectorInstance.getConnectorKey().getFramework()).test(connectorInstance, connectorConfiguration);
+		configurationServices.getPluginFor(connectorInstance.getConnectorKey().getFramework()).orElse(null).test(connectorInstance, connectorConfiguration);
 		
 	}
 	
@@ -104,7 +104,7 @@ public class DefaultIcConfigurationFacade implements IcConfigurationFacade {
 	public void validate(IcConnectorInstance connectorInstance, IcConnectorConfiguration connectorConfiguration) {
 		Assert.notNull(connectorInstance.getConnectorKey(), "Connector key is required.");
 		checkIcType(connectorInstance.getConnectorKey());
-		configurationServices.getPluginFor(connectorInstance.getConnectorKey().getFramework()).validate(connectorInstance, connectorConfiguration);
+		configurationServices.getPluginFor(connectorInstance.getConnectorKey().getFramework()).orElse(null).validate(connectorInstance, connectorConfiguration);
 	}
 
 	private boolean checkIcType(IcConnectorKey key) {
@@ -122,6 +122,6 @@ public class DefaultIcConfigurationFacade implements IcConfigurationFacade {
 		Assert.notNull(connectorInstance.getConnectorKey().getFramework(), "Connector framework is required.");
 		checkIcType(connectorInstance.getConnectorKey());
 		//
-		return configurationServices.getPluginFor(connectorInstance.getConnectorKey().getFramework()).getConnectorConfiguration(connectorInstance);
+		return configurationServices.getPluginFor(connectorInstance.getConnectorKey().getFramework()).orElse(null).getConnectorConfiguration(connectorInstance);
 	}
 }

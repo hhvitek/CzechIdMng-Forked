@@ -1,6 +1,6 @@
 package eu.bcvsolutions.idm.core.notification.api.dto;
 
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 import eu.bcvsolutions.idm.core.api.dto.AbstractDto;
 import eu.bcvsolutions.idm.core.api.dto.RecoverableDto;

@@ -2,7 +2,7 @@ package eu.bcvsolutions.idm.core.api.dto;
 
 import java.io.Serializable;
 
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 import eu.bcvsolutions.idm.core.api.domain.RequestOperationType;
 import io.swagger.annotations.ApiModel;

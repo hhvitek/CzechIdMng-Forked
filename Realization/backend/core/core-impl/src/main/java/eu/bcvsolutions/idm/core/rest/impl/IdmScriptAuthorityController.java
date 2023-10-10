@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -82,7 +82,7 @@ public class IdmScriptAuthorityController extends AbstractReadWriteDtoController
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_READ, description = "") })
 				})
-	public Resources<?> find(
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -102,7 +102,7 @@ public class IdmScriptAuthorityController extends AbstractReadWriteDtoController
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_READ, description = "") })
 				})
-	public Resources<?> findQuick(
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
@@ -121,7 +121,7 @@ public class IdmScriptAuthorityController extends AbstractReadWriteDtoController
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_AUTOCOMPLETE, description = "") })
 				})
-	public Resources<?> autocomplete(
+	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
@@ -142,16 +142,16 @@ public class IdmScriptAuthorityController extends AbstractReadWriteDtoController
 				},
 			notes = "Returns IdM services (key, class), whitch can be used in scripts, if they will be assigned to the script by script authority.")
 	@ApiImplicitParams({
-        @ApiImplicitParam(name = "page", dataType = "string", paramType = "query",
+        @ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query",
                 value = "Results page you want to retrieve (0..N)"),
-        @ApiImplicitParam(name = "size", dataType = "string", paramType = "query",
+        @ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query",
                 value = "Number of records per page."),
-        @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query",
+        @ApiImplicitParam(name = "sort", allowMultiple = true, dataTypeClass = String.class, paramType = "query",
                 value = "Sorting criteria in the format: property(,asc|desc). " +
                         "Default sort order is ascending. " +
                         "Multiple sort criteria are supported.")
 	})
-	public Resources<?> findService(
+	public CollectionModel<?> findService(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
 		// TODO: serviceName in @RequestParam + drop pageable
@@ -165,7 +165,7 @@ public class IdmScriptAuthorityController extends AbstractReadWriteDtoController
 //		}
 		Page<AvailableServiceDto> pages = new PageImpl<AvailableServiceDto>(
 				services, pageable, services.size());
-		return toResources(pages, AvailableServiceDto.class);
+		return toCollectionModel(pages, AvailableServiceDto.class);
 	}
 	
 	@Override

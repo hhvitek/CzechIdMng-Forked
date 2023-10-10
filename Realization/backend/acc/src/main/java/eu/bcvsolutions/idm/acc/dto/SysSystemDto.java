@@ -9,7 +9,7 @@ import eu.bcvsolutions.idm.ic.api.IcConnectorInstance;
 import eu.bcvsolutions.idm.ic.impl.IcConnectorInstanceImpl;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.UUID;
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 /**
  * Target system setting - is used for account management and provisioning DTO

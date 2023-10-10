@@ -210,7 +210,7 @@ public class DefaultProvisioningService implements ProvisioningService {
 		SystemEntityTypeRegistrable systemEntityType = systemEntityManager.getSystemEntityByCode(entityType);
 		
 		@SuppressWarnings("unchecked")
-		ProvisioningEntityExecutor<AbstractDto> executor =  (ProvisioningEntityExecutor<AbstractDto>) pluginExecutors.getPluginFor(systemEntityType);
+		ProvisioningEntityExecutor<AbstractDto> executor =  (ProvisioningEntityExecutor<AbstractDto>) pluginExecutors.getPluginFor(systemEntityType).orElse(null);
 		if (executor == null) {
 			throw new UnsupportedOperationException(
 					MessageFormat.format("Provisioning executor for SystemEntityType {0} is not supported!", entityType));

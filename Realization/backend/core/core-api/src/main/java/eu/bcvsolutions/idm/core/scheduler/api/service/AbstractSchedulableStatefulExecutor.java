@@ -12,7 +12,6 @@ import java.util.UUID;
 
 import javax.persistence.EntityManager;
 
-import eu.bcvsolutions.idm.core.api.config.datasource.CoreEntityManager;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +33,7 @@ import org.springframework.util.Assert;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
+import eu.bcvsolutions.idm.core.api.config.datasource.CoreEntityManager;
 import eu.bcvsolutions.idm.core.api.domain.CoreResultCode;
 import eu.bcvsolutions.idm.core.api.domain.OperationState;
 import eu.bcvsolutions.idm.core.api.dto.AbstractDto;
@@ -203,7 +203,7 @@ public abstract class AbstractSchedulableStatefulExecutor<DTO extends AbstractDt
 		Pageable pageable = PageRequest.of(
 				0, 
 				getPageSize(),
-				new Sort(Direction.ASC, BaseEntity.PROPERTY_ID)
+				Sort.by(Direction.ASC, BaseEntity.PROPERTY_ID)
 		);
 		//
 		do {

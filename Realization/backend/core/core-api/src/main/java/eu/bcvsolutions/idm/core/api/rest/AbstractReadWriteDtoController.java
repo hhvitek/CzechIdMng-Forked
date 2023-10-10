@@ -10,7 +10,7 @@ import javax.validation.ValidatorFactory;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -107,7 +107,7 @@ public abstract class AbstractReadWriteDtoController<DTO extends BaseDto, F exte
 			@Authorization(SwaggerConfig.AUTHENTICATION_CIDMST)
 			})
 	public ResponseEntity<?> post(@ApiParam(value = "Record (dto).", required = true) DTO dto) {
-		ResourceSupport resource = toResource(postDto(dto));
+		RepresentationModel resource = toModel(postDto(dto));
 		if (resource == null) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
@@ -144,7 +144,7 @@ public abstract class AbstractReadWriteDtoController<DTO extends BaseDto, F exte
 			throw new EntityNotFoundException(getService().getEntityClass(), backendId);
 		}
 		DTO updatedDto = putDto(dto);
-		return new ResponseEntity<>(toResource(updatedDto), HttpStatus.OK);
+		return new ResponseEntity<>(toModel(updatedDto), HttpStatus.OK);
 	}
 
 	/**
@@ -179,7 +179,7 @@ public abstract class AbstractReadWriteDtoController<DTO extends BaseDto, F exte
 			throw new ResultCodeException(CoreResultCode.BAD_REQUEST, ex);
 		}
 		updateDto = patchDto(updateDto);
-		return new ResponseEntity<>(toResource(updateDto), HttpStatus.OK);
+		return new ResponseEntity<>(toModel(updateDto), HttpStatus.OK);
 	}
 	
 	/**

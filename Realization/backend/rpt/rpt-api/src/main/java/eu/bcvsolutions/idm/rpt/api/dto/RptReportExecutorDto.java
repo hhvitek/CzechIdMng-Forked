@@ -3,7 +3,7 @@ package eu.bcvsolutions.idm.rpt.api.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 import eu.bcvsolutions.idm.core.api.dto.AbstractComponentDto;
 import eu.bcvsolutions.idm.core.eav.api.dto.IdmFormDefinitionDto;

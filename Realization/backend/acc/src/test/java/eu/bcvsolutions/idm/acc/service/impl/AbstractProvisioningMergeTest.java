@@ -1014,7 +1014,7 @@ public abstract class AbstractProvisioningMergeTest extends AbstractIntegrationT
 		SysProvisioningOperationFilter operationFilter = new SysProvisioningOperationFilter();
 		operationFilter.setEntityIdentifier(identity.getId());
 
-		List<SysProvisioningArchiveDto> archives = provisioningArchiveService.find(operationFilter, PageRequest.of(0, 1, new Sort(Direction.DESC, AbstractEntity_.created.getName()))).getContent();
+		List<SysProvisioningArchiveDto> archives = provisioningArchiveService.find(operationFilter, PageRequest.of(0, 1, Sort.by(Direction.DESC, AbstractEntity_.created.getName()))).getContent();
 		assertEquals(1, archives.size());
 
 		SysProvisioningArchiveDto archive = archives.get(0);
@@ -1035,7 +1035,7 @@ public abstract class AbstractProvisioningMergeTest extends AbstractIntegrationT
 		// Save identity -> execute provisioning
 		identityService.save(identity);
 
-		archives = provisioningArchiveService.find(operationFilter, PageRequest.of(0, 1, new Sort(Direction.DESC, AbstractEntity_.created.getName()))).getContent();
+		archives = provisioningArchiveService.find(operationFilter, PageRequest.of(0, 1, Sort.by(Direction.DESC, AbstractEntity_.created.getName()))).getContent();
 		assertEquals(1, archives.size());
 
 		archive = archives.get(0);
@@ -1060,7 +1060,7 @@ public abstract class AbstractProvisioningMergeTest extends AbstractIntegrationT
 		// Save identity -> execute provisioning
 		identityService.save(identity);
 
-		archives = provisioningArchiveService.find(operationFilter, PageRequest.of(0, 1, new Sort(Direction.DESC, AbstractEntity_.created.getName()))).getContent();
+		archives = provisioningArchiveService.find(operationFilter, PageRequest.of(0, 1, Sort.by(Direction.DESC, AbstractEntity_.created.getName()))).getContent();
 		assertEquals(1, archives.size());
 
 		archive = archives.get(0);
@@ -1132,7 +1132,7 @@ public abstract class AbstractProvisioningMergeTest extends AbstractIntegrationT
 		SysProvisioningOperationFilter operationFilter = new SysProvisioningOperationFilter();
 		operationFilter.setEntityIdentifier(identity.getId());
 
-		List<SysProvisioningArchiveDto> archives = provisioningArchiveService.find(operationFilter, PageRequest.of(0, 1, new Sort(Direction.DESC, AbstractEntity_.created.getName()))).getContent();
+		List<SysProvisioningArchiveDto> archives = provisioningArchiveService.find(operationFilter, PageRequest.of(0, 1, Sort.by(Direction.DESC, AbstractEntity_.created.getName()))).getContent();
 		assertEquals(1, archives.size());
 
 		SysProvisioningArchiveDto archive = archives.get(0);
@@ -1153,7 +1153,7 @@ public abstract class AbstractProvisioningMergeTest extends AbstractIntegrationT
 		// Save identity -> execute provisioning
 		identityService.save(identity);
 
-		archives = provisioningArchiveService.find(operationFilter, PageRequest.of(0, 1, new Sort(Direction.DESC, AbstractEntity_.created.getName()))).getContent();
+		archives = provisioningArchiveService.find(operationFilter, PageRequest.of(0, 1, Sort.by(Direction.DESC, AbstractEntity_.created.getName()))).getContent();
 		assertEquals(1, archives.size());
 
 		archive = archives.get(0);
@@ -1178,7 +1178,7 @@ public abstract class AbstractProvisioningMergeTest extends AbstractIntegrationT
 		// Save identity -> execute provisioning
 		identityService.save(identity);
 
-		archives = provisioningArchiveService.find(operationFilter, PageRequest.of(0, 1, new Sort(Direction.DESC, AbstractEntity_.created.getName()))).getContent();
+		archives = provisioningArchiveService.find(operationFilter, PageRequest.of(0, 1, Sort.by(Direction.DESC, AbstractEntity_.created.getName()))).getContent();
 		assertEquals(1, archives.size());
 
 		archive = archives.get(0);
@@ -1281,7 +1281,7 @@ public abstract class AbstractProvisioningMergeTest extends AbstractIntegrationT
 		SysProvisioningOperationFilter operationFilter = new SysProvisioningOperationFilter();
 		operationFilter.setEntityIdentifier(identity.getId());
 
-		List<SysProvisioningArchiveDto> archives = provisioningArchiveService.find(operationFilter, PageRequest.of(0, 1, new Sort(Direction.DESC, AbstractEntity_.created.getName()))).getContent();
+		List<SysProvisioningArchiveDto> archives = provisioningArchiveService.find(operationFilter, PageRequest.of(0, 1, Sort.by(Direction.DESC, AbstractEntity_.created.getName()))).getContent();
 		assertEquals(1, archives.size());
 
 		SysProvisioningArchiveDto archive = archives.get(0);
@@ -1303,7 +1303,7 @@ public abstract class AbstractProvisioningMergeTest extends AbstractIntegrationT
 		// Save identity -> execute provisioning
 		identityService.save(identity);
 
-		archives = provisioningArchiveService.find(operationFilter, PageRequest.of(0, 1, new Sort(Direction.DESC, AbstractEntity_.created.getName()))).getContent();
+		archives = provisioningArchiveService.find(operationFilter, PageRequest.of(0, 1, Sort.by(Direction.DESC, AbstractEntity_.created.getName()))).getContent();
 		assertEquals(1, archives.size());
 
 		archive = archives.get(0);
@@ -1329,7 +1329,7 @@ public abstract class AbstractProvisioningMergeTest extends AbstractIntegrationT
 		// Save identity -> execute provisioning
 		identityService.save(identity);
 
-		archives = provisioningArchiveService.find(operationFilter, PageRequest.of(0, 1, new Sort(Direction.DESC, AbstractEntity_.created.getName()))).getContent();
+		archives = provisioningArchiveService.find(operationFilter, PageRequest.of(0, 1, Sort.by(Direction.DESC, AbstractEntity_.created.getName()))).getContent();
 		assertEquals(1, archives.size());
 
 		archive = archives.get(0);
@@ -1354,7 +1354,7 @@ public abstract class AbstractProvisioningMergeTest extends AbstractIntegrationT
 		// Save identity -> execute provisioning
 		identityService.save(identity);
 
-		archives = provisioningArchiveService.find(operationFilter, PageRequest.of(0, 1, new Sort(Direction.DESC, AbstractEntity_.created.getName()))).getContent();
+		archives = provisioningArchiveService.find(operationFilter, PageRequest.of(0, 1, Sort.by(Direction.DESC, AbstractEntity_.created.getName()))).getContent();
 		assertEquals(1, archives.size());
 
 		archive = archives.get(0);

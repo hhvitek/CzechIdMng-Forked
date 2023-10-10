@@ -1,6 +1,6 @@
 package eu.bcvsolutions.idm.core.notification.api.dto;
 
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 /**
  * Generic log message dto

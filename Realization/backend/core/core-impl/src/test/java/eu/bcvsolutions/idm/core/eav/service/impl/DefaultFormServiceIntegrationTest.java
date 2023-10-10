@@ -2099,7 +2099,7 @@ public class DefaultFormServiceIntegrationTest extends AbstractIntegrationTest {
 			filter.setEventType(IdentityEventType.NOTIFY.name());
 			//
 			List<IdmEntityEventDto> events = entityEventService
-				.find(filter, PageRequest.of(0, 1, new Sort(Direction.DESC, IdmEntityEvent_.created.getName())))
+				.find(filter, PageRequest.of(0, 1, Sort.by(Direction.DESC, IdmEntityEvent_.created.getName())))
 				.getContent();
 			//
 			Assert.assertFalse(events.isEmpty());

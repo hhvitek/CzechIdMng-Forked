@@ -5,8 +5,8 @@ import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -80,7 +80,7 @@ public class SysSystemAttributeMappingController extends AbstractReadWriteDtoCon
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")})
 				})
-	public Resources<?> find(
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -99,7 +99,7 @@ public class SysSystemAttributeMappingController extends AbstractReadWriteDtoCon
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")})
 				})
-	public Resources<?> findQuick(
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -200,10 +200,10 @@ public class SysSystemAttributeMappingController extends AbstractReadWriteDtoCon
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 						@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_READ, description = "") })
 				})
-	public Resources<?> getScriptUsageInMapping(
+	public CollectionModel<?> getScriptUsageInMapping(
 			@ApiParam(value = "Script's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
-		return toResources(systemAttributeMappingService.getScriptUsage(backendId), SysSystemAttributeMappingDto.class);
+		return toCollectionModel(systemAttributeMappingService.getScriptUsage(backendId), SysSystemAttributeMappingDto.class);
 	}
 
 	@ResponseBody
@@ -227,7 +227,7 @@ public class SysSystemAttributeMappingController extends AbstractReadWriteDtoCon
 			@PathVariable @NotNull String accountId) {
 
 		Object transformedValueForAttributeAndAccount = systemAttributeMappingService.getTransformedValueForAttributeAndAccount(accountId, schemaAttrName);
-		Resource<Object> resourceSupport = new Resource<>(transformedValueForAttributeAndAccount);
+		EntityModel<Object> resourceSupport = new EntityModel<>(transformedValueForAttributeAndAccount);
 		return new ResponseEntity<>(resourceSupport, HttpStatus.OK);
 	}
 }

@@ -253,6 +253,11 @@ public class MultiSourcePagedResource<DTO extends BaseDto, INNERFILTER extends D
         }
 
         @Override
+        public Pageable withPage(int pageNumber) {
+            return OffsetPageable.of(getOffset(), pageNumber, getPageSize());
+        }
+
+        @Override
         public boolean hasPrevious() {
             return getPageNumber() > 0;
         }

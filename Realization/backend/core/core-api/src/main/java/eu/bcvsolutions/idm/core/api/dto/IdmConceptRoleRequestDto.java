@@ -5,7 +5,7 @@ import java.io.ObjectInputStream.GetField;
 import java.util.UUID;
 
 import eu.bcvsolutions.idm.core.api.domain.Identifiable;
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 import eu.bcvsolutions.idm.core.api.domain.ConceptRoleRequestOperation;
 import eu.bcvsolutions.idm.core.api.domain.Embedded;

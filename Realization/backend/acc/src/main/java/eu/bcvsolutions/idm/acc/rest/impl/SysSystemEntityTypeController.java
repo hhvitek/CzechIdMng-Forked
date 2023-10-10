@@ -6,11 +6,11 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.PagedResources;
-import org.springframework.hateoas.PagedResources.PageMetadata;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.ResourceSupport;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.hateoas.PagedModel.PageMetadata;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -53,9 +53,9 @@ public class SysSystemEntityTypeController implements BaseController {
 			nickname = "getSupportedSystemEntityTypes", 
 			response = SystemEntityTypeRegistrableDto.class, 
 			tags = { SysSystemEntityTypeController.TAG })
-	public PagedResources<SystemEntityTypeRegistrableDto> getSupportedEntityTypes() {
+	public PagedModel<SystemEntityTypeRegistrableDto> getSupportedEntityTypes() {
 		List<SystemEntityTypeRegistrableDto> systemEntityTypes = systemEntityTypeManager.getSupportedEntityTypes();
-		return new PagedResources<>(systemEntityTypes,
+		return new PagedModel<>(systemEntityTypes,
 				new PageMetadata(systemEntityTypes.size(), 0, systemEntityTypes.size(), 1));
 	}
 
@@ -70,7 +70,7 @@ public class SysSystemEntityTypeController implements BaseController {
 			@ApiParam(value = "System entity type code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SystemEntityTypeRegistrableDto systemEntityType = systemEntityTypeManager.getSystemEntityDtoByCode(backendId);
-		return new ResponseEntity<>(toResource(systemEntityType), HttpStatus.OK);
+		return new ResponseEntity<>(toModel(systemEntityType), HttpStatus.OK);
 	}
 
 	@ResponseBody
@@ -86,7 +86,7 @@ public class SysSystemEntityTypeController implements BaseController {
 			@ApiParam(value = "System mapping id", required = true)
 			@PathVariable @NotNull String systemMappingId) {
 		SystemEntityTypeRegistrableDto systemEntityType = systemEntityTypeManager.getSystemEntityDtoByCode(backendId, systemMappingId);
-		return new ResponseEntity<>(toResource(systemEntityType), HttpStatus.OK);
+		return new ResponseEntity<>(toModel(systemEntityType), HttpStatus.OK);
 	}
 	
 	/**
@@ -95,12 +95,12 @@ public class SysSystemEntityTypeController implements BaseController {
 	 * @param dto
 	 * @return
 	 */
-	public ResourceSupport toResource(SystemEntityTypeRegistrableDto dto) {
+	public RepresentationModel toModel(SystemEntityTypeRegistrableDto dto) {
 		if (dto == null) { 
 			return null;
 		} 
-		Link selfLink = ControllerLinkBuilder.linkTo(this.getClass()).slash(dto.getId()).withSelfRel();
-		Resource<SystemEntityTypeRegistrableDto> resourceSupport = new Resource<SystemEntityTypeRegistrableDto>(dto, selfLink);
+		Link selfLink = WebMvcLinkBuilder.linkTo(this.getClass()).slash(dto.getId()).withSelfRel();
+		EntityModel<SystemEntityTypeRegistrableDto> resourceSupport = new EntityModel<SystemEntityTypeRegistrableDto>(dto, selfLink);
 		//
 		return resourceSupport;
 	}

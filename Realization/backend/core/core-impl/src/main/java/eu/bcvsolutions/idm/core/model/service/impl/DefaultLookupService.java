@@ -12,7 +12,6 @@ import java.util.UUID;
 import javax.persistence.EntityManager;
 import javax.persistence.metamodel.SingularAttribute;
 
-import eu.bcvsolutions.idm.core.api.config.datasource.CoreEntityManager;
 import org.hibernate.proxy.HibernateProxy;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +22,7 @@ import org.springframework.util.Assert;
 
 import com.google.common.collect.Lists;
 
+import eu.bcvsolutions.idm.core.api.config.datasource.CoreEntityManager;
 import eu.bcvsolutions.idm.core.api.domain.Embedded;
 import eu.bcvsolutions.idm.core.api.domain.Identifiable;
 import eu.bcvsolutions.idm.core.api.dto.AbstractDto;
@@ -218,7 +218,7 @@ public class DefaultLookupService implements LookupService {
 			return null;
 		}
 		//
-		EntityLookup<E> lookup = (EntityLookup<E>) entityLookups.getPluginFor(entityClass);
+		EntityLookup<E> lookup = (EntityLookup<E>) entityLookups.getPluginFor(entityClass).orElse(null);
 		if (lookup == null) {
 			return new DefaultEntityLookup<E>(entityManager, entityClass, getDtoLookup(identifiableType));
 		}
@@ -234,7 +234,7 @@ public class DefaultLookupService implements LookupService {
 			return null;
 		}
 		//
-		DtoLookup<I> lookup = (DtoLookup<I>) dtoLookups.getPluginFor(service.getDtoClass());
+		DtoLookup<I> lookup = (DtoLookup<I>) dtoLookups.getPluginFor(service.getDtoClass()).orElse(null);
 		if (lookup == null) {
 			if (service instanceof CodeableService) {
 				return new CodeableDtoLookup<I>((CodeableService<I>) service);
@@ -252,7 +252,7 @@ public class DefaultLookupService implements LookupService {
 			return null;
 		}
 		//
-		DtoLookupByExample<I> lookup = (DtoLookupByExample<I>) dtoLookupByExamples.getPluginFor(service.getDtoClass());
+		DtoLookupByExample<I> lookup = (DtoLookupByExample<I>) dtoLookupByExamples.getPluginFor(service.getDtoClass()).orElse(null);
 		if (lookup == null) {
 			// TODO: default lookup by reflection and filter properties?
 		}
@@ -345,7 +345,7 @@ public class DefaultLookupService implements LookupService {
 			return null;
 		}
 		//
-		DtoMapper mapper = (DtoMapper) getDtoMappers().getPluginFor(dtoClass);
+		DtoMapper mapper = (DtoMapper) getDtoMappers().getPluginFor(dtoClass).orElse(null);
 		if (mapper == null) {
 			LOG.debug("DTO for entity type [{}] will be mapped by default mapper.", entity.getClass());
 			//

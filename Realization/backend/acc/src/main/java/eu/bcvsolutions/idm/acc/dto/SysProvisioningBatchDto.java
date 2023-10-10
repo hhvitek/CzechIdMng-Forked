@@ -5,7 +5,7 @@ import java.util.UUID;
 import javax.validation.constraints.NotNull;
 
 import java.time.ZonedDateTime;
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 import eu.bcvsolutions.idm.acc.entity.SysProvisioningBatch;
 import eu.bcvsolutions.idm.core.api.domain.Embedded;

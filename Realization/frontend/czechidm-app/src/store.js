@@ -91,6 +91,7 @@ const reducersApp = combineReducers({
   messages: Reducers.messages,
   data: Reducers.data,
   security: Reducers.security,
+  ui: Reducers.ui,
   logger: (state = logger) => {
     // TODO: can be moved to separate redecuer - now is inline
     return state;
@@ -129,7 +130,7 @@ const createPersistentStore = compose(
 // const reduxRouterMiddleware = routerMiddleware(hashHistory);
 //
 // before dispatch handler
-function dispatchTrace({ getState }) {
+function dispatchTrace({getState}) {
   return (next) => (action) => {
     logger.trace('will dispatch', action);
     // Call the next dispatch method in the middleware chain.
@@ -144,7 +145,7 @@ function dispatchTrace({ getState }) {
 //
 // redux queue middle ware, inpired by https://github.com/zackargyle/redux-async-queue
 // TODO: move to utils
-function reduxQueue({ dispatch, getState }) {
+function reduxQueue({dispatch, getState}) {
   const THREAD_COUNT = 3;
   const queues = {}; // queued actions
   const running = {}; // running queue ids
@@ -159,7 +160,7 @@ function reduxQueue({ dispatch, getState }) {
     running[key] = running[key].add(action.id);
     //
     // execute action
-    action.callback(function next() {
+    action.callback(() => {
       queues[key].shift();
       running[key] = running[key].delete(action.id);
       if (queues[key].length > 0 && running[key].size < THREAD_COUNT) {
@@ -167,9 +168,10 @@ function reduxQueue({ dispatch, getState }) {
       }
     }, dispatch, getState);
   }
+
   //
   return next => action => {
-    const { queue: key, callback, id, type } = action || {};
+    const {queue: key, callback, id, type} = action || {};
     if (type === 'RECEIVE_LOGIN') {
       // its needed to clear the queues after login (queues can contain incomplete requests)
       for (const queueKey in running) {

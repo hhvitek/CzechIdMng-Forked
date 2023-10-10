@@ -95,7 +95,7 @@ public class RebuildTreeNodeIndexTaskExecutor extends AbstractSchedulableTaskExe
 					PageRequest.of(
 							0, 
 							100,
-							new Sort(Direction.ASC, AbstractEntity_.id.getName())
+							Sort.by(Direction.ASC, AbstractEntity_.id.getName())
 					)
 			);
 			while (canContinue) {

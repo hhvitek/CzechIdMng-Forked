@@ -23,13 +23,12 @@ import eu.bcvsolutions.idm.core.api.domain.ModuleDescriptor;
  * 
  * @author Radek Tomiška
  */
-@SpringBootApplication
-@EnableAutoConfiguration(exclude = { 
+@SpringBootApplication(exclude = {
 		FlywayAutoConfiguration.class, // see {@link IdmFlywayAutoConfiguration} class
 		SecurityAutoConfiguration.class,
 		DataSourceAutoConfiguration.class,
 		HibernateJpaAutoConfiguration.class
-		})
+})
 @EnableCaching
 @EnableScheduling
 @EnablePluginRegistries({ ModuleDescriptor.class })

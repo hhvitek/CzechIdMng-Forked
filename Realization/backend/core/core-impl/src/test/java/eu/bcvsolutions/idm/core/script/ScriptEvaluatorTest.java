@@ -870,7 +870,7 @@ public class ScriptEvaluatorTest extends AbstractIntegrationTest {
 	 * @return
 	 */
 	private AbstractScriptEvaluator getEvaluatorForCategory(IdmScriptCategory category) {
-		return pluginExecutors.getPluginFor(category);
+		return pluginExecutors.getPluginFor(category).orElse(null);
 	}
 	
 	/**

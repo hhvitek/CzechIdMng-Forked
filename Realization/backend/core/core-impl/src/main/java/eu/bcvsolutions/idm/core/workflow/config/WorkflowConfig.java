@@ -1,6 +1,5 @@
 package eu.bcvsolutions.idm.core.workflow.config;
 
-import com.google.common.collect.Lists;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,6 +37,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
+
+import com.google.common.collect.Lists;
 
 import eu.bcvsolutions.idm.core.notification.api.service.EmailNotificationSender;
 import eu.bcvsolutions.idm.core.workflow.domain.CustomActivityBehaviorFactory;
@@ -164,7 +165,7 @@ public class WorkflowConfig {
 		
 		@Override
 		public List<Resource> discoverProcessDefinitionResources(ResourcePatternResolver applicationContext,
-				String prefixes, List<String> suffixes, boolean checkPDs) throws IOException {
+																	String prefixes, List<String> suffixes, boolean checkPDs) throws IOException {
 			if (checkPDs && StringUtils.isNotBlank(prefixes)) {	
 				Map<String, Resource> resources = new HashMap<>();
 	    		for(String prefix : prefixes.split(",")) {

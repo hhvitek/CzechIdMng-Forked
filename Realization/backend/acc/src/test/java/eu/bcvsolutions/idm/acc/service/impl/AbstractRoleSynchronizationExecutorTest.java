@@ -1285,7 +1285,7 @@ public abstract class AbstractRoleSynchronizationExecutorTest<T extends Codeable
 				.orElse(null);
 		if (scriptDto != null) {
 			catalogTransformationScript = this.getPluginExecutors().getPluginFor(IdmScriptCategory.TRANSFORM_FROM)
-					.generateTemplate(scriptDto);
+					.map(plugin -> plugin.generateTemplate(scriptDto)).orElse(null);
 		}
 		Assert.assertNotNull(catalogTransformationScript);
 
@@ -1401,7 +1401,7 @@ public abstract class AbstractRoleSynchronizationExecutorTest<T extends Codeable
 				.orElse(null);
 		if (scriptDto != null) {
 			catalogTransformationScript = this.getPluginExecutors().getPluginFor(IdmScriptCategory.TRANSFORM_FROM)
-					.generateTemplate(scriptDto);
+					.map(plugin -> plugin.generateTemplate(scriptDto)).orElse(null);
 		}
 		Assert.assertNotNull(catalogTransformationScript);
 
@@ -1567,7 +1567,7 @@ public abstract class AbstractRoleSynchronizationExecutorTest<T extends Codeable
 				.orElse(null);
 		if (scriptDto != null) {
 			catalogTransformationScript = this.getPluginExecutors().getPluginFor(IdmScriptCategory.TRANSFORM_FROM)
-					.generateTemplate(scriptDto);
+					.map(plugin -> plugin.generateTemplate(scriptDto)).orElse(null);
 		}
 		Assert.assertNotNull(catalogTransformationScript);
 

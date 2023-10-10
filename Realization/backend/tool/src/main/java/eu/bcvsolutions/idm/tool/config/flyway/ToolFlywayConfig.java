@@ -35,11 +35,16 @@ public class ToolFlywayConfig extends AbstractFlywayConfiguration {
 	@Bean
 	@DependsOn("flywayCore")
 	@ConditionalOnMissingBean(name = "flywayModuleTool")
-	@ConditionalOnExpression("${flyway.enabled:true} && '${flyway.tool.locations}'!=''")
+	@ConditionalOnExpression("${spring.flyway.enabled:true} && '${flyway.tool.locations}'!=''")
 	@ConfigurationProperties(prefix = "flyway.tool")
 	public Flyway flywayModuleTool() {
 		Flyway flyway = super.createFlyway();
 		log.info("Starting flyway migration for tool module [{}]: ", flyway.getConfiguration().getTable());
 		return flyway;
+	}
+
+	@Override
+	public String getPropertyPrefix() {
+		return "flyway.tool";
 	}
 }

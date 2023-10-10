@@ -31,21 +31,22 @@ public class AbstractDtoUnitTest extends AbstractUnitTest {
 		Assert.assertTrue(mockResource.equals(mockResource));
 		Assert.assertFalse(mockResource.equals(null));
 		//
-		dtoOne = new IdmIdentityDto(UUID.randomUUID());
-		dtoTwo = new IdmIdentityDto(UUID.randomUUID());
+		dtoOne = new IdmIdentityDto(UUID.randomUUID(), UUID.randomUUID().toString());
+		dtoTwo = new IdmIdentityDto(UUID.randomUUID(), UUID.randomUUID().toString());
 		//
 		Assert.assertFalse(dtoOne.equals(dtoTwo));
 		Assert.assertNotEquals(dtoOne.hashCode(), dtoTwo.hashCode());
 		Assert.assertNotEquals(dtoOne.toString(), dtoTwo.toString());
 		//
-		dtoOne = new IdmIdentityDto(UUID.randomUUID());
-		dtoTwo = new IdmIdentityDto(dtoOne.getId());
+		UUID randomUUID = UUID.randomUUID();
+		dtoOne = new IdmIdentityDto(randomUUID, randomUUID.toString());
+		dtoTwo = new IdmIdentityDto(dtoOne.getId(), dtoOne.getId().toString());
 		//
 		Assert.assertTrue(dtoOne.equals(dtoTwo));
 		Assert.assertEquals(dtoOne.hashCode(), dtoTwo.hashCode());
 		Assert.assertEquals(dtoOne.toString(), dtoTwo.toString());
 		//
-		dtoOne = new IdmIdentityDto(UUID.randomUUID());
+		dtoOne = new IdmIdentityDto(UUID.randomUUID(), UUID.randomUUID().toString());
 		dtoTwo = new IdmIdentityDto();
 		//
 		Assert.assertFalse(dtoOne.equals(dtoTwo));
@@ -53,7 +54,7 @@ public class AbstractDtoUnitTest extends AbstractUnitTest {
 		Assert.assertNotEquals(dtoOne.toString(), dtoTwo.toString());
 		//
 		dtoOne = new IdmIdentityDto();
-		dtoTwo = new IdmIdentityDto(UUID.randomUUID());
+		dtoTwo = new IdmIdentityDto(UUID.randomUUID(), UUID.randomUUID().toString());
 		//
 		Assert.assertFalse(dtoOne.equals(dtoTwo));
 		Assert.assertNotEquals(dtoOne.hashCode(), dtoTwo.hashCode());

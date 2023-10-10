@@ -6,7 +6,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -186,7 +186,7 @@ public class IdmPasswordPolicyController extends DefaultReadWriteDtoController<I
 			response = IdmPasswordValidationDto.class,
 			tags = { IdmPasswordPolicyController.TAG },
 			notes = "Validate password by password policy.")
-	public Resource<IdmPasswordValidationDto> validate(
+	public EntityModel<IdmPasswordValidationDto> validate(
 			@ApiParam(value = "Policy's uuid identifier.", required = true)
 			@PathVariable String backendId,
 			@Valid @RequestBody(required = true) IdmPasswordValidationDto password) {
@@ -196,7 +196,7 @@ public class IdmPasswordPolicyController extends DefaultReadWriteDtoController<I
 		//
 		password.setValid(true);
 		//
-		return new Resource<IdmPasswordValidationDto>(password);
+		return new EntityModel<IdmPasswordValidationDto>(password);
 	}
 	
 	/**
@@ -211,12 +211,12 @@ public class IdmPasswordPolicyController extends DefaultReadWriteDtoController<I
 			response = IdmPasswordValidationDto.class,
 			tags = { IdmPasswordPolicyController.TAG },
 			notes = "Validate password by default password policy.")
-	public Resource<IdmPasswordValidationDto> validateByDefault(@Valid @RequestBody(required = true) IdmPasswordValidationDto password) {
+	public EntityModel<IdmPasswordValidationDto> validateByDefault(@Valid @RequestBody(required = true) IdmPasswordValidationDto password) {
 		this.passwordPolicyService.validate(password);
 		//
 		password.setValid(true);
 		//
-		return new Resource<IdmPasswordValidationDto>(password);
+		return new EntityModel<IdmPasswordValidationDto>(password);
 	}
 	
 	
@@ -234,8 +234,8 @@ public class IdmPasswordPolicyController extends DefaultReadWriteDtoController<I
 			response = IdmPasswordValidationDto.class,
 			tags = { IdmPasswordPolicyController.TAG },
 			notes = "Returns generated password by default password policy.")
-	public Resource<String> generateByDefaultPolicy() {
-		return new Resource<>(passwordPolicyService.generatePasswordByDefault());
+	public EntityModel<String> generateByDefaultPolicy() {
+		return new EntityModel<>(passwordPolicyService.generatePasswordByDefault());
 	}
 	
 	/**

@@ -109,7 +109,7 @@ public class DefaultIdmScriptService
 		IdmScriptDto dto = super.get(id, permission);
 		//
 		if (dto != null && !dto.isTrimmed()) {
-			AbstractScriptEvaluator evaluator = pluginExecutors.getPluginFor(dto.getCategory());
+			AbstractScriptEvaluator evaluator = pluginExecutors.getPluginFor(dto.getCategory()).orElse(null);
 			if (evaluator != null) {
 				dto.setTemplate(evaluator.generateTemplate(dto));
 			}

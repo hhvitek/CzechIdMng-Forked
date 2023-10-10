@@ -9,8 +9,8 @@ import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -111,7 +111,7 @@ public class IdmRequestRoleController extends AbstractRequestDtoController<IdmRo
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { //
 						@AuthorizationScope(scope = CoreGroupPermission.ROLE_READ, description = "") }) //
 				})
-	public Resources<?> find( //
+	public CollectionModel<?> find( //
 			@PathVariable @NotNull String requestId, //
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, //
 			@PageableDefault Pageable pageable) { //
@@ -132,7 +132,7 @@ public class IdmRequestRoleController extends AbstractRequestDtoController<IdmRo
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { //
 						@AuthorizationScope(scope = CoreGroupPermission.ROLE_READ, description = "") }) //
 				}) 
-	public Resources<?> findQuick( //
+	public CollectionModel<?> findQuick( //
 			@PathVariable @NotNull String requestId, //
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, //
 			@PageableDefault Pageable pageable) { //
@@ -152,7 +152,7 @@ public class IdmRequestRoleController extends AbstractRequestDtoController<IdmRo
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { //
 						@AuthorizationScope(scope = CoreGroupPermission.ROLE_AUTOCOMPLETE, description = "") }) //
 				}) //
-	public Resources<?> autocomplete( //
+	public CollectionModel<?> autocomplete( //
 			@PathVariable @NotNull String requestId, //
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, //
 			@PageableDefault Pageable pageable) { //
@@ -314,7 +314,7 @@ public class IdmRequestRoleController extends AbstractRequestDtoController<IdmRo
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.ROLE_READ, description = "") })
 				})
-	public Resource<?> getFormValues(
+	public EntityModel<?> getFormValues(
 			@PathVariable @NotNull String requestId,
 			@ApiParam(value = "Role's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId, 
@@ -350,7 +350,7 @@ public class IdmRequestRoleController extends AbstractRequestDtoController<IdmRo
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.ROLE_UPDATE, description = "") })
 				})
-	public Resource<?> saveFormValues(
+	public EntityModel<?> saveFormValues(
 			@PathVariable @NotNull String requestId,
 			@ApiParam(value = "Role's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId,
@@ -405,7 +405,7 @@ public class IdmRequestRoleController extends AbstractRequestDtoController<IdmRo
 						@AuthorizationScope(scope = CoreGroupPermission.ROLE_READ, description = "") })
 				},
 			notes = "Incompatible roles from sub roles and the current request.")
-	public Resources<?> getIncompatibleRoles(
+	public CollectionModel<?> getIncompatibleRoles(
 			@PathVariable @NotNull String requestId,
 			@ApiParam(value = "Roles's uuid identifier or code.", required = true)
 			@PathVariable String backendId) {	
@@ -416,7 +416,7 @@ public class IdmRequestRoleController extends AbstractRequestDtoController<IdmRo
 				// We are not able compute incompatible roles for not approving role.
 				throw new ResultCodeException(CoreResultCode.NOT_FOUND, ImmutableMap.of("entity", backendId));
 			} else {
-				return toResources(Sets.newLinkedHashSet(), ResolvedIncompatibleRoleDto.class);
+				return toCollectionModel(Sets.newLinkedHashSet(), ResolvedIncompatibleRoleDto.class);
 			}
 		}
 		//
@@ -427,7 +427,7 @@ public class IdmRequestRoleController extends AbstractRequestDtoController<IdmRo
 		// resolve incompatible roles defined by business role
 		Set<ResolvedIncompatibleRoleDto> incompatibleRoles = incompatibleRoleService.resolveIncompatibleRoles(Lists.newArrayList(distinctRoles));
 		//
-		return toResources(incompatibleRoles, ResolvedIncompatibleRoleDto.class);
+		return toCollectionModel(incompatibleRoles, ResolvedIncompatibleRoleDto.class);
 	}
 
 	@Override

@@ -1,19 +1,15 @@
 package eu.bcvsolutions.idm.core.model.service.impl;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
 import java.util.List;
 
-import eu.bcvsolutions.idm.core.api.service.IdmCacheManager;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.modelmapper.ModelMapper;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import com.google.common.collect.Lists;
 
@@ -25,10 +21,13 @@ import eu.bcvsolutions.idm.core.api.event.EntityEvent;
 import eu.bcvsolutions.idm.core.api.event.EventContext;
 import eu.bcvsolutions.idm.core.api.service.ConfidentialStorage;
 import eu.bcvsolutions.idm.core.api.service.EntityEventManager;
+import eu.bcvsolutions.idm.core.api.service.IdmCacheManager;
 import eu.bcvsolutions.idm.core.model.entity.IdmConfiguration;
 import eu.bcvsolutions.idm.core.model.event.processor.NeverEndingProcessor;
 import eu.bcvsolutions.idm.core.model.repository.IdmConfigurationRepository;
 import eu.bcvsolutions.idm.test.api.AbstractUnitTest;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 /**
  * Configuration service unit tests:
@@ -43,19 +42,29 @@ public class DefaultConfigurationServiceUnitTest extends AbstractUnitTest {
 	private static final String VALUE_TWO = "value Two";
 	private static final String VALUE_THREE = "valueThree";
 	//
-	@Spy private ModelMapper modelMapper = new ModelMapper();
-	@Mock private IdmConfigurationRepository repository;
-	@Mock private ConfidentialStorage confidentialStorage;
-	@Mock private EntityEventManager entityEventManager;
-	@Mock private IdmCacheManager cacheManager;
-	@Mock private SiemLoggerManager logger;
+	ModelMapper modelMapper = spy(ModelMapper.class);
+	private final IdmConfigurationRepository repository = mock(IdmConfigurationRepository.class);
+	private final ConfidentialStorage confidentialStorage = mock(ConfidentialStorage.class);
+	private final EntityEventManager entityEventManager = mock(EntityEventManager.class);
+	private final IdmCacheManager cacheManager = mock(IdmCacheManager.class);
+	private final SiemLoggerManager logger = mock(SiemLoggerManager.class);
+	private final ConfigurableEnvironment env = mock(ConfigurableEnvironment.class);
 	//
-	@InjectMocks private DefaultConfigurationService service;
-	
+	private final DefaultConfigurationService service = spy(new DefaultConfigurationService(repository, confidentialStorage, env, entityEventManager));
+
+	@Before
+	public void init() {
+		when(logger.buildAction(any(String.class), any(String.class))).thenReturn("");
+		when(logger.skipLogging(any(String.class))).thenReturn(false);
+		ReflectionTestUtils.setField(service, "modelMapper", modelMapper);
+		ReflectionTestUtils.setField(service, "siemLoggerManager", logger);
+		ReflectionTestUtils.setField(service, "cacheManager", cacheManager);
+	}
+
 	@Test
 	public void testGetValuesWithNull() {
 		when(repository.findOneByName(any(String.class))).thenReturn(null);
-		//
+		when(cacheManager.getValue(any(String.class), any(String.class))).thenReturn(null);
 		List<String> results = service.getValues("key");
 		//
 		Assert.assertNotNull(results);

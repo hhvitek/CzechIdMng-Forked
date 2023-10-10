@@ -4,15 +4,17 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @Ignore
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("test")
 public abstract class AbstractUnitTest {
 
@@ -34,6 +36,11 @@ public abstract class AbstractUnitTest {
 		if(!mocks.isEmpty()) {
 			Mockito.verifyNoMoreInteractions(mocks.toArray());
 		}
+	}
+
+	@Before
+	public void initMocks() {
+		MockitoAnnotations.initMocks(this);
 	}
 	
 }

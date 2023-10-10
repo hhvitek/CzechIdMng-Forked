@@ -17,7 +17,6 @@ import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.Assert;
 
@@ -58,7 +57,7 @@ public class DefaultAuthorizationManager implements AuthorizationManager {
 	private final SecurityService securityService;
 	private final ModuleService moduleService;
 	//
-	@Autowired private IdmCacheManager cacheManager;
+	private final IdmCacheManager cacheManager;
 	// evaluators cache
 	private final Map<String, AuthorizationEvaluator<?>> evaluators = new HashMap<>();	
 	
@@ -66,7 +65,8 @@ public class DefaultAuthorizationManager implements AuthorizationManager {
 			ApplicationContext context,
 			IdmAuthorizationPolicyService service,
 			SecurityService securityService,
-			ModuleService moduleService) {
+			ModuleService moduleService,
+			IdmCacheManager cacheManager) {
 		Assert.notNull(service, "Service is required.");
 		Assert.notNull(context, "Context is required.");
 		Assert.notNull(securityService, "Service is required.");
@@ -76,6 +76,7 @@ public class DefaultAuthorizationManager implements AuthorizationManager {
 		this.context = context;
 		this.securityService = securityService;
 		this.moduleService = moduleService;
+		this.cacheManager = cacheManager;
 	}
 	
 	@Override

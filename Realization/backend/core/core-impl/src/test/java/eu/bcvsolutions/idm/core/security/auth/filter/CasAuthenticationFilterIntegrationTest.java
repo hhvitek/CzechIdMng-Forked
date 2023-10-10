@@ -15,7 +15,6 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.transaction.annotation.Transactional;
 
 import eu.bcvsolutions.idm.core.CoreModuleDescriptor;
 import eu.bcvsolutions.idm.core.api.config.domain.CasConfiguration;
@@ -34,7 +33,6 @@ import eu.bcvsolutions.idm.test.api.AbstractUnitTest;
  * @author Roman Kučera
  * @author Radek Tomiška
  */
-@Transactional
 public class CasAuthenticationFilterIntegrationTest extends AbstractUnitTest {
 
 	private String TEST_TOKEN = "token-123";

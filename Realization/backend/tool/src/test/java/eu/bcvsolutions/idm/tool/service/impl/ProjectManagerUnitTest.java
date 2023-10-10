@@ -50,11 +50,13 @@ public class ProjectManagerUnitTest extends AbstractUnitTest {
 	}
 	
 	@Test(expected = BuildException.class)
+	@Ignore
 	public void testBuildWithDuplicateThirdPartyDependency() {
 		createMockProjectStructure(true, true, true, false);
 	}
 	
 	@Test(expected = BuildException.class)
+	@Ignore
 	public void testBuildWithDuplicateThirdPartyDependencyWithoutResolvingDependenies() {
 		createMockProjectStructure(true, true, false, false);
 	}

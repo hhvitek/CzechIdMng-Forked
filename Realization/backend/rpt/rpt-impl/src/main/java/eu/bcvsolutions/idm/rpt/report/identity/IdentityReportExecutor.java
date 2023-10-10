@@ -104,7 +104,7 @@ public class IdentityReportExecutor extends AbstractReportExecutor {
 				// report extends long running task - show progress by count and counter lrt attributes
 				counter = 0L;
 				// find a first page of identities
-				Pageable pageable = PageRequest.of(0, 100, new Sort(Direction.ASC, IdmIdentity_.username.getName()));
+				Pageable pageable = PageRequest.of(0, 100, Sort.by(Direction.ASC, IdmIdentity_.username.getName()));
 				do {
 					Page<IdmIdentityDto> identities = identityService.find(filter, pageable, IdmBasePermission.READ);
 					if (count == null) {

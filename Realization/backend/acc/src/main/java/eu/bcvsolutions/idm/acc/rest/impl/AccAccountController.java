@@ -17,8 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -138,7 +138,7 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "") })
 				})
-	public Resources<?> find(
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -158,7 +158,7 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "") })
 				})
-	public Resources<?> findQuick(
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -189,7 +189,7 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_AUTOCOMPLETE, description = "") })
 				})
-	public Resources<?> autocomplete(
+	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
@@ -497,7 +497,7 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "")})
 				})
-	public Resource<?> prepareFormValues(
+	public EntityModel<?> prepareFormValues(
 			@ApiParam(value = "Code of form definition (default will be used if no code is given).", required = false, defaultValue = FormService.DEFAULT_DEFINITION_CODE)
 			@RequestParam(name = IdmFormAttributeFilter.PARAMETER_FORM_DEFINITION_CODE, required = false) String definitionCode) {
 		
@@ -523,7 +523,7 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "")})
 				})
-	public Resource<?> getFormValues(
+	public EntityModel<?> getFormValues(
 			@ApiParam(value = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		AccAccountDto dto = getDto(backendId);
@@ -563,7 +563,7 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_UPDATE, description = ""),
 						@AuthorizationScope(scope = CoreGroupPermission.FORM_VALUE_UPDATE, description = "")})
 				})
-	public Resource<?> saveFormValues(
+	public EntityModel<?> saveFormValues(
 			@ApiParam(value = "Account uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			@ApiParam(value = "Filled form data.", required = true)
@@ -649,11 +649,11 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "")})
 			})
-	public Resources<AccountWizardDto> getSupportedTypes() {
+	public CollectionModel<AccountWizardDto> getSupportedTypes() {
 		List<AccountWizardsService> supportedTypes = accountWizardManager.getSupportedTypes();
 		List<AccountWizardDto> accountWizardDtos = supportedTypes.stream().map(accountWizardsService -> accountWizardManager.convertTypeToDto(accountWizardsService)).collect(Collectors.toList());
 
-		return new Resources<>(
+		return new CollectionModel<>(
 				accountWizardDtos.stream()
 						.sorted(Comparator.comparing(AccountWizardDto::getOrder))
 						.collect(Collectors.toList())
@@ -714,7 +714,7 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 							@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "") })
 			},
 			notes = "Incompatible roles are resolved from assigned account roles, which can logged used read.")
-	public Resources<?> getIncompatibleRoles(
+	public CollectionModel<?> getIncompatibleRoles(
 			@ApiParam(value = "Account's uuid identifier.", required = true)
 			@PathVariable String backendId) {
 		AccAccountDto accountDto = getDto(backendId);
@@ -737,7 +737,7 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 						.collect(Collectors.toList())
 		);
 		//
-		return toResources(incompatibleRoles, ResolvedIncompatibleRoleDto.class);
+		return toCollectionModel(incompatibleRoles, ResolvedIncompatibleRoleDto.class);
 	}
 
 	/**

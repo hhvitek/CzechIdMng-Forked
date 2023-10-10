@@ -1,17 +1,14 @@
 package eu.bcvsolutions.idm.core.model.service.impl;
 
-import static org.mockito.Mockito.when;
-
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
-import java.time.LocalDate;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Spy;
 import org.modelmapper.ModelMapper;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import com.google.common.collect.Lists;
 
@@ -30,6 +27,7 @@ import eu.bcvsolutions.idm.core.model.repository.IdmIdentityRepository;
 import eu.bcvsolutions.idm.core.model.repository.IdmTokenRepository;
 import eu.bcvsolutions.idm.core.security.api.service.TokenManager;
 import eu.bcvsolutions.idm.test.api.AbstractUnitTest;
+import static org.mockito.Mockito.*;
 
 /**
  * Identity service unit tests
@@ -40,21 +38,25 @@ import eu.bcvsolutions.idm.test.api.AbstractUnitTest;
  */
 public class DefaultIdmIdentityServiceUnitTest extends AbstractUnitTest {
 
-	@Mock private IdmIdentityRepository repository;
-	@Mock private IdmRoleService roleService;
-	@Mock private IdmTokenRepository authChangeRepository;
-	@Mock private EntityEventManager entityEventManager;
-	@Mock private RoleConfiguration roleConfiguration;
-	@Mock private FormService formService;
-	@Mock private IdmIdentityContractService identityContractService;
-	@Mock private IdmPasswordService passwordService;
-	@Mock private TokenManager tokenManager;
-	@Spy 
-	private ModelMapper modelMapper = new ModelMapper();
+	private final IdmIdentityRepository repository = mock(IdmIdentityRepository.class);
+	private final IdmRoleService roleService = mock(IdmRoleService.class);
+	private final IdmTokenRepository authChangeRepository = mock(IdmTokenRepository.class);
+	private final EntityEventManager entityEventManager = mock(EntityEventManager.class);
+	private final RoleConfiguration roleConfiguration = mock(RoleConfiguration.class);
+	private final FormService formService = mock(FormService.class);
+	private final IdmIdentityContractService identityContractService = mock(IdmIdentityContractService.class);
+	private final IdmPasswordService passwordService = mock(IdmPasswordService.class);
+	private final TokenManager tokenManager = mock(TokenManager.class);
+	private final ModelMapper modelMapper = spy(ModelMapper.class);
 	//
-	@InjectMocks 
-	private DefaultIdmIdentityService service;
-	
+	private final DefaultIdmIdentityService service = spy(new DefaultIdmIdentityService(repository, formService, entityEventManager));
+
+	@Before
+	public void init() {
+		ReflectionTestUtils.setField(service, "modelMapper", modelMapper);
+		ReflectionTestUtils.setField(service, "identityContractService", identityContractService);
+	}
+
 	@Test
 	public void testNiceLabelWithNull() {
 		Assert.assertNull(service.getNiceLabel(null));

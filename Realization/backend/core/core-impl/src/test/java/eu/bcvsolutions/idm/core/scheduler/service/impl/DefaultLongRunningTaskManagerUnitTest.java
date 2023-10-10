@@ -7,8 +7,6 @@ import java.util.concurrent.Executor;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -23,6 +21,8 @@ import eu.bcvsolutions.idm.core.scheduler.api.dto.IdmLongRunningTaskDto;
 import eu.bcvsolutions.idm.core.scheduler.api.service.IdmLongRunningTaskService;
 import eu.bcvsolutions.idm.core.security.api.service.SecurityService;
 import eu.bcvsolutions.idm.test.api.AbstractUnitTest;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 
 /**
  * Long running tasks test
@@ -32,15 +32,14 @@ import eu.bcvsolutions.idm.test.api.AbstractUnitTest;
  */
 public class DefaultLongRunningTaskManagerUnitTest extends AbstractUnitTest {
 
-	@Mock private IdmLongRunningTaskService service;
-	@Mock private Executor executor;
-	@Mock private ConfigurationService configurationService;
-	@Mock private SecurityService securityService;
-	@Mock private EntityEventManager entityEventManager;
-	@Mock private AttachmentManager attachmentManager;
+	private final IdmLongRunningTaskService service = mock(IdmLongRunningTaskService.class);
+	private final Executor executor = mock(Executor.class);
+	private final ConfigurationService configurationService = mock(ConfigurationService.class);
+	private final SecurityService securityService = mock(SecurityService.class);
+	private final EntityEventManager entityEventManager = mock(EntityEventManager.class);
+	private final AttachmentManager attachmentManager = mock(AttachmentManager.class);
 	//
-	@InjectMocks
-	private DefaultLongRunningTaskManager manager;
+	private final DefaultLongRunningTaskManager manager = spy(new DefaultLongRunningTaskManager(service, executor, entityEventManager, configurationService, securityService));
 	
 	@Test
 	public void testSaveSyncTaskAsRunning() {

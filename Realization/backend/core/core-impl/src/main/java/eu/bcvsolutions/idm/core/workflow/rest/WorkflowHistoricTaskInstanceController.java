@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
@@ -87,7 +87,7 @@ public class WorkflowHistoricTaskInstanceController extends AbstractReadDtoContr
 			value = "Search historic task instances",
 			nickname = "searchQuickHistoricTaskInstances",
 			tags = {WorkflowHistoricTaskInstanceController.TAG})
-	public Resources<?> searchQuick(
+	public CollectionModel<?> searchQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return find(parameters, pageable);

@@ -36,11 +36,16 @@ public class AccFlywayConfig extends AbstractFlywayConfiguration {
 	@Bean
 	@DependsOn("flywayCore")
 	@ConditionalOnMissingBean(name = "flywayAcc")
-	@ConditionalOnExpression("${flyway.enabled:true} && '${flyway.acc.locations}'!=''")
+	@ConditionalOnExpression("${spring.flyway.enabled:true} && '${flyway.acc.locations}'!=''")
 	@ConfigurationProperties(prefix = "flyway.acc")
 	public Flyway flywayAcc() {
 		Flyway flyway = super.createFlyway();		
 		LOG.info("Starting flyway migration for module acc [{}]: ", flyway.getConfiguration().getTable());
 		return flyway;
+	}
+
+	@Override
+	public String getPropertyPrefix() {
+		return "flyway.acc";
 	}
 }

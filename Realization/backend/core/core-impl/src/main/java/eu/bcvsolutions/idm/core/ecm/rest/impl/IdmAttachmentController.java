@@ -11,7 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -81,7 +81,7 @@ public class IdmAttachmentController extends AbstractReadWriteDtoController<IdmA
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = IdmGroupPermission.APP_ADMIN, description = "") })
 				})
-	public Resources<?> find(
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
@@ -100,7 +100,7 @@ public class IdmAttachmentController extends AbstractReadWriteDtoController<IdmA
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = IdmGroupPermission.APP_ADMIN, description = "") })
 				})
-	public Resources<?> findQuick(
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
@@ -120,7 +120,7 @@ public class IdmAttachmentController extends AbstractReadWriteDtoController<IdmA
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = IdmGroupPermission.APP_ADMIN, description = "") })
 				})
-	public Resources<?> autocomplete(
+	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
@@ -294,6 +294,6 @@ public class IdmAttachmentController extends AbstractReadWriteDtoController<IdmA
 		attachment.setInputData(data.getInputStream());
 		attachment = attachmentManager.saveAttachment(null, attachment); // owner and version is resolved after attachment is saved
 		//
-		return new ResponseEntity<>(toResource(attachment), HttpStatus.CREATED);
+		return new ResponseEntity<>(toModel(attachment), HttpStatus.CREATED);
 	}
 }

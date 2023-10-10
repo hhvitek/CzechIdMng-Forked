@@ -40,7 +40,7 @@ public class RoleUniversalSearchType extends AbstractUniversalSearchType<IdmRole
 
 	@Override
 	protected Pageable getPageable(Pageable pageable) {
-		Sort sort = new Sort(Sort.Direction.ASC, IdmRole_.code.getName());
+		Sort sort = Sort.by(Sort.Direction.ASC, IdmRole_.code.getName());
 
 		return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 	}

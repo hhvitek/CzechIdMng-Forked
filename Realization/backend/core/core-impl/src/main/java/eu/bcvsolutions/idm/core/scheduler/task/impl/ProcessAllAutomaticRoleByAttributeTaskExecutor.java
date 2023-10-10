@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import eu.bcvsolutions.idm.core.api.dto.AbstractConceptRoleRequestDto;
 import org.quartz.DisallowConcurrentExecution;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,6 +13,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Component;
 
 import eu.bcvsolutions.idm.core.api.domain.ConceptRoleRequestOperation;
+import eu.bcvsolutions.idm.core.api.dto.AbstractConceptRoleRequestDto;
 import eu.bcvsolutions.idm.core.api.dto.ApplicantImplDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmAutomaticRoleAttributeDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmConceptRoleRequestDto;
@@ -78,7 +78,7 @@ public class ProcessAllAutomaticRoleByAttributeTaskExecutor extends AbstractSche
 				PageRequest.of(
 						0, 
 						DEFAULT_PAGE_SIZE_ROLE,
-						new Sort(Direction.ASC, AbstractEntity_.id.getName())
+						Sort.by(Direction.ASC, AbstractEntity_.id.getName())
 				)
 		);
 		boolean canContinue = true;

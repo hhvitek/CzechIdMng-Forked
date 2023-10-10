@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -77,8 +77,8 @@ public class SchedulerController implements BaseController {
 				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_READ, description = "") })
 				})
-	public Resources<Task> getSupportedTasks() {
-		return new Resources<>(schedulerService.getSupportedTasks());
+	public CollectionModel<Task> getSupportedTasks() {
+		return new CollectionModel<>(schedulerService.getSupportedTasks());
 	}
 
 	/**
@@ -101,16 +101,16 @@ public class SchedulerController implements BaseController {
 						@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_READ, description = "") })
 				})
 	@ApiImplicitParams({
-        @ApiImplicitParam(name = "page", dataType = "string", paramType = "query",
+        @ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query",
                 value = "Results page you want to retrieve (0..N)"),
-        @ApiImplicitParam(name = "size", dataType = "string", paramType = "query",
+        @ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query",
                 value = "Number of records per page."),
-        @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query",
+        @ApiImplicitParam(name = "sort", allowMultiple = true, dataTypeClass = String.class, paramType = "query",
                 value = "Sorting criteria in the format: property(,asc|desc). " +
                         "Default sort order is ascending. " +
                         "Multiple sort criteria are supported.")
 	})
-	public Resources<?> find(
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
 			@PageableDefault Pageable pageable) {
 		Page tasks = schedulerService.find(toFilter(parameters), pageable);
@@ -429,13 +429,13 @@ public class SchedulerController implements BaseController {
 		return new ResponseEntity<Object>(HttpStatus.NO_CONTENT);
 	}
 	
-	protected Resources<?> pageToResources(Page<Object> page, Class<?> domainType) {
+	protected CollectionModel<?> pageToResources(Page<Object> page, Class<?> domainType) {
 
 		if (page.getContent().isEmpty()) {
-			return pagedResourcesAssembler.toEmptyResource(page, domainType);
+			return pagedResourcesAssembler.toEmptyModel(page, domainType);
 		}
 
-		return pagedResourcesAssembler.toResource(page);
+		return pagedResourcesAssembler.toModel(page);
 	}
 	
 	private ParameterConverter getParameterConverter() {

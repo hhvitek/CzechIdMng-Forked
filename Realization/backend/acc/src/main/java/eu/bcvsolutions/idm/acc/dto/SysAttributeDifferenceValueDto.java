@@ -1,6 +1,6 @@
 package eu.bcvsolutions.idm.acc.dto;
 
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 import eu.bcvsolutions.idm.acc.domain.SysValueChangeType;
 import eu.bcvsolutions.idm.core.api.dto.AbstractDto;

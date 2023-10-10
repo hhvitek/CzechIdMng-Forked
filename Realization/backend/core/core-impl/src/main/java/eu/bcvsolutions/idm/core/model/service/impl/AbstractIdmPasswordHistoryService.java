@@ -17,6 +17,7 @@ import eu.bcvsolutions.idm.core.api.entity.AbstractEntity_;
 import eu.bcvsolutions.idm.core.api.repository.AbstractEntityRepository;
 import eu.bcvsolutions.idm.core.api.service.AbstractPasswordHistoryService;
 import eu.bcvsolutions.idm.core.api.service.AbstractReadWriteDtoService;
+import eu.bcvsolutions.idm.core.model.entity.IdmPasswordHistory_;
 import eu.bcvsolutions.idm.core.security.api.domain.GuardedString;
 
 /**
@@ -72,7 +73,7 @@ public class AbstractIdmPasswordHistoryService<D extends AbstractPasswordHistory
 	 */
 	private List<D> getPasswordHistoryForEntity(UUID entityId, int count) {
 		filter.setEntityId(entityId);
-		return this.find(filter, PageRequest.of(0, count, new Sort(Direction.DESC, E_.created.getName()))).getContent();
+		return this.find(filter, PageRequest.of(0, count, Sort.by(Direction.DESC, E_.created.getName()))).getContent();
 	}
 
 }
