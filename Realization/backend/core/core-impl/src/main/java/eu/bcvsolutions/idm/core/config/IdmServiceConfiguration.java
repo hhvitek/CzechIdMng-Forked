@@ -5,12 +5,14 @@ import java.util.concurrent.Executor;
 
 import javax.persistence.EntityManager;
 
+import eu.bcvsolutions.idm.core.api.config.flyway.IdmFlywayPostProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.plugin.core.PluginRegistry;
@@ -193,6 +195,7 @@ import eu.bcvsolutions.idm.core.security.service.impl.IdmAuthorityHierarchy;
  */
 @Order(0)
 @Configuration
+@DependsOn(IdmFlywayPostProcessor.NAME)
 public class IdmServiceConfiguration {
 	
 	//

@@ -6,8 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.flyway.FlywayMigrationStrategy;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ApplicationContextEvent;
+import org.springframework.context.event.ContextStartedEvent;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,11 +25,14 @@ import java.util.Map;
  *
  * This solution also uses {@link IdmFlywayComparator}, which enables us to specify order in which migrations will be executed.
  *
+ * @since 13.1.0 Migration is executed in post construct method. This ensures that all migrations will be executed prior to starting application. Mainly
+ * before {@link eu.bcvsolutions.idm.core.scheduler.api.config.SchedulerConfiguration}.
+ *
  * @author Peter Štrunc <github.com/peter-strunc>
  * @author Radek Tomiška
  */
 @Component(IdmFlywayPostProcessor.NAME)
-public class IdmFlywayPostProcessor implements ApplicationContextAware {
+public class IdmFlywayPostProcessor {
 	
 	public static final String NAME = "flywayPostProcessor";
 	
@@ -34,13 +42,16 @@ public class IdmFlywayPostProcessor implements ApplicationContextAware {
 	@Autowired
 	IdmFlywayComparator flywayComparator;
 
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		final Map<String, Flyway> flyways = applicationContext.getBeansOfType(Flyway.class);
-		flyways.values().stream().sorted(flywayComparator).forEach(this::executeMigration);
-	}
+	@Autowired
+	List<AbstractFlywayConfiguration> flyways;
+
 
 	private void executeMigration(Flyway flyway) {
 		flywayMigrationStrategy.migrate(flyway);
+	}
+
+	@PostConstruct
+	public void onApplicationEvent() {
+		flyways.stream().map(AbstractFlywayConfiguration::createFlyway).sorted(flywayComparator).forEach(this::executeMigration);
 	}
 }
