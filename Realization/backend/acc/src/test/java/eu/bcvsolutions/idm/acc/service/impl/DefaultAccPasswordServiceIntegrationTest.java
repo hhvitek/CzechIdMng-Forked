@@ -62,31 +62,6 @@ public class DefaultAccPasswordServiceIntegrationTest extends AbstractIntegratio
 	}
 
 	@Test
-	public void test() {
-		// system = helper.createTestResourceSystem(true, "TECHNICAL_ACCOUNT", AccountType.TECHNICAL);
-		system = helper.createTestResourceSystem(true, "IDENTITY", AccountType.PERSONAL);
-
-		AccAccountDto account = new AccAccountDto();
-		account.setSystem(system.getId());
-		account.setUid("franta");
-		account.setEntityType("TECHNICAL_ACCOUNT");
-		account = accountService.save(account);
-
-		TestResource targetAccount = helper.findResource("franta");
-
-
-		PasswordChangeDto pwdChangeDto = new PasswordChangeDto();
-		String PASSWORD = "password123*";
-		GuardedString password = new GuardedString(PASSWORD);
-		pwdChangeDto.setNewPassword(password);
-		pwdChangeDto.setIdm(true);
-		pwdChangeDto.setAccounts(new ArrayList<>(Lists.newArrayList(account.getId().toString())));
-
-		List<OperationResult> result = accountService.passwordChange(account, pwdChangeDto);
-		System.out.println("ok");
-	}
-
-	@Test
 	public void checkPasswordByPersisIdentity() {
 		GuardedString password = new GuardedString("password-" + System.currentTimeMillis());
 
