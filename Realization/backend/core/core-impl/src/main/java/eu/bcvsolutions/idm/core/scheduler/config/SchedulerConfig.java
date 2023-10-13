@@ -5,6 +5,7 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
+import eu.bcvsolutions.idm.core.api.config.flyway.IdmFlywayPostProcessor;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
@@ -12,6 +13,7 @@ import org.quartz.Scheduler;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.quartz.simpl.RAMJobStore;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -19,6 +21,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
@@ -40,12 +43,16 @@ import eu.bcvsolutions.idm.core.scheduler.service.impl.DefaultSchedulerManager;
 @Order(0)
 @Configuration
 @ConditionalOnProperty(prefix = "scheduler", name = "enabled", matchIfMissing = true)
+@DependsOn(IdmFlywayPostProcessor.NAME)
 public class SchedulerConfig implements SchedulerConfiguration {
 	
 	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(SchedulerConfig.class);
 	//
 	@Value("${" + PROPERTY_PROPERETIES_LOCATION + ":" + DEFAULT_PROPERETIES_LOCATION + "}")
     private String propertiesLocation;
+
+	@Autowired
+	private IdmFlywayPostProcessor idmFlywayPostProcessor;
 
 	@Bean
 	public AutowiringSpringBeanJobFactory jobFactory(ApplicationContext applicationContext) {
@@ -90,7 +97,6 @@ public class SchedulerConfig implements SchedulerConfiguration {
         return propertiesFactoryBean.getObject();
     }
 
-    @DependsOn(CoreFlywayConfig.NAME)
 	@Bean(name = "schedulerManager")
 	public SchedulerManager schedulerManager(ApplicationContext context, IdmDependentTaskTriggerRepository dependentTaskTriggerRepository, SchedulerFactoryBean schedulerFactoryBean) {
     	Scheduler scheduler = schedulerFactoryBean.getScheduler();
