@@ -36,7 +36,6 @@ public interface PasswordManageableService<E extends AbstractDto & PasswordManag
 	 *
 	 * @param passwordChange change password request dto
 	 */
-	default void validatePassword(PasswordChangeDto passwordChange) {
-		// not every password manageable entity has to have password validation
-	}
+
+	void validatePassword(PasswordChangeDto passwordChange);
 }

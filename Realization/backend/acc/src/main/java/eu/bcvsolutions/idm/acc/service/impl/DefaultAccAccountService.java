@@ -99,6 +99,7 @@ import eu.bcvsolutions.idm.core.model.entity.IdmIdentity_;
 import eu.bcvsolutions.idm.core.model.entity.IdmRole_;
 import eu.bcvsolutions.idm.core.model.event.EntityPasswordEvent;
 import eu.bcvsolutions.idm.core.model.event.EntityPasswordEvent.EntityPasswordEventType;
+import eu.bcvsolutions.idm.core.model.event.PasswordChangeEvent;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
 import eu.bcvsolutions.idm.core.security.api.dto.AuthorizableType;
 import eu.bcvsolutions.idm.ic.api.IcAttribute;
@@ -138,6 +139,7 @@ public class DefaultAccAccountService extends AbstractFormableService<AccAccount
 	private ConnectorManager connectorManager;
 	@Autowired
 	private SysSystemEntityTypeManager systemEntityManager;
+	private final EntityEventManager entityEventManager;
 
 	@Autowired
 	public DefaultAccAccountService(AccAccountRepository accountRepository,
@@ -151,6 +153,7 @@ public class DefaultAccAccountService extends AbstractFormableService<AccAccount
 		Assert.notNull(systemService, "Service is required.");
 		Assert.notNull(schemaObjectClassService, "Service is required.");
 		Assert.notNull(schemaAttributeService, "Service is required.");
+		Assert.notNull(entityEventManager, "Manager is required.");
 
 		//
 		this.identityAccountService = identityAccountService;
@@ -158,6 +161,7 @@ public class DefaultAccAccountService extends AbstractFormableService<AccAccount
 		this.systemService = systemService;
 		this.schemaAttributeService = schemaAttributeService;
 		this.schemaObjectClassService = schemaObjectClassService;
+		this.entityEventManager = entityEventManager;
 	}
 
 	@Override
@@ -594,6 +598,14 @@ public class DefaultAccAccountService extends AbstractFormableService<AccAccount
 				EntityPasswordEventType.PASSWORD,
 				account,
 				ImmutableMap.of(AccountPasswordProcessor.PROPERTY_PASSWORD_CHANGE_DTO, passwordChangeDto)));
+	}
+
+	@Override
+	public void validatePassword(PasswordChangeDto passwordChange) {
+		entityEventManager.process(
+				new PasswordChangeEvent(
+						PasswordChangeEvent.PasswordChangeEventType.PASSWORD_PREVALIDATION,
+						passwordChange));
 	}
 
 	@Override
