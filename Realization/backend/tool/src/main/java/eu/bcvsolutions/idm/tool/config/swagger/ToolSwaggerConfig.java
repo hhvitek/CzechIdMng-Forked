@@ -16,7 +16,7 @@ import eu.bcvsolutions.idm.tool.ToolModuleDescriptor;
  * @author BCV solutions s.r.o.
  */
 @Configuration
-@ConditionalOnProperty(prefix = "springfox.documentation.swagger", name = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "springdoc.swagger-ui", name = "enabled", matchIfMissing = true)
 public class ToolSwaggerConfig extends AbstractSwaggerConfig {
 
 	@Autowired private ToolModuleDescriptor moduleDescriptor;

@@ -17,7 +17,7 @@ import eu.bcvsolutions.idm.core.api.domain.ModuleDescriptor;
  *
  */
 @Configuration
-@ConditionalOnProperty(prefix = "springfox.documentation.swagger", name = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "springdoc.swagger-ui", name = "enabled", matchIfMissing = true)
 public class CoreSwaggerConfig extends AbstractSwaggerConfig {
 	
 	@Autowired private CoreModuleDescriptor moduleDescriptor;

@@ -17,7 +17,7 @@ import eu.bcvsolutions.idm.rpt.RptModuleDescriptor;
  *
  */
 @Configuration
-@ConditionalOnProperty(prefix = "springfox.documentation.swagger", name = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "springdoc.swagger-ui", name = "enabled", matchIfMissing = true)
 public class RptSwaggerConfig extends AbstractSwaggerConfig {
 
 	@Autowired private RptModuleDescriptor moduleDescriptor;

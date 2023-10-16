@@ -17,7 +17,7 @@ import eu.bcvsolutions.idm.example.ExampleModuleDescriptor;
  *
  */
 @Configuration
-@ConditionalOnProperty(prefix = "springfox.documentation.swagger", name = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "springdoc.swagger-ui", name = "enabled", matchIfMissing = true)
 public class ExampleSwaggerConfig extends AbstractSwaggerConfig {
 
 	@Autowired private ExampleModuleDescriptor moduleDescriptor;
