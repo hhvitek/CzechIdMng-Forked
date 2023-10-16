@@ -41,11 +41,11 @@ import io.swagger.v3.oas.annotations.Parameter;
  */
 @RestController
 @RequestMapping(value = BaseController.BASE_PATH + "/public/configurations")
-@Tag( 
+@Tag(
         name = IdmConfigurationController.TAG,
-		description = "Public configuration items"//,
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
-		
+        description = "Public configuration items"//,
+        //produces = BaseController.APPLICATION_HAL_JSON_VALUE
+
 //consumes = MediaType.APPLICATION_JSON_VALUE
 )
 public class PublicIdmConfigurationController implements BaseController {
@@ -85,7 +85,7 @@ public class PublicIdmConfigurationController implements BaseController {
 	 * @return logo input stream
 	 * @since 12.0.0
 	 */
-	@RequestMapping(name = "/application/logo", method = RequestMethod.GET)
+	@RequestMapping(value = "/application/logo", method = RequestMethod.GET)
 	@Operation(
 			summary = "Download application logo", 
 			/* nickname = "downloadApplicationLogo", */ 

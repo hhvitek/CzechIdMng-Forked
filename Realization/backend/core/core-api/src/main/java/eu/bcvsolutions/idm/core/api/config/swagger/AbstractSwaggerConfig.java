@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springdoc.core.GroupedOpenApi;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
@@ -18,6 +19,7 @@ import eu.bcvsolutions.idm.core.api.domain.ModuleDescriptor;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityScheme;
@@ -47,14 +49,19 @@ public abstract class AbstractSwaggerConfig implements SwaggerConfig {
 	 */
 	protected abstract ModuleDescriptor getModuleDescriptor();
 
-    public OpenAPI customOpenAPI(@Value("${springdoc.version}") String appVersion) {
+    @Bean
+    public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .components(new Components()
                         .addSecuritySchemes(AUTHENTICATION_BASIC, new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("basic"))
-                        .addSecuritySchemes(AUTHENTICATION_CIDMST, new SecurityScheme().type(SecurityScheme.Type.APIKEY))
+                        .addSecuritySchemes(AUTHENTICATION_CIDMST, new SecurityScheme().type(SecurityScheme.Type.APIKEY).in(SecurityScheme.In.HEADER).name(AUTHENTICATION_CIDMST_TOKEN))
                 )
-                .info(new Info().title("SpringShop API").version(appVersion)
-                        .license(new License().name("Apache 2.0").url("http://springdoc.org")));
+                .info(new Info().title(getModuleDescriptor().getName() + " - RESTful API")
+                        .description(getModuleDescriptor().getDescription())
+                        .version(getModuleDescriptor().getVersion())
+                        .termsOfService("Terms of service")
+                        .contact((new Contact()).name(getModuleDescriptor().getVendor()).url(getModuleDescriptor().getVendorUrl()).email(getModuleDescriptor().getVendorEmail()))
+                        .license(new License().name("MIT").url("https://github.com/bcvsolutions/CzechIdMng/blob/develop/LICENSE")));
     }
 
 	/**
