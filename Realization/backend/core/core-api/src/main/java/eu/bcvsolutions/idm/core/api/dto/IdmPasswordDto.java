@@ -129,4 +129,6 @@ public class IdmPasswordDto extends AbstractPasswordDto implements ValidableEnti
 		return verificationSecret;
 	}
 
+	@Override
+	public UUID getEntity() { return identity; }
 }
