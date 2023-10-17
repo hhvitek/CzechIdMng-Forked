@@ -1,6 +1,6 @@
 {
   "name": "czechidm-core",
-  "version": "12.2.7-snapshot",
+  "version": "12.2.7",
   "description": "Core module for CzechIdM",
   "main": "index.js",
   "scripts": {
