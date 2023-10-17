@@ -6,11 +6,11 @@ import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.Assert;
@@ -38,11 +38,14 @@ import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.security.api.dto.AuthorizableType;
 import eu.bcvsolutions.idm.core.security.api.dto.AuthorizationEvaluatorDto;
 import eu.bcvsolutions.idm.core.security.api.service.AuthorizationManager;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Controller for assigning authorization evaluators to roles.
@@ -93,8 +96,10 @@ public class IdmAuthorizationPolicyController extends AbstractReadWriteDtoContro
 						CoreGroupPermission.AUTHORIZATIONPOLICY_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -115,8 +120,10 @@ public class IdmAuthorizationPolicyController extends AbstractReadWriteDtoContro
 						CoreGroupPermission.AUTHORIZATIONPOLICY_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -149,7 +156,17 @@ public class IdmAuthorizationPolicyController extends AbstractReadWriteDtoContro
 	@Operation(
 			summary = "Authorization policy detail", 
 			/* nickname = "getAuthorizationPolicy", */
-			/* response = IdmAuthorizationPolicyDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmAuthorizationPolicyDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmAuthorizationPolicyController.TAG })
     @SecurityRequirements(
         value = {
@@ -161,7 +178,7 @@ public class IdmAuthorizationPolicyController extends AbstractReadWriteDtoContro
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Policy's uuid identifier.", required = true)
+			 @Parameter(description = "Policy's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -174,7 +191,17 @@ public class IdmAuthorizationPolicyController extends AbstractReadWriteDtoContro
 	@Operation(
 			summary = "Create / update authorization policy", 
 			/* nickname = "postAuthorizationPolicy", */
-			/* response = IdmAuthorizationPolicyDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmAuthorizationPolicyDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmAuthorizationPolicyController.TAG })
     @SecurityRequirements(
         value = {
@@ -198,7 +225,17 @@ public class IdmAuthorizationPolicyController extends AbstractReadWriteDtoContro
 	@Operation(
 			summary = "Update authorization policy", 
 			/* nickname = "putAuthorizationPolicy", */
-			/* response = IdmAuthorizationPolicyDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmAuthorizationPolicyDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmAuthorizationPolicyController.TAG })
     @SecurityRequirements(
         value = {
@@ -210,7 +247,7 @@ public class IdmAuthorizationPolicyController extends AbstractReadWriteDtoContro
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Policy's uuid identifier.", required = true)
+			 @Parameter(description = "Policy's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmAuthorizationPolicyDto dto) {
 		return super.put(backendId, dto);
@@ -234,7 +271,7 @@ public class IdmAuthorizationPolicyController extends AbstractReadWriteDtoContro
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Policy's uuid identifier.", required = true)
+			 @Parameter(description = "Policy's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -257,7 +294,7 @@ public class IdmAuthorizationPolicyController extends AbstractReadWriteDtoContro
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Policy's uuid identifier.", required = true)
+			 @Parameter(description = "Policy's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -290,7 +327,17 @@ public class IdmAuthorizationPolicyController extends AbstractReadWriteDtoContro
 	@Operation(
 			summary = "Process authorization policies bulk action", 
 			/* nickname = "bulkAction", */
-			/* response = IdmBulkActionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmAuthorizationPolicyController.TAG })
     @SecurityRequirements(
         value = {
@@ -312,7 +359,17 @@ public class IdmAuthorizationPolicyController extends AbstractReadWriteDtoContro
 	@Operation(
 			summary = "Prevalidate authorization policies bulk action", 
 			/* nickname = "prevalidateBulkAction", */
-			/* response = IdmBulkActionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmAuthorizationPolicyController.TAG })
     @SecurityRequirements(
         value = {

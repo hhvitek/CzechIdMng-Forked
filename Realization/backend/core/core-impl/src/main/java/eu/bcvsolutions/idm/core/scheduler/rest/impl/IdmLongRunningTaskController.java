@@ -9,6 +9,7 @@ import java.util.UUID;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
@@ -34,6 +35,7 @@ import eu.bcvsolutions.idm.core.api.config.swagger.SwaggerConfig;
 import eu.bcvsolutions.idm.core.api.dto.ResultModels;
 import eu.bcvsolutions.idm.core.api.exception.EntityNotFoundException;
 import eu.bcvsolutions.idm.core.api.rest.AbstractReadWriteDtoController;
+import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.api.utils.DtoUtils;
 import eu.bcvsolutions.idm.core.eav.api.dto.IdmFormInstanceDto;
@@ -46,11 +48,14 @@ import eu.bcvsolutions.idm.core.scheduler.api.service.IdmLongRunningTaskService;
 import eu.bcvsolutions.idm.core.scheduler.api.service.LongRunningTaskManager;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Default controller long running tasks (LRT)
@@ -95,8 +100,10 @@ public class IdmLongRunningTaskController
 						CoreGroupPermission.SCHEDULER_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -124,8 +131,10 @@ public class IdmLongRunningTaskController
 						CoreGroupPermission.SCHEDULER_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -147,8 +156,10 @@ public class IdmLongRunningTaskController
 						CoreGroupPermission.SCHEDULER_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -184,7 +195,17 @@ public class IdmLongRunningTaskController
 	@Operation(
 			summary = "LRT detail",
 			/* nickname = "getLongRunningTask", */
-			/* response = IdmLongRunningTaskDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmLongRunningTaskDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags={ IdmLongRunningTaskController.TAG })
     @SecurityRequirements(
         value = {
@@ -196,7 +217,7 @@ public class IdmLongRunningTaskController
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "LRT's uuid identifier.", required = true)
+			 @Parameter(description = "LRT's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -233,7 +254,7 @@ public class IdmLongRunningTaskController
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "LRT's uuid identifier.", required = true)
+			 @Parameter(description = "LRT's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -256,7 +277,7 @@ public class IdmLongRunningTaskController
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "LRT's uuid identifier.", required = true)
+			 @Parameter(description = "LRT's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -289,7 +310,17 @@ public class IdmLongRunningTaskController
 	@Operation(
 			summary = "Process bulk action", 
 			/* nickname = "bulkAction", */
-			/* response = IdmBulkActionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmLongRunningTaskController.TAG })
     @SecurityRequirements(
         value = {
@@ -311,7 +342,17 @@ public class IdmLongRunningTaskController
 	@Operation(
 			summary = "Prevalidate bulk action", 
 			/* nickname = "prevalidateBulkAction", */
-			/* response = IdmBulkActionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmLongRunningTaskController.TAG })
     @SecurityRequirements(
         value = {
@@ -332,7 +373,17 @@ public class IdmLongRunningTaskController
 	@Operation(
 			summary = "Download result from LRT",
 			/* nickname = "downloadReslut", */
-			/* response = IdmLongRunningTaskDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmLongRunningTaskDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags={ IdmLongRunningTaskController.TAG })
     @SecurityRequirements(
         value = {
@@ -344,9 +395,9 @@ public class IdmLongRunningTaskController
         }
     )
 	public ResponseEntity<?> downloadResult(
-			@Parameter(name = "LRT's uuid identifier.", required = true)
+			 @Parameter(description = "LRT's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
-			@Parameter(name = "Attachment's id.", required = true)
+			 @Parameter(description = "Attachment's id.", required = true)
 			@PathVariable @NotNull String attachmentId) {
 		
 		// check if user has permission for read the long running task
@@ -392,7 +443,7 @@ public class IdmLongRunningTaskController
         }
     )
 	public ResponseEntity<?> cancel(
-			@Parameter(name = "LRT's uuid identifier.", required = true)
+			 @Parameter(description = "LRT's uuid identifier.", required = true)
 			@PathVariable UUID backendId) {
 		longRunningTaskManager.cancel(backendId);
 		//
@@ -423,7 +474,7 @@ public class IdmLongRunningTaskController
         }
     )
 	public ResponseEntity<?> interrupt(
-			@Parameter(name = "LRT's uuid identifier.", required = true)
+			 @Parameter(description = "LRT's uuid identifier.", required = true)
 			@PathVariable UUID backendId) {
 		longRunningTaskManager.interrupt(backendId);
 		//
@@ -478,7 +529,7 @@ public class IdmLongRunningTaskController
         }
     )
 	public ResponseEntity<?> processCheckedCreated(
-			@Parameter(name = "LRT's uuid identifier.", required = true)
+			 @Parameter(description = "LRT's uuid identifier.", required = true)
 			@PathVariable UUID backendId) {	
 		longRunningTaskManager.processCreated(backendId);
 		//
@@ -507,7 +558,7 @@ public class IdmLongRunningTaskController
         }
     )
 	public ResponseEntity<?> recover(
-			@Parameter(name = "LRT's uuid identifier.", required = true)
+			 @Parameter(description = "LRT's uuid identifier.", required = true)
 			@PathVariable UUID backendId) {
 		longRunningTaskManager.recover(backendId);
 		//

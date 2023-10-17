@@ -4,11 +4,11 @@ import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -30,11 +30,14 @@ import eu.bcvsolutions.idm.core.api.rest.AbstractReadWriteDtoController;
 import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.security.api.domain.Enabled;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 
 /**
@@ -79,8 +82,10 @@ public class AccContractSliceAccountController extends AbstractReadWriteDtoContr
 						AccGroupPermission.CONTRACT_ACCOUNT_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -102,8 +107,10 @@ public class AccContractSliceAccountController extends AbstractReadWriteDtoContr
 						AccGroupPermission.CONTRACT_ACCOUNT_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -114,7 +121,17 @@ public class AccContractSliceAccountController extends AbstractReadWriteDtoContr
 	@Operation(
 			summary = "ContractSlice account detail", 
 			/* nickname = "getContractSliceAccount", */ 
-			/* response = AccContractSliceAccountDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = AccContractSliceAccountDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { AccContractSliceAccountController.TAG })
     @SecurityRequirements(
         value = {
@@ -126,7 +143,7 @@ public class AccContractSliceAccountController extends AbstractReadWriteDtoContr
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "ContractSlice account's uuid identifier.", required = true)
+			 @Parameter(description = "ContractSlice account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -138,7 +155,17 @@ public class AccContractSliceAccountController extends AbstractReadWriteDtoContr
 	@Operation(
 			summary = "Create / update contract slice account", 
 			/* nickname = "postContractSlice", */ 
-			/* response = AccContractSliceAccountDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = AccContractSliceAccountDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { AccContractSliceAccountController.TAG })
     @SecurityRequirements(
         value = {
@@ -163,7 +190,17 @@ public class AccContractSliceAccountController extends AbstractReadWriteDtoContr
 	@Operation(
 			summary = "Update contract slice account", 
 			/* nickname = "putContractSliceAccount", */ 
-			/* response = AccContractSliceAccountDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = AccContractSliceAccountDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { AccContractSliceAccountController.TAG })
     @SecurityRequirements(
         value = {
@@ -175,7 +212,7 @@ public class AccContractSliceAccountController extends AbstractReadWriteDtoContr
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "ContractSlice account's uuid identifier.", required = true)
+			 @Parameter(description = "ContractSlice account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @NotNull AccContractSliceAccountDto dto){
 		return super.put(backendId,dto);
@@ -199,7 +236,7 @@ public class AccContractSliceAccountController extends AbstractReadWriteDtoContr
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "ContractSlice account's uuid identifier.", required = true)
+			 @Parameter(description = "ContractSlice account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -222,7 +259,7 @@ public class AccContractSliceAccountController extends AbstractReadWriteDtoContr
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "ContractSlice account's uuid identifier.", required = true)
+			 @Parameter(description = "ContractSlice account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}

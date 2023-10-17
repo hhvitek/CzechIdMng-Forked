@@ -11,13 +11,13 @@ import java.util.UUID;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -59,13 +59,15 @@ import eu.bcvsolutions.idm.core.model.event.RoleRequestEvent;
 import eu.bcvsolutions.idm.core.model.event.RoleRequestEvent.RoleRequestEventType;
 import eu.bcvsolutions.idm.core.model.event.processor.role.RoleRequestApprovalProcessor;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
-import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Role request endpoint
@@ -108,7 +110,9 @@ public class IdmRoleRequestController extends AbstractReadWriteDtoController<Idm
 							CoreGroupPermission.ROLE_REQUEST_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -128,7 +132,9 @@ public class IdmRoleRequestController extends AbstractReadWriteDtoController<Idm
 							CoreGroupPermission.ROLE_REQUEST_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -159,7 +165,18 @@ public class IdmRoleRequestController extends AbstractReadWriteDtoController<Idm
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_REQUEST_READ + "')")
-	@Operation(summary = "Role request detail. Returns request doesn't contains concepts (from version 9.7.0!).", /* nickname = "getRoleRequest", */ /* response = IdmRoleRequestDto.class, */ tags = {
+	@Operation(summary = "Role request detail. Returns request doesn't contains concepts (from version 9.7.0!).", /* nickname = "getRoleRequest", */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRoleRequestDto.class
+                                    )
+                            )
+                    }
+            ), tags = {
 			IdmRoleRequestController.TAG })
     @SecurityRequirements(
         value = {
@@ -171,7 +188,7 @@ public class IdmRoleRequestController extends AbstractReadWriteDtoController<Idm
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Role request's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
+			 @Parameter(description = "Role request's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 
 		// 
 		IdmRoleRequestFilter filter = new IdmRoleRequestFilter();
@@ -194,7 +211,18 @@ public class IdmRoleRequestController extends AbstractReadWriteDtoController<Idm
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_REQUEST_CREATE + "')" + " or hasAuthority('"
 			+ CoreGroupPermission.ROLE_REQUEST_UPDATE + "')")
-	@Operation(summary = "Create / update role request. Returns request doesn't contains concepts (from version 9.7.0!).", /* nickname = "postRoleRequest", */ /* response = IdmRoleRequestDto.class, */ tags = {
+	@Operation(summary = "Create / update role request. Returns request doesn't contains concepts (from version 9.7.0!).", /* nickname = "postRoleRequest", */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRoleRequestDto.class
+                                    )
+                            )
+                    }
+            ), tags = {
 			IdmRoleRequestController.TAG } )
     @SecurityRequirements(
         value = {
@@ -223,7 +251,17 @@ public class IdmRoleRequestController extends AbstractReadWriteDtoController<Idm
 	@Operation(
 			summary = "Create concepts by identity. Returns request doesn't contains concepts (from version 9.7.0!).", 
 			/* nickname = "Copy roles", */ 
-			/* response = IdmRoleRequestDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRoleRequestDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmRoleRequestController.TAG })
     @SecurityRequirements(
         value = {
@@ -236,7 +274,7 @@ public class IdmRoleRequestController extends AbstractReadWriteDtoController<Idm
 							CoreGroupPermission.ROLE_REQUEST_UPDATE})
         }
     )
-	public ResponseEntity<?> copyRoles(@Parameter(name = "Role request's uuid identifier.", required = true)
+	public ResponseEntity<?> copyRoles( @Parameter(description = "Role request's uuid identifier.", required = true)
 	@PathVariable @NotNull String backendId, @RequestBody @NotNull IdmRoleRequestByIdentityDto dto) {
 		dto.setRoleRequest(UUID.fromString(backendId));
 		IdmRoleRequestDto roleRequest = this.service.copyRolesByIdentity(dto);
@@ -250,7 +288,17 @@ public class IdmRoleRequestController extends AbstractReadWriteDtoController<Idm
 	@Operation(
 			summary = "Create concepts by identity", 
 			/* nickname = "Copy roles", */ 
-			/* response = IdmRoleRequestDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRoleRequestDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmRoleRequestController.TAG })
     @SecurityRequirements(
         value = {
@@ -273,7 +321,18 @@ public class IdmRoleRequestController extends AbstractReadWriteDtoController<Idm
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_REQUEST_UPDATE + "')")
-	@Operation(summary = "Update role request. Returns request doesn't contains concepts (from version 9.7.0!).", /* nickname = "putRoleRequest", */ /* response = IdmRoleRequestDto.class, */ tags = {
+	@Operation(summary = "Update role request. Returns request doesn't contains concepts (from version 9.7.0!).", /* nickname = "putRoleRequest", */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRoleRequestDto.class
+                                    )
+                            )
+                    }
+            ), tags = {
 			IdmRoleRequestController.TAG })
     @SecurityRequirements(
         value = {
@@ -285,7 +344,7 @@ public class IdmRoleRequestController extends AbstractReadWriteDtoController<Idm
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Role request's uuid identifier.", required = true) @PathVariable @NotNull String backendId,
+			 @Parameter(description = "Role request's uuid identifier.", required = true) @PathVariable @NotNull String backendId,
 			@RequestBody @NotNull IdmRoleRequestDto dto) {
 		ResponseEntity<?> response =  super.put(backendId, dto);
 		return response;
@@ -307,7 +366,7 @@ public class IdmRoleRequestController extends AbstractReadWriteDtoController<Idm
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Role request's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
+			 @Parameter(description = "Role request's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		IdmRoleRequestDto dto = getDto(backendId);
 		if (dto == null) {
 			throw new EntityNotFoundException(getService().getEntityClass(), backendId);
@@ -341,14 +400,25 @@ public class IdmRoleRequestController extends AbstractReadWriteDtoController<Idm
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true) @PathVariable @NotNull String backendId) {
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true) @PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/start", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_REQUEST_UPDATE + "')")
-	@Operation(summary = "Start role request. Returns request doesn't contains concepts (from version 9.7.0!).", /* nickname = "startRoleRequest", */ /* response = IdmRoleRequestDto.class, */ tags = {
+	@Operation(summary = "Start role request. Returns request doesn't contains concepts (from version 9.7.0!).", /* nickname = "startRoleRequest", */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRoleRequestDto.class
+                                    )
+                            )
+                    }
+            ), tags = {
 			IdmRoleRequestController.TAG })
     @SecurityRequirements(
         value = {
@@ -360,7 +430,7 @@ public class IdmRoleRequestController extends AbstractReadWriteDtoController<Idm
         }
     )
 	public ResponseEntity<?> startRequest(
-			@Parameter(name = "Role request's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
+			 @Parameter(description = "Role request's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		IdmRoleRequestDto requestDto = service.get(backendId, new IdmRoleRequestFilter(true), IdmBasePermission.READ);
 		// Validate
 		service.validate(requestDto);
@@ -395,22 +465,13 @@ public class IdmRoleRequestController extends AbstractReadWriteDtoController<Idm
         }
     )
     @Parameters({
-        @Parameter(name = "parameters", schema = @Schema( implementation=String.class, type = "query"), description = "Search criteria parameters. Parameters could be registered by module. Example id=25c5b9e8-b15d-4f95-b715-c7edf6f4aee6"),
-        @Parameter(name = "page", schema = @Schema( implementation=String.class, type = "query"), description = "Results page you want to retrieve (0..N)"),
-        @Parameter(name = "size", schema = @Schema( implementation=String.class, type = "query"), description = "Number of records per page."),
-        @Parameter(name = "sort", schema = @Schema( implementation=String.class, type = "query"),
-                description = "Sorting criteria in the format: property(,asc|desc)." + "Default sort order is ascending. " + "Multiple sort criteria are supported."
-        ),
+         @Parameter(name = "parameters", schema = @Schema( implementation=String.class, type = "query"), description = "Search criteria parameters. Parameters could be registered by module. Example id=25c5b9e8-b15d-4f95-b715-c7edf6f4aee6"),
     })
-	//@ApiImplicitParams({
-	//		@ApiImplicitParam(name = "parameters", allowMultiple = true, dataTypeClass = String.class, paramType = "query", value = "Search criteria parameters. Parameters could be registered by module. Example id=25c5b9e8-b15d-4f95-b715-c7edf6f4aee6"),
-	//		@ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query", value = "Results page you want to retrieve (0..N)"),
-	//		@ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query", value = "Number of records per page."),
-	//		@ApiImplicitParam(name = "sort", allowMultiple = true, dataTypeClass = String.class, paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
-	//				+ "Default sort order is ascending. " + "Multiple sort criteria are supported.") })
+	@PageableAsQueryParam
 	public CollectionModel<?> getConcepts(
-			@Parameter(name = "Role request's uuid identifier.", required = true) @PathVariable String backendId,
+			 @Parameter(description = "Role request's uuid identifier.", required = true) @PathVariable String backendId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		IdmRoleRequestDto entity = getDto(backendId);
 		if (entity == null) {
@@ -442,7 +503,7 @@ public class IdmRoleRequestController extends AbstractReadWriteDtoController<Idm
         }
     )
 	public CollectionModel<?> getIncompatibleRoles(
-			@Parameter(name = "Role request's uuid identifier.", required = true)
+			 @Parameter(description = "Role request's uuid identifier.", required = true)
 			@PathVariable String backendId) {	
 		IdmRoleRequestDto entity = getDto(backendId);
 		if (entity == null) {
@@ -492,7 +553,17 @@ public class IdmRoleRequestController extends AbstractReadWriteDtoController<Idm
 	@Operation(
 			summary = "Process bulk action for role request", 
 			/* nickname = "bulkAction", */ 
-			/* response = IdmBulkActionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmRoleRequestController.TAG })
     @SecurityRequirements(
         value = {
@@ -520,7 +591,17 @@ public class IdmRoleRequestController extends AbstractReadWriteDtoController<Idm
 	@Operation(
 			summary = "Prevalidate bulk action for role request", 
 			/* nickname = "prevalidateBulkAction", */ 
-			/* response = IdmBulkActionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmRoleRequestController.TAG })
     @SecurityRequirements(
         value = {

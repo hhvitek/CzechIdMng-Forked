@@ -5,11 +5,11 @@ import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.Assert;
@@ -33,11 +33,14 @@ import eu.bcvsolutions.idm.core.rest.AbstractRequestDtoController;
 import eu.bcvsolutions.idm.core.security.api.dto.AuthorizableType;
 import eu.bcvsolutions.idm.core.security.api.dto.AuthorizationEvaluatorDto;
 import eu.bcvsolutions.idm.core.security.api.service.AuthorizationManager;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Requests - Controller for assigning authorization evaluators to roles.
@@ -96,9 +99,11 @@ public class IdmRequestAuthorizationPolicyController extends AbstractRequestDtoC
 						CoreGroupPermission.AUTHORIZATIONPOLICY_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@PathVariable @NotNull String requestId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(requestId, parameters, pageable);
 	}
@@ -119,9 +124,11 @@ public class IdmRequestAuthorizationPolicyController extends AbstractRequestDtoC
 						CoreGroupPermission.AUTHORIZATIONPOLICY_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@PathVariable @NotNull String requestId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(requestId, parameters, pageable);
 	}
@@ -154,7 +161,17 @@ public class IdmRequestAuthorizationPolicyController extends AbstractRequestDtoC
 	@Operation(
 			summary = "Authorization policy detail", 
 			/* nickname = "getAuthorizationPolicy", */
-			/* response = IdmAuthorizationPolicyDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmAuthorizationPolicyDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmRequestAuthorizationPolicyController.TAG })
     @SecurityRequirements(
         value = {
@@ -167,7 +184,7 @@ public class IdmRequestAuthorizationPolicyController extends AbstractRequestDtoC
     )
 	public ResponseEntity<?> get(
 			@PathVariable @NotNull String requestId,
-			@Parameter(name = "Policy's uuid identifier.", required = true)
+			 @Parameter(description = "Policy's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(requestId, backendId);
 	}
@@ -180,7 +197,17 @@ public class IdmRequestAuthorizationPolicyController extends AbstractRequestDtoC
 	@Operation(
 			summary = "Create / update authorization policy", 
 			/* nickname = "postAuthorizationPolicy", */
-			/* response = IdmAuthorizationPolicyDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmAuthorizationPolicyDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmRequestAuthorizationPolicyController.TAG })
     @SecurityRequirements(
         value = {
@@ -204,7 +231,17 @@ public class IdmRequestAuthorizationPolicyController extends AbstractRequestDtoC
 	@Operation(
 			summary = "Update authorization policy", 
 			/* nickname = "putAuthorizationPolicy", */
-			/* response = IdmAuthorizationPolicyDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmAuthorizationPolicyDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmRequestAuthorizationPolicyController.TAG })
     @SecurityRequirements(
         value = {
@@ -217,7 +254,7 @@ public class IdmRequestAuthorizationPolicyController extends AbstractRequestDtoC
     )
 	public ResponseEntity<?> put(
 			@PathVariable @NotNull String requestId,
-			@Parameter(name = "Policy's uuid identifier.", required = true)
+			 @Parameter(description = "Policy's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmAuthorizationPolicyDto dto) {
 		return super.put(requestId, backendId, dto);
@@ -242,7 +279,7 @@ public class IdmRequestAuthorizationPolicyController extends AbstractRequestDtoC
     )
 	public ResponseEntity<?> delete(
 			@PathVariable @NotNull String requestId,
-			@Parameter(name = "Policy's uuid identifier.", required = true)
+			 @Parameter(description = "Policy's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(requestId, backendId);
 	}
@@ -266,7 +303,7 @@ public class IdmRequestAuthorizationPolicyController extends AbstractRequestDtoC
     )
 	public Set<String> getPermissions(
 			@PathVariable @NotNull String requestId,
-			@Parameter(name = "Policy's uuid identifier.", required = true)
+			 @Parameter(description = "Policy's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(requestId, backendId);
 	}

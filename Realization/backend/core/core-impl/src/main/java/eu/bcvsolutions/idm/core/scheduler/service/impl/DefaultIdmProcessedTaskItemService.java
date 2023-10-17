@@ -3,12 +3,12 @@ package eu.bcvsolutions.idm.core.scheduler.service.impl;
 import java.util.List;
 import java.util.UUID;
 
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 
-import eu.bcvsolutions.idm.core.model.repository.filter.MonitoringIgnorableFilterBuilder;
-import eu.bcvsolutions.idm.core.monitoring.api.dto.filter.MonitoringIgnorableFilter;
-import eu.bcvsolutions.idm.core.scheduler.api.dto.filter.IdmLongRunningTaskFilter;
-import eu.bcvsolutions.idm.core.scheduler.entity.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,11 +23,18 @@ import eu.bcvsolutions.idm.core.api.entity.OperationResult_;
 import eu.bcvsolutions.idm.core.api.exception.CoreException;
 import eu.bcvsolutions.idm.core.api.service.AbstractReadWriteDtoService;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
+import eu.bcvsolutions.idm.core.model.repository.filter.MonitoringIgnorableFilterBuilder;
 import eu.bcvsolutions.idm.core.scheduler.api.dto.IdmLongRunningTaskDto;
 import eu.bcvsolutions.idm.core.scheduler.api.dto.IdmProcessedTaskItemDto;
 import eu.bcvsolutions.idm.core.scheduler.api.dto.IdmScheduledTaskDto;
+import eu.bcvsolutions.idm.core.scheduler.api.dto.filter.IdmLongRunningTaskFilter;
 import eu.bcvsolutions.idm.core.scheduler.api.dto.filter.IdmProcessedTaskItemFilter;
 import eu.bcvsolutions.idm.core.scheduler.api.service.IdmProcessedTaskItemService;
+import eu.bcvsolutions.idm.core.scheduler.entity.IdmLongRunningTask;
+import eu.bcvsolutions.idm.core.scheduler.entity.IdmLongRunningTask_;
+import eu.bcvsolutions.idm.core.scheduler.entity.IdmProcessedTaskItem;
+import eu.bcvsolutions.idm.core.scheduler.entity.IdmProcessedTaskItem_;
+import eu.bcvsolutions.idm.core.scheduler.entity.IdmScheduledTask_;
 import eu.bcvsolutions.idm.core.scheduler.repository.IdmProcessedTaskItemRepository;
 import eu.bcvsolutions.idm.core.security.api.dto.AuthorizableType;
 

@@ -2,13 +2,13 @@ package eu.bcvsolutions.idm.acc.rest.impl;
 
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,11 +39,14 @@ import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
 import eu.bcvsolutions.idm.core.security.api.domain.Enabled;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * System synchronization configurations.
@@ -92,7 +95,9 @@ public class SysSyncConfigController
                     AccGroupPermission.SYSTEM_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -111,7 +116,9 @@ public class SysSyncConfigController
 							AccGroupPermission.SYSTEM_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -131,8 +138,10 @@ public class SysSyncConfigController
                             AccGroupPermission.SYSTEM_AUTOCOMPLETE })
             }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -153,7 +162,18 @@ public class SysSyncConfigController
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
-	@Operation(summary = "Synchronization config detail", /* nickname = "getSyncConfig", */ /* response = SysSyncConfig.class, */ tags = {
+	@Operation(summary = "Synchronization config detail", /* nickname = "getSyncConfig", */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysSyncConfig.class
+                                    )
+                            )
+                    }
+            ), tags = {
 			SysSyncConfigController.TAG })
     @SecurityRequirements(
         value = {
@@ -165,7 +185,7 @@ public class SysSyncConfigController
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Config's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
+			 @Parameter(description = "Config's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
 
@@ -173,7 +193,17 @@ public class SysSyncConfigController
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_UPDATE + "')")
 	@RequestMapping(method = RequestMethod.POST)
-	@Operation(summary = "Create / update synchronization config", /* nickname = "postSyncConfig", */ /* response = SysSyncConfig.class, */ tags = {
+	@Operation(summary = "Create / update synchronization config", /* nickname = "postSyncConfig", */            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysSyncConfig.class
+                                    )
+                            )
+                    }
+            ), tags = {
 			SysSyncConfigController.TAG })
     @SecurityRequirements(
         value = {
@@ -193,7 +223,17 @@ public class SysSyncConfigController
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_UPDATE + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
-	@Operation(summary = "Update synchronization config", /* nickname = "putSyncConfig", */ /* response = SysSyncConfig.class, */ tags = {
+	@Operation(summary = "Update synchronization config", /* nickname = "putSyncConfig", */            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysSyncConfig.class
+                                    )
+                            )
+                    }
+            ), tags = {
 			SysSyncConfigController.TAG })
     @SecurityRequirements(
         value = {
@@ -205,7 +245,7 @@ public class SysSyncConfigController
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Config's uuid identifier.", required = true) @PathVariable @NotNull String backendId,
+			 @Parameter(description = "Config's uuid identifier.", required = true) @PathVariable @NotNull String backendId,
 			@RequestBody @NotNull AbstractSysSyncConfigDto dto) throws HttpMessageNotReadableException {
 		// Validate
 		this.validate(this.getService().get(backendId));
@@ -228,7 +268,7 @@ public class SysSyncConfigController
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Config's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
+			 @Parameter(description = "Config's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		// Validate
 		this.validate(this.getService().get(backendId));
 		return super.delete(backendId);
@@ -243,7 +283,17 @@ public class SysSyncConfigController
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYNCHRONIZATION_CREATE + "')")
 	@RequestMapping(value = "/{backendId}/start", method = RequestMethod.POST)
-	@Operation(summary = "Start synchronization", /* nickname = "startSynchronization", */ /* response = SysSyncConfig.class, */ tags = {
+	@Operation(summary = "Start synchronization", /* nickname = "startSynchronization", */            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysSyncConfig.class
+                                    )
+                            )
+                    }
+            ), tags = {
 			SysSyncConfigController.TAG }, description = "Start synchronization by given config.")
     @SecurityRequirements(
             value = {
@@ -255,7 +305,7 @@ public class SysSyncConfigController
     )
 
 	public ResponseEntity<?> startSynchronization(
-			@Parameter(name = "Config's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
+			 @Parameter(description = "Config's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		// Validate
 		this.validate(this.getService().get(backendId));
 
@@ -273,7 +323,17 @@ public class SysSyncConfigController
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYNCHRONIZATION_UPDATE + "')")
 	@RequestMapping(value = "/{backendId}/cancel", method = RequestMethod.POST)
-	@Operation(summary = "Cancel synchronization", /* nickname = "cancelSynchronization", */ /* response = SysSyncConfig.class, */ tags = {
+	@Operation(summary = "Cancel synchronization", /* nickname = "cancelSynchronization", */            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysSyncConfig.class
+                                    )
+                            )
+                    }
+            ), tags = {
 			SysSyncConfigController.TAG }, description = "Cancel synchronization by given config.")
     @SecurityRequirements(
             value = {
@@ -284,7 +344,7 @@ public class SysSyncConfigController
             }
     )
 	public ResponseEntity<?> cancelSynchronization(
-			@Parameter(name = "Config's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
+			 @Parameter(description = "Config's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		return new ResponseEntity<>(
 				toModel(this.synchronizationService.stopSynchronization(this.getService().get(backendId))),
 				HttpStatus.OK);
@@ -310,7 +370,7 @@ public class SysSyncConfigController
             }
     )
 	public ResponseEntity<?> isRunningSynchronization(
-			@Parameter(name = "Config's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
+			 @Parameter(description = "Config's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		boolean running = service.isRunning(this.getService().get(backendId));
 		return new ResponseEntity<>(running, HttpStatus.OK);
 	}

@@ -13,13 +13,14 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -69,11 +70,14 @@ import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
 import eu.bcvsolutions.idm.core.security.api.utils.PermissionUtils;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * EAV Form definitions.
@@ -117,8 +121,10 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 						CoreGroupPermission.FORM_DEFINITION_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -140,8 +146,10 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
         }
     )
 	@Override
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -163,8 +171,10 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 						CoreGroupPermission.FORM_DEFINITION_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -197,7 +207,17 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 	@Operation(
 			summary = "Form definition detail", 
 			/* nickname = "getFormDefiniton", */ 
-			/* response = IdmFormDefinitionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmFormDefinitionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmFormDefinitionController.TAG })
     @SecurityRequirements(
         value = {
@@ -209,7 +229,7 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Definition's uuid identifier.", required = true)
+			 @Parameter(description = "Definition's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -221,7 +241,17 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 	@Operation(
 			summary = "Create / update form definition", 
 			/* nickname = "postFormDefinition", */ 
-			/* response = IdmFormDefinitionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmFormDefinitionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmFormDefinitionController.TAG })
     @SecurityRequirements(
         value = {
@@ -245,7 +275,17 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 	@Operation(
 			summary = "Update form definition",
 			/* nickname = "putFormDefinition", */ 
-			/* response = IdmFormDefinitionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmFormDefinitionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmFormDefinitionController.TAG })
     @SecurityRequirements(
         value = {
@@ -257,7 +297,7 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Form definition's uuid identifier", required = true)
+			 @Parameter(description = "Form definition's uuid identifier", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmFormDefinitionDto dto) {
 		return super.put(backendId, dto);
@@ -270,7 +310,17 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 	@Operation(
 			summary = "Patch form definition", 
 			/* nickname = "patchFormDefinition", */ 
-			/* response = IdmFormDefinitionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmFormDefinitionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmFormDefinitionController.TAG })
     @SecurityRequirements(
         value = {
@@ -282,7 +332,7 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
         }
     )
 	public ResponseEntity<?> patch(
-			@Parameter(name = "Form definition's uuid identifier", required = true)
+			 @Parameter(description = "Form definition's uuid identifier", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -307,7 +357,7 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Form definition's uuid identifier or code.", required = true)
+			 @Parameter(description = "Form definition's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -330,7 +380,7 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Definition's uuid identifier.", required = true)
+			 @Parameter(description = "Definition's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -394,7 +444,17 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 	@Operation(
 			summary = "Process bulk action for form definition", 
 			/* nickname = "bulkAction", */ 
-			/* response = IdmBulkActionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmFormDefinitionController.TAG })
     @SecurityRequirements(
         value = {
@@ -422,7 +482,17 @@ public class IdmFormDefinitionController extends AbstractReadWriteDtoController<
 	@Operation(
 			summary = "Prevalidate bulk action for form definition", 
 			/* nickname = "prevalidateBulkAction", */ 
-			/* response = IdmBulkActionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmFormDefinitionController.TAG })
     @SecurityRequirements(
         value = {

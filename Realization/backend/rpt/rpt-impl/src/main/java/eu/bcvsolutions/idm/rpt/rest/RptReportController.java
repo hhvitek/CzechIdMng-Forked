@@ -9,6 +9,7 @@ import java.util.UUID;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.PageRequest;
@@ -53,11 +54,14 @@ import eu.bcvsolutions.idm.rpt.api.dto.RptReportExecutorDto;
 import eu.bcvsolutions.idm.rpt.api.dto.filter.RptReportFilter;
 import eu.bcvsolutions.idm.rpt.api.service.ReportManager;
 import eu.bcvsolutions.idm.rpt.api.service.RptReportService;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Report controller.
@@ -111,8 +115,10 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 						RptGroupPermission.REPORT_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -134,8 +140,10 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 						RptGroupPermission.REPORT_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -157,8 +165,10 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 						RptGroupPermission.REPORT_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -191,7 +201,17 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 	@Operation(
 			summary = "Report detail", 
 			/* nickname = "getReport", */ 
-			/* response = RptReportDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = RptReportDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { RptReportController.TAG })
     @SecurityRequirements(
         value = {
@@ -203,7 +223,7 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Report's uuid identifier.", required = true)
+			 @Parameter(description = "Report's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -214,7 +234,17 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 	@Operation(
 			summary = "Create report", 
 			/* nickname = "createReport", */ 
-			/* response = RptReportDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = RptReportDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { RptReportController.TAG })
     @SecurityRequirements(
         value = {
@@ -249,7 +279,7 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Report's uuid identifier.", required = true)
+			 @Parameter(description = "Report's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -275,7 +305,7 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Report's uuid identifier.", required = true)
+			 @Parameter(description = "Report's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -285,9 +315,9 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/render", method = RequestMethod.GET)
 	public ResponseEntity<InputStreamResource> renderReport(
-			@Parameter(name = "Report's uuid identifier.", required = true)
+			 @Parameter(description = "Report's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
-			@Parameter(name = "Renderer's identifier.", required = true)
+			 @Parameter(description = "Renderer's identifier.", required = true)
 			@RequestParam(required = true, name = "renderer") @NotNull String rendererName) {
 		//
 		RptReportDto report = getDto(backendId);
@@ -369,7 +399,17 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 	@Operation(
 			summary = "Process bulk action for report", 
 			/* nickname = "bulkAction", */ 
-			/* response = IdmBulkActionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { RptReportController.TAG })
     @SecurityRequirements(
         value = {
@@ -391,7 +431,17 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 	@Operation(
 			summary = "Prevalidate bulk action for reports", 
 			/* nickname = "prevalidateBulkAction", */ 
-			/* response = IdmBulkActionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { RptReportController.TAG })
     @SecurityRequirements(
         value = {

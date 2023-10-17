@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -35,11 +36,14 @@ import eu.bcvsolutions.idm.core.ecm.api.dto.filter.IdmAttachmentFilter;
 import eu.bcvsolutions.idm.core.ecm.api.entity.AttachableEntity;
 import eu.bcvsolutions.idm.core.ecm.api.service.AttachmentManager;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmGroupPermission;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * ECM attachments
@@ -84,8 +88,10 @@ public class IdmAttachmentController extends AbstractReadWriteDtoController<IdmA
 						IdmGroupPermission.APP_ADMIN })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -106,8 +112,10 @@ public class IdmAttachmentController extends AbstractReadWriteDtoController<IdmA
 						IdmGroupPermission.APP_ADMIN })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -129,8 +137,10 @@ public class IdmAttachmentController extends AbstractReadWriteDtoController<IdmA
 						IdmGroupPermission.APP_ADMIN })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -163,7 +173,17 @@ public class IdmAttachmentController extends AbstractReadWriteDtoController<IdmA
 	@Operation(
 			summary = "Form attribute detail", 
 			/* nickname = "getAttachment", */ 
-			/* response = IdmAttachmentDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmAttachmentDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmAttachmentController.TAG })
     @SecurityRequirements(
         value = {
@@ -175,7 +195,7 @@ public class IdmAttachmentController extends AbstractReadWriteDtoController<IdmA
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Attribute's uuid identifier.", required = true)
+			 @Parameter(description = "Attribute's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -188,7 +208,17 @@ public class IdmAttachmentController extends AbstractReadWriteDtoController<IdmA
 	@Operation(
 			summary = "Create / update form attribute", 
 			/* nickname = "postAttachment", */ 
-			/* response = IdmAttachmentDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmAttachmentDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmAttachmentController.TAG })
     @SecurityRequirements(
         value = {
@@ -212,7 +242,17 @@ public class IdmAttachmentController extends AbstractReadWriteDtoController<IdmA
 	@Operation(
 			summary = "Update form attribute",
 			/* nickname = "putAttachment", */ 
-			/* response = IdmAttachmentDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmAttachmentDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmAttachmentController.TAG })
     @SecurityRequirements(
         value = {
@@ -224,7 +264,7 @@ public class IdmAttachmentController extends AbstractReadWriteDtoController<IdmA
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Form attribute's uuid identifier", required = true)
+			 @Parameter(description = "Form attribute's uuid identifier", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmAttachmentDto dto) {
 		return super.put(backendId, dto);
@@ -237,7 +277,17 @@ public class IdmAttachmentController extends AbstractReadWriteDtoController<IdmA
 	@Operation(
 			summary = "Patch form attribute", 
 			/* nickname = "patchAttachment", */ 
-			/* response = IdmAttachmentDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmAttachmentDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmAttachmentController.TAG })
     @SecurityRequirements(
         value = {
@@ -249,7 +299,7 @@ public class IdmAttachmentController extends AbstractReadWriteDtoController<IdmA
         }
     )
 	public ResponseEntity<?> patch(
-			@Parameter(name = "Form attribute's uuid identifier", required = true)
+			 @Parameter(description = "Form attribute's uuid identifier", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -274,7 +324,7 @@ public class IdmAttachmentController extends AbstractReadWriteDtoController<IdmA
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Form attribute's uuid identifier.", required = true)
+			 @Parameter(description = "Form attribute's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -297,7 +347,7 @@ public class IdmAttachmentController extends AbstractReadWriteDtoController<IdmA
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Attribute's uuid identifier.", required = true)
+			 @Parameter(description = "Attribute's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -307,7 +357,17 @@ public class IdmAttachmentController extends AbstractReadWriteDtoController<IdmA
 	@Operation(
 			summary = "Upload file", 
 			/* nickname = "uploadFile", */ 
-			/* response = IdmAttachmentDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmAttachmentDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmAttachmentController.TAG }, 
 			description=  "Upload file and save them as attachment.")
 	public ResponseEntity<?> upload(

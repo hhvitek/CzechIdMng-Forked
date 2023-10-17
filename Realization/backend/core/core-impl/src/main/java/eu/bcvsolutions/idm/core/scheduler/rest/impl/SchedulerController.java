@@ -2,6 +2,7 @@ package eu.bcvsolutions.idm.core.scheduler.rest.impl;
 
 import javax.validation.Valid;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Page;
@@ -33,13 +34,11 @@ import eu.bcvsolutions.idm.core.scheduler.api.dto.SimpleTaskTrigger;
 import eu.bcvsolutions.idm.core.scheduler.api.dto.Task;
 import eu.bcvsolutions.idm.core.scheduler.api.dto.filter.TaskFilter;
 import eu.bcvsolutions.idm.core.scheduler.api.service.SchedulerManager;
-import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Scheduler administration
@@ -106,25 +105,10 @@ public class SchedulerController implements BaseController {
 						CoreGroupPermission.SCHEDULER_READ })
         }
     )
-    @Parameters({
-            @Parameter(name = "page", schema = @Schema( implementation=String.class, type = "query"), description = "Results page you want to retrieve (0..N)"),
-            @Parameter(name = "size", schema = @Schema( implementation=String.class, type = "query"), description = "Number of records per page."),
-            @Parameter(name = "sort", schema = @Schema( implementation=String.class, type = "query"),
-                    description = "Sorting criteria in the format: property(,asc|desc)." + "Default sort order is ascending. " + "Multiple sort criteria are supported."
-            ),
-    })
-	//@ApiImplicitParams({
-    //    @ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query",
-    //            value = "Results page you want to retrieve (0..N)"),
-    //    @ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query",
-    //            value = "Number of records per page."),
-    //    @ApiImplicitParam(name = "sort", allowMultiple = true, dataTypeClass = String.class, paramType = "query",
-    //            value = "Sorting criteria in the format: property(,asc|desc). " +
-    //                    "Default sort order is ascending. " +
-    //                    "Multiple sort criteria are supported.")
-	//})
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		Page tasks = schedulerService.find(toFilter(parameters), pageable);
 		//
@@ -148,7 +132,7 @@ public class SchedulerController implements BaseController {
         }
     )
 	public Task getTask(
-			@Parameter(name = "Task identifier.", required = true)
+			 @Parameter(description = "Task identifier.", required = true)
 			@PathVariable String taskId) {
 		return schedulerService.getTask(taskId);
 	}
@@ -176,7 +160,7 @@ public class SchedulerController implements BaseController {
         }
     )
 	public Task createTask(
-			@Parameter(name = "Task.", required = true)
+			 @Parameter(description = "Task.", required = true)
 			@Valid @RequestBody Task task) {
 		return schedulerService.createTask(task);
 	}
@@ -203,7 +187,7 @@ public class SchedulerController implements BaseController {
         }
     )
 	public Task updateTask(
-		@Parameter(name = "Task identifier.", required = true)
+		 @Parameter(description = "Task identifier.", required = true)
 		@PathVariable String taskId,
 		@Valid @RequestBody Task task) {
 		return schedulerService.updateTask(taskId, task);
@@ -232,7 +216,7 @@ public class SchedulerController implements BaseController {
         }
     )
 	public ResponseEntity<?> deleteTask(
-			@Parameter(name = "Task identifier.", required = true)
+			 @Parameter(description = "Task identifier.", required = true)
 			@PathVariable String taskId) {
 		schedulerService.deleteTask(taskId);
 		//
@@ -257,7 +241,7 @@ public class SchedulerController implements BaseController {
     )
 
 	public AbstractTaskTrigger runTask(
-			@Parameter(name = "Task identifier.", required = true)
+			 @Parameter(description = "Task identifier.", required = true)
 			@PathVariable String taskId) {
 		return schedulerService.runTask(taskId); 
 	}
@@ -281,7 +265,7 @@ public class SchedulerController implements BaseController {
         }
     )
 	public AbstractTaskTrigger dryRunTask(
-			@Parameter(name = "Task identifier.", required = true)
+			 @Parameter(description = "Task identifier.", required = true)
 			@PathVariable String taskId) {
 		return schedulerService.runTask(taskId, true);
 	}
@@ -311,9 +295,9 @@ public class SchedulerController implements BaseController {
         }
     )
 	public AbstractTaskTrigger createSimpleTrigger(
-			@Parameter(name = "Task identifier.", required = true)
+			 @Parameter(description = "Task identifier.", required = true)
 			@PathVariable String taskId, 
-			@Parameter(name = "Simple trigger definition.", required = true)
+			 @Parameter(description = "Simple trigger definition.", required = true)
 			@Valid @RequestBody SimpleTaskTrigger trigger) {
 		return schedulerService.createTrigger(taskId, trigger);
 	}
@@ -343,9 +327,9 @@ public class SchedulerController implements BaseController {
         }
     )
 	public AbstractTaskTrigger createCronTrigger(
-			@Parameter(name = "Task identifier.", required = true)
+			 @Parameter(description = "Task identifier.", required = true)
 			@PathVariable String taskId,
-			@Parameter(name = "Cron trigger definition.", required = true)
+			 @Parameter(description = "Cron trigger definition.", required = true)
 			@Valid @RequestBody CronTaskTrigger trigger) {
 		return schedulerService.createTrigger(taskId, trigger);
 	}
@@ -375,9 +359,9 @@ public class SchedulerController implements BaseController {
         }
     )
 	public AbstractTaskTrigger createDependentTrigger(
-			@Parameter(name = "Task identifier.", required = true)
+			 @Parameter(description = "Task identifier.", required = true)
 			@PathVariable String taskId, 
-			@Parameter(name = "Cron trigger definition.", required = true)
+			 @Parameter(description = "Cron trigger definition.", required = true)
 			@Valid @RequestBody DependentTaskTrigger trigger) {
 		return schedulerService.createTrigger(taskId, trigger);
 	}
@@ -405,9 +389,9 @@ public class SchedulerController implements BaseController {
         }
     )
 	public ResponseEntity<?> deleteTrigger(
-			@Parameter(name = "Task identifier.", required = true)
+			 @Parameter(description = "Task identifier.", required = true)
 			@PathVariable String taskId, 
-			@Parameter(name = "Trigger identifier.", required = true)
+			 @Parameter(description = "Trigger identifier.", required = true)
 			@PathVariable String triggerName) {
 		schedulerService.deleteTrigger(taskId, triggerName);
 		//
@@ -437,9 +421,9 @@ public class SchedulerController implements BaseController {
         }
     )
 	public ResponseEntity<?> pauseTrigger(
-			@Parameter(name = "Task identifier.", required = true)
+			 @Parameter(description = "Task identifier.", required = true)
 			@PathVariable String taskId, 
-			@Parameter(name = "Trigger identifier.", required = true)
+			 @Parameter(description = "Trigger identifier.", required = true)
 			@PathVariable String triggerName) {
 		schedulerService.pauseTrigger(taskId, triggerName);
 		//
@@ -469,9 +453,9 @@ public class SchedulerController implements BaseController {
         }
     )
 	public ResponseEntity<?> resumeTrigger(
-			@Parameter(name = "Task identifier.", required = true)
+			 @Parameter(description = "Task identifier.", required = true)
 			@PathVariable String taskId, 
-			@Parameter(name = "Trigger identifier.", required = true)
+			 @Parameter(description = "Trigger identifier.", required = true)
 			@PathVariable String triggerName) {
 		schedulerService.resumeTrigger(taskId, triggerName);
 		//

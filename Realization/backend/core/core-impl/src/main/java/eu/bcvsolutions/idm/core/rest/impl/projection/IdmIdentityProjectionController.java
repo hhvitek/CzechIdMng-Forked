@@ -6,12 +6,11 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Link;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,11 +32,14 @@ import eu.bcvsolutions.idm.core.eav.api.event.IdentityProjectionEvent.IdentityPr
 import eu.bcvsolutions.idm.core.eav.api.service.IdentityProjectionManager;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Projection controller - get & post is supported only.
@@ -70,7 +72,17 @@ public class IdmIdentityProjectionController implements BaseDtoController<IdmIde
 	@Operation(
 			summary = "Identity projection detail", 
 			/* nickname = "getIdentityProjection", */ 
-			/* response = IdmIdentityProjectionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmIdentityProjectionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmIdentityProjectionController.TAG })
     @SecurityRequirements(
         value = {
@@ -82,7 +94,7 @@ public class IdmIdentityProjectionController implements BaseDtoController<IdmIde
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		IdmIdentityProjectionDto dto = getDto(backendId);
 		if (dto == null) {
@@ -103,7 +115,17 @@ public class IdmIdentityProjectionController implements BaseDtoController<IdmIde
 	@Operation(
 			summary = "Create / update identity projection", 
 			/* nickname = "postIdentity", */ 
-			/* response = IdmIdentityProjectionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmIdentityProjectionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmIdentityProjectionController.TAG })
     @SecurityRequirements(
         value = {

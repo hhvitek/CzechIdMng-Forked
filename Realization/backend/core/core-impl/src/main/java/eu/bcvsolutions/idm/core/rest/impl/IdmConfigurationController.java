@@ -13,13 +13,13 @@ import javax.persistence.Table;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -55,12 +55,14 @@ import eu.bcvsolutions.idm.core.api.utils.EntityUtils;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmGroupPermission;
-import io.swagger.v3.oas.annotations.security.SecurityRequirements;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Configuration controller - add custom methods to configuration repository.
@@ -112,8 +114,10 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
 						CoreGroupPermission.CONFIGURATION_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -135,8 +139,10 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
         }
     )
 	@Override
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -169,7 +175,17 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
 	@Operation(
 			summary = "Configuration item detail",
 			/* nickname = "getConfiguration", */ 
-			/* response = IdmConfigurationDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmConfigurationDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmConfigurationController.TAG })
     @SecurityRequirements(
         value = {
@@ -181,7 +197,7 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Item's uuid identifier or name (=> code).", required = true)
+			 @Parameter(description = "Item's uuid identifier or name (=> code).", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -194,7 +210,17 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
 	@Operation(
 			summary = "Create / update configuration item",
 			/* nickname = "postConfiguration", */ 
-			/* response = IdmConfigurationDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmConfigurationDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmConfigurationController.TAG })
     @SecurityRequirements(
         value = {
@@ -218,7 +244,17 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
 	@Operation(
 			summary = "Update configuration item",
 			/* nickname = "putConfiguration", */ 
-			/* response = IdmConfigurationDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmConfigurationDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmConfigurationController.TAG })
     @SecurityRequirements(
         value = {
@@ -230,7 +266,7 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Item's uuid identifier or name (=> code).", required = true)
+			 @Parameter(description = "Item's uuid identifier or name (=> code).", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmConfigurationDto dto) {
 		return super.put(backendId, dto);
@@ -254,7 +290,7 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Item's uuid identifier or name (=> code).", required = true)
+			 @Parameter(description = "Item's uuid identifier or name (=> code).", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -277,7 +313,7 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Item's uuid identifier or name (=> code).", required = true)
+			 @Parameter(description = "Item's uuid identifier or name (=> code).", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -432,7 +468,17 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
 	@Operation(
 			summary = "Process configuration bulk action",
 			/* nickname = "bulkAction", */ 
-			/* response = IdmBulkActionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmConfigurationController.TAG })
     @SecurityRequirements(
         value = {
@@ -460,7 +506,17 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
 	@Operation(
 			summary = "Prevalidate configuration bulk action",
 			/* nickname = "prevalidateBulkAction", */ 
-			/* response = IdmBulkActionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmConfigurationController.TAG })
     @SecurityRequirements(
         value = {

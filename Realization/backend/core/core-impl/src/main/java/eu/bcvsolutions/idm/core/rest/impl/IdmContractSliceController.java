@@ -6,13 +6,13 @@ import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.MediaType;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.Assert;
@@ -46,11 +46,14 @@ import eu.bcvsolutions.idm.core.eav.rest.impl.IdmFormDefinitionController;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.model.entity.IdmIdentityContract;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Contract time slice controller
@@ -97,7 +100,9 @@ public class IdmContractSliceController
 							CoreGroupPermission.CONTRACTSLICE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -116,7 +121,9 @@ public class IdmContractSliceController
 							CoreGroupPermission.CONTRACTSLICE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -135,7 +142,9 @@ public class IdmContractSliceController
 							CoreGroupPermission.CONTRACTSLICE_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -166,7 +175,18 @@ public class IdmContractSliceController
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTSLICE_READ + "')")
-	@Operation(summary = "Contract slice detail", /* nickname = "getIdentityContract", */ /* response = IdmContractSliceDto.class, */ tags = {
+	@Operation(summary = "Contract slice detail", /* nickname = "getIdentityContract", */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmContractSliceDto.class
+                                    )
+                            )
+                    }
+            ), tags = {
 			IdmContractSliceController.TAG })
     @SecurityRequirements(
         value = {
@@ -178,7 +198,7 @@ public class IdmContractSliceController
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Contract's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
+			 @Parameter(description = "Contract's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
 
@@ -187,7 +207,18 @@ public class IdmContractSliceController
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTSLICE_CREATE + "')" + " or hasAuthority('"
 			+ CoreGroupPermission.CONTRACTSLICE_UPDATE + "')")
-	@Operation(summary = "Create / update contract slice", /* nickname = "postIdentityContract", */ /* response = IdmContractSliceDto.class, */ tags = {
+	@Operation(summary = "Create / update contract slice", /* nickname = "postIdentityContract", */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmContractSliceDto.class
+                                    )
+                            )
+                    }
+            ), tags = {
 			IdmContractSliceController.TAG })
     @SecurityRequirements(
         value = {
@@ -208,7 +239,18 @@ public class IdmContractSliceController
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTSLICE_UPDATE + "')")
-	@Operation(summary = "Update contract slice", /* nickname = "putIdentityContract", */ /* response = IdmContractSliceDto.class, */ tags = {
+	@Operation(summary = "Update contract slice", /* nickname = "putIdentityContract", */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmContractSliceDto.class
+                                    )
+                            )
+                    }
+            ), tags = {
 			IdmContractSliceController.TAG })
     @SecurityRequirements(
         value = {
@@ -220,7 +262,7 @@ public class IdmContractSliceController
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Contract's uuid identifier.", required = true) @PathVariable @NotNull String backendId,
+			 @Parameter(description = "Contract's uuid identifier.", required = true) @PathVariable @NotNull String backendId,
 			@Valid @RequestBody IdmContractSliceDto dto) {
 		return super.put(backendId, dto);
 	}
@@ -241,7 +283,7 @@ public class IdmContractSliceController
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Contract's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
+			 @Parameter(description = "Contract's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
 
@@ -261,7 +303,7 @@ public class IdmContractSliceController
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Contract's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
+			 @Parameter(description = "Contract's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
 
@@ -286,7 +328,7 @@ public class IdmContractSliceController
         }
     )
 	public ResponseEntity<?> getFormDefinitions(
-			@Parameter(name = "Contract's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
+			 @Parameter(description = "Contract's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		return formDefinitionController.getDefinitions(IdmIdentityContract.class);
 	}
 
@@ -311,8 +353,8 @@ public class IdmContractSliceController
         }
     )
 	public EntityModel<?> getFormValues(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true) @PathVariable @NotNull String backendId,
-			@Parameter(name = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE) @RequestParam(name = "definitionCode", required = false) String definitionCode) {
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true) @PathVariable @NotNull String backendId,
+			 @Parameter(description = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE) @RequestParam(name = "definitionCode", required = false) String definitionCode) {
 		IdmContractSliceDto dto = getDto(backendId);
 		if (dto == null) {
 			throw new ResultCodeException(CoreResultCode.NOT_FOUND, ImmutableMap.of("entity", backendId));
@@ -348,9 +390,9 @@ public class IdmContractSliceController
         }
     )
 	public EntityModel<?> saveFormValues(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true) @PathVariable @NotNull String backendId,
-			@Parameter(name = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE) @RequestParam(name = "definitionCode", required = false) String definitionCode,
-			@Parameter(name = "Filled form data.", required = true) @RequestBody @Valid List<IdmFormValueDto> formValues) {
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true) @PathVariable @NotNull String backendId,
+			 @Parameter(description = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE) @RequestParam(name = "definitionCode", required = false) String definitionCode,
+			 @Parameter(description = "Filled form data.", required = true) @RequestBody @Valid List<IdmFormValueDto> formValues) {
 		IdmContractSliceDto dto = getDto(backendId);
 		if (dto == null) {
 			throw new ResultCodeException(CoreResultCode.NOT_FOUND, ImmutableMap.of("entity", backendId));
@@ -389,7 +431,7 @@ public class IdmContractSliceController
         }
     )
 	public EntityModel<?> saveFormValue(
-			@Parameter(name = "Slice's uuid identifier.", required = true)
+			 @Parameter(description = "Slice's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @Valid IdmFormValueDto formValue) {		
 		IdmContractSliceDto dto = getDto(backendId);
@@ -427,9 +469,9 @@ public class IdmContractSliceController
         }
     )
 	public ResponseEntity<InputStreamResource> downloadFormValue(
-			@Parameter(name = "Slice's uuid identifier.", required = true)
+			 @Parameter(description = "Slice's uuid identifier.", required = true)
 			@PathVariable String backendId,
-			@Parameter(name = "Form value identifier.", required = true)
+			 @Parameter(description = "Form value identifier.", required = true)
 			@PathVariable String formValueId) {
 		IdmContractSliceDto dto = getDto(backendId);
 		if (dto == null) {
@@ -468,9 +510,9 @@ public class IdmContractSliceController
         }
     )
 	public ResponseEntity<InputStreamResource> previewFormValue(
-			@Parameter(name = "Slice's uuid identifier.", required = true)
+			 @Parameter(description = "Slice's uuid identifier.", required = true)
 			@PathVariable String backendId,
-			@Parameter(name = "Form value identifier.", required = true)
+			 @Parameter(description = "Form value identifier.", required = true)
 			@PathVariable String formValueId) {
 		IdmContractSliceDto dto = getDto(backendId);
 		if (dto == null) {

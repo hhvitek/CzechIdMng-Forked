@@ -5,6 +5,7 @@ import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -12,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -48,11 +48,14 @@ import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.model.entity.IdmRequestItem_;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Request's items endpoint
@@ -119,8 +122,10 @@ public class IdmRequestItemController extends AbstractReadWriteDtoController<Idm
 						CoreGroupPermission.REQUEST_ITEM_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -142,8 +147,10 @@ public class IdmRequestItemController extends AbstractReadWriteDtoController<Idm
 						CoreGroupPermission.REQUEST_ITEM_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -164,8 +171,10 @@ public class IdmRequestItemController extends AbstractReadWriteDtoController<Idm
 						CoreGroupPermission.REQUEST_ITEM_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -177,7 +186,17 @@ public class IdmRequestItemController extends AbstractReadWriteDtoController<Idm
 	@Operation(
 			summary = "Request detail item", 
 			/* nickname = "getRequestItem", */ 
-			/* response = IdmRequestItemDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRequestItemDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmRequestItemController.TAG })
     @SecurityRequirements(
         value = {
@@ -189,7 +208,7 @@ public class IdmRequestItemController extends AbstractReadWriteDtoController<Idm
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Item's uuid identifier.", required = true)
+			 @Parameter(description = "Item's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -202,7 +221,17 @@ public class IdmRequestItemController extends AbstractReadWriteDtoController<Idm
 	@Operation(
 			summary = "Create / update request item", 
 			/* nickname = "postRequestItem", */ 
-			/* response = IdmRequestItemDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRequestItemDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmRequestItemController.TAG })
     @SecurityRequirements(
         value = {
@@ -229,7 +258,17 @@ public class IdmRequestItemController extends AbstractReadWriteDtoController<Idm
 	@Operation(
 			summary = "Update request item", 
 			/* nickname = "putRequestItem", */ 
-			/* response = IdmRequestItemDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRequestItemDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmRequestItemController.TAG })
     @SecurityRequirements(
         value = {
@@ -241,7 +280,7 @@ public class IdmRequestItemController extends AbstractReadWriteDtoController<Idm
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Item's uuid identifier.", required = true)
+			 @Parameter(description = "Item's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@RequestBody @NotNull IdmRequestItemDto dto) {
 		return super.put(backendId, dto);
@@ -266,7 +305,7 @@ public class IdmRequestItemController extends AbstractReadWriteDtoController<Idm
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Item's uuid identifier.", required = true)
+			 @Parameter(description = "Item's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		IdmRequestItemService service = ((IdmRequestItemService)this.getService());
 		IdmRequestItemDto dto = service.get(backendId);
@@ -311,7 +350,7 @@ public class IdmRequestItemController extends AbstractReadWriteDtoController<Idm
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -322,7 +361,17 @@ public class IdmRequestItemController extends AbstractReadWriteDtoController<Idm
 	@Operation(
 			summary = "Request detail item", 
 			/* nickname = "getRequestItem", */ 
-			/* response = IdmRequestItemDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRequestItemDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmRequestItemController.TAG })
     @SecurityRequirements(
         value = {
@@ -334,7 +383,7 @@ public class IdmRequestItemController extends AbstractReadWriteDtoController<Idm
         }
     )
 	public ResponseEntity<?> getChanges(
-			@Parameter(name = "Item's uuid identifier.", required = true)
+			 @Parameter(description = "Item's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		IdmRequestItemDto dto = this.getDto(backendId);
 		IdmRequestItemChangesDto result = requestManager.getChanges(dto);

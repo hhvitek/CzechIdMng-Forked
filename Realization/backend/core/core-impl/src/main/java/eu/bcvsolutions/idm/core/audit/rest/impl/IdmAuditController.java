@@ -12,13 +12,13 @@ import javax.validation.constraints.NotNull;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,13 +56,15 @@ import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.model.entity.IdmIdentityRole;
 import eu.bcvsolutions.idm.core.model.entity.IdmIdentity_;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
-import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * IdM audit endpoint.
@@ -113,8 +115,10 @@ public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditD
 						CoreGroupPermission.AUDIT_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return this.find(parameters, pageable);
 	}
@@ -139,36 +143,18 @@ public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditD
 			tags = { IdmAuditController.TAG })
     @SecurityRequirements(
         value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.AUDIT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.AUDIT_READ })
+            @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUDIT_READ }),
+            @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUDIT_READ })
         }
     )
     @Parameters({
-        @Parameter(name = "entity", schema = @Schema( implementation=String.class, type = "query"), description = "Entity class - find related audit log to this class"),
-        @Parameter(name = "page", schema = @Schema( implementation=String.class, type = "query"), description = "Results page you want to retrieve (0..N)"),
-        @Parameter(name = "size", schema = @Schema( implementation=String.class, type = "query"), description = "Number of records per page."),
-        @Parameter(name = "sort", schema = @Schema( implementation=String.class, type = "query"),
-                description = "Sorting criteria in the format: property(,asc|desc)." + "Default sort order is ascending. " + "Multiple sort criteria are supported."
-        ),
+         @Parameter(name = "entity", schema = @Schema( implementation=String.class, type = "query"), description = "Entity class - find related audit log to this class"),
     })
-	//@ApiImplicitParams({
-	//	@ApiImplicitParam(name = "entity", allowMultiple = false, dataTypeClass = String.class, paramType = "query",
-	//			value = "Entity class - find related audit log to this class"),
-    //    @ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query",
-    //            value = "Results page you want to retrieve (0..N)"),
-    //    @ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query",
-    //            value = "Number of records per page."),
-    //    @ApiImplicitParam(name = "sort", allowMultiple = true, dataTypeClass = String.class, paramType = "query",
-    //            value = "Sorting criteria in the format: property(,asc|desc). " +
-    //                    "Default sort order is ascending. " +
-    //                    "Multiple sort criteria are supported.")
-	//})
+	@PageableAsQueryParam
 	public CollectionModel<?> findEntity(
 			@RequestParam(required = false) String entityClass,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		//
 		// Because backward compatibility there must be set entity class and other useless parameters
@@ -210,8 +196,10 @@ public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditD
 						CoreGroupPermission.AUDIT_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findLogin(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		// Password hasn't own rest controller -> audit is solved by audit controller.
 		return this.toCollectionModel(this.auditService.findLogin(toFilter(parameters), pageable), getDtoClass());
@@ -246,7 +234,17 @@ public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditD
 	@Operation(
 			summary = "Audit log detail",
 			/* nickname = "getAuditLog", */ 
-			/* response = IdmAuditDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmAuditDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmAuditController.TAG })
     @SecurityRequirements(
         value = {
@@ -258,7 +256,7 @@ public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditD
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Audit log's identifier.", required = true)
+			 @Parameter(description = "Audit log's identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		IdmAuditDto audit = auditService.get(backendId);
 		
@@ -288,7 +286,17 @@ public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditD
 	@Operation(
 			summary = "Audit log detail",
 			/* nickname = "getAuditLogPreviousVersion", */ 
-			/* response = IdmAuditDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmAuditDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmAuditController.TAG }, 
 						description = "Returns previous version for given audit log")
     @SecurityRequirements(
@@ -301,7 +309,7 @@ public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditD
         }
     )
 	public ResponseEntity<?> previousVersion(
-			@Parameter(name = "Audit log's identifier.", required = true)
+			 @Parameter(description = "Audit log's identifier.", required = true)
 			@PathVariable @NotNull String revId) {
 		IdmAuditDto currentAudit = auditService.get(revId);
 		IdmAuditDto previousAudit;
@@ -339,7 +347,17 @@ public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditD
 	@Operation(
 			summary = "Audit log diff",
 			/* nickname = "getAuditLogDiff", */ 
-			/* response = IdmAuditDiffDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmAuditDiffDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmAuditController.TAG }, 
 						description = "Returns diff between given audit logs versions")
     @SecurityRequirements(
@@ -352,9 +370,9 @@ public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditD
         }
     )
 	public ResponseEntity<?> diff(
-			@Parameter(name = "Audit log's identifier.", required = true)
+			 @Parameter(description = "Audit log's identifier.", required = true)
 			@PathVariable @NotNull String firstRevId, 
-			@Parameter(name = "Audit log's identifier.", required = true)
+			 @Parameter(description = "Audit log's identifier.", required = true)
 			@PathVariable String secondRevId) {
 		IdmAuditDiffDto dto = new IdmAuditDiffDto();
 		dto.setDiffValues(auditService.getDiffBetweenVersion(Long.valueOf(firstRevId), Long.valueOf(secondRevId)));

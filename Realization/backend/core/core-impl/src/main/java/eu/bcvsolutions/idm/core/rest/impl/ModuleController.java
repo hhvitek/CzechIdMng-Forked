@@ -11,7 +11,6 @@ import javax.validation.constraints.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -39,11 +38,11 @@ import eu.bcvsolutions.idm.core.api.service.LookupService;
 import eu.bcvsolutions.idm.core.api.service.ModuleService;
 import eu.bcvsolutions.idm.core.api.utils.ParameterConverter;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Module controler can enable / disable module etc.
@@ -125,7 +124,7 @@ public class ModuleController {
         }
     )
 	public ModuleDescriptorDto get(
-			@Parameter(name = "Module's identifier.", required = true)
+			 @Parameter(description = "Module's identifier.", required = true)
 			@PathVariable @NotNull String moduleId) {
 		ModuleDescriptor moduleDescriptor = moduleService.getModule(moduleId);
 		if (moduleDescriptor == null) {
@@ -160,7 +159,7 @@ public class ModuleController {
         }
     )
 	public ModuleDescriptorDto put(
-			@Parameter(name = "Module's identifier.", required = true)
+			 @Parameter(description = "Module's identifier.", required = true)
 			@PathVariable @NotNull String moduleId,
 			@Valid @RequestBody ModuleDescriptorDto dto) {
 		ModuleDescriptor updatedModuleDescriptor = moduleService.getModule(moduleId);
@@ -197,7 +196,7 @@ public class ModuleController {
         }
     )
 	public ModuleDescriptorDto patch(
-			@Parameter(name = "Module's identifier.", required = true)
+			 @Parameter(description = "Module's identifier.", required = true)
 			@PathVariable @NotNull String moduleId,
 			HttpServletRequest nativeRequest) {
 		ModuleDescriptor updatedModuleDescriptor = moduleService.getModule(moduleId);
@@ -238,7 +237,7 @@ public class ModuleController {
         }
     )
 	public void enable(
-			@Parameter(name = "Module's identifier.", required = true)
+			 @Parameter(description = "Module's identifier.", required = true)
 			@PathVariable @NotNull String moduleId) {
 		moduleService.setEnabled(moduleId, true);
 	}
@@ -265,7 +264,7 @@ public class ModuleController {
         }
     )
 	public void disable(
-			@Parameter(name = "Module's identifier.", required = true)
+			 @Parameter(description = "Module's identifier.", required = true)
 			@PathVariable @NotNull String moduleId) {
 		moduleService.setEnabled(moduleId, false);
 	}
@@ -287,7 +286,7 @@ public class ModuleController {
         }
     )
 	public List<DefaultResultModel> resultCodes(
-			@Parameter(name = "Module's identifier", required = true)
+			 @Parameter(description = "Module's identifier", required = true)
 			@PathVariable @NotNull String moduleId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		List<DefaultResultModel> resultModelList = moduleService.getModule(moduleId).getResultCodes()

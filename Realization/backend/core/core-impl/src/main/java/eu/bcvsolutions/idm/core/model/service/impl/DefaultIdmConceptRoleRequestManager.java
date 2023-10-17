@@ -1,9 +1,22 @@
 package eu.bcvsolutions.idm.core.model.service.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.modelmapper.ModelMapper;
+import org.modelmapper.internal.util.Assert;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
 import eu.bcvsolutions.idm.core.api.domain.ConceptRoleRequestOperation;
 import eu.bcvsolutions.idm.core.api.dto.AbstractConceptRoleRequestDto;
 import eu.bcvsolutions.idm.core.api.dto.AbstractRoleAssignmentDto;
-import eu.bcvsolutions.idm.core.api.dto.ApplicantDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmRequestIdentityRoleDto;
 import eu.bcvsolutions.idm.core.api.dto.filter.BaseFilter;
 import eu.bcvsolutions.idm.core.api.dto.filter.IdmBaseConceptRoleRequestFilter;
@@ -13,25 +26,10 @@ import eu.bcvsolutions.idm.core.api.service.IdmConceptRoleRequestManager;
 import eu.bcvsolutions.idm.core.api.service.IdmGeneralConceptRoleRequestService;
 import eu.bcvsolutions.idm.core.api.service.adapter.AdaptableService;
 import eu.bcvsolutions.idm.core.api.service.adapter.DtoAdapter;
-import eu.bcvsolutions.idm.core.api.utils.AutowireHelper;
 import eu.bcvsolutions.idm.core.api.utils.ReflectionUtils;
 import eu.bcvsolutions.idm.core.model.service.util.MultiSourcePagedResource;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.internal.util.Assert;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author Peter Štrunc <github.com/peter-strunc>

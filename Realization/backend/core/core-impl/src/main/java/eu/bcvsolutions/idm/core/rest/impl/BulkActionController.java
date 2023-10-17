@@ -10,7 +10,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,11 +30,11 @@ import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.service.LookupService;
 import eu.bcvsolutions.idm.core.api.utils.FilterConverter;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Bulk action administration.
@@ -116,7 +115,7 @@ public class BulkActionController {
         }
     )
 	public void enable(
-			@Parameter(name = "Bulk action identifier.", required = true)
+			 @Parameter(description = "Bulk action identifier.", required = true)
 			@PathVariable @NotNull String bulkActionId) {
 		bulkActionManager.enable(bulkActionId);
 	}
@@ -143,7 +142,7 @@ public class BulkActionController {
         }
     )
 	public void disable(
-			@Parameter(name = "Bulk action identifier.", required = true)
+			 @Parameter(description = "Bulk action identifier.", required = true)
 			@PathVariable @NotNull String bulkActionId) {
 		bulkActionManager.disable(bulkActionId);
 	}

@@ -1,7 +1,5 @@
 package eu.bcvsolutions.idm.vs.rest.impl;
 
-import eu.bcvsolutions.idm.core.api.bulk.action.dto.IdmBulkActionDto;
-import eu.bcvsolutions.idm.core.api.dto.ResultModels;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
@@ -10,14 +8,14 @@ import java.util.UUID;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -29,10 +27,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import eu.bcvsolutions.idm.core.api.bulk.action.dto.IdmBulkActionDto;
 import eu.bcvsolutions.idm.core.api.config.swagger.SwaggerConfig;
 import eu.bcvsolutions.idm.core.api.domain.Auditable;
 import eu.bcvsolutions.idm.core.api.dto.IdmIdentityDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmRoleRequestDto;
+import eu.bcvsolutions.idm.core.api.dto.ResultModels;
 import eu.bcvsolutions.idm.core.api.exception.EntityNotFoundException;
 import eu.bcvsolutions.idm.core.api.rest.AbstractReadWriteDtoController;
 import eu.bcvsolutions.idm.core.api.rest.BaseController;
@@ -50,11 +50,14 @@ import eu.bcvsolutions.idm.vs.dto.VsRequestDto;
 import eu.bcvsolutions.idm.vs.dto.filter.VsRequestFilter;
 import eu.bcvsolutions.idm.vs.service.api.VsRequestService;
 import eu.bcvsolutions.idm.vs.service.api.VsSystemImplementerService;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Rest methods for virtual system request
@@ -99,7 +102,9 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
 							VirtualSystemGroupPermission.VS_REQUEST_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -119,7 +124,9 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
 							VirtualSystemGroupPermission.VS_REQUEST_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -139,7 +146,9 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
 							VirtualSystemGroupPermission.VS_REQUEST_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -170,7 +179,18 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_REQUEST_READ + "')")
-	@Operation(summary = "Request detail", /* nickname = "getRequest", */ /* response = VsRequestDto.class, */ tags = {
+	@Operation(summary = "Request detail", /* nickname = "getRequest", */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = VsRequestDto.class
+                                    )
+                            )
+                    }
+            ), tags = {
 			VsRequestController.TAG })
     @SecurityRequirements(
         value = {
@@ -182,7 +202,7 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Request's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
+			 @Parameter(description = "Request's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		VsRequestDto request = this.getDto(backendId);
 		if (request == null) {
 			throw new EntityNotFoundException(getService().getEntityClass(), backendId);
@@ -214,7 +234,17 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/realize", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_REQUEST_UPDATE + "')")
-	@Operation(summary = "Realize request", /* nickname = "realizeRequest", */ /* response = VsRequestDto.class, */ tags = {
+	@Operation(summary = "Realize request", /* nickname = "realizeRequest", */            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = VsRequestDto.class
+                                    )
+                            )
+                    }
+            ), tags = {
 			VsRequestController.TAG })
     @SecurityRequirements(
         value = {
@@ -226,8 +256,8 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
         }
     )
 	public ResponseEntity<?> realize(
-			@Parameter(name = "Request's uuid identifier.", required = true) @PathVariable @NotNull String backendId,
-			@Parameter(name = "Reason in request DTO. Reason is optional.", required = false) @RequestBody(required = false) VsRequestDto reason){
+			 @Parameter(description = "Request's uuid identifier.", required = true) @PathVariable @NotNull String backendId,
+			 @Parameter(description = "Reason in request DTO. Reason is optional.", required = false) @RequestBody(required = false) VsRequestDto reason){
 		VsRequestDto request = ((VsRequestService) getService()).realize(getService().get(backendId), reason == null ? null : reason.getReason());
 		return new ResponseEntity<>(request, HttpStatus.OK);
 	}
@@ -235,7 +265,17 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/cancel", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_REQUEST_UPDATE + "')")
-	@Operation(summary = "Cancel request", /* nickname = "cancelRequest", */ /* response = VsRequestDto.class, */ tags = {
+	@Operation(summary = "Cancel request", /* nickname = "cancelRequest", */            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = VsRequestDto.class
+                                    )
+                            )
+                    }
+            ), tags = {
 			VsRequestController.TAG })
     @SecurityRequirements(
         value = {
@@ -247,8 +287,8 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
         }
     )
 	public ResponseEntity<?> cancel(
-			@Parameter(name = "Request's uuid identifier.", required = true) @PathVariable @NotNull String backendId,
-			@Parameter(name = "Reason in request DTO. Reason must be filled!", required = true) @RequestBody(required = true) VsRequestDto reason) {
+			 @Parameter(description = "Request's uuid identifier.", required = true) @PathVariable @NotNull String backendId,
+			 @Parameter(description = "Reason in request DTO. Reason must be filled!", required = true) @RequestBody(required = true) VsRequestDto reason) {
 		VsRequestDto request = ((VsRequestService) getService()).cancel(getService().get(backendId),
 				reason.getReason());
 		return new ResponseEntity<>(request, HttpStatus.OK);
@@ -270,7 +310,7 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Request's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
+			 @Parameter(description = "Request's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
 
@@ -294,14 +334,24 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
     )
 
 	public Set<String> getPermissions(
-			@Parameter(name = "Request's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
+			 @Parameter(description = "Request's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/connector-object", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_REQUEST_READ + "')")
-	@Operation(summary = "Read connector object", /* nickname = "getConnectorObject", */ /* response = IcConnectorObject.class, */ tags = {
+	@Operation(summary = "Read connector object", /* nickname = "getConnectorObject", */            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IcConnectorObject.class
+                                    )
+                            )
+                    }
+            ), tags = {
 			VsRequestController.TAG })
     @SecurityRequirements(
         value = {
@@ -313,7 +363,7 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
         }
     )
 	public ResponseEntity<?> getConnectorObject(
-			@Parameter(name = "Request's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
+			 @Parameter(description = "Request's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		IcConnectorObject connectorObject = ((VsRequestService) getService())
 				.getVsConnectorObject(getService().get(backendId));
 		if (connectorObject != null) {
@@ -326,7 +376,17 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/wish-connector-object", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_REQUEST_READ + "')")
-	@Operation(summary = "Read wish connector object. Object contains current attributes from virtual system + changed attributes from given request.", /* nickname = "getVsConnectorObject", */ /* response = VsConnectorObjectDto.class, */ tags = {
+	@Operation(summary = "Read wish connector object. Object contains current attributes from virtual system + changed attributes from given request.", /* nickname = "getVsConnectorObject", */            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = VsConnectorObjectDto.class
+                                    )
+                            )
+                    }
+            ), tags = {
 			VsRequestController.TAG })
     @SecurityRequirements(
         value = {
@@ -338,7 +398,7 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
         }
     )
 	public ResponseEntity<?> getWishConnectorObject(
-			@Parameter(name = "Request's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
+			 @Parameter(description = "Request's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		VsConnectorObjectDto connectorObject = ((VsRequestService) getService())
 				.getWishConnectorObject(getService().get(backendId));
 		if (connectorObject != null) {
@@ -388,7 +448,17 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
 	@Operation(
 			summary = "Process bulk action for request",
 			/* nickname = "bulkAction", */
-			/* response = IdmBulkActionDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { VsRequestController.TAG })
     @SecurityRequirements(
         value = {
@@ -416,7 +486,17 @@ public class VsRequestController extends AbstractReadWriteDtoController<VsReques
 	@Operation(
 			summary = "Prevalidate bulk action for identities",
 			/* nickname = "prevalidateBulkAction", */
-			/* response = IdmBulkActionDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { VsRequestController.TAG })
     @SecurityRequirements(
         value = {

@@ -5,12 +5,12 @@ import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.Assert;
@@ -37,11 +37,14 @@ import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.api.service.IdmGenerateValueService;
 import eu.bcvsolutions.idm.core.api.service.ValueGeneratorManager;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Generate values controller
@@ -91,8 +94,10 @@ public class IdmGenerateValueController extends AbstractReadWriteDtoController<I
 						CoreGroupPermission.GENERATE_VALUE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -113,8 +118,10 @@ public class IdmGenerateValueController extends AbstractReadWriteDtoController<I
 						CoreGroupPermission.GENERATE_VALUE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -147,7 +154,17 @@ public class IdmGenerateValueController extends AbstractReadWriteDtoController<I
 	@Operation(
 			summary = "Generate value detail", 
 			/* nickname = "getGenerateValues", */ 
-			/* response = IdmGenerateValueDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmGenerateValueDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmGenerateValueController.TAG })
     @SecurityRequirements(
         value = {
@@ -159,7 +176,7 @@ public class IdmGenerateValueController extends AbstractReadWriteDtoController<I
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Generate value uuid identifier.", required = true)
+			 @Parameter(description = "Generate value uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -172,7 +189,17 @@ public class IdmGenerateValueController extends AbstractReadWriteDtoController<I
 	@Operation(
 			summary = "Create / update generate value", 
 			/* nickname = "postGenerateValue", */ 
-			/* response = IdmGenerateValueDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmGenerateValueDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmGenerateValueController.TAG })
     @SecurityRequirements(
         value = {
@@ -196,7 +223,17 @@ public class IdmGenerateValueController extends AbstractReadWriteDtoController<I
 	@Operation(
 			summary = "Update generate value", 
 			/* nickname = "putGenerateValues", */ 
-			/* response = IdmGenerateValueDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmGenerateValueDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmGenerateValueController.TAG })
     @SecurityRequirements(
         value = {
@@ -208,7 +245,7 @@ public class IdmGenerateValueController extends AbstractReadWriteDtoController<I
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Generate value uuid identifier.", required = true)
+			 @Parameter(description = "Generate value uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmGenerateValueDto dto) {
 		return super.put(backendId, dto);
@@ -232,7 +269,7 @@ public class IdmGenerateValueController extends AbstractReadWriteDtoController<I
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Generate value uuid identifier.", required = true)
+			 @Parameter(description = "Generate value uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -255,7 +292,7 @@ public class IdmGenerateValueController extends AbstractReadWriteDtoController<I
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Generate value uuid.", required = true)
+			 @Parameter(description = "Generate value uuid.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}

@@ -3,11 +3,11 @@ package eu.bcvsolutions.idm.acc.rest.impl;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -29,11 +29,14 @@ import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.rest.AbstractRequestDtoController;
 import eu.bcvsolutions.idm.core.security.api.domain.Enabled;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Role-system request - Role could assign identity account on target system.
@@ -84,9 +87,11 @@ public class SysRequestRoleSystemController extends AbstractRequestDtoController
 						CoreGroupPermission.ROLE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@PathVariable @NotNull String requestId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(requestId, parameters, pageable);
 	}
@@ -108,9 +113,11 @@ public class SysRequestRoleSystemController extends AbstractRequestDtoController
 						CoreGroupPermission.ROLE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@PathVariable @NotNull String requestId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(requestId, parameters, pageable);
 	}
@@ -122,7 +129,17 @@ public class SysRequestRoleSystemController extends AbstractRequestDtoController
 	@Operation(
 			summary = "Role system detail",
 			/* nickname = "getRoleSystem", */ 
-			/* response = SysRoleSystemDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysRoleSystemDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { SysRequestRoleSystemController.TAG })
     @SecurityRequirements(
         value = {
@@ -135,7 +152,7 @@ public class SysRequestRoleSystemController extends AbstractRequestDtoController
     )
 	public ResponseEntity<?> get(
 			@PathVariable @NotNull String requestId,
-			@Parameter(name = "Role system mapping's uuid identifier.", required = true)
+			 @Parameter(description = "Role system mapping's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(requestId, backendId);
 	}
@@ -147,7 +164,17 @@ public class SysRequestRoleSystemController extends AbstractRequestDtoController
 	@Operation(
 			summary = "Create / update role system",
 			/* nickname = "postRoleSystem", */ 
-			/* response = SysRoleSystemDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysRoleSystemDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { SysRequestRoleSystemController.TAG })
     @SecurityRequirements(
         value = {
@@ -169,7 +196,17 @@ public class SysRequestRoleSystemController extends AbstractRequestDtoController
 	@Operation(
 			summary = "Update role system",
 			/* nickname = "putRoleSystem", */ 
-			/* response = SysRoleSystemDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysRoleSystemDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { SysRequestRoleSystemController.TAG })
     @SecurityRequirements(
         value = {
@@ -182,7 +219,7 @@ public class SysRequestRoleSystemController extends AbstractRequestDtoController
     )
 	public ResponseEntity<?> put(
 			@PathVariable @NotNull String requestId,
-			@Parameter(name = "Role system mapping's uuid identifier.", required = true)
+			 @Parameter(description = "Role system mapping's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @NotNull SysRoleSystemDto dto) {
 		return super.put(requestId, backendId, dto);
@@ -195,7 +232,17 @@ public class SysRequestRoleSystemController extends AbstractRequestDtoController
 //	@Operation(
 //			summary = "Update role system",
 //			/* nickname = "patchRoleSystem", */ 
-//			/* response = SysRoleSystemDto.class, */ 
+//            responses = @ApiResponse(
+//                    responseCode = "200",
+//                    content = {
+//                            @Content(
+//                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+//                                    schema = @Schema(
+//                                            implementation = SysRoleSystemDto.class
+//                                    )
+//                            )
+//                    }
+//            ),
 //			tags = { SysRequestRoleSystemController.TAG }, 
 //			authorizations = { 
 //				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
@@ -204,7 +251,7 @@ public class SysRequestRoleSystemController extends AbstractRequestDtoController
 //						CoreGroupPermission.ROLE_UPDATE })
 //				})
 //	public ResponseEntity<?> patch(
-//			@Parameter(name = "Role system mapping's uuid identifier.", required = true)
+//			 @Parameter(description = "Role system mapping's uuid identifier.", required = true)
 //			@PathVariable @NotNull String backendId,
 //			HttpServletRequest nativeRequest)
 //			throws HttpMessageNotReadableException {
@@ -230,7 +277,7 @@ public class SysRequestRoleSystemController extends AbstractRequestDtoController
     )
 	public ResponseEntity<?> delete(
 			@PathVariable @NotNull String requestId,
-			@Parameter(name = "Role system mapping's uuid identifier.", required = true)
+			 @Parameter(description = "Role system mapping's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(requestId, backendId);
 	}
@@ -243,7 +290,17 @@ public class SysRequestRoleSystemController extends AbstractRequestDtoController
 	@Operation(
 			summary = "Create request for role system",
 			/* nickname = "createRequestForRoleSystem", */
-			/* response = SysRoleSystemDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysRoleSystemDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { SysRequestRoleSystemController.TAG })
     @SecurityRequirements(
         value = {

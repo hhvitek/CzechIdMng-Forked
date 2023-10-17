@@ -48,9 +48,12 @@ import eu.bcvsolutions.idm.core.security.api.service.TokenManager;
 import eu.bcvsolutions.idm.core.security.api.service.TwoFactorAuthenticationManager;
 import eu.bcvsolutions.idm.core.security.auth.filter.AuthenticationExceptionContext;
 import eu.bcvsolutions.idm.core.security.service.impl.JwtAuthenticationMapper;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Identity authentication.
@@ -88,11 +91,21 @@ public class LoginController implements BaseController {
 	@Operation(
 			summary = "Login an get the CIDMST token", 
 			description= "Login an get the CIDMST token. Use returned token attribute value as \"CIDMST\" http header in next requests.",
-			/* response = LoginDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = LoginDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { LoginController.TAG } )
 	@RequestMapping(method = RequestMethod.POST)
 	public EntityModel<LoginDto> login(
-			@Parameter(name = "Identity credentials.", required = true)
+			 @Parameter(description = "Identity credentials.", required = true)
 			@Valid @RequestBody(required = true) LoginRequestDto loginDto) {
 		if (loginDto == null || loginDto.getUsername() == null || loginDto.getPassword() == null){
 			throw new ResultCodeException(CoreResultCode.AUTH_FAILED, "Username and password must be filled");
@@ -118,11 +131,21 @@ public class LoginController implements BaseController {
 	@Operation(
 			summary = "Login - additional two factor authentication", 
 			description= "Additional two factor authentication with TOTP verification code.",
-			/* response = LoginDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = LoginDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { LoginController.TAG } )
 	@RequestMapping(path = "/two-factor", method = RequestMethod.POST)
 	public EntityModel<LoginDto> twoFactor(
-			@Parameter(name = "Token and verification code.", required = true)
+			 @Parameter(description = "Token and verification code.", required = true)
 			@Valid @RequestBody(required = true) TwoFactorRequestDto twoFactorDto) {
 		if (twoFactorDto == null 
 				|| twoFactorDto.getVerificationCode() == null
@@ -140,7 +163,17 @@ public class LoginController implements BaseController {
 	@Operation(
 			summary = "Login with remote token", 
 			description= "Login with remote token an get the CIDMST token. Remote token can be obtained by external authentication system (e.g. OpenAM, OAuth).",
-			/* response = LoginDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = LoginDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { LoginController.TAG })
 	@RequestMapping(path = REMOTE_AUTH_PATH, method = RequestMethod.GET)
 	public EntityModel<LoginDto> loginWithRemoteToken() {
@@ -159,12 +192,22 @@ public class LoginController implements BaseController {
 	@Operation(
 			summary = "Login as other user", 
 			description= "Login as other user (switch user).",
-			/* response = LoginDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = LoginDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { LoginController.TAG } )
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_SWITCHUSER + "')")
 	@RequestMapping(path = "/switch-user", method = RequestMethod.PUT)
 	public EntityModel<LoginDto> switchUser(
-			@Parameter(name = "Switch to user by given username.", required = true)
+			 @Parameter(description = "Switch to user by given username.", required = true)
 			@RequestParam @NotNull String username) {
 		// change logged token authorities
 		IdmIdentityDto identity = lookupService.lookupDto(IdmIdentityDto.class, username);
@@ -185,7 +228,17 @@ public class LoginController implements BaseController {
 	@Operation(
 			summary = "Logout after login as other user", 
 			description= "Logout after login as other user (switch user logout).",
-			/* response = LoginDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = LoginDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { LoginController.TAG } )
 	@RequestMapping(path = "/switch-user", method = RequestMethod.DELETE)
 	public EntityModel<LoginDto> switchUserLogout() {

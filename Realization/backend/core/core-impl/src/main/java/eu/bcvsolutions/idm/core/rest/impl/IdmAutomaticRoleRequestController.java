@@ -5,12 +5,12 @@ import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -40,11 +40,14 @@ import eu.bcvsolutions.idm.core.api.service.IdmAutomaticRoleRequestService;
 import eu.bcvsolutions.idm.core.api.service.RequestService;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Automatic role request endpoint
@@ -89,8 +92,10 @@ public class IdmAutomaticRoleRequestController extends AbstractReadWriteDtoContr
 						CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -112,8 +117,10 @@ public class IdmAutomaticRoleRequestController extends AbstractReadWriteDtoContr
 						CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -134,8 +141,10 @@ public class IdmAutomaticRoleRequestController extends AbstractReadWriteDtoContr
 						CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -147,7 +156,17 @@ public class IdmAutomaticRoleRequestController extends AbstractReadWriteDtoContr
 	@Operation(
 			summary = "Role request detail", 
 			/* nickname = "getRoleRequest", */
-			/* response = IdmAutomaticRoleRequestDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmAutomaticRoleRequestDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmAutomaticRoleRequestController.TAG })
     @SecurityRequirements(
         value = {
@@ -159,7 +178,7 @@ public class IdmAutomaticRoleRequestController extends AbstractReadWriteDtoContr
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Role request's uuid identifier.", required = true)
+			 @Parameter(description = "Role request's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -172,7 +191,17 @@ public class IdmAutomaticRoleRequestController extends AbstractReadWriteDtoContr
 	@Operation(
 			summary = "Create / update role request", 
 			/* nickname = "postRoleRequest", */
-			/* response = IdmAutomaticRoleRequestDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmAutomaticRoleRequestDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmAutomaticRoleRequestController.TAG })
     @SecurityRequirements(
         value = {
@@ -203,7 +232,17 @@ public class IdmAutomaticRoleRequestController extends AbstractReadWriteDtoContr
 	@Operation(
 			summary = "Update role request", 
 			/* nickname = "putRoleRequest", */
-			/* response = IdmAutomaticRoleRequestDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmAutomaticRoleRequestDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmAutomaticRoleRequestController.TAG })
     @SecurityRequirements(
         value = {
@@ -215,7 +254,7 @@ public class IdmAutomaticRoleRequestController extends AbstractReadWriteDtoContr
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Role request's uuid identifier.", required = true)
+			 @Parameter(description = "Role request's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@RequestBody @NotNull IdmAutomaticRoleRequestDto dto) {
 		return super.put(backendId, dto);
@@ -240,7 +279,7 @@ public class IdmAutomaticRoleRequestController extends AbstractReadWriteDtoContr
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Role request's uuid identifier.", required = true)
+			 @Parameter(description = "Role request's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		IdmAutomaticRoleRequestService service = ((IdmAutomaticRoleRequestService)this.getService());
 		IdmAutomaticRoleRequestDto dto = service.get(backendId);
@@ -281,7 +320,7 @@ public class IdmAutomaticRoleRequestController extends AbstractReadWriteDtoContr
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -292,7 +331,17 @@ public class IdmAutomaticRoleRequestController extends AbstractReadWriteDtoContr
 	@Operation(
 			summary = "Start role request", 
 			/* nickname = "startRoleRequest", */
-			/* response = IdmAutomaticRoleRequestDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmAutomaticRoleRequestDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmAutomaticRoleRequestController.TAG })
     @SecurityRequirements(
         value = {
@@ -304,7 +353,7 @@ public class IdmAutomaticRoleRequestController extends AbstractReadWriteDtoContr
         }
     )
 	public ResponseEntity<?> startRequest(
-			@Parameter(name = "Role request's uuid identifier.", required = true)
+			 @Parameter(description = "Role request's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		((RequestService<?>)this.getService()).startRequest(UUID.fromString(backendId), true);
 		return this.get(backendId);

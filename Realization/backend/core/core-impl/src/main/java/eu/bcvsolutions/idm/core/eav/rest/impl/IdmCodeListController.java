@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -33,11 +34,14 @@ import eu.bcvsolutions.idm.core.eav.api.dto.IdmCodeListDto;
 import eu.bcvsolutions.idm.core.eav.api.dto.filter.IdmCodeListFilter;
 import eu.bcvsolutions.idm.core.eav.api.service.IdmCodeListService;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Code lists
@@ -78,8 +82,10 @@ public class IdmCodeListController extends AbstractReadWriteDtoController<IdmCod
 						CoreGroupPermission.CODE_LIST_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -100,8 +106,10 @@ public class IdmCodeListController extends AbstractReadWriteDtoController<IdmCod
 						CoreGroupPermission.CODE_LIST_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -123,8 +131,10 @@ public class IdmCodeListController extends AbstractReadWriteDtoController<IdmCod
 						CoreGroupPermission.CODE_LIST_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -157,7 +167,17 @@ public class IdmCodeListController extends AbstractReadWriteDtoController<IdmCod
 	@Operation(
 			summary = "Form definition detail",
 			/* nickname = "getFormDefiniton", */ 
-			/* response = IdmCodeListDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmCodeListDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmCodeListController.TAG })
     @SecurityRequirements(
         value = {
@@ -169,7 +189,7 @@ public class IdmCodeListController extends AbstractReadWriteDtoController<IdmCod
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Code list's uuid identifier.", required = true)
+			 @Parameter(description = "Code list's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -181,7 +201,17 @@ public class IdmCodeListController extends AbstractReadWriteDtoController<IdmCod
 	@Operation(
 			summary = "Create / update code list",
 			/* nickname = "postCodeList", */ 
-			/* response = IdmCodeListDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmCodeListDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmCodeListController.TAG })
     @SecurityRequirements(
         value = {
@@ -205,7 +235,17 @@ public class IdmCodeListController extends AbstractReadWriteDtoController<IdmCod
 	@Operation(
 			summary = "Update code list",
 			/* nickname = "putCodeList", */ 
-			/* response = IdmCodeListDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmCodeListDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmCodeListController.TAG })
     @SecurityRequirements(
         value = {
@@ -217,7 +257,7 @@ public class IdmCodeListController extends AbstractReadWriteDtoController<IdmCod
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Code list's uuid identifier", required = true)
+			 @Parameter(description = "Code list's uuid identifier", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmCodeListDto dto) {
 		return super.put(backendId, dto);
@@ -230,7 +270,17 @@ public class IdmCodeListController extends AbstractReadWriteDtoController<IdmCod
 	@Operation(
 			summary = "Patch code list",
 			/* nickname = "patchCodeList", */ 
-			/* response = IdmCodeListDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmCodeListDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmCodeListController.TAG })
     @SecurityRequirements(
         value = {
@@ -242,7 +292,7 @@ public class IdmCodeListController extends AbstractReadWriteDtoController<IdmCod
         }
     )
 	public ResponseEntity<?> patch(
-			@Parameter(name = "Code list's uuid identifier", required = true)
+			 @Parameter(description = "Code list's uuid identifier", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -267,7 +317,7 @@ public class IdmCodeListController extends AbstractReadWriteDtoController<IdmCod
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Code list's uuid identifier or code.", required = true)
+			 @Parameter(description = "Code list's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -290,7 +340,7 @@ public class IdmCodeListController extends AbstractReadWriteDtoController<IdmCod
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Code list's uuid identifier.", required = true)
+			 @Parameter(description = "Code list's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -321,7 +371,17 @@ public class IdmCodeListController extends AbstractReadWriteDtoController<IdmCod
 	@Operation(
 			summary = "Process bulk action for code lists",
 			/* nickname = "bulkAction", */ 
-			/* response = IdmBulkActionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmCodeListController.TAG })
     @SecurityRequirements(
         value = {
@@ -342,7 +402,17 @@ public class IdmCodeListController extends AbstractReadWriteDtoController<IdmCod
 	@Operation(
 			summary = "Prevalidate bulk action for code lists",
 			/* nickname = "prevalidateBulkAction", */ 
-			/* response = IdmBulkActionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmCodeListController.TAG })
     @SecurityRequirements(
         value = {

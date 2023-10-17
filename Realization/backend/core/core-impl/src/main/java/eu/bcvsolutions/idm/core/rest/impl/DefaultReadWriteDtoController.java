@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
@@ -46,8 +47,10 @@ public abstract class DefaultReadWriteDtoController<DTO extends BaseDto, F exten
 	@Override
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -62,16 +65,20 @@ public abstract class DefaultReadWriteDtoController<DTO extends BaseDto, F exten
 	@Override
 	@ResponseBody
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
 	
 	@ResponseBody
 	@RequestMapping(value = "/search/autocomplete", method = RequestMethod.GET)
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -86,7 +93,7 @@ public abstract class DefaultReadWriteDtoController<DTO extends BaseDto, F exten
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	public ResponseEntity<?> get(
-			@Parameter(name = "Record's uuid identifier or unique code, if record supports Codeable interface.", required = true)
+			 @Parameter(description = "Record's uuid identifier or unique code, if record supports Codeable interface.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -95,7 +102,7 @@ public abstract class DefaultReadWriteDtoController<DTO extends BaseDto, F exten
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<?> post(
-			@Parameter(name = "Record (dto).", required = true)
+			 @Parameter(description = "Record (dto).", required = true)
 			@Valid @RequestBody DTO dto) {
 		return super.post(dto);
 	}
@@ -104,9 +111,9 @@ public abstract class DefaultReadWriteDtoController<DTO extends BaseDto, F exten
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	public ResponseEntity<?> put(
-			@Parameter(name = "Record's uuid identifier or unique code, if record supports Codeable interface.", required = true)
+			 @Parameter(description = "Record's uuid identifier or unique code, if record supports Codeable interface.", required = true)
 			@PathVariable @NotNull String backendId, 
-			@Parameter(name = "Record (dto).", required = true)
+			 @Parameter(description = "Record (dto).", required = true)
 			@Valid @RequestBody DTO dto) {
 		return super.put(backendId, dto);
 	}
@@ -115,7 +122,7 @@ public abstract class DefaultReadWriteDtoController<DTO extends BaseDto, F exten
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PATCH)
 	public ResponseEntity<?> patch(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -126,7 +133,7 @@ public abstract class DefaultReadWriteDtoController<DTO extends BaseDto, F exten
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Record's uuid identifier or unique code, if record supports Codeable interface.", required = true)
+			 @Parameter(description = "Record's uuid identifier or unique code, if record supports Codeable interface.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -135,7 +142,7 @@ public abstract class DefaultReadWriteDtoController<DTO extends BaseDto, F exten
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	public Set<String> getPermissions(
-			@Parameter(name = "Record's uuid identifier or unique code, if record supports Codeable interface.", required = true)
+			 @Parameter(description = "Record's uuid identifier or unique code, if record supports Codeable interface.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}

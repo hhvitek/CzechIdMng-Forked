@@ -20,11 +20,14 @@ import eu.bcvsolutions.idm.example.ExampleModuleDescriptor;
 import eu.bcvsolutions.idm.example.domain.ExampleResultCode;
 import eu.bcvsolutions.idm.example.dto.Pong;
 import eu.bcvsolutions.idm.example.service.api.ExampleService;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Example controller
@@ -46,9 +49,19 @@ public class ExampleController {
 	@RequestMapping(method = RequestMethod.GET, path = "/ping")
 	@Operation(
 			summary = "Ping - Pong operation", 
-			description= "Returns message with additional informations"
+			description= "Returns message with additional informations",
 			/*, nickname = "ping", */
-			/* response = Pong.class, */)
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = Pong.class
+                                    )
+                            )
+                    }
+            ))
     @SecurityRequirements(
             value = {
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
@@ -56,7 +69,7 @@ public class ExampleController {
             }
     )
 	public ResponseEntity<Pong> ping(
-			@Parameter(name = "In / out message", example = "hello")
+			 @Parameter(description = "In / out message", example = "hello")
 			@RequestParam(required = false, defaultValue = "hello") String message
 			) {
 		return new ResponseEntity<>(service.ping(message), HttpStatus.OK); 
@@ -94,7 +107,7 @@ public class ExampleController {
             }
     )
 	public void sendNotification(
-			@Parameter(name = "Notification message", example = "hello")
+			 @Parameter(description = "Notification message", example = "hello")
 			@RequestParam(required = false, defaultValue = "hello") String message) {
 		service.sendNotification(message);
 	}
@@ -113,7 +126,7 @@ public class ExampleController {
             }
     )
 	public void clientError(
-			@Parameter(name = "Error parameter", example = "parameter")
+			 @Parameter(description = "Error parameter", example = "parameter")
 			@RequestParam(required = false, defaultValue = "parameter") String parameter) {
 		// lookout - ImmutableMap parameter values cannot be {@code null}
 		throw new ResultCodeException(ExampleResultCode.EXAMPLE_CLIENT_ERROR, ImmutableMap.of("parameter", String.valueOf(parameter)));
@@ -133,7 +146,7 @@ public class ExampleController {
             }
     )
 	public void serverError(
-			@Parameter(name = "Error parameter", example = "parameter")
+			 @Parameter(description = "Error parameter", example = "parameter")
 			@RequestParam(required = false, defaultValue = "parameter") String parameter) {
 		// lookout - ImmutableMap parameter values cannot be {@code null}
 		throw new ResultCodeException(ExampleResultCode.EXAMPLE_SERVER_ERROR, ImmutableMap.of("parameter", String.valueOf(parameter)));

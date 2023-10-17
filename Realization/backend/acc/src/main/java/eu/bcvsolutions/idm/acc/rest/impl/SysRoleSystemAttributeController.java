@@ -2,11 +2,11 @@ package eu.bcvsolutions.idm.acc.rest.impl;
 
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -27,11 +27,14 @@ import eu.bcvsolutions.idm.core.api.rest.AbstractReadWriteDtoController;
 import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.security.api.domain.Enabled;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Role system attribute rest
@@ -77,8 +80,10 @@ public class SysRoleSystemAttributeController
 						CoreGroupPermission.ROLE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -99,8 +104,10 @@ public class SysRoleSystemAttributeController
 						CoreGroupPermission.ROLE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -112,7 +119,17 @@ public class SysRoleSystemAttributeController
 	@Operation(
 			summary = "Role system attribute detail", 
 			/* nickname = "getRoleSystemAttribute", */ 
-			/* response = SysRoleSystemAttributeDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysRoleSystemAttributeDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { SysRoleSystemAttributeController.TAG })
     @SecurityRequirements(
         value = {
@@ -124,7 +141,7 @@ public class SysRoleSystemAttributeController
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Role system attribute's uuid identifier.", required = true)
+			 @Parameter(description = "Role system attribute's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -136,7 +153,17 @@ public class SysRoleSystemAttributeController
 	@Operation(
 			summary = "Create / update role system attribute", 
 			/* nickname = "postRoleSystemAttribute", */ 
-			/* response = SysRoleSystemAttributeDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysRoleSystemAttributeDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { SysRoleSystemAttributeController.TAG })
     @SecurityRequirements(
         value = {
@@ -158,7 +185,17 @@ public class SysRoleSystemAttributeController
 	@Operation(
 			summary = "Update role system attribute",
 			/* nickname = "putRoleSystemAttribute", */ 
-			/* response = SysRoleSystemAttributeDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysRoleSystemAttributeDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { SysRoleSystemAttributeController.TAG })
     @SecurityRequirements(
         value = {
@@ -170,7 +207,7 @@ public class SysRoleSystemAttributeController
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Role system attribute's uuid identifier.", required = true)
+			 @Parameter(description = "Role system attribute's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @NotNull SysRoleSystemAttributeDto dto) {
 		return super.put(backendId, dto);
@@ -194,7 +231,7 @@ public class SysRoleSystemAttributeController
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Role system attribute's uuid identifier.", required = true)
+			 @Parameter(description = "Role system attribute's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}

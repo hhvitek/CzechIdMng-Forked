@@ -11,12 +11,12 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -48,11 +48,14 @@ import eu.bcvsolutions.idm.core.api.service.IdmEntityStateService;
 import eu.bcvsolutions.idm.core.api.utils.DtoUtils;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Entity states.
@@ -99,8 +102,10 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
 						CoreGroupPermission.ENTITYSTATE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -122,8 +127,10 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
 						CoreGroupPermission.ENTITYSTATE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -145,8 +152,10 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
 						CoreGroupPermission.ENTITYSTATE_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -179,7 +188,17 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
 	@Operation(
 			summary = "EntityState detail",
 			/* nickname = "getEntityState", */ 
-			/* response = IdmEntityStateDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmEntityStateDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmEntityStateController.TAG })
     @SecurityRequirements(
         value = {
@@ -191,7 +210,7 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "EntityState's uuid identifier or username.", required = true)
+			 @Parameter(description = "EntityState's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -204,7 +223,17 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
 	@Operation(
 			summary = "Create / update entity state",
 			/* nickname = "postEntityState", */ 
-			/* response = IdmEntityStateDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmEntityStateDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmEntityStateController.TAG })
     @SecurityRequirements(
         value = {
@@ -228,7 +257,17 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
 	@Operation(
 			summary = "Update entity state",
 			/* nickname = "putEntityState", */ 
-			/* response = IdmEntityStateDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmEntityStateDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmEntityStateController.TAG })
     @SecurityRequirements(
         value = {
@@ -240,7 +279,7 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "EntityState's uuid identifier or username.", required = true)
+			 @Parameter(description = "EntityState's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmEntityStateDto dto) {
 		return super.put(backendId, dto);
@@ -253,7 +292,17 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
 	@Operation(
 			summary = "Update entity state",
 			/* nickname = "patchEntityState", */ 
-			/* response = IdmEntityStateDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmEntityStateDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmEntityStateController.TAG })
     @SecurityRequirements(
         value = {
@@ -265,7 +314,7 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
         }
     )
 	public ResponseEntity<?> patch(
-			@Parameter(name = "EntityState's uuid identifier or username.", required = true)
+			 @Parameter(description = "EntityState's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -290,7 +339,7 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "EntityState's uuid identifier or username.", required = true)
+			 @Parameter(description = "EntityState's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -316,7 +365,7 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "EntityState's uuid identifier.", required = true)
+			 @Parameter(description = "EntityState's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -377,7 +426,17 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
     @Operation(
             summary = "Process bulk action for entity state",
             /* nickname = "bulkAction", */
-            /* response = IdmBulkActionDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
             tags = {IdmEntityStateController.TAG})
     @SecurityRequirements(
         value = {
@@ -404,7 +463,17 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
     @Operation(
             summary = "Prevalidate bulk action for entity state",
             /* nickname = "prevalidateBulkAction", */
-            /* response = IdmBulkActionDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
             tags = {IdmEntityStateController.TAG})
     @SecurityRequirements(
         value = {

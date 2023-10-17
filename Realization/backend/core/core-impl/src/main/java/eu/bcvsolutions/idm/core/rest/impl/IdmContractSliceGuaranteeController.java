@@ -5,11 +5,11 @@ import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -29,11 +29,14 @@ import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.api.service.IdmContractSliceGuaranteeService;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Contract guarantee slice controller
@@ -77,8 +80,10 @@ public class IdmContractSliceGuaranteeController extends AbstractEventableDtoCon
 						CoreGroupPermission.CONTRACTSLICEGUARANTEE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -99,8 +104,10 @@ public class IdmContractSliceGuaranteeController extends AbstractEventableDtoCon
 						CoreGroupPermission.CONTRACTSLICEGUARANTEE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -121,8 +128,10 @@ public class IdmContractSliceGuaranteeController extends AbstractEventableDtoCon
 						CoreGroupPermission.CONTRACTSLICEGUARANTEE_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -134,7 +143,17 @@ public class IdmContractSliceGuaranteeController extends AbstractEventableDtoCon
 	@Operation(
 			summary = "Contract guarantee detail", 
 			/* nickname = "getContractSliceGuarantee", */
-			/* response = IdmContractSliceGuaranteeDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmContractSliceGuaranteeDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmContractSliceGuaranteeController.TAG })
     @SecurityRequirements(
         value = {
@@ -146,7 +165,7 @@ public class IdmContractSliceGuaranteeController extends AbstractEventableDtoCon
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Contract slice guarantee's uuid identifier.", required = true)
+			 @Parameter(description = "Contract slice guarantee's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -159,7 +178,17 @@ public class IdmContractSliceGuaranteeController extends AbstractEventableDtoCon
 	@Operation(
 			summary = "Create / update contract guarantee", 
 			/* nickname = "postContractSliceGuarantee", */
-			/* response = IdmContractSliceGuaranteeDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmContractSliceGuaranteeDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmContractSliceGuaranteeController.TAG })
     @SecurityRequirements(
         value = {
@@ -183,7 +212,17 @@ public class IdmContractSliceGuaranteeController extends AbstractEventableDtoCon
 	@Operation(
 			summary = "Update contract guarantee", 
 			/* nickname = "putContractSliceGuarantee", */
-			/* response = IdmContractSliceGuaranteeDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmContractSliceGuaranteeDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmContractSliceGuaranteeController.TAG })
     @SecurityRequirements(
         value = {
@@ -195,7 +234,7 @@ public class IdmContractSliceGuaranteeController extends AbstractEventableDtoCon
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Contract slice guarantee's uuid identifier.", required = true)
+			 @Parameter(description = "Contract slice guarantee's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmContractSliceGuaranteeDto dto) {
 		return super.put(backendId, dto);
@@ -219,7 +258,7 @@ public class IdmContractSliceGuaranteeController extends AbstractEventableDtoCon
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Contract slice guarantee's uuid identifier.", required = true)
+			 @Parameter(description = "Contract slice guarantee's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -242,7 +281,7 @@ public class IdmContractSliceGuaranteeController extends AbstractEventableDtoCon
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Contract slice guarantee's uuid identifier.", required = true)
+			 @Parameter(description = "Contract slice guarantee's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}

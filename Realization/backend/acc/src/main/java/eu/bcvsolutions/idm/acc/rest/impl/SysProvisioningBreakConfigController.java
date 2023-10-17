@@ -2,11 +2,11 @@ package eu.bcvsolutions.idm.acc.rest.impl;
 
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -29,11 +29,14 @@ import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.security.api.domain.Enabled;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Configuration for provisioning break
@@ -80,8 +83,10 @@ public class SysProvisioningBreakConfigController
 						AccGroupPermission.SYSTEM_READ})
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -102,8 +107,10 @@ public class SysProvisioningBreakConfigController
 						AccGroupPermission.SYSTEM_READ})
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -116,7 +123,17 @@ public class SysProvisioningBreakConfigController
 	@Operation(
 			summary = "Provisionign break configuration detail", 
 			/* nickname = "getProvisioningBreakConfig", */ 
-			/* response = SysProvisioningBreakConfigDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysProvisioningBreakConfigDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { SysProvisioningBreakConfigController.TAG })
     @SecurityRequirements(
         value = {
@@ -128,7 +145,7 @@ public class SysProvisioningBreakConfigController
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Provisioning break config's uuid identifier.", required = true)
+			 @Parameter(description = "Provisioning break config's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -141,7 +158,17 @@ public class SysProvisioningBreakConfigController
 	@Operation(
 			summary = "Create / update provisioning break configuration", 
 			/* nickname = "postProvisioningBreakConfig", */ 
-			/* response = SysProvisioningBreakConfigDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysProvisioningBreakConfigDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { SysProvisioningBreakConfigController.TAG })
     @SecurityRequirements(
         value = {
@@ -165,7 +192,17 @@ public class SysProvisioningBreakConfigController
 	@Operation(
 			summary = "Update provisioning break configuration",
 			/* nickname = "putProvisioningBreakConfig", */ 
-			/* response = SysProvisioningBreakConfigDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysProvisioningBreakConfigDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { SysProvisioningBreakConfigController.TAG })
     @SecurityRequirements(
         value = {
@@ -177,7 +214,7 @@ public class SysProvisioningBreakConfigController
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Provisioning break config's uuid identifier.", required = true)
+			 @Parameter(description = "Provisioning break config's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, @RequestBody @NotNull SysProvisioningBreakConfigDto dto) {
 		return super.put(backendId, dto);
 	}
@@ -200,7 +237,7 @@ public class SysProvisioningBreakConfigController
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Provisioning break config's uuid identifier.", required = true)
+			 @Parameter(description = "Provisioning break config's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}

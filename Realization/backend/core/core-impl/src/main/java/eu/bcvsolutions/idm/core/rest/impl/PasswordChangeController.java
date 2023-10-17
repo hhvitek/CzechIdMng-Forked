@@ -6,7 +6,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,11 +29,11 @@ import eu.bcvsolutions.idm.core.security.api.authentication.AuthenticationManage
 import eu.bcvsolutions.idm.core.security.api.domain.GuardedString;
 import eu.bcvsolutions.idm.core.security.api.domain.IdentityBasePermission;
 import eu.bcvsolutions.idm.core.security.api.dto.LoginDto;
-import eu.bcvsolutions.idm.core.security.api.service.SecurityService;
 import eu.bcvsolutions.idm.core.security.api.exception.IdmAuthenticationException;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import eu.bcvsolutions.idm.core.security.api.service.SecurityService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Changes identity password. Could be public, because previous password is required.
@@ -96,7 +95,7 @@ public class PasswordChangeController {
 			/* nickname = "passwordChange", */
 			tags = { PasswordChangeController.TAG })
 	public List<OperationResult> passwordChange(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable String backendId,
 			@RequestBody @Valid PasswordChangeDto passwordChangeDto) {
 		IdmIdentityDto identity = (IdmIdentityDto) entityLookupService.lookupDto(IdmIdentityDto.class, backendId);

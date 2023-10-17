@@ -1,8 +1,38 @@
 package eu.bcvsolutions.idm.acc.rest.impl;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
+import org.springdoc.core.converters.models.PageableAsQueryParam;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.Assert;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.google.common.collect.ImmutableMap;
+
 import eu.bcvsolutions.idm.acc.AccModuleDescriptor;
-import eu.bcvsolutions.idm.acc.domain.AccGroupPermission;
 import eu.bcvsolutions.idm.acc.dto.AccAccountConceptRoleRequestDto;
 import eu.bcvsolutions.idm.acc.dto.filter.AccAccountConceptRoleRequestFilter;
 import eu.bcvsolutions.idm.acc.service.api.AccAccountConceptRoleRequestService;
@@ -32,39 +62,14 @@ import eu.bcvsolutions.idm.core.rest.impl.IdmIdentityRoleController;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
 import eu.bcvsolutions.idm.core.security.api.service.SecurityService;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.util.Assert;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * 
@@ -116,7 +121,9 @@ public class AccConceptAccountRoleAssignmentController
                             CoreGroupPermission.ROLE_REQUEST_ADMIN })
             }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -137,7 +144,9 @@ public class AccConceptAccountRoleAssignmentController
                             CoreGroupPermission.ROLE_REQUEST_ADMIN })
             }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -164,7 +173,18 @@ public class AccConceptAccountRoleAssignmentController
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_REQUEST_READ + "')")
-	@Operation(summary = "Concept detail", /* nickname = "getConceptRoleRequest", */ /* response = IdmConceptRoleRequestDto.class, */ tags = {
+	@Operation(summary = "Concept detail", /* nickname = "getConceptRoleRequest", */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmConceptRoleRequestDto.class
+                                    )
+                            )
+                    }
+            ), tags = {
 			AccConceptAccountRoleAssignmentController.TAG })
     @SecurityRequirements(
         value = {
@@ -176,7 +196,7 @@ public class AccConceptAccountRoleAssignmentController
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Concept's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
+			 @Parameter(description = "Concept's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
 	
@@ -199,7 +219,17 @@ public class AccConceptAccountRoleAssignmentController
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_REQUEST_CREATE + "')" + " or hasAuthority('"
 			+ CoreGroupPermission.ROLE_REQUEST_UPDATE + "')")
-	@Operation(summary = "Create / update concept", /* nickname = "postConceptRoleRequest", */ /* response = AccAccountConceptRoleRequestDto.class, */ tags = {
+	@Operation(summary = "Create / update concept", /* nickname = "postConceptRoleRequest", */            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = AccAccountConceptRoleRequestDto.class
+                                    )
+                            )
+                    }
+            ), tags = {
 			AccConceptAccountRoleAssignmentController.TAG })
     @SecurityRequirements(
             value = {
@@ -238,7 +268,17 @@ public class AccConceptAccountRoleAssignmentController
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_REQUEST_UPDATE + "')")
-	@Operation(summary = "Update concept", /* nickname = "putConceptRoleRequest", */ /* response = AccAccountConceptRoleRequestDto.class, */ tags = {
+	@Operation(summary = "Update concept", /* nickname = "putConceptRoleRequest", */            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = AccAccountConceptRoleRequestDto.class
+                                    )
+                            )
+                    }
+            ), tags = {
 			AccConceptAccountRoleAssignmentController.TAG })
     @SecurityRequirements(
         value = {
@@ -250,7 +290,7 @@ public class AccConceptAccountRoleAssignmentController
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Concept's uuid identifier.", required = true) @PathVariable @NotNull String backendId,
+			 @Parameter(description = "Concept's uuid identifier.", required = true) @PathVariable @NotNull String backendId,
 			@RequestBody @NotNull AccAccountConceptRoleRequestDto dto) {
 		return super.put(backendId, dto);
 	}
@@ -271,7 +311,7 @@ public class AccConceptAccountRoleAssignmentController
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Concept's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
+			 @Parameter(description = "Concept's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
 
@@ -291,7 +331,7 @@ public class AccConceptAccountRoleAssignmentController
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Concept's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
+			 @Parameter(description = "Concept's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
 
@@ -316,7 +356,7 @@ public class AccConceptAccountRoleAssignmentController
         }
     )
 	public ResponseEntity<?> getFormDefinitions(
-			@Parameter(name = "Role's uuid identifier or code.", required = true) @PathVariable @NotNull String backendId) {
+			 @Parameter(description = "Role's uuid identifier or code.", required = true) @PathVariable @NotNull String backendId) {
 		AccAccountConceptRoleRequestDto dto = getDto(backendId);
 		if (dto == null) {
 			throw new ResultCodeException(CoreResultCode.NOT_FOUND, ImmutableMap.of("entity", backendId));
@@ -351,8 +391,8 @@ public class AccConceptAccountRoleAssignmentController
         }
     )
 	public EntityModel<?> getFormValues(
-			@Parameter(name = "Concept's uuid identifier or code.", required = true) @PathVariable @NotNull String backendId,
-			@Parameter(name = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE) @RequestParam(name = "definitionCode", required = false) String definitionCode) {
+			 @Parameter(description = "Concept's uuid identifier or code.", required = true) @PathVariable @NotNull String backendId,
+			 @Parameter(description = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE) @RequestParam(name = "definitionCode", required = false) String definitionCode) {
 		AccAccountConceptRoleRequestDto dto = getDto(backendId);
 		if (dto == null) {
 			throw new ResultCodeException(CoreResultCode.NOT_FOUND, ImmutableMap.of("entity", backendId));
@@ -386,8 +426,8 @@ public class AccConceptAccountRoleAssignmentController
         }
     )
 	public EntityModel<?> saveFormValues(
-			@Parameter(name = "Concept's uuid identifier or code.", required = true) @PathVariable @NotNull String backendId,
-			@Parameter(name = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE) @RequestParam(name = "definitionCode", required = false) String definitionCode,
+			 @Parameter(description = "Concept's uuid identifier or code.", required = true) @PathVariable @NotNull String backendId,
+			 @Parameter(description = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE) @RequestParam(name = "definitionCode", required = false) String definitionCode,
 			@RequestBody @Valid List<IdmFormValueDto> formValues) {
 		AccAccountConceptRoleRequestDto dto = getDto(backendId);
 		if (dto == null) {

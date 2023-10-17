@@ -2,11 +2,11 @@ package eu.bcvsolutions.idm.acc.rest.impl;
 
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,11 +29,14 @@ import eu.bcvsolutions.idm.core.api.rest.AbstractReadWriteDtoController;
 import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.security.api.domain.Enabled;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 
 /**
@@ -75,8 +78,10 @@ public class SysSchemaAttributeController extends AbstractReadWriteDtoController
                             AccGroupPermission.SYSTEM_READ})
             }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -97,8 +102,10 @@ public class SysSchemaAttributeController extends AbstractReadWriteDtoController
 						AccGroupPermission.SYSTEM_READ})
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -110,7 +117,17 @@ public class SysSchemaAttributeController extends AbstractReadWriteDtoController
 	@Operation(
 			summary = "Schema attribute detail", 
 			/* nickname = "getSchemaAttribute", */ 
-			/* response = SysSchemaAttributeDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysSchemaAttributeDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { SysSchemaAttributeController.TAG })
     @SecurityRequirements(
         value = {
@@ -122,7 +139,7 @@ public class SysSchemaAttributeController extends AbstractReadWriteDtoController
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Schema attribute's uuid identifier.", required = true)
+			 @Parameter(description = "Schema attribute's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -134,7 +151,17 @@ public class SysSchemaAttributeController extends AbstractReadWriteDtoController
 	@Operation(
 			summary = "Create / update schema attribute", 
 			/* nickname = "postSchemaAttribute", */ 
-			/* response = SysSchemaAttributeDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysSchemaAttributeDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { SysSchemaAttributeController.TAG })
     @SecurityRequirements(
         value = {
@@ -157,7 +184,17 @@ public class SysSchemaAttributeController extends AbstractReadWriteDtoController
 	@Operation(
 			summary = "Update schema attribute",
 			/* nickname = "putSchemaAttribute", */ 
-			/* response = SysSchemaAttributeDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysSchemaAttributeDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { SysSchemaAttributeController.TAG })
     @SecurityRequirements(
         value = {
@@ -169,7 +206,7 @@ public class SysSchemaAttributeController extends AbstractReadWriteDtoController
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Schema attribute's uuid identifier.", required = true)
+			 @Parameter(description = "Schema attribute's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @NotNull SysSchemaAttributeDto dto) throws HttpMessageNotReadableException {
 		return super.put(backendId, dto);
@@ -193,7 +230,7 @@ public class SysSchemaAttributeController extends AbstractReadWriteDtoController
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Schema attribute's uuid identifier.", required = true)
+			 @Parameter(description = "Schema attribute's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}

@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -53,8 +54,6 @@ import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
 import eu.bcvsolutions.idm.core.security.api.utils.PermissionUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 
@@ -127,7 +126,7 @@ public abstract class AbstractReadDtoController<DTO extends BaseDto, F extends B
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Record's uuid identifier or unique code, if record supports Codeable interface.", required = true)
+			 @Parameter(description = "Record's uuid identifier or unique code, if record supports Codeable interface.", required = true)
 			@PathVariable @NotNull String backendId) {
 		DTO dto = getDto(backendId);
 		if (dto == null) {
@@ -200,25 +199,10 @@ public abstract class AbstractReadDtoController<DTO extends BaseDto, F extends B
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )
-    @Parameters({
-        @Parameter(name = "page", schema = @Schema( implementation=String.class, type = "query"), description = "Results page you want to retrieve (0..N)"),
-        @Parameter(name = "size", schema = @Schema( implementation=String.class, type = "query"), description = "Number of records per page."),
-        @Parameter(name = "sort", schema = @Schema( implementation=String.class, type = "query"),
-                description = "Sorting criteria in the format: property(,asc|desc)." + "Default sort order is ascending. " + "Multiple sort criteria are supported."
-        ),
-    })
-	//@ApiImplicitParams({
-    //    @ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query",
-    //            value = "Results page you want to retrieve (0..N)"),
-    //    @ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query",
-    //            value = "Number of records per page."),
-    //    @ApiImplicitParam(name = "sort", allowMultiple = true, dataTypeClass = String.class, paramType = "query",
-    //            value = "Sorting criteria in the format: property(,asc|desc). " +
-    //                    "Default sort order is ascending. " +
-    //                    "Multiple sort criteria are supported.")
-	//})
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		BasePermission[] evaluatePermissions = evaluatePermissions(parameters, IdmBasePermission.READ);
 		if (evaluatePermissions.length > 1) {
@@ -243,25 +227,10 @@ public abstract class AbstractReadDtoController<DTO extends BaseDto, F extends B
             @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
         }
     )
-    @Parameters({
-        @Parameter(name = "page", schema = @Schema( implementation=String.class, type = "query"), description = "Results page you want to retrieve (0..N)"),
-        @Parameter(name = "size", schema = @Schema( implementation=String.class, type = "query"), description = "Number of records per page."),
-        @Parameter(name = "sort", schema = @Schema( implementation=String.class, type = "query"),
-                description = "Sorting criteria in the format: property(,asc|desc)." + "Default sort order is ascending. " + "Multiple sort criteria are supported."
-        ),
-    })
-	//@ApiImplicitParams({
-    //    @ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query",
-    //            value = "Results page you want to retrieve (0..N)"),
-    //    @ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query",
-    //            value = "Number of records per page."),
-    //    @ApiImplicitParam(name = "sort", allowMultiple = true, dataTypeClass = String.class, paramType = "query",
-    //            value = "Sorting criteria in the format: property(,asc|desc). " +
-    //                    "Default sort order is ascending. " +
-    //                    "Multiple sort criteria are supported.")
-	//})
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return find(parameters, pageable);
 	}
@@ -281,25 +250,10 @@ public abstract class AbstractReadDtoController<DTO extends BaseDto, F extends B
             @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
         }
     )
-    @Parameters({
-        @Parameter(name = "page", schema = @Schema( implementation=String.class, type = "query"), description = "Results page you want to retrieve (0..N)"),
-        @Parameter(name = "size", schema = @Schema( implementation=String.class, type = "query"), description = "Number of records per page."),
-        @Parameter(name = "sort", schema = @Schema( implementation=String.class, type = "query"),
-                description = "Sorting criteria in the format: property(,asc|desc)." + "Default sort order is ascending. " + "Multiple sort criteria are supported."
-        ),
-    })
-	//@ApiImplicitParams({
-    //    @ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query",
-    //            value = "Results page you want to retrieve (0..N)"),
-    //    @ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query",
-    //            value = "Number of records per page."),
-    //    @ApiImplicitParam(name = "sort", allowMultiple = true, dataTypeClass = String.class, paramType = "query",
-    //            value = "Sorting criteria in the format: property(,asc|desc). " +
-    //                    "Default sort order is ascending. " +
-    //                    "Multiple sort criteria are supported.")
-	//})
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		BasePermission[] evaluatePermissions = evaluatePermissions(parameters, IdmBasePermission.AUTOCOMPLETE);
 		if (evaluatePermissions.length > 1) {
@@ -394,7 +348,7 @@ public abstract class AbstractReadDtoController<DTO extends BaseDto, F extends B
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Record's uuid identifier or unique code, if record supports Codeable interface.", required = true)
+			 @Parameter(description = "Record's uuid identifier or unique code, if record supports Codeable interface.", required = true)
 			@PathVariable @NotNull String backendId) {
 		DTO dto = getDto(backendId);
 		if (dto == null) {

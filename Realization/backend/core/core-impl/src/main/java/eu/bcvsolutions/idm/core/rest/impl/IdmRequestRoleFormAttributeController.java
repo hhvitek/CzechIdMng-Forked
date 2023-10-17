@@ -5,11 +5,11 @@ import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -29,11 +29,14 @@ import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.api.service.IdmRoleFormAttributeService;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.rest.AbstractRequestDtoController;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Request controller for relation between role and definition of form-attribution. Is elementary part
@@ -84,9 +87,11 @@ public class IdmRequestRoleFormAttributeController extends AbstractRequestDtoCon
 						CoreGroupPermission.ROLEFORMATTRIBUTE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@PathVariable @NotNull String requestId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(requestId, parameters, pageable);
 	}
@@ -107,9 +112,11 @@ public class IdmRequestRoleFormAttributeController extends AbstractRequestDtoCon
 						CoreGroupPermission.ROLEFORMATTRIBUTE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@PathVariable @NotNull String requestId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(requestId, parameters, pageable);
 	}
@@ -130,9 +137,11 @@ public class IdmRequestRoleFormAttributeController extends AbstractRequestDtoCon
 						CoreGroupPermission.ROLEFORMATTRIBUTE_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@PathVariable @NotNull String requestId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(requestId, parameters, pageable);
 	}
@@ -165,7 +174,17 @@ public class IdmRequestRoleFormAttributeController extends AbstractRequestDtoCon
 	@Operation(
 			summary = "Role attribute detail",
 			/* nickname = "getRoleFormAttribute", */
-			/* response = IdmRoleFormAttributeDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRoleFormAttributeDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmRoleFormAttributeController.TAG })
     @SecurityRequirements(
         value = {
@@ -178,7 +197,7 @@ public class IdmRequestRoleFormAttributeController extends AbstractRequestDtoCon
     )
 	public ResponseEntity<?> get(
 			@PathVariable @NotNull String requestId,
-			@Parameter(name = "Role attribute's uuid identifier.", required = true)
+			 @Parameter(description = "Role attribute's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(requestId, backendId);
 	}
@@ -191,7 +210,17 @@ public class IdmRequestRoleFormAttributeController extends AbstractRequestDtoCon
 	@Operation(
 			summary = "Create / update role attribute",
 			/* nickname = "postRoleFormAttribute", */
-			/* response = IdmRoleFormAttributeDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRoleFormAttributeDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmRoleFormAttributeController.TAG })
     @SecurityRequirements(
         value = {
@@ -215,7 +244,17 @@ public class IdmRequestRoleFormAttributeController extends AbstractRequestDtoCon
 	@Operation(
 			summary = "Update role attribute",
 			/* nickname = "putRoleFormAttribute", */
-			/* response = IdmRoleFormAttributeDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRoleFormAttributeDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmRoleFormAttributeController.TAG })
     @SecurityRequirements(
         value = {
@@ -228,7 +267,7 @@ public class IdmRequestRoleFormAttributeController extends AbstractRequestDtoCon
     )
 	public ResponseEntity<?> put(
 			@PathVariable @NotNull String requestId,
-			@Parameter(name = "Role attribute's uuid identifier.", required = true)
+			 @Parameter(description = "Role attribute's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmRoleFormAttributeDto dto) {
 		return super.put(requestId, backendId, dto);
@@ -253,7 +292,7 @@ public class IdmRequestRoleFormAttributeController extends AbstractRequestDtoCon
     )
 	public ResponseEntity<?> delete(
 			@PathVariable @NotNull String requestId,
-			@Parameter(name = "Role attribute's uuid identifier.", required = true)
+			 @Parameter(description = "Role attribute's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(requestId, backendId);
 	}
@@ -277,7 +316,7 @@ public class IdmRequestRoleFormAttributeController extends AbstractRequestDtoCon
     )
 	public Set<String> getPermissions(
 			@PathVariable @NotNull String requestId,
-			@Parameter(name = "Role attribute's uuid identifier.", required = true)
+			 @Parameter(description = "Role attribute's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(requestId, backendId);
 	}

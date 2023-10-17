@@ -2,11 +2,11 @@ package eu.bcvsolutions.idm.core.audit.rest.impl;
 
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -25,11 +25,14 @@ import eu.bcvsolutions.idm.core.api.rest.AbstractReadDtoController;
 import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Controller for {@link IdmLoggingEventExceptionDto}
@@ -39,7 +42,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirements;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/logging-event-exceptions")
-@Tag(name = IdmLoggingEventController.TAG, description = "Read / search log exception from LOG4J"
+@Tag(name = IdmLoggingEventExceptionController.TAG, description = "Read / search log exception from LOG4J"
 //, //produces = BaseController.APPLICATION_HAL_JSON_VALUE
 //consumes = MediaType.APPLICATION_JSON_VALUE
 )
@@ -57,8 +60,9 @@ public class IdmLoggingEventExceptionController
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUDIT_READ + "')")
 	@RequestMapping(value= "/search/quick", method = RequestMethod.GET)
 	@Operation(
-			summary = "Search logging event exceptions"
-			/*, nickname = "searchQuickLoggingEventExceptions", */)
+			summary = "Search logging event exceptions",
+			/*, nickname = "searchQuickLoggingEventExceptions", */
+            tags = { IdmLoggingEventExceptionController.TAG })
     @SecurityRequirements(
             value = {
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
@@ -67,8 +71,10 @@ public class IdmLoggingEventExceptionController
                             CoreGroupPermission.AUDIT_READ })
             }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return this.find(parameters, pageable);
 	}
@@ -80,7 +86,17 @@ public class IdmLoggingEventExceptionController
 	@Operation(
 			summary = "Logging event exception detail", 
 			/* nickname = "getLoggingEventException", */
-			/* response = IdmLoggingEventExceptionDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmLoggingEventExceptionDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmLoggingEventExceptionController.TAG })
     @SecurityRequirements(
         value = {
@@ -92,7 +108,7 @@ public class IdmLoggingEventExceptionController
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Logging event exception's identifier.", required = true)
+			 @Parameter(description = "Logging event exception's identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}

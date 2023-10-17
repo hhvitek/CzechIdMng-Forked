@@ -16,13 +16,13 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.logging.log4j.util.Strings;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -95,11 +95,14 @@ import eu.bcvsolutions.idm.ic.exception.IcRemoteServerException;
 import eu.bcvsolutions.idm.ic.exception.IcServerNotFoundException;
 import eu.bcvsolutions.idm.ic.service.api.IcConfigurationFacade;
 import eu.bcvsolutions.idm.ic.service.api.IcConfigurationService;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 
 /**
@@ -176,8 +179,10 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 						AccGroupPermission.SYSTEM_READ})
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -198,8 +203,10 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 						AccGroupPermission.SYSTEM_READ})
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -221,8 +228,10 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 						AccGroupPermission.SYSTEM_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -255,7 +264,17 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@Operation(
 			summary = "System detail",
 			/* nickname = "getSystem", */
-			/* response = SysSystemDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysSystemDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { SysSystemController.TAG })
     @SecurityRequirements(
         value = {
@@ -267,7 +286,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -280,7 +299,17 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@Operation(
 			summary = "Create / update system",
 			/* nickname = "postSystem", */
-			/* response = SysSystemDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysSystemDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { SysSystemController.TAG })
     @SecurityRequirements(
         value = {
@@ -304,7 +333,17 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@Operation(
 			summary = "Update system",
 			/* nickname = "putSystem", */
-			/* response = SysSystemDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysSystemDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { SysSystemController.TAG })
     @SecurityRequirements(
         value = {
@@ -316,7 +355,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId, @RequestBody @NotNull SysSystemDto dto) {
 		return super.put(backendId, dto);
 	}
@@ -328,7 +367,17 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@Operation(
 			summary = "Patch system",
 			/* nickname = "patchSystem", */
-			/* response = SysSystemDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysSystemDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { SysSystemController.TAG })
     @SecurityRequirements(
         value = {
@@ -340,7 +389,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
         }
     )
 	public ResponseEntity<?> patch(
-			@Parameter(name = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -365,7 +414,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -391,7 +440,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -414,7 +463,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
         }
     )
 	public ResponseEntity<?> generateSchema(
-			@Parameter(name = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysSystemDto system = getDto(backendId);
 		if (system == null) {
@@ -442,7 +491,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
         }
     )
 	public ResponseEntity<?> duplicate(
-			@Parameter(name = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysSystemDto system = getDto(backendId);
 		if (system == null) {
@@ -505,7 +554,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
         }
     )
 	public ResponseEntity<?> getConnectorFormDefinition(
-			@Parameter(name = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysSystemDto system = getDto(backendId);
 		if (system == null) {
@@ -533,7 +582,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
         }
     )
 	public ResponseEntity<?> getPoolingConnectorFormDefinition(
-			@Parameter(name = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysSystemDto system = getDto(backendId);
 		if (system == null) {
@@ -561,7 +610,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
         }
     )
 	public ResponseEntity<?> getOperationOptionsConnectorFormDefinition(
-			@Parameter(name = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysSystemDto system = getDto(backendId);
 		if (system == null) {
@@ -596,7 +645,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
         }
     )
 	public EntityModel<?> getConnectorFormValues(
-			@Parameter(name = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysSystemDto entity = getDto(backendId);
 		if (entity == null) {
@@ -631,7 +680,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
         }
     )
 	public EntityModel<?> getPoolingConnectorFormValues(
-			@Parameter(name = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysSystemDto entity = getDto(backendId);
 		if (entity == null) {
@@ -665,7 +714,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
         }
     )
 	public EntityModel<?> getOperationOptionsConnectorFormValues(
-			@Parameter(name = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysSystemDto entity = getDto(backendId);
 		if (entity == null) {
@@ -701,7 +750,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
         }
     )
 	public EntityModel<?> saveConnectorFormValues(
-			@Parameter(name = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @Valid List<IdmFormValueDto> formValues) {
 		SysSystemDto entity = getDto(backendId);
@@ -738,7 +787,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
         }
     )
 	public EntityModel<?> savePoolingConnectorFormValues(
-			@Parameter(name = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @Valid List<IdmFormValueDto> formValues) {
 		SysSystemDto entity = getDto(backendId);
@@ -774,7 +823,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
         }
     )
 	public EntityModel<?> saveOperationOptionsConnectorFormValues(
-			@Parameter(name = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @Valid List<IdmFormValueDto> formValues) {
 		SysSystemDto entity = getDto(backendId);
@@ -802,7 +851,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
         }
     )
 	public ResponseEntity<?> checkSystem(
-			@Parameter(name = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		systemService.checkSystem(super.getDto(backendId));
 		return new ResponseEntity<>(Boolean.TRUE, HttpStatus.OK);
@@ -831,7 +880,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
         }
     )
 	public ResponseEntity<Map<String, Set<IcConnectorInfo>>> getAvailableLocalConnectors(
-			@Parameter(name = "Connector framework.", example = "connId")
+			 @Parameter(description = "Connector framework.", example = "connId")
 			@RequestParam(required = false) String framework) {
 		Map<String, Set<IcConnectorInfo>> infos = new HashMap<>();
 		if (framework != null) {
@@ -872,7 +921,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
         }
     )
 	public ResponseEntity<Map<String, Set<IcConnectorInfo>>> getAvailableRemoteConnectors(
-			@Parameter(name = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysSystemDto dto = this.getDto(backendId);
 
@@ -936,7 +985,17 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@Operation(
 			summary = "Process bulk action for role",
 			/* nickname = "bulkAction", */
-			/* response = IdmBulkActionDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { SysSystemController.TAG })
     @SecurityRequirements(
         value = {
@@ -958,7 +1017,17 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@Operation(
 			summary = "Prevalidate bulk action for role",
 			/* nickname = "prevalidateBulkAction", */
-			/* response = IdmBulkActionDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { SysSystemController.TAG })
     @SecurityRequirements(
         value = {
@@ -1002,7 +1071,7 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
         }
     )
 	public DeferredResult<OperationResultDto> checkRunningSyncs(
-			@Parameter(name = "System's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
+			 @Parameter(description = "System's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		SysSystemDto dto = getDto(backendId);
 		if (dto == null) {
 			throw new ResultCodeException(CoreResultCode.NOT_FOUND, ImmutableMap.of("entity", backendId));
@@ -1212,7 +1281,17 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@Operation(
 			summary = "Execute specific connector type -> execute some wizard step.",
 			/* nickname = "executeConnectorType", */
-			/* response = ConnectorTypeDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ConnectorTypeDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { SysSystemController.TAG })
     @SecurityRequirements(
         value = {
@@ -1236,7 +1315,17 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@Operation(
 			summary = "Load data for specific connector type -> open existed system in the wizard step.",
 			/* nickname = "loadConnectorType", */
-			/* response = ConnectorTypeDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ConnectorTypeDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { SysSystemController.TAG })
     @SecurityRequirements(
         value = {

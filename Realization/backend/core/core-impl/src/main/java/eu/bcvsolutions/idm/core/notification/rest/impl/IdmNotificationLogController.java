@@ -6,11 +6,11 @@ import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.Assert;
@@ -43,11 +43,14 @@ import eu.bcvsolutions.idm.core.notification.api.service.IdmNotificationLogServi
 import eu.bcvsolutions.idm.core.notification.api.service.IdmNotificationRecipientService;
 import eu.bcvsolutions.idm.core.notification.api.service.NotificationManager;
 import eu.bcvsolutions.idm.core.notification.domain.NotificationGroupPermission;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Read and send notification.
@@ -106,8 +109,10 @@ public class IdmNotificationLogController
 						NotificationGroupPermission.NOTIFICATION_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -128,8 +133,10 @@ public class IdmNotificationLogController
 						NotificationGroupPermission.NOTIFICATION_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -141,7 +148,17 @@ public class IdmNotificationLogController
 	@Operation(
 			summary = "Notification log detail",
 			/* nickname = "getNotificationLog", */ 
-			/* response = IdmNotificationLogDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmNotificationLogDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmNotificationLogController.TAG })
     @SecurityRequirements(
         value = {
@@ -153,7 +170,7 @@ public class IdmNotificationLogController
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Notification log's uuid identifier.", required = true)
+			 @Parameter(description = "Notification log's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -171,7 +188,17 @@ public class IdmNotificationLogController
 	@Operation(
 			summary = "Send notification",
 			/* nickname = "postNotificationLog", */ 
-			/* response = IdmNotificationLogDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmNotificationLogDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmNotificationLogController.TAG })
     @SecurityRequirements(
         value = {
@@ -231,7 +258,7 @@ public class IdmNotificationLogController
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Notification's uuid identifier.", required = true)
+			 @Parameter(description = "Notification's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -254,7 +281,7 @@ public class IdmNotificationLogController
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}

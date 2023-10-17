@@ -2,11 +2,11 @@ package eu.bcvsolutions.idm.acc.rest.impl;
 
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -28,11 +28,14 @@ import eu.bcvsolutions.idm.core.api.rest.AbstractReadWriteDtoController;
 import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.security.api.domain.Enabled;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 
 /**
@@ -78,8 +81,10 @@ public class SysSchemaObjectClassController extends AbstractReadWriteDtoControll
 						AccGroupPermission.SYSTEM_READ})
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = true) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -100,8 +105,10 @@ public class SysSchemaObjectClassController extends AbstractReadWriteDtoControll
 						AccGroupPermission.SYSTEM_READ})
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = true) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -113,7 +120,17 @@ public class SysSchemaObjectClassController extends AbstractReadWriteDtoControll
 	@Operation(
 			summary = "Schema object class detail", 
 			/* nickname = "getSchemaObjectClass", */ 
-			/* response = SysSchemaObjectClassDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysSchemaObjectClassDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { SysSchemaObjectClassController.TAG })
     @SecurityRequirements(
         value = {
@@ -125,7 +142,7 @@ public class SysSchemaObjectClassController extends AbstractReadWriteDtoControll
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "System schema's uuid identifier.", required = true)
+			 @Parameter(description = "System schema's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -137,7 +154,17 @@ public class SysSchemaObjectClassController extends AbstractReadWriteDtoControll
 	@Operation(
 			summary = "Create / update schema object class", 
 			/* nickname = "postSchemaObjectClass", */ 
-			/* response = SysSchemaObjectClassDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysSchemaObjectClassDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { SysSchemaObjectClassController.TAG })
     @SecurityRequirements(
         value = {
@@ -159,7 +186,17 @@ public class SysSchemaObjectClassController extends AbstractReadWriteDtoControll
 	@Operation(
 			summary = "Update schema object class",
 			/* nickname = "putSchemaObjectClass", */ 
-			/* response = SysSchemaObjectClassDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysSchemaObjectClassDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { SysSchemaObjectClassController.TAG })
     @SecurityRequirements(
         value = {
@@ -171,7 +208,7 @@ public class SysSchemaObjectClassController extends AbstractReadWriteDtoControll
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "System schema's uuid identifier.", required = true)
+			 @Parameter(description = "System schema's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@RequestBody @NotNull SysSchemaObjectClassDto dto) {
 		return super.put(backendId, dto);
@@ -195,7 +232,7 @@ public class SysSchemaObjectClassController extends AbstractReadWriteDtoControll
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "System schema's uuid identifier.", required = true)
+			 @Parameter(description = "System schema's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}

@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -31,11 +32,14 @@ import eu.bcvsolutions.idm.example.domain.ExampleGroupPermission;
 import eu.bcvsolutions.idm.example.dto.ExampleProductDto;
 import eu.bcvsolutions.idm.example.dto.filter.ExampleProductFilter;
 import eu.bcvsolutions.idm.example.service.api.ExampleProductService;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * RESTful example product endpoint
@@ -76,8 +80,10 @@ public class ExampleProductController extends AbstractReadWriteDtoController<Exa
 						ExampleGroupPermission.EXAMPLE_PRODUCT_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -99,8 +105,10 @@ public class ExampleProductController extends AbstractReadWriteDtoController<Exa
 						ExampleGroupPermission.EXAMPLE_PRODUCT_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -122,8 +130,10 @@ public class ExampleProductController extends AbstractReadWriteDtoController<Exa
 						ExampleGroupPermission.EXAMPLE_PRODUCT_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -156,7 +166,17 @@ public class ExampleProductController extends AbstractReadWriteDtoController<Exa
 	@Operation(
 			summary = "Example product detail", 
 			/* nickname = "getExampleProduct", */ 
-			/* response = ExampleProductDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ExampleProductDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { ExampleProductController.TAG })
     @SecurityRequirements(
         value = {
@@ -168,7 +188,7 @@ public class ExampleProductController extends AbstractReadWriteDtoController<Exa
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Example product's uuid identifier or code.", required = true)
+			 @Parameter(description = "Example product's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -180,7 +200,17 @@ public class ExampleProductController extends AbstractReadWriteDtoController<Exa
 	@Operation(
 			summary = "Create / update example product", 
 			/* nickname = "postExampleProduct", */ 
-			/* response = ExampleProductDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ExampleProductDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { ExampleProductController.TAG })
     @SecurityRequirements(
         value = {
@@ -204,7 +234,17 @@ public class ExampleProductController extends AbstractReadWriteDtoController<Exa
 	@Operation(
 			summary = "Update example product", 
 			/* nickname = "putExampleProduct", */ 
-			/* response = ExampleProductDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ExampleProductDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { ExampleProductController.TAG })
     @SecurityRequirements(
         value = {
@@ -216,7 +256,7 @@ public class ExampleProductController extends AbstractReadWriteDtoController<Exa
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Example product's uuid identifier or code.", required = true)
+			 @Parameter(description = "Example product's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody ExampleProductDto dto) {
 		return super.put(backendId, dto);
@@ -229,7 +269,17 @@ public class ExampleProductController extends AbstractReadWriteDtoController<Exa
 	@Operation(
 			summary = "Update example product", 
 			/* nickname = "patchExampleProduct", */ 
-			/* response = ExampleProductDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ExampleProductDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { ExampleProductController.TAG })
     @SecurityRequirements(
         value = {
@@ -241,7 +291,7 @@ public class ExampleProductController extends AbstractReadWriteDtoController<Exa
         }
     )
 	public ResponseEntity<?> patch(
-			@Parameter(name = "Example product's uuid identifier or code.", required = true)
+			 @Parameter(description = "Example product's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -266,7 +316,7 @@ public class ExampleProductController extends AbstractReadWriteDtoController<Exa
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Example product's uuid identifier or code.", required = true)
+			 @Parameter(description = "Example product's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -292,7 +342,7 @@ public class ExampleProductController extends AbstractReadWriteDtoController<Exa
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Example product's uuid identifier or code.", required = true)
+			 @Parameter(description = "Example product's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}

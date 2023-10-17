@@ -4,11 +4,11 @@ import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -27,11 +27,14 @@ import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.api.service.IdmImportLogService;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Import log controller
@@ -76,8 +79,10 @@ public class IdmImportLogController extends AbstractReadWriteDtoController<IdmIm
 						CoreGroupPermission.EXPORTIMPORT_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -99,8 +104,10 @@ public class IdmImportLogController extends AbstractReadWriteDtoController<IdmIm
 						CoreGroupPermission.EXPORTIMPORT_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -122,8 +129,10 @@ public class IdmImportLogController extends AbstractReadWriteDtoController<IdmIm
 						CoreGroupPermission.EXPORTIMPORT_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -135,7 +144,17 @@ public class IdmImportLogController extends AbstractReadWriteDtoController<IdmIm
 	@Operation(
 			summary = "Batch detail",
 			/* nickname = "getBatch", */ 
-			/* response = IdmImportLogDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmImportLogDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmImportLogController.TAG })
     @SecurityRequirements(
         value = {
@@ -147,7 +166,7 @@ public class IdmImportLogController extends AbstractReadWriteDtoController<IdmIm
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Batch's uuid identifier.", required = true)
+			 @Parameter(description = "Batch's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -170,7 +189,7 @@ public class IdmImportLogController extends AbstractReadWriteDtoController<IdmIm
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Batch's uuid identifier.", required = true)
+			 @Parameter(description = "Batch's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -196,7 +215,7 @@ public class IdmImportLogController extends AbstractReadWriteDtoController<IdmIm
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Batch's uuid identifier.", required = true)
+			 @Parameter(description = "Batch's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}

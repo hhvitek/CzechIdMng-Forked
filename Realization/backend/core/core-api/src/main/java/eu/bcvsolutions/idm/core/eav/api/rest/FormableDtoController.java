@@ -35,7 +35,7 @@ public interface FormableDtoController<DTO extends FormableDto, F extends BaseFi
 	 * @return
 	 */
 	ResponseEntity<?> getFormDefinitions(
-			@Parameter(name = "Backend entity identifier.", required = true)
+			@Parameter(description = "Backend entity identifier.", required = true)
 			@PathVariable @NotNull String backendId);
 	
 	/**

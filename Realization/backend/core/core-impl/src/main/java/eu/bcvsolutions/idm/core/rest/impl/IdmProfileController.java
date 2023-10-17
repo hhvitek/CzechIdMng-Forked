@@ -8,13 +8,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -43,11 +43,14 @@ import eu.bcvsolutions.idm.core.security.api.domain.TwoFactorAuthenticationType;
 import eu.bcvsolutions.idm.core.security.api.dto.TwoFactorRegistrationConfirmDto;
 import eu.bcvsolutions.idm.core.security.api.dto.TwoFactorRegistrationResponseDto;
 import eu.bcvsolutions.idm.core.security.api.service.TwoFactorAuthenticationManager;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Rest methods for IdmProfile resource
@@ -93,8 +96,10 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
 						CoreGroupPermission.PROFILE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -116,8 +121,10 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
 						CoreGroupPermission.PROFILE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -139,8 +146,10 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
 						CoreGroupPermission.PROFILE_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -173,7 +182,17 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
 	@Operation(
 			summary = "Profile detail",
 			/* nickname = "getProfile", */
-			/* response = IdmProfileDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmProfileDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmProfileController.TAG })
     @SecurityRequirements(
         value = {
@@ -185,7 +204,7 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Profile's uuid identifier or username.", required = true)
+			 @Parameter(description = "Profile's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -198,7 +217,17 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
 	@Operation(
 			summary = "Create / update profile",
 			/* nickname = "postProfile", */
-			/* response = IdmProfileDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmProfileDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmProfileController.TAG })
     @SecurityRequirements(
         value = {
@@ -222,7 +251,17 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
 	@Operation(
 			summary = "Update profile",
 			/* nickname = "putProfile", */
-			/* response = IdmProfileDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmProfileDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmProfileController.TAG })
     @SecurityRequirements(
         value = {
@@ -234,7 +273,7 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Profile's uuid identifier or username.", required = true)
+			 @Parameter(description = "Profile's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmProfileDto dto) {
 		return super.put(backendId, dto);
@@ -247,7 +286,17 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
 	@Operation(
 			summary = "Update profile",
 			/* nickname = "patchProfile", */
-			/* response = IdmProfileDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmProfileDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmProfileController.TAG })
     @SecurityRequirements(
         value = {
@@ -259,7 +308,7 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
         }
     )
 	public ResponseEntity<?> patch(
-			@Parameter(name = "Profile's uuid identifier or username.", required = true)
+			 @Parameter(description = "Profile's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -284,7 +333,7 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Profile's uuid identifier or username.", required = true)
+			 @Parameter(description = "Profile's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -310,7 +359,7 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Profile's uuid identifier or username.", required = true)
+			 @Parameter(description = "Profile's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -352,7 +401,17 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
 	@Operation(
 			summary = "Process bulk action for profile",
 			/* nickname = "bulkAction", */
-			/* response = IdmBulkActionDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmProfileController.TAG })
     @SecurityRequirements(
         value = {
@@ -379,7 +438,17 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
 	@Operation(
 			summary = "Prevalidate bulk action for profiles",
 			/* nickname = "prevalidateBulkAction", */
-			/* response = IdmBulkActionDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmProfileController.TAG })
     @SecurityRequirements(
         value = {
@@ -398,13 +467,23 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
 	@Operation(
 			summary = "Login - additional two factor authentication init",
 			description= "Additional two factor authentication with TOTP verification code.",
-			/* response = TwoFactorRegistrationResponseDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = TwoFactorRegistrationResponseDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmProfileController.TAG } )
 	@RequestMapping(path = "/{backendId}/two-factor/init", method = RequestMethod.PUT)
 	public ResponseEntity<?> twoFactorInit(
-			@Parameter(name = "Profile's uuid identifier or username.", required = true)
+			 @Parameter(description = "Profile's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId,
-			@Parameter(name = "Selected two factor method.", required = true)
+			 @Parameter(description = "Selected two factor method.", required = true)
 			@RequestParam @NotNull TwoFactorAuthenticationType twoFactorAuthenticationType) {
 		IdmProfileDto dto = getDto(backendId);
 		if (dto == null) {
@@ -421,13 +500,23 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
 	@Operation(
 			summary = "Login - additional two factor authentication confirm",
 			description= "Additional two factor authentication with TOTP verification code.",
-			/* response = IdmProfileDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmProfileDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmProfileController.TAG } )
 	@RequestMapping(path = "/{backendId}/two-factor/confirm", method = RequestMethod.PUT)
 	public ResponseEntity<?> twoFactorConfirm(
-			@Parameter(name = "Profile's uuid identifier or username.", required = true)
+			 @Parameter(description = "Profile's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId,
-			@Parameter(name = "Verification secret and code.", required = true)
+			 @Parameter(description = "Verification secret and code.", required = true)
 			@Valid @RequestBody(required = true) TwoFactorRegistrationConfirmDto registrationConfirm) {
 		IdmProfileDto dto = getDto(backendId);
 		if (dto == null) {

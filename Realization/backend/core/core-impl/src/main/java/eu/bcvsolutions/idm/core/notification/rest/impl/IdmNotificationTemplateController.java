@@ -7,12 +7,12 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -36,17 +36,19 @@ import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.ecm.api.dto.IdmAttachmentDto;
 import eu.bcvsolutions.idm.core.ecm.api.entity.AttachableEntity;
 import eu.bcvsolutions.idm.core.ecm.api.service.AttachmentManager;
-import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.notification.api.dto.IdmNotificationTemplateDto;
 import eu.bcvsolutions.idm.core.notification.api.dto.filter.IdmNotificationTemplateFilter;
 import eu.bcvsolutions.idm.core.notification.api.service.IdmNotificationTemplateService;
 import eu.bcvsolutions.idm.core.notification.domain.NotificationGroupPermission;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Read and write email templates (Apache velocity engine)
@@ -95,8 +97,10 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
 						NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -118,8 +122,10 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
 						NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return this.find(parameters, pageable);
 	}
@@ -141,8 +147,10 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
 						NotificationGroupPermission.NOTIFICATIONTEMPLATE_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -175,7 +183,17 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
 	@Operation(
 			summary = "Notification template detail", 
 			/* nickname = "getNotificationTemplate", */ 
-			/* response = IdmNotificationTemplateDto	.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmNotificationTemplateDto	.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmNotificationTemplateController.TAG })
     @SecurityRequirements(
         value = {
@@ -187,7 +205,7 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Template's uuid identifier or code.", required = true)
+			 @Parameter(description = "Template's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -200,7 +218,17 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
 	@Operation(
 			summary = "Create / update notification template", 
 			/* nickname = "postNotificationTemplate", */ 
-			/* response = IdmNotificationTemplateDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmNotificationTemplateDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmNotificationTemplateController.TAG })
     @SecurityRequirements(
         value = {
@@ -224,7 +252,17 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
 	@Operation(
 			summary = "Update notification template", 
 			/* nickname = "putNotificationTemplate", */ 
-			/* response = IdmNotificationTemplateDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmNotificationTemplateDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmNotificationTemplateController.TAG })
     @SecurityRequirements(
         value = {
@@ -236,7 +274,7 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Template's uuid identifier or code.", required = true)
+			 @Parameter(description = "Template's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId,
 			@Valid @RequestBody @NotNull IdmNotificationTemplateDto dto) {
 		return super.put(backendId, dto);
@@ -260,7 +298,7 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Template's uuid identifier or code.", required = true)
+			 @Parameter(description = "Template's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -314,7 +352,17 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
 	@Operation(
 			summary = "Redeploy notification template", 
 			/* nickname = "redeployNotificationTemplate", */ 
-			/* response = IdmNotificationTemplateDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmNotificationTemplateDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmNotificationTemplateController.TAG },
 			description = "Redeploy template. Redeployed will be only templates, that has pattern in resource."
 					+ " Before save newly loaded DO will be backup the old template into backup directory.")
@@ -327,7 +375,7 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
             }
     )
 	public ResponseEntity<?> redeploy(
-			@Parameter(name = "Template's uuid identifier or code.", required = true)
+			 @Parameter(description = "Template's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		IdmNotificationTemplateDto template = notificationTemplateService.get(backendId);
 		if (template == null) {
@@ -344,7 +392,17 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
 	@Operation(
 			summary = "Backup notification template", 
 			/* nickname = "backupNotificationTemplate", */ 
-			/* response = IdmNotificationTemplateDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmNotificationTemplateDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmNotificationTemplateController.TAG },
 			description = "Backup template to directory given in application properties.")
     @SecurityRequirements(
@@ -356,7 +414,7 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
             }
     )
 	public ResponseEntity<?> backup(
-			@Parameter(name = "Template's uuid identifier or code.", required = true)
+			 @Parameter(description = "Template's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		IdmNotificationTemplateDto template = notificationTemplateService.get(backendId);
 		if (template == null) {
@@ -403,7 +461,17 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
 	@Operation(
 			summary = "Process bulk action for notification templates", 
 			/* nickname = "bulkAction", */ 
-			/* response = IdmBulkActionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmNotificationTemplateController.TAG })
     @SecurityRequirements(
         value = {
@@ -430,7 +498,17 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
 	@Operation(
 			summary = "Prevalidate bulk action for notification templates", 
 			/* nickname = "prevalidateBulkAction", */ 
-			/* response = IdmBulkActionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmNotificationTemplateController.TAG })
     @SecurityRequirements(
         value = {

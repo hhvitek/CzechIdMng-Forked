@@ -1,29 +1,16 @@
 package eu.bcvsolutions.idm.acc.rest.impl;
 
-import eu.bcvsolutions.idm.acc.domain.AccGroupPermission;
-import eu.bcvsolutions.idm.acc.dto.SysSystemGroupSystemDto;
-import eu.bcvsolutions.idm.acc.dto.filter.SysSystemGroupSystemFilter;
-import eu.bcvsolutions.idm.acc.service.api.SysSystemGroupSystemService;
-import eu.bcvsolutions.idm.core.api.bulk.action.dto.IdmBulkActionDto;
-import eu.bcvsolutions.idm.core.api.config.swagger.SwaggerConfig;
-import eu.bcvsolutions.idm.core.api.dto.ResultModels;
-import eu.bcvsolutions.idm.core.api.rest.AbstractEventableDtoController;
-import eu.bcvsolutions.idm.core.api.rest.BaseController;
-import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import java.util.List;
 import java.util.Set;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -34,6 +21,25 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import eu.bcvsolutions.idm.acc.domain.AccGroupPermission;
+import eu.bcvsolutions.idm.acc.dto.SysSystemGroupSystemDto;
+import eu.bcvsolutions.idm.acc.dto.filter.SysSystemGroupSystemFilter;
+import eu.bcvsolutions.idm.acc.service.api.SysSystemGroupSystemService;
+import eu.bcvsolutions.idm.core.api.bulk.action.dto.IdmBulkActionDto;
+import eu.bcvsolutions.idm.core.api.config.swagger.SwaggerConfig;
+import eu.bcvsolutions.idm.core.api.dto.ResultModels;
+import eu.bcvsolutions.idm.core.api.rest.AbstractEventableDtoController;
+import eu.bcvsolutions.idm.core.api.rest.BaseController;
+import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * System groups system - relation between a system and a group of systems.
@@ -78,8 +84,10 @@ public class SysSystemGroupSystemController extends AbstractEventableDtoControll
 							AccGroupPermission.SYSTEM_GROUP_SYSTEM_READ})
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -101,8 +109,10 @@ public class SysSystemGroupSystemController extends AbstractEventableDtoControll
 							AccGroupPermission.SYSTEM_GROUP_SYSTEM_READ})
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -124,8 +134,10 @@ public class SysSystemGroupSystemController extends AbstractEventableDtoControll
 							AccGroupPermission.SYSTEM_GROUP_SYSTEM_AUTOCOMPLETE})
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -158,7 +170,17 @@ public class SysSystemGroupSystemController extends AbstractEventableDtoControll
 	@Operation(
 			summary = "System group-system detail",
 			/* nickname = "getSystemGroupSystem", */
-			/* response = SysSystemGroupSystemDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysSystemGroupSystemDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = {SysSystemGroupSystemController.TAG})
     @SecurityRequirements(
         value = {
@@ -170,7 +192,7 @@ public class SysSystemGroupSystemController extends AbstractEventableDtoControll
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "System group-system's uuid identifier or username.", required = true)
+			 @Parameter(description = "System group-system's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -183,7 +205,17 @@ public class SysSystemGroupSystemController extends AbstractEventableDtoControll
 	@Operation(
 			summary = "Create / update configured SystemGroupSystem relation",
 			/* nickname = "postSystemGroupSystem", */
-			/* response = SysSystemGroupSystemDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysSystemGroupSystemDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = {SysSystemGroupSystemController.TAG})
     @SecurityRequirements(
         value = {
@@ -207,7 +239,17 @@ public class SysSystemGroupSystemController extends AbstractEventableDtoControll
 	@Operation(
 			summary = "Update configured SystemGroupSystem relation",
 			/* nickname = "putSystemGroupSystem", */
-			/* response = SysSystemGroupSystemDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysSystemGroupSystemDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = {SysSystemGroupSystemController.TAG})
     @SecurityRequirements(
         value = {
@@ -219,7 +261,7 @@ public class SysSystemGroupSystemController extends AbstractEventableDtoControll
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "System group-system's uuid identifier or username.", required = true)
+			 @Parameter(description = "System group-system's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId,
 			@Valid @RequestBody SysSystemGroupSystemDto dto) {
 		return super.put(backendId, dto);
@@ -243,7 +285,7 @@ public class SysSystemGroupSystemController extends AbstractEventableDtoControll
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "System group-system's uuid identifier or username.", required = true)
+			 @Parameter(description = "System group-system's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -269,7 +311,7 @@ public class SysSystemGroupSystemController extends AbstractEventableDtoControll
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "System group-system's uuid identifier.", required = true)
+			 @Parameter(description = "System group-system's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -302,7 +344,17 @@ public class SysSystemGroupSystemController extends AbstractEventableDtoControll
 	@Operation(
 			summary = "Process bulk action",
 			/* nickname = "bulkAction", */
-			/* response = IdmBulkActionDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = {SysSystemGroupSystemController.TAG})
     @SecurityRequirements(
         value = {
@@ -324,7 +376,17 @@ public class SysSystemGroupSystemController extends AbstractEventableDtoControll
 	@Operation(
 			summary = "Prevalidate bulk action",
 			/* nickname = "prevalidateBulkAction", */
-			/* response = IdmBulkActionDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = {SysSystemGroupSystemController.TAG})
     @SecurityRequirements(
         value = {

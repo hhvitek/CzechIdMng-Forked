@@ -1,5 +1,7 @@
 package eu.bcvsolutions.idm.core.rest.impl;
 
+import static eu.bcvsolutions.idm.core.security.api.domain.IdmGroupPermission.APP_ADMIN;
+
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
@@ -10,7 +12,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,12 +24,11 @@ import eu.bcvsolutions.idm.core.api.config.swagger.SwaggerConfig;
 import eu.bcvsolutions.idm.core.api.dto.IdmCacheDto;
 import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.service.IdmCacheManager;
-import static eu.bcvsolutions.idm.core.security.api.domain.IdmGroupPermission.APP_ADMIN;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Cache controller - provides clear cache and search all functionality
@@ -111,7 +111,7 @@ public class CacheController {
         }
     )
 	public void evictCache(
-			@Parameter(name = "Cache identifier.", required = true)
+			 @Parameter(description = "Cache identifier.", required = true)
 			@PathVariable @NotNull String cacheId) {
 		cacheManager.evictCache(cacheId);
 	}

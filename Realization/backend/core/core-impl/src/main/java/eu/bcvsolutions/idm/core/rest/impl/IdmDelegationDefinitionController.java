@@ -1,25 +1,29 @@
 package eu.bcvsolutions.idm.core.rest.impl;
 
-import eu.bcvsolutions.idm.core.api.bulk.action.dto.IdmBulkActionDto;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import eu.bcvsolutions.idm.core.api.bulk.action.dto.IdmBulkActionDto;
 import eu.bcvsolutions.idm.core.api.config.swagger.SwaggerConfig;
 import eu.bcvsolutions.idm.core.api.dto.DelegationTypeDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmDelegationDefinitionDto;
@@ -31,15 +35,14 @@ import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.api.service.DelegationManager;
 import eu.bcvsolutions.idm.core.api.service.IdmDelegationDefinitionService;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.validation.Valid;
-import org.springframework.web.bind.annotation.RequestBody;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Controller for a definition of delegation.
@@ -87,8 +90,10 @@ public class IdmDelegationDefinitionController extends AbstractReadWriteDtoContr
 						CoreGroupPermission.DELEGATIONDEFINITION_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -110,8 +115,10 @@ public class IdmDelegationDefinitionController extends AbstractReadWriteDtoContr
 						CoreGroupPermission.DELEGATIONDEFINITION_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -133,8 +140,10 @@ public class IdmDelegationDefinitionController extends AbstractReadWriteDtoContr
 						CoreGroupPermission.DELEGATIONDEFINITION_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -146,7 +155,17 @@ public class IdmDelegationDefinitionController extends AbstractReadWriteDtoContr
 	@Operation(
 			summary = "Definition detail",
 			/* nickname = "getDefinition", */ 
-			/* response = IdmDelegationDefinitionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmDelegationDefinitionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmDelegationDefinitionController.TAG })
     @SecurityRequirements(
         value = {
@@ -158,7 +177,7 @@ public class IdmDelegationDefinitionController extends AbstractReadWriteDtoContr
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Definition's uuid identifier.", required = true)
+			 @Parameter(description = "Definition's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -170,7 +189,17 @@ public class IdmDelegationDefinitionController extends AbstractReadWriteDtoContr
 	@Operation(
 			summary = "Create / update delegation definition",
 			/* nickname = "postDelegationDefinition", */ 
-			/* response = IdmDelegationDefinitionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmDelegationDefinitionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmDelegationDefinitionController.TAG })
     @SecurityRequirements(
         value = {
@@ -194,7 +223,17 @@ public class IdmDelegationDefinitionController extends AbstractReadWriteDtoContr
 	@Operation(
 			summary = "Update delegation definition",
 			/* nickname = "putDelegationDefinition", */ 
-			/* response = IdmDelegationDefinitionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmDelegationDefinitionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmDelegationDefinitionController.TAG })
     @SecurityRequirements(
         value = {
@@ -206,7 +245,7 @@ public class IdmDelegationDefinitionController extends AbstractReadWriteDtoContr
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Delegation definition's uuid identifier", required = true)
+			 @Parameter(description = "Delegation definition's uuid identifier", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmDelegationDefinitionDto dto) {
 		return super.put(backendId, dto);
@@ -230,7 +269,7 @@ public class IdmDelegationDefinitionController extends AbstractReadWriteDtoContr
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Definition's uuid identifier.", required = true)
+			 @Parameter(description = "Definition's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -312,7 +351,17 @@ public class IdmDelegationDefinitionController extends AbstractReadWriteDtoContr
 	@Operation(
 			summary = "Process bulk action for delegation definitions",
 			/* nickname = "bulkAction", */ 
-			/* response = IdmBulkActionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmDelegationDefinitionController.TAG })
     @SecurityRequirements(
         value = {
@@ -334,7 +383,17 @@ public class IdmDelegationDefinitionController extends AbstractReadWriteDtoContr
 	@Operation(
 			summary = "Prevalidate bulk action for delegation definitions",
 			/* nickname = "prevalidateBulkAction", */ 
-			/* response = IdmBulkActionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmDelegationDefinitionController.TAG })
     @SecurityRequirements(
         value = {
@@ -371,7 +430,7 @@ public class IdmDelegationDefinitionController extends AbstractReadWriteDtoContr
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Definition's uuid identifier.", required = true)
+			 @Parameter(description = "Definition's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}

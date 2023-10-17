@@ -7,11 +7,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -36,13 +36,14 @@ import eu.bcvsolutions.idm.core.api.service.IdmRoleCatalogueService;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.model.entity.IdmTreeNode;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
-import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Role catalogue controller.
@@ -86,8 +87,10 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
 						CoreGroupPermission.ROLECATALOGUE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -109,8 +112,10 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
 						CoreGroupPermission.ROLECATALOGUE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -132,8 +137,10 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
 						CoreGroupPermission.ROLECATALOGUE_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -166,7 +173,17 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
 	@Operation(
 			summary = "RoleCatalogue detail", 
 			/* nickname = "getRoleCatalogue", */ 
-			/* response = IdmRoleCatalogueDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRoleCatalogueDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmRoleCatalogueController.TAG })
     @SecurityRequirements(
         value = {
@@ -178,7 +195,7 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "RoleCatalogue's uuid identifier or username.", required = true)
+			 @Parameter(description = "RoleCatalogue's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -191,7 +208,17 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
 	@Operation(
 			summary = "Create / update role catalogue", 
 			/* nickname = "postRoleCatalogue", */ 
-			/* response = IdmRoleCatalogueDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRoleCatalogueDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmRoleCatalogueController.TAG })
     @SecurityRequirements(
         value = {
@@ -215,7 +242,17 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
 	@Operation(
 			summary = "Update role catalogue", 
 			/* nickname = "putRoleCatalogue", */ 
-			/* response = IdmRoleCatalogueDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRoleCatalogueDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmRoleCatalogueController.TAG })
     @SecurityRequirements(
         value = {
@@ -227,7 +264,7 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Role catalogue's uuid identifier.", required = true)
+			 @Parameter(description = "Role catalogue's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmRoleCatalogueDto dto) {
 		return super.put(backendId, dto);
@@ -240,7 +277,17 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
 	@Operation(
 			summary = "Update role catalogue", 
 			/* nickname = "patchRoleCatalogue	", */ 
-			/* response = IdmRoleCatalogueDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRoleCatalogueDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmRoleCatalogueController.TAG })
     @SecurityRequirements(
         value = {
@@ -252,7 +299,7 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
         }
     )
 	public ResponseEntity<?> patch(
-			@Parameter(name = "Role catalogue's uuid identifier.", required = true)
+			 @Parameter(description = "Role catalogue's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -277,7 +324,7 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Role catalogue's uuid identifier.", required = true)
+			 @Parameter(description = "Role catalogue's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -303,7 +350,7 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "RoleCatalogue's uuid identifier or username.", required = true)
+			 @Parameter(description = "RoleCatalogue's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -336,7 +383,17 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
 	@Operation(
 			summary = "Process bulk action for role catalogue", 
 			/* nickname = "bulkAction", */ 
-			/* response = IdmBulkActionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmRoleCatalogueController.TAG })
     @SecurityRequirements(
         value = {
@@ -358,7 +415,17 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
 	@Operation(
 			summary = "Prevalidate bulk action for role catalogue", 
 			/* nickname = "prevalidateBulkAction", */ 
-			/* response = IdmBulkActionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmRoleCatalogueController.TAG })
     @SecurityRequirements(
         value = {
@@ -380,25 +447,10 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
 			summary = "Search root catalogues", 
 			/* nickname = "searchRootRoleCatalogues", */ 
 			tags = { IdmRoleCatalogueController.TAG })
-    @Parameters({
-            @Parameter(name = "page", schema = @Schema( implementation=String.class, type = "query"), description = "Results page you want to retrieve (0..N)"),
-            @Parameter(name = "size", schema = @Schema( implementation=String.class, type = "query"), description = "Number of records per page."),
-            @Parameter(name = "sort", schema = @Schema( implementation=String.class, type = "query"),
-                    description = "Sorting criteria in the format: property(,asc|desc)." + "Default sort order is ascending. " + "Multiple sort criteria are supported."
-            ),
-    })
-	//@ApiImplicitParams({
-    //    @ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query",
-    //            value = "Results page you want to retrieve (0..N)"),
-    //    @ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query",
-    //            value = "Number of records per page."),
-    //    @ApiImplicitParam(name = "sort", allowMultiple = true, dataTypeClass = String.class, paramType = "query",
-    //            value = "Sorting criteria in the format: property(,asc|desc). " +
-    //                    "Default sort order is ascending. " +
-    //                    "Multiple sort criteria are supported.")
-	//})
+	@PageableAsQueryParam
 	public CollectionModel<?> findRoots(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		IdmRoleCatalogueFilter filter = toFilter(parameters);
 		filter.setRoots(Boolean.TRUE);
@@ -414,25 +466,10 @@ public class IdmRoleCatalogueController extends AbstractEventableDtoController<I
 			/* nickname = "searchChildrenRoleCatalogues", */ 
 			tags = { IdmRoleCatalogueController.TAG },
 			description = "Finds direct chilren by given parent node uuid identifier. Set 'parent' parameter.")
-    @Parameters({
-            @Parameter(name = "page", schema = @Schema( implementation=String.class, type = "query"), description = "Results page you want to retrieve (0..N)"),
-            @Parameter(name = "size", schema = @Schema( implementation=String.class, type = "query"), description = "Number of records per page."),
-            @Parameter(name = "sort", schema = @Schema( implementation=String.class, type = "query"),
-                    description = "Sorting criteria in the format: property(,asc|desc)." + "Default sort order is ascending. " + "Multiple sort criteria are supported."
-            ),
-    })
-	//@ApiImplicitParams({
-    //    @ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query",
-    //            value = "Results page you want to retrieve (0..N)"),
-    //    @ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query",
-    //            value = "Number of records per page."),
-    //    @ApiImplicitParam(name = "sort", allowMultiple = true, dataTypeClass = String.class, paramType = "query",
-    //            value = "Sorting criteria in the format: property(,asc|desc). " +
-    //                    "Default sort order is ascending. " +
-    //                    "Multiple sort criteria are supported.")
-	//})
+	@PageableAsQueryParam
 	public CollectionModel<?> findChildren(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		IdmRoleCatalogueFilter filter = toFilter(parameters);
 		filter.setRecursively(false);

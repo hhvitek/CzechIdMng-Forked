@@ -10,15 +10,15 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.envers.exception.RevisionDoesNotExistException;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -59,13 +59,14 @@ import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.model.entity.IdmTreeNode;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
 import eu.bcvsolutions.idm.core.security.api.utils.PermissionUtils;
-import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Tree nodes endpoint.
@@ -126,8 +127,10 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 						CoreGroupPermission.TREENODE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -148,8 +151,10 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 						CoreGroupPermission.TREENODE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -170,8 +175,10 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 						CoreGroupPermission.TREENODE_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -204,7 +211,17 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 	@Operation(
 			summary = "Tree node detail",
 			/* nickname = "getTreeNode", */ 
-			/* response = IdmTreeNodeDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmTreeNodeDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmTreeNodeController.TAG })
     @SecurityRequirements(
         value = {
@@ -216,7 +233,7 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Node's uuid identifier.", required = true)
+			 @Parameter(description = "Node's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -229,7 +246,17 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 	@Operation(
 			summary = "Create / update tree node",
 			/* nickname = "postTreeNode", */ 
-			/* response = IdmTreeNodeDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmTreeNodeDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmTreeNodeController.TAG })
     @SecurityRequirements(
         value = {
@@ -253,7 +280,17 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 	@Operation(
 			summary = "Update tree node",
 			/* nickname = "putTreeNode", */ 
-			/* response = IdmTreeNodeDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmTreeNodeDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmTreeNodeController.TAG })
     @SecurityRequirements(
         value = {
@@ -265,7 +302,7 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Node's uuid identifier.", required = true)
+			 @Parameter(description = "Node's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmTreeNodeDto dto) {
 		return super.put(backendId, dto);
@@ -278,7 +315,17 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 	@Operation(
 			summary = "Update tree node",
 			/* nickname = "patchTreeNode", */ 
-			/* response = IdmTreeNodeDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmTreeNodeDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmTreeNodeController.TAG })
     @SecurityRequirements(
         value = {
@@ -290,7 +337,7 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
         }
     )
 	public ResponseEntity<?> patch(
-			@Parameter(name = "Node's uuid identifier.", required = true)
+			 @Parameter(description = "Node's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -315,7 +362,7 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Node's uuid identifier.", required = true)
+			 @Parameter(description = "Node's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -338,7 +385,7 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Node's uuid identifier.", required = true)
+			 @Parameter(description = "Node's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -371,7 +418,17 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 	@Operation(
 			summary = "Process bulk action for tree nodes",
 			/* nickname = "bulkAction", */ 
-			/* response = IdmBulkActionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmTreeNodeController.TAG })
     @SecurityRequirements(
         value = {
@@ -393,7 +450,17 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 	@Operation(
 			summary = "Prevalidate bulk action for tree nodes",
 			/* nickname = "prevalidateBulkAction", */ 
-			/* response = IdmBulkActionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmTreeNodeController.TAG })
     @SecurityRequirements(
         value = {
@@ -425,9 +492,9 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
         }
     )
 	public ResponseEntity<?> findRevision(
-			@Parameter(name = "Node's uuid identifier.", required = true)
+			 @Parameter(description = "Node's uuid identifier.", required = true)
 			@PathVariable("backendId") String backendId, 
-			@Parameter(name = "Revision identifier.", required = true)
+			 @Parameter(description = "Revision identifier.", required = true)
 			@PathVariable("revId") Long revId) {
 		IdmTreeNodeDto treeNode = getDto(backendId);
 		if (treeNode == null) {
@@ -461,7 +528,7 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
         }
     )
 	public CollectionModel<?> findRevisions(
-			@Parameter(name = "Node's uuid identifier.", required = true)
+			 @Parameter(description = "Node's uuid identifier.", required = true)
 			@PathVariable("backendId") String backendId, 
 			Pageable pageable) {
 		IdmTreeNodeDto treeNode = getDto(backendId);
@@ -481,27 +548,12 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 			tags = { IdmTreeNodeController.TAG },
 			description = "Tree type parameter can be used. If no tree type ios given, then configured default tree type is used."
 					+ " If no default tree type is configured, then all roots are returnde")
-    @Parameters({
-            @Parameter(name = "page", schema = @Schema( implementation=String.class, type = "query"), description = "Results page you want to retrieve (0..N)"),
-            @Parameter(name = "size", schema = @Schema( implementation=String.class, type = "query"), description = "Number of records per page."),
-            @Parameter(name = "sort", schema = @Schema( implementation=String.class, type = "query"),
-                    description = "Sorting criteria in the format: property(,asc|desc)." + "Default sort order is ascending. " + "Multiple sort criteria are supported."
-            ),
-    })
-	//@ApiImplicitParams({
-    //    @ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query",
-    //            value = "Results page you want to retrieve (0..N)"),
-    //    @ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query",
-    //            value = "Number of records per page."),
-    //    @ApiImplicitParam(name = "sort", allowMultiple = true, dataTypeClass = String.class, paramType = "query",
-    //            value = "Sorting criteria in the format: property(,asc|desc). " +
-    //                    "Default sort order is ascending. " +
-    //                    "Multiple sort criteria are supported.")
-	//})
+	@PageableAsQueryParam
 	public CollectionModel<?> findRoots(
-			@Parameter(name = "Tree type uuid identifier.", required = false)
+			 @Parameter(description = "Tree type uuid identifier.", required = false)
 			@RequestParam(value = "treeTypeId", required = false) String treeTypeId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		UUID treeTypeIdentifier = null;
 		if (StringUtils.isNotEmpty(treeTypeId)) {
@@ -530,25 +582,10 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 			/* nickname = "searchChildrenTreeNodes", */ 
 			tags = { IdmTreeNodeController.TAG },
 			description = "Finds direct chilren by given parent node uuid identifier. Set 'parent' parameter.")
-    @Parameters({
-            @Parameter(name = "page", schema = @Schema( implementation=String.class, type = "query"), description = "Results page you want to retrieve (0..N)"),
-            @Parameter(name = "size", schema = @Schema( implementation=String.class, type = "query"), description = "Number of records per page."),
-            @Parameter(name = "sort", schema = @Schema( implementation=String.class, type = "query"),
-                    description = "Sorting criteria in the format: property(,asc|desc)." + "Default sort order is ascending. " + "Multiple sort criteria are supported."
-            ),
-    })
-    //@ApiImplicitParams({
-    //    @ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query",
-    //            value = "Results page you want to retrieve (0..N)"),
-    //    @ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query",
-    //            value = "Number of records per page."),
-    //    @ApiImplicitParam(name = "sort", allowMultiple = true, dataTypeClass = String.class, paramType = "query",
-    //            value = "Sorting criteria in the format: property(,asc|desc). " +
-    //                    "Default sort order is ascending. " +
-    //                    "Multiple sort criteria are supported.")
-	//})
+	@PageableAsQueryParam
 	public CollectionModel<?> findChildren(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		IdmTreeNodeFilter filter = toFilter(parameters);
 		filter.setRecursively(false);
@@ -579,7 +616,7 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
         }
     )
 	public ResponseEntity<?> getFormDefinitions(
-			@Parameter(name = "Node's uuid identifier.", required = true)
+			 @Parameter(description = "Node's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return formDefinitionController.getDefinitions(IdmTreeNode.class);
 	}
@@ -597,9 +634,9 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 			/* nickname = "getTreeNodeFormValues", */ 
 			tags = { IdmTreeNodeController.TAG })
 	public EntityModel<?> getFormValues(
-			@Parameter(name = "Node's uuid identifier.", required = true)
+			 @Parameter(description = "Node's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
-			@Parameter(name = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
+			 @Parameter(description = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
 			@RequestParam(name = "definitionCode", required = false) String definitionCode) {
 		IdmTreeNodeDto dto = getDto(backendId);
 		if (dto == null) {
@@ -626,9 +663,9 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 			/* nickname = "postTreeNodeFormValues", */ 
 			tags = { IdmTreeNodeController.TAG })
 	public EntityModel<?> saveFormValues(
-			@Parameter(name = "Node's uuid identifier.", required = true)
+			 @Parameter(description = "Node's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
-			@Parameter(name = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
+			 @Parameter(description = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
 			@RequestParam(name = "definitionCode", required = false) String definitionCode,
 			@RequestBody @Valid List<IdmFormValueDto> formValues) {		
 		IdmTreeNodeDto dto = getDto(backendId);
@@ -666,7 +703,7 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
         }
     )
 	public EntityModel<?> saveFormValue(
-			@Parameter(name = "Node's uuid identifier.", required = true)
+			 @Parameter(description = "Node's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @Valid IdmFormValueDto formValue) {		
 		IdmTreeNodeDto dto = getDto(backendId);
@@ -704,9 +741,9 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
         }
     )
 	public ResponseEntity<InputStreamResource> downloadFormValue(
-			@Parameter(name = "Node's uuid identifier.", required = true)
+			 @Parameter(description = "Node's uuid identifier.", required = true)
 			@PathVariable String backendId,
-			@Parameter(name = "Form value identifier.", required = true)
+			 @Parameter(description = "Form value identifier.", required = true)
 			@PathVariable String formValueId) {
 		IdmTreeNodeDto dto = getDto(backendId);
 		if (dto == null) {
@@ -745,9 +782,9 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
         }
     )
 	public ResponseEntity<InputStreamResource> previewFormValue(
-			@Parameter(name = "TreeNode's uuid identifier.", required = true)
+			 @Parameter(description = "TreeNode's uuid identifier.", required = true)
 			@PathVariable String backendId,
-			@Parameter(name = "Form value identifier.", required = true)
+			 @Parameter(description = "Form value identifier.", required = true)
 			@PathVariable String formValueId) {
 		IdmTreeNodeDto dto = getDto(backendId);
 		if (dto == null) {
@@ -772,7 +809,17 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 	@Operation(
 			summary = "Get default tree node detail",
 			/* nickname = "getDefaultTreeNode", */ 
-			/* response = IdmTreeNodeDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmTreeNodeDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmTreeNodeController.TAG }
 			)
     @SecurityRequirements(

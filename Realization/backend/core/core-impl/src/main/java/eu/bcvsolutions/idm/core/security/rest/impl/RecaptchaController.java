@@ -15,9 +15,9 @@ import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.security.api.dto.RecaptchaRequest;
 import eu.bcvsolutions.idm.core.security.api.dto.RecaptchaResponse;
 import eu.bcvsolutions.idm.core.security.api.service.RecaptchaService;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Controller for checking ReCaptcha.
@@ -45,7 +45,7 @@ public class RecaptchaController implements BaseController {
 			
 			/*response = RecaptchaResponse.class*/)
 	public ResponseEntity<RecaptchaResponse> confirmRecaptcha(
-			@Parameter(name = "Request to check.", required = true)
+			 @Parameter(description = "Request to check.", required = true)
 			@RequestBody @Valid RecaptchaRequest request) {
 		RecaptchaResponse response = recaptchaService.checkRecaptcha(request);
 		//

@@ -7,7 +7,6 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,11 +32,14 @@ import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.api.service.IdmPasswordPolicyService;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.model.entity.IdmPasswordPolicy;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Default controller for password policy.
@@ -96,7 +98,17 @@ public class IdmPasswordPolicyController extends DefaultReadWriteDtoController<I
 	@Operation(
 			summary = "Update password policy",
 			/* nickname = "putPasswordPolicy", */ 
-			/* response = IdmPasswordPolicy.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmPasswordPolicy.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmPasswordPolicyController.TAG })
     @SecurityRequirements(
         value = {
@@ -108,7 +120,7 @@ public class IdmPasswordPolicyController extends DefaultReadWriteDtoController<I
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Policy's uuid identifier.", required = true)
+			 @Parameter(description = "Policy's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @NotNull IdmPasswordPolicyDto dto) {
 		return super.put(backendId, dto);
@@ -121,7 +133,17 @@ public class IdmPasswordPolicyController extends DefaultReadWriteDtoController<I
 	@Operation(
 			summary = "Update password policy",
 			/* nickname = "patchIdentity", */ 
-			/* response = IdmPasswordPolicy.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmPasswordPolicy.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmPasswordPolicyController.TAG })
     @SecurityRequirements(
         value = {
@@ -133,7 +155,7 @@ public class IdmPasswordPolicyController extends DefaultReadWriteDtoController<I
         }
     )
 	public ResponseEntity<?> patch(
-			@Parameter(name = "Policy's uuid identifier.", required = true)
+			 @Parameter(description = "Policy's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -158,7 +180,7 @@ public class IdmPasswordPolicyController extends DefaultReadWriteDtoController<I
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Policy's uuid identifier.", required = true)
+			 @Parameter(description = "Policy's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -178,7 +200,7 @@ public class IdmPasswordPolicyController extends DefaultReadWriteDtoController<I
 			tags = { IdmPasswordPolicyController.TAG },
 			description = "Returns generated password by password policy.")
 	public String generate(
-			@Parameter(name = "Policy's uuid identifier.", required = true)
+			 @Parameter(description = "Policy's uuid identifier.", required = true)
 			@PathVariable String backendId) {
 		IdmPasswordPolicyDto entity = getPasswordPolicy(backendId);
 		//
@@ -195,11 +217,21 @@ public class IdmPasswordPolicyController extends DefaultReadWriteDtoController<I
 	@Operation(
 			summary = "Validate password",
 			/* nickname = "validatePassword", */ 
-			/* response = IdmPasswordValidationDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmPasswordValidationDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmPasswordPolicyController.TAG },
 			description = "Validate password by password policy.")
 	public EntityModel<IdmPasswordValidationDto> validate(
-			@Parameter(name = "Policy's uuid identifier.", required = true)
+			 @Parameter(description = "Policy's uuid identifier.", required = true)
 			@PathVariable String backendId,
 			@Valid @RequestBody(required = true) IdmPasswordValidationDto password) {
 		IdmPasswordPolicyDto passwordPolicy = getPasswordPolicy(backendId);
@@ -220,7 +252,17 @@ public class IdmPasswordPolicyController extends DefaultReadWriteDtoController<I
 	@Operation(
 			summary = "Validate password (by default policy)",
 			/* nickname = "validatePasswordByDefault", */ 
-			/* response = IdmPasswordValidationDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmPasswordValidationDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmPasswordPolicyController.TAG },
 			description = "Validate password by default password policy.")
 	public EntityModel<IdmPasswordValidationDto> validateByDefault(@Valid @RequestBody(required = true) IdmPasswordValidationDto password) {
@@ -243,7 +285,17 @@ public class IdmPasswordPolicyController extends DefaultReadWriteDtoController<I
 	@Operation(
 			summary = "Generate password (by default policy)",
 			/* nickname = "genaratePasswordByDefault", */ 
-			/* response = IdmPasswordValidationDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmPasswordValidationDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmPasswordPolicyController.TAG },
 			description = "Returns generated password by default password policy.")
 	public EntityModel<String> generateByDefaultPolicy() {

@@ -6,11 +6,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,11 +31,14 @@ import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.api.service.IdmRoleGuaranteeService;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Role guarantee controller
@@ -79,8 +82,10 @@ public class IdmRoleGuaranteeController extends AbstractReadWriteDtoController<I
 						CoreGroupPermission.ROLEGUARANTEE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -101,8 +106,10 @@ public class IdmRoleGuaranteeController extends AbstractReadWriteDtoController<I
 						CoreGroupPermission.ROLEGUARANTEE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -123,8 +130,10 @@ public class IdmRoleGuaranteeController extends AbstractReadWriteDtoController<I
 						CoreGroupPermission.ROLEGUARANTEE_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -157,7 +166,17 @@ public class IdmRoleGuaranteeController extends AbstractReadWriteDtoController<I
 	@Operation(
 			summary = "Role guarantee detail", 
 			/* nickname = "getRoleGuarantee", */ 
-			/* response = IdmRoleGuaranteeDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRoleGuaranteeDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmRoleGuaranteeController.TAG })
     @SecurityRequirements(
         value = {
@@ -169,7 +188,7 @@ public class IdmRoleGuaranteeController extends AbstractReadWriteDtoController<I
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Role guarantee's uuid identifier.", required = true)
+			 @Parameter(description = "Role guarantee's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -182,7 +201,17 @@ public class IdmRoleGuaranteeController extends AbstractReadWriteDtoController<I
 	@Operation(
 			summary = "Create / update role guarantee", 
 			/* nickname = "postRoleGuarantee", */ 
-			/* response = IdmRoleGuaranteeDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRoleGuaranteeDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmRoleGuaranteeController.TAG })
     @SecurityRequirements(
         value = {
@@ -206,7 +235,17 @@ public class IdmRoleGuaranteeController extends AbstractReadWriteDtoController<I
 	@Operation(
 			summary = "Update role guarantee", 
 			/* nickname = "putRoleGuarantee", */ 
-			/* response = IdmRoleGuaranteeDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRoleGuaranteeDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmRoleGuaranteeController.TAG })
     @SecurityRequirements(
         value = {
@@ -218,7 +257,7 @@ public class IdmRoleGuaranteeController extends AbstractReadWriteDtoController<I
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Role guarantee's uuid identifier.", required = true)
+			 @Parameter(description = "Role guarantee's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmRoleGuaranteeDto dto) {
 		return super.put(backendId, dto);
@@ -231,7 +270,17 @@ public class IdmRoleGuaranteeController extends AbstractReadWriteDtoController<I
 	@Operation(
 			summary = "Update role guarantee", 
 			/* nickname = "patchRoleGuarantee", */ 
-			/* response = IdmRoleGuaranteeDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRoleGuaranteeDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmRoleGuaranteeController.TAG })
     @SecurityRequirements(
         value = {
@@ -243,7 +292,7 @@ public class IdmRoleGuaranteeController extends AbstractReadWriteDtoController<I
         }
     )
 	public ResponseEntity<?> patch(
-			@Parameter(name = "Role guarantee's uuid identifier.", required = true)
+			 @Parameter(description = "Role guarantee's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -268,7 +317,7 @@ public class IdmRoleGuaranteeController extends AbstractReadWriteDtoController<I
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Role guarantee's uuid identifier.", required = true)
+			 @Parameter(description = "Role guarantee's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -291,7 +340,7 @@ public class IdmRoleGuaranteeController extends AbstractReadWriteDtoController<I
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Role guarantee's uuid identifier.", required = true)
+			 @Parameter(description = "Role guarantee's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}

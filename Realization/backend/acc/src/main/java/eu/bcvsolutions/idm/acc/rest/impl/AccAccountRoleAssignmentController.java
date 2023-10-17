@@ -1,7 +1,29 @@
 package eu.bcvsolutions.idm.acc.rest.impl;
 
+import java.util.Set;
+
+import javax.validation.constraints.NotNull;
+
+import org.springdoc.core.converters.models.PageableAsQueryParam;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+
 import eu.bcvsolutions.idm.acc.AccModuleDescriptor;
 import eu.bcvsolutions.idm.acc.domain.AccGroupPermission;
 import eu.bcvsolutions.idm.acc.dto.AccAccountRoleAssignmentDto;
@@ -23,30 +45,14 @@ import eu.bcvsolutions.idm.core.eav.api.service.FormService;
 import eu.bcvsolutions.idm.core.eav.rest.impl.IdmFormDefinitionController;
 import eu.bcvsolutions.idm.core.model.entity.AbstractRoleAssignment_;
 import eu.bcvsolutions.idm.core.security.api.domain.RoleBasePermission;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.constraints.NotNull;
-import java.util.Set;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Account role assignment controller
@@ -95,8 +101,10 @@ public class AccAccountRoleAssignmentController extends AbstractReadWriteDtoCont
 						AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -117,8 +125,10 @@ public class AccAccountRoleAssignmentController extends AbstractReadWriteDtoCont
 						AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -132,15 +142,16 @@ public class AccAccountRoleAssignmentController extends AbstractReadWriteDtoCont
 			tags = { AccAccountRoleAssignmentController.TAG })
     @SecurityRequirements(
         value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.ACCOUNTROLEASSIGNMENT_AUTOCOMPLETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.ACCOUNTROLEASSIGNMENT_AUTOCOMPLETE })
+            @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+                    AccGroupPermission.ACCOUNTROLEASSIGNMENT_AUTOCOMPLETE }),
+            @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+                    AccGroupPermission.ACCOUNTROLEASSIGNMENT_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -161,8 +172,10 @@ public class AccAccountRoleAssignmentController extends AbstractReadWriteDtoCont
 						AccGroupPermission.ACCOUNTROLEASSIGNMENT_CANBEREQUESTED })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findCanBeRequested(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return toCollectionModel(find(toFilter(parameters), pageable, RoleBasePermission.CANBEREQUESTED), getDtoClass());
 	}
@@ -190,24 +203,46 @@ public class AccAccountRoleAssignmentController extends AbstractReadWriteDtoCont
 
 	@Override
 	@ResponseBody
+    @ApiResponse()
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ + "')")
 	@Operation(
 			summary = "Account role assignment detail",
 			/* nickname = "getAccountRoleAssignment", */
-			/* response = AccAccountRoleAssignmentDto.class, */
-			tags = { AccAccountRoleAssignmentController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ })
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = AccAccountRoleAssignmentDto.class
+                                    )
+                            )
+                    }
+            ),
+            /*
+            responses = @ApiResponse(
+                responseCode = "200",
+                content = {
+                    @Content(
+                        mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                        array = @ArraySchema(
+                            schema = @Schema(
+                                implementation = AccAccountRoleAssignmentDto.class
+                            )
+                        )
+                    )
+                }
+            ),*/
+
+            tags = { AccAccountRoleAssignmentController.TAG })
+    @SecurityRequirements({
+            @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ }),
+            @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ })
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Account role assignment's uuid identifier.", required = true)
+			@Parameter(description = "Account role assignment's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -230,7 +265,7 @@ public class AccAccountRoleAssignmentController extends AbstractReadWriteDtoCont
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Account role assignment's uuid identifier.", required = true)
+			 @Parameter(description = "Account role assignment's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -259,7 +294,7 @@ public class AccAccountRoleAssignmentController extends AbstractReadWriteDtoCont
         }
     )
 	public ResponseEntity<?> getFormDefinitions(
-			@Parameter(name = "Role's uuid identifier or code.", required = true)
+			 @Parameter(description = "Role's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		
 		AccAccountRoleAssignmentDto dto = getDto(backendId);
@@ -301,9 +336,9 @@ public class AccAccountRoleAssignmentController extends AbstractReadWriteDtoCont
         }
     )
 	public EntityModel<?> getFormValues(
-			@Parameter(name = "Account role assignment's uuid identifier or code.", required = true)
+			 @Parameter(description = "Account role assignment's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId, 
-			@Parameter(name = "Code of form definition (default will be used if no code is given)."
+			 @Parameter(description = "Code of form definition (default will be used if no code is given)."
 					+ " In this case is code of definition ignored, we will load only definition by given role and sub-definition.",
 					required = false, example = FormService.DEFAULT_DEFINITION_CODE)
 			@RequestParam(name = "definitionCode", required = false) String definitionCode) {

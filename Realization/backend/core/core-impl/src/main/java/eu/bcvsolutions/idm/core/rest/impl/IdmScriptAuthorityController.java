@@ -4,13 +4,13 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.Assert;
@@ -32,13 +32,14 @@ import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.api.service.IdmScriptAuthorityService;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
-import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Default controller for script authority (allowed services and class).
@@ -87,8 +88,10 @@ public class IdmScriptAuthorityController extends AbstractReadWriteDtoController
 						CoreGroupPermission.SCRIPT_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -110,8 +113,10 @@ public class IdmScriptAuthorityController extends AbstractReadWriteDtoController
 						CoreGroupPermission.SCRIPT_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -132,8 +137,10 @@ public class IdmScriptAuthorityController extends AbstractReadWriteDtoController
 						CoreGroupPermission.SCRIPT_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -155,25 +162,10 @@ public class IdmScriptAuthorityController extends AbstractReadWriteDtoController
 						CoreGroupPermission.SCRIPT_READ })
         }
     )
-    @Parameters({
-            @Parameter(name = "page", schema = @Schema( implementation=String.class, type = "query"), description = "Results page you want to retrieve (0..N)"),
-            @Parameter(name = "size", schema = @Schema( implementation=String.class, type = "query"), description = "Number of records per page."),
-            @Parameter(name = "sort", schema = @Schema( implementation=String.class, type = "query"),
-                    description = "Sorting criteria in the format: property(,asc|desc)." + "Default sort order is ascending. " + "Multiple sort criteria are supported."
-            ),
-    })
-	//@ApiImplicitParams({
-    //    @ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query",
-    //            value = "Results page you want to retrieve (0..N)"),
-    //    @ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query",
-    //            value = "Number of records per page."),
-    //    @ApiImplicitParam(name = "sort", allowMultiple = true, dataTypeClass = String.class, paramType = "query",
-    //            value = "Sorting criteria in the format: property(,asc|desc). " +
-    //                    "Default sort order is ascending. " +
-    //                    "Multiple sort criteria are supported.")
-	//})
+	@PageableAsQueryParam
 	public CollectionModel<?> findService(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		// TODO: serviceName in @RequestParam + drop pageable
 		String serviceName = parameters.get("serviceName") == null ? null : String.valueOf(parameters.get("serviceName"));
@@ -196,7 +188,17 @@ public class IdmScriptAuthorityController extends AbstractReadWriteDtoController
 	@Operation(
 			summary = "Script authority detail", 
 			/* nickname = "getScriptAuthority", */
-			/* response = IdmScriptAuthorityDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmScriptAuthorityDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmScriptAuthorityController.TAG })
     @SecurityRequirements(
         value = {
@@ -208,7 +210,7 @@ public class IdmScriptAuthorityController extends AbstractReadWriteDtoController
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Authority's uuid identifier.", required = true)
+			 @Parameter(description = "Authority's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -221,7 +223,17 @@ public class IdmScriptAuthorityController extends AbstractReadWriteDtoController
 	@Operation(
 			summary = "Create / update script authority", 
 			/* nickname = "postScriptAuthority", */
-			/* response = IdmScriptAuthorityDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmScriptAuthorityDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmScriptAuthorityController.TAG })
     @SecurityRequirements(
         value = {
@@ -245,7 +257,17 @@ public class IdmScriptAuthorityController extends AbstractReadWriteDtoController
 	@Operation(
 			summary = "Update script authority", 
 			/* nickname = "putScriptAuthority", */
-			/* response = IdmScriptAuthorityDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmScriptAuthorityDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmScriptAuthorityController.TAG })
     @SecurityRequirements(
         value = {
@@ -257,7 +279,7 @@ public class IdmScriptAuthorityController extends AbstractReadWriteDtoController
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Authority's uuid identifier.", required = true)
+			 @Parameter(description = "Authority's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@RequestBody @NotNull IdmScriptAuthorityDto dto) {
 		return super.put(backendId, dto);
@@ -281,7 +303,7 @@ public class IdmScriptAuthorityController extends AbstractReadWriteDtoController
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Authority's uuid identifier.", required = true)
+			 @Parameter(description = "Authority's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}

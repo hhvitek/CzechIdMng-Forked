@@ -12,13 +12,13 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -63,11 +63,14 @@ import eu.bcvsolutions.idm.core.rest.DeferredResultWrapper;
 import eu.bcvsolutions.idm.core.rest.LongPollingSubscriber;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Configgured monitoringResult evaluators.
@@ -116,8 +119,10 @@ public class IdmMonitoringResultController extends AbstractEventableDtoControlle
 						MonitoringGroupPermission.MONITORINGRESULT_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -139,8 +144,10 @@ public class IdmMonitoringResultController extends AbstractEventableDtoControlle
 						MonitoringGroupPermission.MONITORINGRESULT_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -162,8 +169,10 @@ public class IdmMonitoringResultController extends AbstractEventableDtoControlle
 						MonitoringGroupPermission.MONITORINGRESULT_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -184,8 +193,10 @@ public class IdmMonitoringResultController extends AbstractEventableDtoControlle
 						MonitoringGroupPermission.MONITORINGRESULT_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findLastResults(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		Page<IdmMonitoringResultDto> lastResults = monitoringManager.getLastResults(toFilter(parameters), pageable, IdmBasePermission.READ);
 		//
@@ -220,7 +231,17 @@ public class IdmMonitoringResultController extends AbstractEventableDtoControlle
 	@Operation(
 			summary = "MonitoringResult detail", 
 			/* nickname = "getMonitoringResult", */
-			/* response = IdmMonitoringResultDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmMonitoringResultDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmMonitoringResultController.TAG })
     @SecurityRequirements(
         value = {
@@ -232,7 +253,7 @@ public class IdmMonitoringResultController extends AbstractEventableDtoControlle
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "MonitoringResult's uuid identifier or username.", required = true)
+			 @Parameter(description = "MonitoringResult's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -265,7 +286,17 @@ public class IdmMonitoringResultController extends AbstractEventableDtoControlle
 	@Operation(
 			summary = "Create / update monitoring result", 
 			/* nickname = "postMonitoringResult", */
-			/* response = IdmMonitoringResultDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmMonitoringResultDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmMonitoringResultController.TAG })
     @SecurityRequirements(
         value = {
@@ -289,7 +320,17 @@ public class IdmMonitoringResultController extends AbstractEventableDtoControlle
 	@Operation(
 			summary = "Update monitoring result", 
 			/* nickname = "putMonitoringResult", */
-			/* response = IdmMonitoringResultDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmMonitoringResultDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmMonitoringResultController.TAG })
     @SecurityRequirements(
         value = {
@@ -301,7 +342,7 @@ public class IdmMonitoringResultController extends AbstractEventableDtoControlle
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "MonitoringResult's uuid identifier or username.", required = true)
+			 @Parameter(description = "MonitoringResult's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmMonitoringResultDto dto) {
 		return super.put(backendId, dto);
@@ -314,7 +355,17 @@ public class IdmMonitoringResultController extends AbstractEventableDtoControlle
 	@Operation(
 			summary = "Update monitoring result", 
 			/* nickname = "patchMonitoringResult", */
-			/* response = IdmMonitoringResultDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmMonitoringResultDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmMonitoringResultController.TAG })
     @SecurityRequirements(
         value = {
@@ -326,7 +377,7 @@ public class IdmMonitoringResultController extends AbstractEventableDtoControlle
         }
     )
 	public ResponseEntity<?> patch(
-			@Parameter(name = "MonitoringResult's uuid identifier or username.", required = true)
+			 @Parameter(description = "MonitoringResult's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -351,7 +402,7 @@ public class IdmMonitoringResultController extends AbstractEventableDtoControlle
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "MonitoringResult's uuid identifier or username.", required = true)
+			 @Parameter(description = "MonitoringResult's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -377,7 +428,7 @@ public class IdmMonitoringResultController extends AbstractEventableDtoControlle
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "MonitoringResult's uuid identifier.", required = true)
+			 @Parameter(description = "MonitoringResult's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -410,7 +461,17 @@ public class IdmMonitoringResultController extends AbstractEventableDtoControlle
 	@Operation(
 			summary = "Process bulk action", 
 			/* nickname = "bulkAction", */
-			/* response = IdmBulkActionDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmMonitoringResultController.TAG })
     @SecurityRequirements(
         value = {
@@ -432,7 +493,17 @@ public class IdmMonitoringResultController extends AbstractEventableDtoControlle
 	@Operation(
 			summary = "Prevalidate bulk action", 
 			/* nickname = "prevalidateBulkAction", */
-			/* response = IdmBulkActionDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmMonitoringResultController.TAG })
     @SecurityRequirements(
         value = {
@@ -560,7 +631,7 @@ public class IdmMonitoringResultController extends AbstractEventableDtoControlle
             }
     )
 	public ResponseEntity<?> execute(
-			@Parameter(name = "Monitoring result identifier.", required = true)
+			 @Parameter(description = "Monitoring result identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		IdmMonitoringResultDto monitoringResult = getDto(backendId);
 		if (monitoringResult == null) {

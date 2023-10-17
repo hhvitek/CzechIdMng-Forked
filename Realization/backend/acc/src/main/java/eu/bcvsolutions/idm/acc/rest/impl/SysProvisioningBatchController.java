@@ -2,12 +2,12 @@ package eu.bcvsolutions.idm.acc.rest.impl;
 
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.Assert;
@@ -34,11 +34,14 @@ import eu.bcvsolutions.idm.core.api.rest.AbstractReadDtoController;
 import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.security.api.domain.Enabled;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Active provisioning operations - batch by system entity.
@@ -91,8 +94,10 @@ public class SysProvisioningBatchController
 						AccGroupPermission.SYSTEM_ADMIN })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -113,8 +118,10 @@ public class SysProvisioningBatchController
 						AccGroupPermission.SYSTEM_ADMIN })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -126,7 +133,17 @@ public class SysProvisioningBatchController
 	@Operation(
 			summary = "Provisioning batch detail", 
 			/* nickname = "getProvisioningBatch", */
-			/* response = SysProvisioningBatchDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysProvisioningBatchDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { SysProvisioningBatchController.TAG })
     @SecurityRequirements(
         value = {
@@ -138,7 +155,7 @@ public class SysProvisioningBatchController
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Provisioning batch's uuid identifier.", required = true)
+			 @Parameter(description = "Provisioning batch's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -161,7 +178,7 @@ public class SysProvisioningBatchController
         }
     )
 	public ResponseEntity<?> retry(
-			@Parameter(name = "Provisioning batch's uuid identifier.", required = true)
+			 @Parameter(description = "Provisioning batch's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysProvisioningBatchDto batch = getDto(backendId);
 		if (batch == null) {
@@ -189,7 +206,7 @@ public class SysProvisioningBatchController
         }
     )
 	public ResponseEntity<Void> cancel(
-			@Parameter(name = "Provisioning batch's uuid identifier.", required = true)
+			 @Parameter(description = "Provisioning batch's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysProvisioningBatchDto batch = getDto(backendId);
 		if (batch == null) {

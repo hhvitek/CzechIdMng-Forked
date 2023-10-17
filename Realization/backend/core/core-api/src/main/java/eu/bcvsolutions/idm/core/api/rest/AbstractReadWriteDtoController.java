@@ -34,9 +34,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
-import io.swagger.v3.oas.annotations.security.SecurityScheme;
-import io.swagger.v3.oas.annotations.security.SecuritySchemes;
 
 /**
  * CRUD operations for DTO.
@@ -115,7 +112,7 @@ public abstract class AbstractReadWriteDtoController<DTO extends BaseDto, F exte
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )
-	public ResponseEntity<?> post(@Parameter(name = "Record (dto).", required = true) DTO dto) {
+	public ResponseEntity<?> post( @Parameter(description = "Record (dto).", required = true) DTO dto) {
 		RepresentationModel resource = toModel(postDto(dto));
 		if (resource == null) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -148,9 +145,9 @@ public abstract class AbstractReadWriteDtoController<DTO extends BaseDto, F exte
             }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Record's uuid identifier or unique code, if record supports <pre>Codeable</pre> interface.", required = true) 
+			 @Parameter(description = "Record's uuid identifier or unique code, if record supports <pre>Codeable</pre> interface.", required = true) 
 			String backendId,
-			@Parameter(name = "Record (dto).", required = true) DTO dto) {
+			 @Parameter(description = "Record (dto).", required = true) DTO dto) {
 		DTO updateDto = getDto(backendId);
 		if (updateDto == null) {
 			throw new EntityNotFoundException(getService().getEntityClass(), backendId);
@@ -218,7 +215,7 @@ public abstract class AbstractReadWriteDtoController<DTO extends BaseDto, F exte
             }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Record's uuid identifier or unique code, if record supports <pre>Codeable</pre> interface.", required = true)
+			 @Parameter(description = "Record's uuid identifier or unique code, if record supports <pre>Codeable</pre> interface.", required = true)
 			String backendId) {
 		DTO dto = getDto(backendId);
 		if (dto == null) {

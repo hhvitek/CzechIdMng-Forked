@@ -7,15 +7,15 @@ import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.MediaType;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.Assert;
@@ -54,11 +54,14 @@ import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.model.entity.IdmIdentityContract;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Identity contract endpoint
@@ -114,8 +117,10 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
 						CoreGroupPermission.IDENTITYCONTRACT_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -136,8 +141,10 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
 						CoreGroupPermission.IDENTITYCONTRACT_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -158,8 +165,10 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
 						CoreGroupPermission.IDENTITYCONTRACT_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -214,7 +223,17 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
 	@Operation(
 			summary = "Identity contract detail",
 			/* nickname = "getIdentityContract", */
-			/* response = IdmIdentityContractDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmIdentityContractDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmIdentityContractController.TAG })
     @SecurityRequirements(
         value = {
@@ -226,7 +245,7 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Contract's uuid identifier.", required = true)
+			 @Parameter(description = "Contract's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -239,7 +258,17 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
 	@Operation(
 			summary = "Create / update identity contract",
 			/* nickname = "postIdentityContract", */
-			/* response = IdmIdentityContractDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmIdentityContractDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmIdentityContractController.TAG })
     @SecurityRequirements(
         value = {
@@ -263,7 +292,17 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
 	@Operation(
 			summary = "Update identity contract",
 			/* nickname = "putIdentityContract", */
-			/* response = IdmIdentityContractDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmIdentityContractDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmIdentityContractController.TAG })
     @SecurityRequirements(
         value = {
@@ -275,7 +314,7 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Contract's uuid identifier.", required = true)
+			 @Parameter(description = "Contract's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmIdentityContractDto dto) {
 		return super.put(backendId, dto);
@@ -299,7 +338,7 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Contract's uuid identifier.", required = true)
+			 @Parameter(description = "Contract's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -322,7 +361,7 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Contract's uuid identifier.", required = true)
+			 @Parameter(description = "Contract's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -353,7 +392,17 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
 	@Operation(
 			summary = "Process bulk action for contract",
 			/* nickname = "bulkAction", */
-			/* response = IdmBulkActionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmProfileController.TAG })
     @SecurityRequirements(
         value = {
@@ -374,7 +423,17 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
 	@Operation(
 			summary = "Prevalidate bulk action for profiles",
 			/* nickname = "prevalidateBulkAction", */
-			/* response = IdmBulkActionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmProfileController.TAG })
     @SecurityRequirements(
         value = {
@@ -407,7 +466,7 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
         }
     )
 	public ResponseEntity<?> getFormDefinitions(
-			@Parameter(name = "Contract's uuid identifier.", required = true)
+			 @Parameter(description = "Contract's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getFormDefinitions(backendId);
 	}
@@ -430,7 +489,7 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
         }
     )
 	public EntityModel<?> prepareFormValues(
-			@Parameter(name = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
+			 @Parameter(description = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
 			@RequestParam(name = IdmFormAttributeFilter.PARAMETER_FORM_DEFINITION_CODE, required = false) String definitionCode) {
 		return super.prepareFormValues(definitionCode);
 	}
@@ -458,9 +517,9 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
         }
     )
 	public EntityModel<?> getFormValues(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId, 
-			@Parameter(name = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
+			 @Parameter(description = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
 			@RequestParam(name = "definitionCode", required = false) String definitionCode) {
 		IdmIdentityContractDto dto = getDto(backendId);
 		if (dto == null) {
@@ -515,11 +574,11 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
         }
     )
 	public EntityModel<?> saveFormValues(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId,
-			@Parameter(name = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
+			 @Parameter(description = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
 			@RequestParam(name = "definitionCode", required = false) String definitionCode,
-			@Parameter(name = "Filled form data.", required = true)
+			 @Parameter(description = "Filled form data.", required = true)
 			@RequestBody @Valid List<IdmFormValueDto> formValues) {		
 		IdmIdentityContractDto dto = getDto(backendId);
 		if (dto == null) {
@@ -563,7 +622,7 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
         }
     )
 	public EntityModel<?> saveFormValue(
-			@Parameter(name = "Contract's uuid identifier .", required = true)
+			 @Parameter(description = "Contract's uuid identifier .", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @Valid IdmFormValueDto formValue) {		
 		IdmIdentityContractDto dto = getDto(backendId);
@@ -600,9 +659,9 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
         }
     )
 	public ResponseEntity<InputStreamResource> downloadFormValue(
-			@Parameter(name = "Contract's uuid identifier .", required = true)
+			 @Parameter(description = "Contract's uuid identifier .", required = true)
 			@PathVariable String backendId,
-			@Parameter(name = "Form value identifier.", required = true)
+			 @Parameter(description = "Form value identifier.", required = true)
 			@PathVariable String formValueId) {
 		IdmIdentityContractDto dto = getDto(backendId);
 		if (dto == null) {
@@ -641,9 +700,9 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
         }
     )
 	public ResponseEntity<InputStreamResource> previewFormValue(
-			@Parameter(name = "Contract's uuid identifier.", required = true)
+			 @Parameter(description = "Contract's uuid identifier.", required = true)
 			@PathVariable String backendId,
-			@Parameter(name = "Form value identifier.", required = true)
+			 @Parameter(description = "Form value identifier.", required = true)
 			@PathVariable String formValueId) {
 		IdmIdentityContractDto dto = getDto(backendId);
 		if (dto == null) {

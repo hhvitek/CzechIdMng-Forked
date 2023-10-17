@@ -9,12 +9,12 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -44,11 +44,14 @@ import eu.bcvsolutions.idm.core.ecm.api.entity.AttachableEntity;
 import eu.bcvsolutions.idm.core.ecm.api.service.AttachmentManager;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Default controller for scripts, basic methods.
@@ -97,8 +100,10 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 						CoreGroupPermission.SCRIPT_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -120,8 +125,10 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 						CoreGroupPermission.SCRIPT_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -143,8 +150,10 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 						CoreGroupPermission.SCRIPT_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -156,7 +165,17 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@Operation(
 			summary = "Script detail", 
 			/* nickname = "getScript", */ 
-			/* response = IdmScriptDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmScriptDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmScriptController.TAG })
     @SecurityRequirements(
         value = {
@@ -168,7 +187,7 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Script's uuid identifier or code.", required = true)
+			 @Parameter(description = "Script's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -181,7 +200,17 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@Operation(
 			summary = "Create / update script", 
 			/* nickname = "postScript", */ 
-			/* response = IdmScriptDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmScriptDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmScriptController.TAG })
     @SecurityRequirements(
         value = {
@@ -205,7 +234,17 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@Operation(
 			summary = "Update script", 
 			/* nickname = "putScript", */ 
-			/* response = IdmScriptDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmScriptDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmScriptController.TAG })
     @SecurityRequirements(
         value = {
@@ -217,7 +256,7 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Script's uuid identifier or code.", required = true)
+			 @Parameter(description = "Script's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @NotNull IdmScriptDto dto) {
 		return super.put(backendId, dto);
@@ -241,7 +280,7 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Script's uuid identifier or code.", required = true)
+			 @Parameter(description = "Script's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -252,7 +291,17 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@Operation(
 			summary = "Redeploy script", 
 			/* nickname = "redeployScript", */ 
-			/* response = IdmScriptDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmScriptDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmScriptController.TAG },
 			description = "Redeploy script. Redeployed will be only scripts, that has pattern in resource."
 					+ " Before save newly loaded DO will be backup the old script into backup directory.")
@@ -265,7 +314,7 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
             }
     )
 	public ResponseEntity<?> redeploy(
-			@Parameter(name = "Script's uuid identifier or code.", required = true)
+			 @Parameter(description = "Script's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		IdmScriptDto script = service.get(backendId);
 		if (script == null) {
@@ -281,7 +330,17 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@Operation(
 			summary = "Backup script", 
 			/* nickname = "backupScript", */ 
-			/* response = IdmScriptDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmScriptDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmScriptController.TAG }, 
 						description = "Backup template to directory given in application properties.")
     @SecurityRequirements(
@@ -294,7 +353,7 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
         }
     )
 	public ResponseEntity<?> backup(
-			@Parameter(name = "Script's uuid identifier or code.", required = true)
+			 @Parameter(description = "Script's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		IdmScriptDto script = service.get(backendId);
 		if (script == null) {
@@ -332,7 +391,17 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@Operation(
 			summary = "Update script",
 			/* nickname = "patchScript", */ 
-			/* response = IdmScriptDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmScriptDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmScriptController.TAG })
     @SecurityRequirements(
         value = {
@@ -344,7 +413,7 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
         }
     )
 	public ResponseEntity<?> patch(
-			@Parameter(name = "Script's uuid identifier.", required = true)
+			 @Parameter(description = "Script's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 					throws HttpMessageNotReadableException {
@@ -369,7 +438,7 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Script's uuid identifier.", required = true)
+			 @Parameter(description = "Script's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -445,7 +514,17 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@Operation(
 			summary = "Process bulk action for script definition", 
 			/* nickname = "bulkAction", */ 
-			/* response = IdmBulkActionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmScriptController.TAG })
     @SecurityRequirements(
         value = {
@@ -467,7 +546,17 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@Operation(
 			summary = "Prevalidate bulk action for script definition", 
 			/* nickname = "prevalidateBulkAction", */ 
-			/* response = IdmBulkActionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmScriptController.TAG })
     @SecurityRequirements(
         value = {

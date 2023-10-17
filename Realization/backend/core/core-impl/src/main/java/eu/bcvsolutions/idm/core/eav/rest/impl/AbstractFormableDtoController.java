@@ -54,7 +54,7 @@ public abstract class AbstractFormableDtoController<DTO extends FormableDto, F e
 	
 	@Override
 	public ResponseEntity<?> getFormDefinitions(
-			@Parameter(name = "Backend entity identifier.", required = true)
+			 @Parameter(description = "Backend entity identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return formDefinitionController.getDefinitions(
 				getService().getDtoClass(), 
@@ -64,7 +64,7 @@ public abstract class AbstractFormableDtoController<DTO extends FormableDto, F e
 	
 	@Override
 	public EntityModel<?> prepareFormValues(
-			@Parameter(name = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
+			 @Parameter(description = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
 			@RequestParam(name = IdmFormAttributeFilter.PARAMETER_FORM_DEFINITION_CODE, required = false) String definitionCode) {
 		IdmFormDefinitionDto formDefinition = formDefinitionController.getDefinition(
 				getService().getDtoClass(), 

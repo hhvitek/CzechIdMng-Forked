@@ -6,12 +6,12 @@ import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.MediaType;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.Assert;
@@ -42,11 +42,14 @@ import eu.bcvsolutions.idm.vs.dto.VsAccountDto;
 import eu.bcvsolutions.idm.vs.dto.filter.VsAccountFilter;
 import eu.bcvsolutions.idm.vs.entity.VsAccount;
 import eu.bcvsolutions.idm.vs.service.api.VsAccountService;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Rest methods for virtual system account
@@ -98,8 +101,10 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 						VirtualSystemGroupPermission.VS_ACCOUNT_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -121,8 +126,10 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 						VirtualSystemGroupPermission.VS_ACCOUNT_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -144,8 +151,10 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 						VirtualSystemGroupPermission.VS_ACCOUNT_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -157,7 +166,17 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 	@Operation(
 			summary = "Account detail", 
 			/* nickname = "getAccount", */
-			/* response = VsAccountDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = VsAccountDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { VsAccountController.TAG })
     @SecurityRequirements(
         value = {
@@ -169,7 +188,7 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Account's uuid identifier.", required = true)
+			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -181,7 +200,17 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 	@Operation(
 			summary = "Create / update account", 
 			/* nickname = "postAccount", */
-			/* response = VsAccountDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = VsAccountDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { VsAccountController.TAG })
     @SecurityRequirements(
         value = {
@@ -204,7 +233,17 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 	@Operation(
 			summary = "Update account", 
 			/* nickname = "putAccount", */
-			/* response = VsAccountDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = VsAccountDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { VsAccountController.TAG })
     @SecurityRequirements(
         value = {
@@ -216,7 +255,7 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Account's uuid identifier.", required = true)
+			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody VsAccountDto dto) {
 		return super.put(backendId, dto);
@@ -241,7 +280,7 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Account's uuid identifier.", required = true)
+			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -267,7 +306,7 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Account's uuid identifier.", required = true)
+			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -295,7 +334,7 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
         }
     )
 	public ResponseEntity<?> getFormDefinitions(
-			@Parameter(name = "Account's uuid identifier.", required = true)
+			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return formDefinitionController.getDefinitions(VsAccount.class);
 	}
@@ -323,9 +362,9 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
         }
     )
 	public EntityModel<?> getFormValues(
-			@Parameter(name = "Account's uuid identifier.", required = true)
+			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
-			@Parameter(name = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
+			 @Parameter(description = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
 			@RequestParam(name = "definitionCode", required = false) String definitionCode) {
 		VsAccountDto entity = getDto(backendId);
 		if (entity == null) {
@@ -361,11 +400,11 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
         }
     )
 	public EntityModel<?> saveFormValues(
-			@Parameter(name = "Account's uuid identifier.", required = true)
+			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
-			@Parameter(name = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
+			 @Parameter(description = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
 			@RequestParam(name = "definitionCode", required = false) String definitionCode,
-			@Parameter(name = "Filled form data.", required = true)
+			 @Parameter(description = "Filled form data.", required = true)
 			@RequestBody @Valid List<IdmFormValueDto> formValues) {		
 		VsAccountDto entity = getDto(backendId);
 		if (entity == null) {

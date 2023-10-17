@@ -10,7 +10,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.Assert;
 import org.springframework.util.MultiValueMap;
@@ -32,11 +31,11 @@ import eu.bcvsolutions.idm.core.api.service.EntityEventManager;
 import eu.bcvsolutions.idm.core.api.service.LookupService;
 import eu.bcvsolutions.idm.core.api.utils.FilterConverter;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Entity event procesor's administration.
@@ -125,7 +124,7 @@ public class EntityEventProcessorController {
         }
     )
 	public void enable(
-			@Parameter(name = "Processor's identifier.", required = true)
+			 @Parameter(description = "Processor's identifier.", required = true)
 			@PathVariable @NotNull String processorId) {
 		entityEventManager.enable(processorId);
 	}
@@ -151,7 +150,7 @@ public class EntityEventProcessorController {
         }
     )
 	public void disable(
-			@Parameter(name = "Processor's identifier.", required = true)
+			 @Parameter(description = "Processor's identifier.", required = true)
 			@PathVariable @NotNull String processorId) {
 		entityEventManager.disable(processorId);
 	}

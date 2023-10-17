@@ -11,13 +11,13 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.Assert;
@@ -56,11 +56,14 @@ import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
 import eu.bcvsolutions.idm.core.security.api.dto.IdmJwtAuthenticationDto;
 import eu.bcvsolutions.idm.core.security.api.filter.IdmAuthenticationFilter;
 import eu.bcvsolutions.idm.core.security.service.impl.JwtAuthenticationMapper;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * IdM tokens.
@@ -109,8 +112,10 @@ public class IdmTokenController extends AbstractEventableDtoController<IdmTokenD
 						CoreGroupPermission.TOKEN_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -131,8 +136,10 @@ public class IdmTokenController extends AbstractEventableDtoController<IdmTokenD
 						CoreGroupPermission.TOKEN_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -165,7 +172,17 @@ public class IdmTokenController extends AbstractEventableDtoController<IdmTokenD
 	@Operation(
 			summary = "Token detail",
 			/* nickname = "getToken", */ 
-			/* response = IdmTokenDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmTokenDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmTokenController.TAG })
     @SecurityRequirements(
         value = {
@@ -177,7 +194,7 @@ public class IdmTokenController extends AbstractEventableDtoController<IdmTokenD
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Token uuid identifier.", required = true)
+			 @Parameter(description = "Token uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -192,7 +209,17 @@ public class IdmTokenController extends AbstractEventableDtoController<IdmTokenD
 	@Operation(
 			summary = "Geerate new token",
 			/* nickname = "generateToken", */ 
-			/* response = IdmTokenDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmTokenDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmTokenController.TAG })
     @SecurityRequirements(
         value = {
@@ -258,7 +285,7 @@ public class IdmTokenController extends AbstractEventableDtoController<IdmTokenD
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Token uuid identifier.", required = true)
+			 @Parameter(description = "Token uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -281,7 +308,7 @@ public class IdmTokenController extends AbstractEventableDtoController<IdmTokenD
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Token uuid identifier.", required = true)
+			 @Parameter(description = "Token uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -314,7 +341,17 @@ public class IdmTokenController extends AbstractEventableDtoController<IdmTokenD
 	@Operation(
 			summary = "Process bulk action for token",
 			/* nickname = "bulkAction", */ 
-			/* response = IdmBulkActionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmTokenController.TAG })
     @SecurityRequirements(
         value = {
@@ -336,7 +373,17 @@ public class IdmTokenController extends AbstractEventableDtoController<IdmTokenD
 	@Operation(
 			summary = "Prevalidate bulk action for token",
 			/* nickname = "prevalidateBulkAction", */ 
-			/* response = IdmBulkActionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmTokenController.TAG })
     @SecurityRequirements(
         value = {

@@ -13,14 +13,14 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -79,11 +79,14 @@ import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
 import eu.bcvsolutions.idm.core.security.api.domain.Enabled;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
 import eu.bcvsolutions.idm.ic.api.IcConnectorObject;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Accounts on target system
@@ -143,8 +146,10 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 						AccGroupPermission.ACCOUNT_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -166,8 +171,10 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 						AccGroupPermission.ACCOUNT_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -200,8 +207,10 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 						AccGroupPermission.ACCOUNT_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -213,7 +222,17 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 	@Operation(
 			summary = "Account detail", 
 			/* nickname = "getAccount", */ 
-			/* response = AccAccountDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = AccAccountDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { AccAccountController.TAG })
     @SecurityRequirements(
         value = {
@@ -224,7 +243,7 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Account's uuid identifier.", required = true)
+			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -237,7 +256,17 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 	@Operation(
 			summary = "Create / update account", 
 			/* nickname = "postAccount", */ 
-			/* response = AccAccountDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = AccAccountDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { AccAccountController.TAG })
     @SecurityRequirements(
         value = {
@@ -261,7 +290,17 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 	@Operation(
 			summary = "Update account",
 			/* nickname = "putAccount", */ 
-			/* response = AccAccountDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = AccAccountDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { AccAccountController.TAG })
     @SecurityRequirements(
         value = {
@@ -273,7 +312,7 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Account's uuid identifier.", required = true)
+			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @NotNull AccAccountDto dto) {
 		return super.put(backendId, dto);
@@ -286,7 +325,17 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 	@Operation(
 			summary = "Update account", 
 			/* nickname = "patchAccount", */ 
-			/* response = AccAccountDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = AccAccountDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { AccAccountController.TAG })
     @SecurityRequirements(
         value = {
@@ -298,7 +347,7 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
         }
     )
 	public ResponseEntity<?> patch(
-			@Parameter(name = "Account's uuid identifier.", required = true)
+			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -323,7 +372,7 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Account's uuid identifier.", required = true)
+			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -363,7 +412,7 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Account's uuid identifier.", required = true)
+			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -374,7 +423,17 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 	@Operation(
 			summary = "Connector object for the account. Contains only attributes for witch have a schema attribute definitons.", 
 			/* nickname = "getConnectorObject", */ 
-			/* response = IcConnectorObject.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IcConnectorObject.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { SysSystemEntityController.TAG })
     @SecurityRequirements(
         value = {
@@ -386,7 +445,7 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
         }
     )
 	public ResponseEntity<IcConnectorObject> getConnectorObject(
-			@Parameter(name = "Account's uuid identifier.", required = true)
+			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		AccAccountDto account = this.getDto(backendId);
 		if(account == null) {
@@ -439,7 +498,17 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 	@Operation(
 			summary = "Process bulk action for account", 
 			/* nickname = "bulkAction", */ 
-			/* response = IdmBulkActionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { AccAccountController.TAG })
     @SecurityRequirements(
         value = {
@@ -467,7 +536,17 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 	@Operation(
 			summary = "Prevalidate bulk action for accounts", 
 			/* nickname = "prevalidateBulkAction", */ 
-			/* response = IdmBulkActionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { AccAccountController.TAG })
     @SecurityRequirements(
         value = {
@@ -489,7 +568,17 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 	@Operation(
 			summary = "Preprocess bulk action for accounts", 
 			/* nickname = "preprocessBulkAction", */ 
-			/* response = IdmBulkActionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { AccAccountController.TAG })
     @SecurityRequirements(
         value = {
@@ -524,7 +613,7 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
         }
     )
 	public ResponseEntity<?> getFormDefinitions(
-			@Parameter(name = "Account's uuid identifier.", required = true)
+			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getFormDefinitions(backendId);
 	}
@@ -547,7 +636,7 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
         }
     )
 	public EntityModel<?> prepareFormValues(
-			@Parameter(name = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
+			 @Parameter(description = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
 			@RequestParam(name = IdmFormAttributeFilter.PARAMETER_FORM_DEFINITION_CODE, required = false) String definitionCode) {
 		
 		return super.prepareFormValues(definitionCode);
@@ -576,7 +665,7 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
         }
     )
 	public EntityModel<?> getFormValues(
-			@Parameter(name = "Account's uuid identifier.", required = true)
+			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		AccAccountDto dto = getDto(backendId);
 		if (dto == null) {
@@ -619,9 +708,9 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
         }
     )
 	public EntityModel<?> saveFormValues(
-			@Parameter(name = "Account uuid identifier.", required = true)
+			 @Parameter(description = "Account uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
-			@Parameter(name = "Filled form data.", required = true)
+			 @Parameter(description = "Filled form data.", required = true)
 			@RequestBody @Valid List<IdmFormValueDto> formValues) {		
 		AccAccountDto dto = getDto(backendId);
 		if (dto == null) {
@@ -725,7 +814,17 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 	@Operation(
 			summary = "Execute some wizard step.",
 			/* nickname = "executeWizard", */
-			/* response = AccountWizardDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = AccountWizardDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { AccAccountController.TAG })
     @SecurityRequirements(
         value = {
@@ -748,7 +847,17 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 	@Operation(
 			summary = "Load data for specific wizards -> open existed account in the wizard step.",
 			/* nickname = "loadWizard", */
-			/* response = AccountWizardDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = AccountWizardDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { AccAccountController.TAG })
     @SecurityRequirements(
         value = {
@@ -782,7 +891,7 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
         }
     )
 	public CollectionModel<?> getIncompatibleRoles(
-			@Parameter(name = "Account's uuid identifier.", required = true)
+			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable String backendId) {
 		AccAccountDto accountDto = getDto(backendId);
 		if (accountDto == null) {

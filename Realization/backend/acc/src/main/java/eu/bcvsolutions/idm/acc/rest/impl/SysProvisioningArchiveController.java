@@ -8,13 +8,13 @@ import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -42,11 +42,14 @@ import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
 import eu.bcvsolutions.idm.core.security.api.domain.Enabled;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Archived provisioning operations
@@ -93,8 +96,10 @@ public class SysProvisioningArchiveController extends AbstractReadWriteDtoContro
 						AccGroupPermission.PROVISIONING_ARCHIVE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -115,8 +120,10 @@ public class SysProvisioningArchiveController extends AbstractReadWriteDtoContro
 						AccGroupPermission.PROVISIONING_ARCHIVE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -173,7 +180,17 @@ public class SysProvisioningArchiveController extends AbstractReadWriteDtoContro
 	@Operation(
 			summary = "Provisioning archive item detail",
 			/* nickname = "getProvisioningArchive", */
-			/* response = SysProvisioningArchive.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysProvisioningArchive.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { SysProvisioningArchiveController.TAG })
     @SecurityRequirements(
         value = {
@@ -185,7 +202,7 @@ public class SysProvisioningArchiveController extends AbstractReadWriteDtoContro
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Provisioning archive item's uuid identifier.", required = true)
+			 @Parameter(description = "Provisioning archive item's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -208,7 +225,7 @@ public class SysProvisioningArchiveController extends AbstractReadWriteDtoContro
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Archive's uuid identifier.", required = true)
+			 @Parameter(description = "Archive's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -231,7 +248,7 @@ public class SysProvisioningArchiveController extends AbstractReadWriteDtoContro
         }
     )
 	public ResponseEntity<?> getDifferenceObject(
-			@Parameter(name = "Provisioning detail uuid identifier.", required = true)
+			 @Parameter(description = "Provisioning detail uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysProvisioningArchiveDto archive = getDto(backendId);
 		if (archive == null) {

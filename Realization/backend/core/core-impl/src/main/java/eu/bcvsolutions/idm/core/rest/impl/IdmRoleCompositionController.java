@@ -7,11 +7,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,11 +35,14 @@ import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.api.service.IdmRoleCompositionService;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Role composition - defines business roles.
@@ -83,8 +86,10 @@ public class IdmRoleCompositionController extends AbstractEventableDtoController
 						CoreGroupPermission.ROLECOMPOSITION_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -105,8 +110,10 @@ public class IdmRoleCompositionController extends AbstractEventableDtoController
 						CoreGroupPermission.ROLECOMPOSITION_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -127,8 +134,10 @@ public class IdmRoleCompositionController extends AbstractEventableDtoController
 						CoreGroupPermission.ROLECOMPOSITION_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -161,7 +170,17 @@ public class IdmRoleCompositionController extends AbstractEventableDtoController
 	@Operation(
 			summary = "Role composition role detail",
 			/* nickname = "getRoleComposition", */
-			/* response = IdmRoleCompositionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRoleCompositionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmRoleCompositionController.TAG })
     @SecurityRequirements(
         value = {
@@ -173,7 +192,7 @@ public class IdmRoleCompositionController extends AbstractEventableDtoController
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Role composition's uuid identifier.", required = true)
+			 @Parameter(description = "Role composition's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -186,7 +205,17 @@ public class IdmRoleCompositionController extends AbstractEventableDtoController
 	@Operation(
 			summary = "Create / update role composition role",
 			/* nickname = "postRoleComposition", */
-			/* response = IdmRoleCompositionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRoleCompositionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmRoleCompositionController.TAG })
     @SecurityRequirements(
         value = {
@@ -210,7 +239,17 @@ public class IdmRoleCompositionController extends AbstractEventableDtoController
 	@Operation(
 			summary = "Update role composition role",
 			/* nickname = "putRoleComposition", */
-			/* response = IdmRoleCompositionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRoleCompositionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmRoleCompositionController.TAG })
     @SecurityRequirements(
         value = {
@@ -222,7 +261,7 @@ public class IdmRoleCompositionController extends AbstractEventableDtoController
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Role composition's uuid identifier.", required = true)
+			 @Parameter(description = "Role composition's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmRoleCompositionDto dto) {
 		return super.put(backendId, dto);
@@ -235,7 +274,17 @@ public class IdmRoleCompositionController extends AbstractEventableDtoController
 	@Operation(
 			summary = "Update role composition role",
 			/* nickname = "patchRoleComposition", */
-			/* response = IdmRoleCompositionDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRoleCompositionDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmRoleCompositionController.TAG })
     @SecurityRequirements(
         value = {
@@ -247,7 +296,7 @@ public class IdmRoleCompositionController extends AbstractEventableDtoController
         }
     )
 	public ResponseEntity<?> patch(
-			@Parameter(name = "Role composition's uuid identifier.", required = true)
+			 @Parameter(description = "Role composition's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -272,7 +321,7 @@ public class IdmRoleCompositionController extends AbstractEventableDtoController
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Role composition's uuid identifier.", required = true)
+			 @Parameter(description = "Role composition's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		super.delete(backendId);
 		//
@@ -297,7 +346,7 @@ public class IdmRoleCompositionController extends AbstractEventableDtoController
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Role composition's uuid identifier.", required = true)
+			 @Parameter(description = "Role composition's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -341,7 +390,17 @@ public class IdmRoleCompositionController extends AbstractEventableDtoController
 	@Operation(
 			summary = "Process bulk action for role composition",
 			/* nickname = "bulkAction", */
-			/* response = IdmBulkActionDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmRoleCompositionController.TAG })
     @SecurityRequirements(
         value = {
@@ -369,7 +428,17 @@ public class IdmRoleCompositionController extends AbstractEventableDtoController
 	@Operation(
 			summary = "Prevalidate bulk action for role compositions",
 			/* nickname = "prevalidateBulkAction", */
-			/* response = IdmBulkActionDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmRoleCompositionController.TAG })
     @SecurityRequirements(
         value = {
@@ -391,7 +460,17 @@ public class IdmRoleCompositionController extends AbstractEventableDtoController
 	@Operation(
 			summary = "Preprocess bulk action for role compositions",
 			/* nickname = "preprocessBulkAction", */
-			/* response = IdmBulkActionDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmRoleCompositionController.TAG })
     @SecurityRequirements(
         value = {

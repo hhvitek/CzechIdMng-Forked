@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -39,11 +40,14 @@ import eu.bcvsolutions.idm.core.eav.api.dto.filter.IdmFormAttributeFilter;
 import eu.bcvsolutions.idm.core.eav.api.service.FormService;
 import eu.bcvsolutions.idm.core.eav.api.service.IdmFormAttributeService;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * EAV Form attributes.
@@ -86,8 +90,10 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
 						CoreGroupPermission.FORM_ATTRIBUTE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -108,8 +114,10 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
 						CoreGroupPermission.FORM_ATTRIBUTE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -131,8 +139,10 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
 						CoreGroupPermission.FORM_ATTRIBUTE_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -165,7 +175,17 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
 	@Operation(
 			summary = "Form attribute detail",
 			/* nickname = "getFormAttribute", */ 
-			/* response = IdmFormAttributeDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmFormAttributeDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmFormAttributeController.TAG })
     @SecurityRequirements(
         value = {
@@ -177,7 +197,7 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Attribute's uuid identifier.", required = true)
+			 @Parameter(description = "Attribute's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -190,7 +210,17 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
 	@Operation(
 			summary = "Create / update form attribute",
 			/* nickname = "postFormAttribute", */ 
-			/* response = IdmFormAttributeDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmFormAttributeDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmFormAttributeController.TAG })
     @SecurityRequirements(
         value = {
@@ -214,7 +244,17 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
 	@Operation(
 			summary = "Update form attribute",
 			/* nickname = "putFormAttribute", */ 
-			/* response = IdmFormAttributeDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmFormAttributeDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmFormAttributeController.TAG })
     @SecurityRequirements(
         value = {
@@ -226,7 +266,7 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Form attribute's uuid identifier", required = true)
+			 @Parameter(description = "Form attribute's uuid identifier", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmFormAttributeDto dto) {
 		return super.put(backendId, dto);
@@ -239,7 +279,17 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
 	@Operation(
 			summary = "Patch form attribute",
 			/* nickname = "patchFormAttribute", */ 
-			/* response = IdmFormAttributeDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmFormAttributeDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmFormAttributeController.TAG })
     @SecurityRequirements(
         value = {
@@ -251,7 +301,7 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
         }
     )
 	public ResponseEntity<?> patch(
-			@Parameter(name = "Form attribute's uuid identifier", required = true)
+			 @Parameter(description = "Form attribute's uuid identifier", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -276,7 +326,7 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Form attribute's uuid identifier.", required = true)
+			 @Parameter(description = "Form attribute's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -299,7 +349,7 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Attribute's uuid identifier.", required = true)
+			 @Parameter(description = "Attribute's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -358,7 +408,17 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
 	@Operation(
 			summary = "Process bulk action for form attribute",
 			/* nickname = "bulkAction", */ 
-			/* response = IdmBulkActionDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmFormAttributeController.TAG })
     @SecurityRequirements(
         value = {
@@ -380,7 +440,17 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
 	@Operation(
 			summary = "Prevalidate bulk action for form attribute",
 			/* nickname = "prevalidateBulkAction", */ 
-			/* response = IdmBulkActionDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmFormAttributeController.TAG })
     @SecurityRequirements(
         value = {

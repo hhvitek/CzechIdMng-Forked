@@ -29,9 +29,12 @@ import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.service.ConfigurationService;
 import eu.bcvsolutions.idm.core.ecm.api.dto.IdmAttachmentDto;
 import eu.bcvsolutions.idm.core.ecm.api.service.AttachmentManager;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Provides public configurations.
@@ -134,10 +137,20 @@ public class PublicIdmConfigurationController implements BaseController {
 	@Operation(
 			summary = "Identity detail", 
 			/* nickname = "getApplicationTheme", */ 
-			/* response = ThemeDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ThemeDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmConfigurationController.TAG })
 	public ResponseEntity<ThemeDto> getApplicationTheme(
-			@Parameter(name = "Theme type.", required = false, example = "light")
+			 @Parameter(description = "Theme type.", required = false, example = "light")
 			@RequestParam(name = "type", required = false) String themeType) {
 		//
 		// TODO: dark theme can be configured on BE - only for development on FE now only

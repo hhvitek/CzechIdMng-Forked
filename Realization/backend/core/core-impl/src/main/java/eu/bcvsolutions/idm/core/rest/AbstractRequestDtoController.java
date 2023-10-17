@@ -6,14 +6,15 @@ import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,15 +35,11 @@ import eu.bcvsolutions.idm.core.api.service.RequestManager;
 import eu.bcvsolutions.idm.core.eav.api.dto.IdmFormDefinitionDto;
 import eu.bcvsolutions.idm.core.eav.api.dto.IdmFormInstanceDto;
 import eu.bcvsolutions.idm.core.eav.api.dto.IdmFormValueDto;
-import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.rest.impl.IdmRequestController;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 
@@ -80,8 +77,8 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )
-	public ResponseEntity<?> post(@Parameter(name = "Request ID", required = true) String requestId, //
-			@Parameter(name = "Record (dto).", required = true) DTO dto) { //
+	public ResponseEntity<?> post( @Parameter(description = "Request ID", required = true) String requestId, //
+			 @Parameter(description = "Record (dto).", required = true) DTO dto) { //
 		Requestable resultDto = requestManager.post(requestId, dto, IdmBasePermission.CREATE);
 		@SuppressWarnings("unchecked")
 		RepresentationModel resource = toModel(requestId, (DTO) resultDto);
@@ -107,9 +104,9 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
             }
     )
 	public ResponseEntity<?> put( //
-			@Parameter(name = "Request ID", required = true) String requestId, //
-			@Parameter(name = "Record's uuid identifier or unique code", required = true) String backendId, //
-			@Parameter(name = "Record (dto).", required = true) DTO dto) { //
+			 @Parameter(description = "Request ID", required = true) String requestId, //
+			 @Parameter(description = "Record's uuid identifier or unique code", required = true) String backendId, //
+			 @Parameter(description = "Record (dto).", required = true) DTO dto) { //
 		DTO updatedDto = getDto(requestId, backendId);
 		if (updatedDto == null) {
 			throw new EntityNotFoundException(getService().getEntityClass(), backendId);
@@ -138,8 +135,8 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )
-	public ResponseEntity<?> delete(@Parameter(name = "Request ID", required = true) String requestId, //
-			@Parameter(name = "Record's uuid identifier or unique code.", required = true) String backendId) { //
+	public ResponseEntity<?> delete( @Parameter(description = "Request ID", required = true) String requestId, //
+			 @Parameter(description = "Record's uuid identifier or unique code.", required = true) String backendId) { //
 		DTO dto = getDto(requestId, backendId);
 		if (dto == null) {
 			throw new EntityNotFoundException(getService().getEntityClass(), backendId);
@@ -168,7 +165,7 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
             }
     )
 	public ResponseEntity<?> get(@PathVariable @NotNull String requestId,
-			@Parameter(name = "Record's uuid identifier or unique code, if record supports Codeable interface.", required = true) //
+			 @Parameter(description = "Record's uuid identifier or unique code, if record supports Codeable interface.", required = true) //
 			@PathVariable @NotNull String backendId) { //
 
 		DTO dto = getDto(requestId, backendId);
@@ -191,7 +188,7 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )
-	public ResponseEntity<?> createRequest(@Parameter(name = "Record (dto).", required = true) DTO dto) {
+	public ResponseEntity<?> createRequest( @Parameter(description = "Record (dto).", required = true) DTO dto) {
 		IdmRequestDto request = requestManager.createRequest(dto, IdmBasePermission.CREATE);
 		Link selfLink = WebMvcLinkBuilder.linkTo(IdmRequestController.class).slash(request.getId()).withSelfRel();
 		EntityModel<IdmRequestDto> resource = new EntityModel<IdmRequestDto>(request, selfLink);
@@ -213,26 +210,11 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )
-    @Parameters({
-            @Parameter(name = "page", schema = @Schema( implementation=String.class, type = "query"), description = "Results page you want to retrieve (0..N)"),
-            @Parameter(name = "size", schema = @Schema( implementation=String.class, type = "query"), description = "Number of records per page."),
-            @Parameter(name = "sort", schema = @Schema( implementation=String.class, type = "query"),
-                    description = "Sorting criteria in the format: property(,asc|desc)." + "Default sort order is ascending. " + "Multiple sort criteria are supported."
-            ),
-    })
-	//@ApiImplicitParams({
-	//		@ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query",
-	//				value = "Results page you want to retrieve (0..N)"),
-	//		@ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query",
-	//				value = "Number of records per page."),
-	//		@ApiImplicitParam(name = "sort", allowMultiple = true, dataTypeClass = String.class, paramType = "query",
-	//				value = "Sorting criteria in the format: property(,asc|desc). " +
-	//						"Default sort order is ascending. " +
-	//						"Multiple sort criteria are supported.")
-	//})
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
-			@Parameter(name = "Request ID", required = true) String requestId,
+			 @Parameter(description = "Request ID", required = true) String requestId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		Page<DTO> page = (Page<DTO>) requestManager.find(getDtoClass(), requestId, toFilter(parameters), pageable,
 				IdmBasePermission.READ);
@@ -255,20 +237,10 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )
-    @Parameters({
-            @Parameter(name = "page", schema = @Schema( implementation=String.class, type = "query"), description = "Results page you want to retrieve (0..N)"),
-            @Parameter(name = "size", schema = @Schema( implementation=String.class, type = "query"), description = "Number of records per page."),
-            @Parameter(name = "sort", schema = @Schema( implementation=String.class, type = "query"),
-                    description = "Sorting criteria in the format: property(,asc|desc)." + "Default sort order is ascending. " + "Multiple sort criteria are supported."
-            ),
-    })
-	//@ApiImplicitParams({
-	//		@ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query", value = "Results page you want to retrieve (0..N)"),
-	//		@ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query", value = "Number of records per page."),
-	//		@ApiImplicitParam(name = "sort", allowMultiple = true, dataTypeClass = String.class, paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
-	//				+ "Default sort order is ascending. " + "Multiple sort criteria are supported.") })
-	public CollectionModel<?> findQuick(@Parameter(name = "Request ID", required = true) String requestId,
+    @PageableAsQueryParam
+	public CollectionModel<?> findQuick( @Parameter(description = "Request ID", required = true) String requestId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return find(requestId, parameters, pageable);
 	}
@@ -289,21 +261,11 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )
-    @Parameters({
-        @Parameter(name = "page", schema = @Schema( implementation=String.class, type = "query"), description = "Results page you want to retrieve (0..N)"),
-        @Parameter(name = "size", schema = @Schema( implementation=String.class, type = "query"), description = "Number of records per page."),
-        @Parameter(name = "sort", schema = @Schema( implementation=String.class, type = "query"),
-                description = "Sorting criteria in the format: property(,asc|desc)." + "Default sort order is ascending. " + "Multiple sort criteria are supported."
-        ),
-    })
-	//@ApiImplicitParams({
-	//		@ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query"),
-	//		@ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query"),
-	//		@ApiImplicitParam(name = "sort", allowMultiple = true, dataTypeClass = String.class, paramType = "query")
-    //})
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
-			@Parameter(name = "Request ID", required = true) String requestId,
+			 @Parameter(description = "Request ID", required = true) String requestId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		Page<DTO> page = (Page<DTO>) requestManager.find(getDtoClass(), requestId, toFilter(parameters), pageable,
 				IdmBasePermission.AUTOCOMPLETE);
@@ -324,8 +286,8 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
             }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Request ID", required = true) String requestId,
-			@Parameter(name = "Record's uuid identifier or unique code, if record supports Codeable interface.", required = true)
+			 @Parameter(description = "Request ID", required = true) String requestId,
+			 @Parameter(description = "Record's uuid identifier or unique code, if record supports Codeable interface.", required = true)
 			@PathVariable @NotNull String backendId) {
 		DTO dto = getDto(requestId, backendId);
 		if (dto == null) {
@@ -350,7 +312,7 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )
-	public long count(@Parameter(name = "Request ID", required = true) String requestId,
+	public long count( @Parameter(description = "Request ID", required = true) String requestId,
 			@RequestParam(required = false)
 			MultiValueMap<String, Object> parameters) {
 		return count(toFilter(parameters), IdmBasePermission.COUNT);

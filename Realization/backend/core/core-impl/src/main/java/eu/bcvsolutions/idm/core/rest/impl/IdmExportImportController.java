@@ -8,13 +8,14 @@ import java.util.Set;
 import javax.validation.constraints.NotNull;
 
 import org.apache.logging.log4j.util.Strings;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -46,11 +47,14 @@ import eu.bcvsolutions.idm.core.api.service.ImportManager;
 import eu.bcvsolutions.idm.core.api.utils.SpinalCase;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Export/Import controller
@@ -97,8 +101,10 @@ public class IdmExportImportController extends AbstractReadWriteDtoController<Id
 						CoreGroupPermission.EXPORTIMPORT_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -120,8 +126,10 @@ public class IdmExportImportController extends AbstractReadWriteDtoController<Id
 						CoreGroupPermission.EXPORTIMPORT_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -143,8 +151,10 @@ public class IdmExportImportController extends AbstractReadWriteDtoController<Id
 						CoreGroupPermission.EXPORTIMPORT_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -156,7 +166,17 @@ public class IdmExportImportController extends AbstractReadWriteDtoController<Id
 	@Operation(
 			summary = "Batch detail", 
 			/* nickname = "getBatch", */ 
-			/* response = IdmExportImportDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmExportImportDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmExportImportController.TAG })
     @SecurityRequirements(
         value = {
@@ -168,7 +188,7 @@ public class IdmExportImportController extends AbstractReadWriteDtoController<Id
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Batch's uuid identifier.", required = true)
+			 @Parameter(description = "Batch's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -188,7 +208,17 @@ public class IdmExportImportController extends AbstractReadWriteDtoController<Id
 	@Operation(
 			summary = "Upload new import zip. New import batch will be created.", 
 			/* nickname = "uploadImport", */ 
-			/* response = IdmExportImportDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmExportImportDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmExportImportController.TAG }, 
 						description = "Upload new import zip. New import batch will be created.")
     @SecurityRequirements(
@@ -226,7 +256,7 @@ public class IdmExportImportController extends AbstractReadWriteDtoController<Id
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Batch's uuid identifier.", required = true)
+			 @Parameter(description = "Batch's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -252,7 +282,7 @@ public class IdmExportImportController extends AbstractReadWriteDtoController<Id
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Batch's uuid identifier.", required = true)
+			 @Parameter(description = "Batch's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -274,7 +304,7 @@ public class IdmExportImportController extends AbstractReadWriteDtoController<Id
         }
     )
 	public ResponseEntity<InputStreamResource> download(
-			@Parameter(name = "Batch's uuid identifier.", required = true)
+			 @Parameter(description = "Batch's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		//
 		IdmExportImportDto batch = getDto(backendId);
@@ -314,7 +344,17 @@ public class IdmExportImportController extends AbstractReadWriteDtoController<Id
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.EXPORTIMPORT_UPDATE + "')"
 			+ " or hasAuthority('" + CoreGroupPermission.EXPORTIMPORT_ADMIN + "')")
 	@RequestMapping(value = "/{backendId}/execute-import", method = RequestMethod.PUT)
-	@Operation(summary = "Execute import", /* nickname = "executeImport", */ /* response = IdmExportImportDto.class, */ tags = {
+	@Operation(summary = "Execute import", /* nickname = "executeImport", */            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmExportImportDto.class
+                                    )
+                            )
+                    }
+            ), tags = {
 			IdmExportImportController.TAG },
 					description = "Execute import. "
 							+ "UPDATE import batch permission is needed for execute import in dry run mode, "
@@ -330,8 +370,8 @@ public class IdmExportImportController extends AbstractReadWriteDtoController<Id
             }
     )
 	public ResponseEntity<?> executeImport(
-			@Parameter(name = "Import batch UUID identifier.", required = true) @PathVariable @NotNull String backendId,
-			@Parameter(name = "Import batch is executed as dry run." ) @RequestParam("dryRun") boolean dryRun) {
+			 @Parameter(description = "Import batch UUID identifier.", required = true) @PathVariable @NotNull String backendId,
+			 @Parameter(description = "Import batch is executed as dry run." ) @RequestParam("dryRun") boolean dryRun) {
 
 		IdmExportImportDto batch = getDto(backendId);
 		if (batch == null) {

@@ -7,6 +7,7 @@ import java.util.UUID;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +35,7 @@ import eu.bcvsolutions.idm.core.api.dto.BaseDto;
 import eu.bcvsolutions.idm.core.api.entity.BaseEntity;
 import eu.bcvsolutions.idm.core.api.entity.OperationResult;
 import eu.bcvsolutions.idm.core.api.rest.AbstractReadWriteDtoController;
+import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.scheduler.api.dto.IdmProcessedTaskItemDto;
@@ -41,11 +43,14 @@ import eu.bcvsolutions.idm.core.scheduler.api.dto.filter.IdmProcessedTaskItemFil
 import eu.bcvsolutions.idm.core.scheduler.api.service.IdmProcessedTaskItemService;
 import eu.bcvsolutions.idm.core.scheduler.entity.IdmProcessedTaskItem_;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Default controller for Processed Task Item
@@ -84,7 +89,17 @@ public class IdmLongRunningTaskItemController extends AbstractReadWriteDtoContro
 	@Operation(
 			summary = "Processed task items",
 			/* nickname = "getProcessedTaskItems", */
-			/* response = IdmProcessedTaskItemDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmProcessedTaskItemDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags={ IdmLongRunningTaskItemController.TAG})
     @SecurityRequirements(
         value = {
@@ -96,7 +111,7 @@ public class IdmLongRunningTaskItemController extends AbstractReadWriteDtoContro
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Processed task's uuid identifier.", required = true)
+			 @Parameter(description = "Processed task's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -115,8 +130,10 @@ public class IdmLongRunningTaskItemController extends AbstractReadWriteDtoContro
 					CoreGroupPermission.SCHEDULER_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -142,8 +159,10 @@ public class IdmLongRunningTaskItemController extends AbstractReadWriteDtoContro
 					CoreGroupPermission.SCHEDULER_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -178,7 +197,7 @@ public class IdmLongRunningTaskItemController extends AbstractReadWriteDtoContro
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Records's uuid identifier", required = true)
+			 @Parameter(description = "Records's uuid identifier", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -200,7 +219,7 @@ public class IdmLongRunningTaskItemController extends AbstractReadWriteDtoContro
         }
     )
 	public ResponseEntity<?> addToQueue(
-			@Parameter(name = "Records's uuid identifier", required = true)
+			 @Parameter(description = "Records's uuid identifier", required = true)
 			@PathVariable @NotNull String backendId, @Valid @RequestBody UUID scheduledTask) {
 		IdmProcessedTaskItemDto itemDto = itemService.get(backendId);
 		itemService.createQueueItem(itemDto, new OperationResult(OperationState.EXECUTED), scheduledTask);

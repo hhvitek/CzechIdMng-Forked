@@ -1,20 +1,23 @@
 package eu.bcvsolutions.idm.core.workflow.rest;
 
-import eu.bcvsolutions.idm.core.api.bulk.action.BulkActionManager;
-import eu.bcvsolutions.idm.core.api.bulk.action.dto.IdmBulkActionDto;
-import eu.bcvsolutions.idm.core.api.domain.CoreResultCode;
-import eu.bcvsolutions.idm.core.api.exception.EntityNotFoundException;
-import eu.bcvsolutions.idm.core.api.exception.ResultCodeException;
-import eu.bcvsolutions.idm.core.workflow.model.dto.WorkflowHistoricTaskInstanceDto;
-import eu.bcvsolutions.idm.core.workflow.service.WorkflowProcessInstanceService;
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
+import org.activiti.engine.task.IdentityLinkType;
+import org.apache.commons.collections.CollectionUtils;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -26,10 +29,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import eu.bcvsolutions.idm.core.api.bulk.action.BulkActionManager;
+import eu.bcvsolutions.idm.core.api.bulk.action.dto.IdmBulkActionDto;
 import eu.bcvsolutions.idm.core.api.config.swagger.SwaggerConfig;
+import eu.bcvsolutions.idm.core.api.domain.CoreResultCode;
 import eu.bcvsolutions.idm.core.api.dto.IdmDelegationDefinitionDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmDelegationDto;
 import eu.bcvsolutions.idm.core.api.dto.ResultModels;
+import eu.bcvsolutions.idm.core.api.exception.EntityNotFoundException;
+import eu.bcvsolutions.idm.core.api.exception.ResultCodeException;
 import eu.bcvsolutions.idm.core.api.rest.AbstractReadDtoController;
 import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
@@ -41,24 +49,20 @@ import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
 import eu.bcvsolutions.idm.core.security.api.service.SecurityService;
 import eu.bcvsolutions.idm.core.workflow.model.dto.FormDataWrapperDto;
-import eu.bcvsolutions.idm.core.workflow.model.dto.WorkflowTaskInstanceAbstractDto;
 import eu.bcvsolutions.idm.core.workflow.model.dto.WorkflowFilterDto;
+import eu.bcvsolutions.idm.core.workflow.model.dto.WorkflowHistoricTaskInstanceDto;
+import eu.bcvsolutions.idm.core.workflow.model.dto.WorkflowTaskInstanceAbstractDto;
 import eu.bcvsolutions.idm.core.workflow.model.dto.WorkflowTaskInstanceDto;
+import eu.bcvsolutions.idm.core.workflow.service.WorkflowProcessInstanceService;
 import eu.bcvsolutions.idm.core.workflow.service.WorkflowTaskInstanceService;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import javax.validation.Valid;
-import org.activiti.engine.task.IdentityLinkType;
-import org.apache.commons.collections.CollectionUtils;
-import org.springframework.data.domain.Page;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Rest controller for workflow instance tasks
@@ -118,23 +122,35 @@ public class WorkflowTaskInstanceController extends AbstractReadDtoController<Wo
 			CoreGroupPermission.WORKFLOW_TASK_READ})
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/{backendId}")
-	@Operation(
-			summary = "Historic task instance detail",
-			/* nickname = "getHistoricTaskInstance", */
-			/* response = WorkflowTaskInstanceDto.class, */
-			tags = {WorkflowTaskInstanceController.TAG})
-	public ResponseEntity<?> get(
-			@Parameter(name = "Task instance id.", required = true)
-			@PathVariable String backendId) {
-		return super.get(backendId);
-	}
+    @RequestMapping(method = RequestMethod.GET, value = "/{backendId}")
+    @Operation(
+            summary = "Historic task instance detail",
+            /* nickname = "getHistoricTaskInstance", */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = WorkflowTaskInstanceDto.class
+                                    )
+                            )
+                    }
+            ),
+            tags = {WorkflowTaskInstanceController.TAG})
+    public ResponseEntity<?> get(
+            @Parameter(description = "Task instance id.", required = true)
+            @PathVariable String backendId) {
+        return super.get(backendId);
+    }
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/{backendId}/complete")
 	@Operation(
@@ -143,12 +159,12 @@ public class WorkflowTaskInstanceController extends AbstractReadDtoController<Wo
 			tags = {WorkflowTaskInstanceController.TAG},
 			description = "Complete task with given decision.")
 	public void completeTask(
-			@Parameter(name = "Task instance id.", required = true)
+			 @Parameter(description = "Task instance id.", required = true)
 			@PathVariable String backendId,
-			@Parameter(name = "Complete decision, variables etc.", required = true)
+			 @Parameter(description = "Complete decision, variables etc.", required = true)
 			@RequestBody FormDataWrapperDto formData) {
 		workflowTaskInstanceService.completeTask(backendId, formData.getDecision(), formData.getFormData(), formData.getVariables());
-		// 
+		//
 		// TODO: no content should be returned
 		// return new ResponseEntity<Object>(HttpStatus.NO_CONTENT);
 	}
@@ -157,11 +173,21 @@ public class WorkflowTaskInstanceController extends AbstractReadDtoController<Wo
 	@Operation(
 			summary = "Historic task instance detail",
 			/* nickname = "getHistoricTaskInstance", */
-			/* response = WorkflowTaskInstanceDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = WorkflowTaskInstanceDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = {WorkflowTaskInstanceController.TAG})
 	@Override
 	public Set<String> getPermissions(
-			@Parameter(name = "Task instance id.", required = true)
+			 @Parameter(description = "Task instance id.", required = true)
 			@PathVariable String backendId) {
 		WorkflowFilterDto context = new WorkflowFilterDto();
 		context.setOnlyInvolved(Boolean.FALSE);
@@ -245,7 +271,17 @@ public class WorkflowTaskInstanceController extends AbstractReadDtoController<Wo
 	@Operation(
 			summary = "Process bulk action",
 			/* nickname = "bulkAction", */ 
-			/* response = IdmBulkActionDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { WorkflowTaskInstanceController.TAG })
     @SecurityRequirements(
         value = {
@@ -270,7 +306,17 @@ public class WorkflowTaskInstanceController extends AbstractReadDtoController<Wo
 	@Operation(
 			summary = "Prevalidate bulk action",
 			/* nickname = "prevalidateBulkAction", */ 
-			/* response = IdmBulkActionDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { WorkflowTaskInstanceController.TAG })
     @SecurityRequirements(
         value = {

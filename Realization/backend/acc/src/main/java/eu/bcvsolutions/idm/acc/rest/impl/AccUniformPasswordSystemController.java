@@ -5,11 +5,11 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,13 +33,15 @@ import eu.bcvsolutions.idm.core.api.config.swagger.SwaggerConfig;
 import eu.bcvsolutions.idm.core.api.rest.AbstractReadWriteDtoController;
 import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
-import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.security.api.domain.Enabled;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 
 /**
@@ -86,8 +88,10 @@ public class AccUniformPasswordSystemController extends AbstractReadWriteDtoCont
                             AccGroupPermission.UNIFORM_PASSWORD_READ })
             }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -108,8 +112,10 @@ public class AccUniformPasswordSystemController extends AbstractReadWriteDtoCont
 						AccGroupPermission.UNIFORM_PASSWORD_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -131,8 +137,10 @@ public class AccUniformPasswordSystemController extends AbstractReadWriteDtoCont
 						AccGroupPermission.UNIFORM_PASSWORD_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -144,7 +152,17 @@ public class AccUniformPasswordSystemController extends AbstractReadWriteDtoCont
 	@Operation(
 			summary = "Uniform password system detail",
 			/* nickname = "getUniformPasswordSystem", */ 
-			/* response = AccUniformPasswordSystemDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = AccUniformPasswordSystemDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { AccUniformPasswordSystemController.TAG })
     @SecurityRequirements(
         value = {
@@ -156,7 +174,7 @@ public class AccUniformPasswordSystemController extends AbstractReadWriteDtoCont
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Uniform password system's uuid identifier.", required = true)
+			 @Parameter(description = "Uniform password system's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -169,7 +187,17 @@ public class AccUniformPasswordSystemController extends AbstractReadWriteDtoCont
 	@Operation(
 			summary = "Create / update uniform password system",
 			/* nickname = "postUniformPasswordSystem", */ 
-			/* response = AccUniformPasswordSystemDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = AccUniformPasswordSystemDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { AccUniformPasswordSystemController.TAG })
     @SecurityRequirements(
         value = {
@@ -193,7 +221,17 @@ public class AccUniformPasswordSystemController extends AbstractReadWriteDtoCont
 	@Operation(
 			summary = "Update uniform password system",
 			/* nickname = "putUniformPassword", */ 
-			/* response = AccUniformPasswordSystemDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = AccUniformPasswordSystemDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { AccUniformPasswordSystemController.TAG })
     @SecurityRequirements(
         value = {
@@ -205,7 +243,7 @@ public class AccUniformPasswordSystemController extends AbstractReadWriteDtoCont
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Uniform password system's uuid identifier.", required = true)
+			 @Parameter(description = "Uniform password system's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @NotNull AccUniformPasswordSystemDto dto) {
 		return super.put(backendId, dto);
@@ -218,7 +256,17 @@ public class AccUniformPasswordSystemController extends AbstractReadWriteDtoCont
 	@Operation(
 			summary = "Update uniform password system",
 			/* nickname = "patchUniformPasswordSystem", */ 
-			/* response = AccUniformPasswordSystemDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = AccUniformPasswordSystemDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { AccUniformPasswordSystemController.TAG })
     @SecurityRequirements(
         value = {
@@ -230,7 +278,7 @@ public class AccUniformPasswordSystemController extends AbstractReadWriteDtoCont
         }
     )
 	public ResponseEntity<?> patch(
-			@Parameter(name = "Uniform password system's uuid identifier.", required = true)
+			 @Parameter(description = "Uniform password system's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -255,7 +303,7 @@ public class AccUniformPasswordSystemController extends AbstractReadWriteDtoCont
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Uniform password system's uuid identifier.", required = true)
+			 @Parameter(description = "Uniform password system's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -278,7 +326,7 @@ public class AccUniformPasswordSystemController extends AbstractReadWriteDtoCont
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Uniform password system's uuid identifier.", required = true)
+			 @Parameter(description = "Uniform password system's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}

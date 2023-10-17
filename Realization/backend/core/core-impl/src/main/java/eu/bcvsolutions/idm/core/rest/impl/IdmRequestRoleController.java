@@ -6,12 +6,12 @@ import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.MediaType;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.Assert;
@@ -51,11 +51,14 @@ import eu.bcvsolutions.idm.core.model.entity.IdmIdentity;
 import eu.bcvsolutions.idm.core.model.entity.IdmRole;
 import eu.bcvsolutions.idm.core.rest.AbstractRequestDtoController;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Request for roles
@@ -113,9 +116,11 @@ public class IdmRequestRoleController extends AbstractRequestDtoController<IdmRo
                             CoreGroupPermission.ROLE_READ })
             }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@PathVariable @NotNull String requestId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(requestId, parameters, pageable);
 	}
@@ -136,9 +141,11 @@ public class IdmRequestRoleController extends AbstractRequestDtoController<IdmRo
                             CoreGroupPermission.ROLE_READ })
             }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@PathVariable @NotNull String requestId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(requestId, parameters, pageable);
 	}
@@ -158,9 +165,11 @@ public class IdmRequestRoleController extends AbstractRequestDtoController<IdmRo
                             CoreGroupPermission.ROLE_AUTOCOMPLETE })
             }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@PathVariable @NotNull String requestId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -172,7 +181,17 @@ public class IdmRequestRoleController extends AbstractRequestDtoController<IdmRo
 	@Operation(
 			summary = "Role detail", 
 			/* nickname = "getRole", */ 
-			/* response = IdmRoleDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRoleDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmRequestRoleController.TAG })
     @SecurityRequirements(
         value = {
@@ -185,7 +204,7 @@ public class IdmRequestRoleController extends AbstractRequestDtoController<IdmRo
     )
 	public ResponseEntity<?> get(
 			@PathVariable @NotNull String requestId,
-			@Parameter(name = "Role's uuid identifier or code.", required = true)
+			 @Parameter(description = "Role's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(requestId, backendId);
 	}
@@ -198,7 +217,17 @@ public class IdmRequestRoleController extends AbstractRequestDtoController<IdmRo
 	@Operation(
 			summary = "Create / update role", 
 			/* nickname = "postRequestRole", */ 
-			/* response = IdmRoleDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRoleDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmRequestRoleController.TAG })
     @SecurityRequirements(
         value = {
@@ -222,7 +251,17 @@ public class IdmRequestRoleController extends AbstractRequestDtoController<IdmRo
 	@Operation(
 			summary = "Update role",
 			/* nickname = "putRequestRole", */ 
-			/* response = IdmRole.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRole.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmRequestRoleController.TAG })
     @SecurityRequirements(
         value = {
@@ -234,7 +273,7 @@ public class IdmRequestRoleController extends AbstractRequestDtoController<IdmRo
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Role's uuid identifier or code.", required = true)
+			 @Parameter(description = "Role's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String requestId,
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmRoleDto dto) {
@@ -260,7 +299,7 @@ public class IdmRequestRoleController extends AbstractRequestDtoController<IdmRo
     )
 	public ResponseEntity<?> delete(
 			@PathVariable @NotNull String requestId,
-			@Parameter(name = "Role's uuid identifier or code.", required = true)
+			 @Parameter(description = "Role's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(requestId, backendId);
 	}
@@ -285,7 +324,7 @@ public class IdmRequestRoleController extends AbstractRequestDtoController<IdmRo
     )
 	public Set<String> getPermissions(
 			@PathVariable @NotNull String requestId,
-			@Parameter(name = "Role's uuid identifier or code.", required = true)
+			 @Parameter(description = "Role's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(requestId, backendId);
 	}
@@ -314,7 +353,7 @@ public class IdmRequestRoleController extends AbstractRequestDtoController<IdmRo
         }
     )
 	public ResponseEntity<?> getFormDefinitions(
-			@Parameter(name = "Role's uuid identifier or code.", required = true)
+			 @Parameter(description = "Role's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return formDefinitionController.getDefinitions(IdmRole.class);
 	}
@@ -343,9 +382,9 @@ public class IdmRequestRoleController extends AbstractRequestDtoController<IdmRo
     )
 	public EntityModel<?> getFormValues(
 			@PathVariable @NotNull String requestId,
-			@Parameter(name = "Role's uuid identifier or code.", required = true)
+			 @Parameter(description = "Role's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId, 
-			@Parameter(name = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
+			 @Parameter(description = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
 			@RequestParam(name = "definitionCode", required = false) String definitionCode) {
 		IdmRoleDto dto = getDto(requestId, backendId);
 		if (dto == null) {
@@ -382,9 +421,9 @@ public class IdmRequestRoleController extends AbstractRequestDtoController<IdmRo
     )
 	public EntityModel<?> saveFormValues(
 			@PathVariable @NotNull String requestId,
-			@Parameter(name = "Role's uuid identifier or code.", required = true)
+			 @Parameter(description = "Role's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId,
-			@Parameter(name = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
+			 @Parameter(description = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
 			@RequestParam(name = "definitionCode", required = false) String definitionCode,
 			@RequestBody @Valid List<IdmFormValueDto> formValues) {		
 		IdmRoleDto dto = getDto(requestId, backendId);
@@ -407,7 +446,17 @@ public class IdmRequestRoleController extends AbstractRequestDtoController<IdmRo
 	@Operation(
 			summary = "Create request for role",
 			/* nickname = "createRequestForRole", */
-			/* response = IdmRequestDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRequestDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmRequestRoleController.TAG })
     @SecurityRequirements(
             value = {
@@ -441,7 +490,7 @@ public class IdmRequestRoleController extends AbstractRequestDtoController<IdmRo
     )
 	public CollectionModel<?> getIncompatibleRoles(
 			@PathVariable @NotNull String requestId,
-			@Parameter(name = "Roles's uuid identifier or code.", required = true)
+			 @Parameter(description = "Roles's uuid identifier or code.", required = true)
 			@PathVariable String backendId) {	
 		IdmRoleDto role = getDto(backendId);
 		if (role == null) {

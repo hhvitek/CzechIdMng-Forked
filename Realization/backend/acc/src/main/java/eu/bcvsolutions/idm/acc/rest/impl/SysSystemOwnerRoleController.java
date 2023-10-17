@@ -6,11 +6,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,11 +34,14 @@ import eu.bcvsolutions.idm.acc.service.api.SysSystemOwnerRoleService;
 import eu.bcvsolutions.idm.core.api.config.swagger.SwaggerConfig;
 import eu.bcvsolutions.idm.core.api.rest.AbstractEventableDtoController;
 import eu.bcvsolutions.idm.core.api.rest.BaseController;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * system owner controller - by role
@@ -82,8 +85,10 @@ public class SysSystemOwnerRoleController extends AbstractEventableDtoController
 						AccGroupPermission.SYSTEMOWNERROLE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -105,8 +110,10 @@ public class SysSystemOwnerRoleController extends AbstractEventableDtoController
 						AccGroupPermission.SYSTEMOWNERROLE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -128,8 +135,10 @@ public class SysSystemOwnerRoleController extends AbstractEventableDtoController
 						AccGroupPermission.SYSTEMOWNERROLE_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -162,7 +171,17 @@ public class SysSystemOwnerRoleController extends AbstractEventableDtoController
 	@Operation(
 			summary = "system owner role detail", 
 			/* nickname = "getSystemOwnerRole", */ 
-			/* response = SysSystemOwnerRoleDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysSystemOwnerRoleDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { SysSystemOwnerRoleController.TAG })
     @SecurityRequirements(
         value = {
@@ -174,7 +193,7 @@ public class SysSystemOwnerRoleController extends AbstractEventableDtoController
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "System owner's uuid identifier.", required = true)
+			 @Parameter(description = "System owner's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -187,7 +206,17 @@ public class SysSystemOwnerRoleController extends AbstractEventableDtoController
 	@Operation(
 			summary = "Create / update system owner role", 
 			/* nickname = "postSystemOwnerRole", */ 
-			/* response = SysSystemOwnerRoleDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysSystemOwnerRoleDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { SysSystemOwnerRoleController.TAG })
     @SecurityRequirements(
         value = {
@@ -211,7 +240,17 @@ public class SysSystemOwnerRoleController extends AbstractEventableDtoController
 	@Operation(
 			summary = "Update system owner role", 
 			/* nickname = "putSystemOwnerRole", */ 
-			/* response = SysSystemOwnerRoleDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysSystemOwnerRoleDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { SysSystemOwnerRoleController.TAG })
     @SecurityRequirements(
         value = {
@@ -223,7 +262,7 @@ public class SysSystemOwnerRoleController extends AbstractEventableDtoController
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "System owner's uuid identifier.", required = true)
+			 @Parameter(description = "System owner's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody SysSystemOwnerRoleDto dto) {
 		return super.put(backendId, dto);
@@ -236,7 +275,17 @@ public class SysSystemOwnerRoleController extends AbstractEventableDtoController
 	@Operation(
 			summary = "Update system owner role", 
 			/* nickname = "patchSystemOwnerRole", */ 
-			/* response = SysSystemOwnerRoleDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysSystemOwnerRoleDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { SysSystemOwnerRoleController.TAG })
     @SecurityRequirements(
         value = {
@@ -248,7 +297,7 @@ public class SysSystemOwnerRoleController extends AbstractEventableDtoController
         }
     )
 	public ResponseEntity<?> patch(
-			@Parameter(name = "System owner's uuid identifier.", required = true)
+			 @Parameter(description = "System owner's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -273,7 +322,7 @@ public class SysSystemOwnerRoleController extends AbstractEventableDtoController
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "System owner's uuid identifier.", required = true)
+			 @Parameter(description = "System owner's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -296,7 +345,7 @@ public class SysSystemOwnerRoleController extends AbstractEventableDtoController
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "System owner's uuid identifier.", required = true)
+			 @Parameter(description = "System owner's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}

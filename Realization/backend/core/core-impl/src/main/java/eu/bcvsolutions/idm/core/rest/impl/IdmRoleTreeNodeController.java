@@ -5,12 +5,12 @@ import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.Assert;
@@ -36,11 +36,14 @@ import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.api.service.IdmAutomaticRoleRequestService;
 import eu.bcvsolutions.idm.core.api.service.IdmRoleTreeNodeService;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Automatic role controller
@@ -87,8 +90,10 @@ public class IdmRoleTreeNodeController extends AbstractReadWriteDtoController<Id
 						CoreGroupPermission.ROLETREENODE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -109,8 +114,10 @@ public class IdmRoleTreeNodeController extends AbstractReadWriteDtoController<Id
 						CoreGroupPermission.ROLETREENODE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -131,8 +138,10 @@ public class IdmRoleTreeNodeController extends AbstractReadWriteDtoController<Id
 						CoreGroupPermission.ROLETREENODE_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -165,7 +174,17 @@ public class IdmRoleTreeNodeController extends AbstractReadWriteDtoController<Id
 	@Operation(
 			summary = "Automatic role detail",
 			/* nickname = "getRoleTreeNode", */ 
-			/* response = IdmRoleTreeNodeDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRoleTreeNodeDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmRoleTreeNodeController.TAG })
     @SecurityRequirements(
         value = {
@@ -177,7 +196,7 @@ public class IdmRoleTreeNodeController extends AbstractReadWriteDtoController<Id
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Automatic role's uuid identifier.", required = true)
+			 @Parameter(description = "Automatic role's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -191,7 +210,17 @@ public class IdmRoleTreeNodeController extends AbstractReadWriteDtoController<Id
 	@Operation(
 			summary = "Create / update automatic role",
 			/* nickname = "postRoleTreeNode", */ 
-			/* response = IdmRoleTreeNodeDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRoleTreeNodeDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmRoleTreeNodeController.TAG },
 			description = "If role has guarantee assigned, then automatic role has to be approved by him at first (configurable by entity event processor).")
     @SecurityRequirements(
@@ -231,7 +260,7 @@ public class IdmRoleTreeNodeController extends AbstractReadWriteDtoController<Id
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Automatic role's uuid identifier.", required = true)
+			 @Parameter(description = "Automatic role's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		IdmRoleTreeNodeDto automaticRole = this.getDto(backendId);
 		Assert.notNull(automaticRole, "Automatic role is required.");
@@ -258,7 +287,7 @@ public class IdmRoleTreeNodeController extends AbstractReadWriteDtoController<Id
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Automatic role's uuid identifier.", required = true)
+			 @Parameter(description = "Automatic role's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}

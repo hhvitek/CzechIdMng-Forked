@@ -12,12 +12,12 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -57,11 +57,14 @@ import eu.bcvsolutions.idm.ic.exception.IcRemoteServerException;
 import eu.bcvsolutions.idm.ic.exception.IcServerNotFoundException;
 import eu.bcvsolutions.idm.ic.service.api.IcConfigurationFacade;
 import eu.bcvsolutions.idm.ic.service.api.IcConfigurationService;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 
 /**
@@ -114,8 +117,10 @@ public class SysRemoteServerController extends AbstractReadWriteDtoController<Sy
 						AccGroupPermission.REMOTESERVER_READ})
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -136,8 +141,10 @@ public class SysRemoteServerController extends AbstractReadWriteDtoController<Sy
 						AccGroupPermission.REMOTESERVER_READ})
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -159,8 +166,10 @@ public class SysRemoteServerController extends AbstractReadWriteDtoController<Sy
 						AccGroupPermission.REMOTESERVER_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -193,7 +202,17 @@ public class SysRemoteServerController extends AbstractReadWriteDtoController<Sy
 	@Operation(
 			summary = "Remote server detail",
 			/* nickname = "getRemoteServer", */ 
-			/* response = SysConnectorServerDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysConnectorServerDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { SysRemoteServerController.TAG })
     @SecurityRequirements(
         value = {
@@ -205,7 +224,7 @@ public class SysRemoteServerController extends AbstractReadWriteDtoController<Sy
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Remote server's uuid identifier.", required = true)
+			 @Parameter(description = "Remote server's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -218,7 +237,17 @@ public class SysRemoteServerController extends AbstractReadWriteDtoController<Sy
 	@Operation(
 			summary = "Create / update remote server",
 			/* nickname = "postRemoteServer", */ 
-			/* response = SysConnectorServerDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysConnectorServerDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { SysRemoteServerController.TAG })
     @SecurityRequirements(
         value = {
@@ -242,7 +271,17 @@ public class SysRemoteServerController extends AbstractReadWriteDtoController<Sy
 	@Operation(
 			summary = "Update remote server",
 			/* nickname = "putRemoteServer", */ 
-			/* response = SysConnectorServerDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysConnectorServerDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { SysRemoteServerController.TAG })
     @SecurityRequirements(
         value = {
@@ -254,7 +293,7 @@ public class SysRemoteServerController extends AbstractReadWriteDtoController<Sy
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Remote server's uuid identifier.", required = true)
+			 @Parameter(description = "Remote server's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @NotNull SysConnectorServerDto dto) {
 		return super.put(backendId, dto);
@@ -267,7 +306,17 @@ public class SysRemoteServerController extends AbstractReadWriteDtoController<Sy
 	@Operation(
 			summary = "Patch remote server",
 			/* nickname = "patchRemote server", */
-			/* response = SysConnectorServerDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysConnectorServerDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { SysRemoteServerController.TAG })
     @SecurityRequirements(
         value = {
@@ -279,7 +328,7 @@ public class SysRemoteServerController extends AbstractReadWriteDtoController<Sy
         }
     )
 	public ResponseEntity<?> patch(
-			@Parameter(name = "Remote server uuid identifier.", required = true)
+			 @Parameter(description = "Remote server uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -304,7 +353,7 @@ public class SysRemoteServerController extends AbstractReadWriteDtoController<Sy
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Remote server's uuid identifier.", required = true)
+			 @Parameter(description = "Remote server's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -330,7 +379,7 @@ public class SysRemoteServerController extends AbstractReadWriteDtoController<Sy
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Remote server uuid identifier.", required = true)
+			 @Parameter(description = "Remote server uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -363,7 +412,17 @@ public class SysRemoteServerController extends AbstractReadWriteDtoController<Sy
 	@Operation(
 			summary = "Process bulk action for remote server",
 			/* nickname = "bulkAction", */
-			/* response = IdmBulkActionDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { SysRemoteServerController.TAG })
     @SecurityRequirements(
         value = {
@@ -385,7 +444,17 @@ public class SysRemoteServerController extends AbstractReadWriteDtoController<Sy
 	@Operation(
 			summary = "Prevalidate bulk action for remote server",
 			/* nickname = "prevalidateBulkAction", */
-			/* response = IdmBulkActionDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { SysRemoteServerController.TAG })
     @SecurityRequirements(
         value = {
@@ -420,7 +489,7 @@ public class SysRemoteServerController extends AbstractReadWriteDtoController<Sy
         }
     )
 	public ResponseEntity<Map<String, Set<IcConnectorInfo>>> getConnectorFrameworks(
-			@Parameter(name = "Remote server uuid identifier or code.", required = true)
+			 @Parameter(description = "Remote server uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysConnectorServerDto connectorServer = getDto(backendId);
 		if (connectorServer == null) {
@@ -472,7 +541,7 @@ public class SysRemoteServerController extends AbstractReadWriteDtoController<Sy
         }
     )
 	public CollectionModel<ConnectorTypeDto> getConnectorTypes(
-			@Parameter(name = "Remote server uuid identifier or code.", required = true)
+			 @Parameter(description = "Remote server uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysConnectorServerDto connectorServer = getDto(backendId);
 		if (connectorServer == null) {

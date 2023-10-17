@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.envers.exception.RevisionDoesNotExistException;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
@@ -21,9 +22,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.RepresentationModel;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -103,11 +104,14 @@ import eu.bcvsolutions.idm.core.rest.LongPollingSubscriber;
 import eu.bcvsolutions.idm.core.security.api.domain.IdentityBasePermission;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
 import eu.bcvsolutions.idm.core.security.api.service.GrantedAuthoritiesFactory;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Rest methods for IdmIdentity resource
@@ -172,8 +176,10 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 						CoreGroupPermission.IDENTITY_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -195,8 +201,10 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 						CoreGroupPermission.IDENTITY_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -218,8 +226,10 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 						CoreGroupPermission.IDENTITY_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -252,7 +262,17 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@Operation(
 			summary = "Identity detail", 
 			/* nickname = "getIdentity", */ 
-			/* response = IdmIdentityDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmIdentityDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmIdentityController.TAG })
     @SecurityRequirements(
         value = {
@@ -264,7 +284,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -277,7 +297,17 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@Operation(
 			summary = "Create / update identity", 
 			/* nickname = "postIdentity", */ 
-			/* response = IdmIdentityDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmIdentityDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmIdentityController.TAG })
     @SecurityRequirements(
         value = {
@@ -301,7 +331,17 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@Operation(
 			summary = "Update identity", 
 			/* nickname = "putIdentity", */ 
-			/* response = IdmIdentityDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmIdentityDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmIdentityController.TAG })
     @SecurityRequirements(
         value = {
@@ -313,7 +353,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
         }
     )
 	public ResponseEntity<?> put(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmIdentityDto dto) {
 		return super.put(backendId, dto);
@@ -326,7 +366,17 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@Operation(
 			summary = "Update identity", 
 			/* nickname = "patchIdentity", */ 
-			/* response = IdmIdentityDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmIdentityDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmIdentityController.TAG })
     @SecurityRequirements(
         value = {
@@ -338,7 +388,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
         }
     )
 	public ResponseEntity<?> patch(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -356,7 +406,17 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@Operation(
 			summary = "Activate identity", 
 			/* nickname = "activateIdentity", */ 
-			/* response = IdmIdentityDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmIdentityDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmIdentityController.TAG }, 
 						description = "Enable manually disabled identity. Identity will have automatically recounted state assigned by their contract state." )
     @SecurityRequirements(
@@ -369,7 +429,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
         }
     )
 	public ResponseEntity<?> enable(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		IdmIdentityDto identity = getDto(backendId);
 		if (identity == null) {
@@ -389,7 +449,17 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@Operation(
 			summary = "Disable identity", 
 			/* nickname = "disableIdentity", */ 
-			/* response = IdmIdentityDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmIdentityDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmIdentityController.TAG },
 			description = "Disable identity manually. This identity will be disabled even with valid contracts."
 					+ " Identity can be enabled manually again only. See 'enable' method." )
@@ -402,7 +472,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
         }
     )
 	public ResponseEntity<?> disable(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		IdmIdentityDto identity = getDto(backendId);
 		if (identity == null) {
@@ -429,7 +499,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
         }
     )
 	public ResponseEntity<?> delete(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -455,7 +525,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -499,7 +569,17 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@Operation(
 			summary = "Process bulk action for identity", 
 			/* nickname = "bulkAction", */ 
-			/* response = IdmBulkActionDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmIdentityController.TAG })
     @SecurityRequirements(
         value = {
@@ -527,7 +607,17 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@Operation(
 			summary = "Prevalidate bulk action for identities", 
 			/* nickname = "prevalidateBulkAction", */ 
-			/* response = IdmBulkActionDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmIdentityController.TAG })
     @SecurityRequirements(
         value = {
@@ -549,7 +639,17 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@Operation(
 			summary = "Preprocess bulk action for identities", 
 			/* nickname = "preprocessBulkAction", */ 
-			/* response = IdmBulkActionDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmIdentityController.TAG })
     @SecurityRequirements(
         value = {
@@ -587,7 +687,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
         }
     )
 	public List<? extends GrantedAuthority> getGrantedAuthotrities(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable String backendId) {
 		IdmIdentityDto identity = getDto(backendId);
 		if (identity == null) {
@@ -616,7 +716,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
         }
     )
 	public CollectionModel<?> getIncompatibleRoles(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable String backendId) {	
 		IdmIdentityDto identity = getDto(backendId);
 		if (identity == null) {
@@ -664,7 +764,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
         }
     )
 	public ResponseEntity<?> organizationPosition(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable String backendId) {
 		IdmIdentityDto identity = getDto(backendId);
 		if (identity == null) {
@@ -701,9 +801,9 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
         }
     )
 	public ResponseEntity<?> findRevision(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable("backendId") String backendId, 
-			@Parameter(name = "Revision identifier.", required = true)
+			 @Parameter(description = "Revision identifier.", required = true)
 			@PathVariable("revId") Long revId) {
 		IdmIdentityDto originalEntity = getDto(backendId);
 		if (originalEntity == null) {
@@ -737,7 +837,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
         }
     )
 	public CollectionModel<?> findRevisions(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable("backendId") String backendId, 
 			Pageable pageable) {
 		IdmIdentityDto originalEntity = getDto(backendId);
@@ -769,7 +869,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
         }
     )
 	public ResponseEntity<?> getFormDefinitions(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getFormDefinitions(backendId);
 	}
@@ -792,7 +892,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
         }
     )
 	public EntityModel<?> prepareFormValues(
-			@Parameter(name = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
+			 @Parameter(description = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
 			@RequestParam(name = IdmFormAttributeFilter.PARAMETER_FORM_DEFINITION_CODE, required = false) String definitionCode) {
 		return super.prepareFormValues(definitionCode);
 	}
@@ -820,9 +920,9 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
         }
     )
 	public EntityModel<?> getFormValues(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId, 
-			@Parameter(name = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
+			 @Parameter(description = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
 			@RequestParam(name = IdmFormAttributeFilter.PARAMETER_FORM_DEFINITION_CODE, required = false) String definitionCode) {
 		IdmIdentityDto dto = getDto(backendId);
 		if (dto == null) {
@@ -865,11 +965,11 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
         }
     )
 	public EntityModel<?> saveFormValues(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId,
-			@Parameter(name = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
+			 @Parameter(description = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
 			@RequestParam(name = IdmFormAttributeFilter.PARAMETER_FORM_DEFINITION_CODE, required = false) String definitionCode,
-			@Parameter(name = "Filled form data.", required = true)
+			 @Parameter(description = "Filled form data.", required = true)
 			@RequestBody @Valid List<IdmFormValueDto> formValues) {		
 		IdmIdentityDto dto = getDto(backendId);
 		if (dto == null) {
@@ -912,7 +1012,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
         }
     )
 	public EntityModel<?> saveFormValue(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @Valid IdmFormValueDto formValue) {		
 		IdmIdentityDto dto = getDto(backendId);
@@ -949,9 +1049,9 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
         }
     )
 	public ResponseEntity<InputStreamResource> downloadFormValue(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable String backendId,
-			@Parameter(name = "Form value identifier.", required = true)
+			 @Parameter(description = "Form value identifier.", required = true)
 			@PathVariable String formValueId) {
 		IdmIdentityDto dto = getDto(backendId);
 		if (dto == null) {
@@ -990,9 +1090,9 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
         }
     )
 	public ResponseEntity<InputStreamResource> previewFormValue(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable String backendId,
-			@Parameter(name = "Form value identifier.", required = true)
+			 @Parameter(description = "Form value identifier.", required = true)
 			@PathVariable String formValueId) {
 		IdmIdentityDto dto = getDto(backendId);
 		if (dto == null) {
@@ -1030,7 +1130,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
         }
     )
 	public ResponseEntity<?> getProfile(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable String backendId) {
 		IdmProfileDto profile = profileService.findOneByIdentity(backendId, IdmBasePermission.READ);
 		if (profile == null) {
@@ -1064,7 +1164,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
         }
     )
 	public ResponseEntity<?> patchProfile(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable String backendId,
 			HttpServletRequest nativeRequest) throws HttpMessageNotReadableException {
 		IdmProfileDto profile = profileService.findOrCreateByIdentity(backendId, IdmBasePermission.UPDATE);
@@ -1096,7 +1196,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
         }
     )
 	public ResponseEntity<InputStreamResource> getProfileImage(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable String backendId) {
 		IdmProfileDto profile = profileService.findOneByIdentity(backendId, IdmBasePermission.AUTOCOMPLETE);
 		if (profile == null) {
@@ -1153,7 +1253,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
         }
     )
 	public ResponseEntity<?> uploadProfileImage(
-			@Parameter(name = "Identity's uuid identifier or username.", required = false) 
+			 @Parameter(description = "Identity's uuid identifier or username.", required = false) 
 			@PathVariable String backendId,
 			@RequestParam(required = true, name = "fileName") @NotNull String fileName,
 			@RequestParam(required = true, name = "data") MultipartFile data) {
@@ -1192,7 +1292,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
         }
     )
 	public ResponseEntity<?> deleteProfileImage(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable String backendId) {
 		IdmProfileDto profile = profileService.findOneByIdentity(backendId, IdmBasePermission.READ, IdmBasePermission.UPDATE);
 		//
@@ -1231,9 +1331,9 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
         }
     )
 	public ResponseEntity<?> collapsePanel(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId,
-			@Parameter(name = "Panel identifier - uiKey.", required = true)
+			 @Parameter(description = "Panel identifier - uiKey.", required = true)
 			@PathVariable @NotNull String panelId) {
 		IdmIdentityDto identity = getDto(backendId);
 		if (identity == null) {
@@ -1275,9 +1375,9 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
         }
     )
 	public ResponseEntity<?> expandPanel(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId,
-			@Parameter(name = "Panel identifier - uiKey.", required = true)
+			 @Parameter(description = "Panel identifier - uiKey.", required = true)
 			@PathVariable @NotNull String panelId) {
 		IdmIdentityDto identity = getDto(backendId);
 		if (identity == null) {
@@ -1319,7 +1419,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
         }
     )
 	public Set<String> getProfilePermissions(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		IdmProfileDto profile = profileService.findOneByIdentity(backendId);
 		if (profile == null) {
@@ -1341,7 +1441,17 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@Operation(
 			summary = "Get password by identity", 
 			/* nickname = "getIdentityPassword", */
-			/* response = IdmPasswordDto.class, */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmPasswordDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmPasswordController.TAG })
     @SecurityRequirements(
         value = {
@@ -1353,7 +1463,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
         }
     )
 	public ResponseEntity<?> getPassword(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		IdmIdentityDto dto = getDto(backendId);
 		if (dto == null) {
@@ -1399,7 +1509,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
         }
     )
 	public DeferredResult<OperationResultDto> checkUnresolvedRequests(
-			@Parameter(name = "Identity's uuid identifier or username.", required = true) @PathVariable @NotNull String backendId) {
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true) @PathVariable @NotNull String backendId) {
 		
 		IdmIdentityDto dto = getDto(backendId);
 		if (dto == null) {

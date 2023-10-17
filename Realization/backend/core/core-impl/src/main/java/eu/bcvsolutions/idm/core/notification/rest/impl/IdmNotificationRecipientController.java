@@ -4,11 +4,11 @@ import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -28,11 +28,14 @@ import eu.bcvsolutions.idm.core.notification.api.dto.IdmNotificationRecipientDto
 import eu.bcvsolutions.idm.core.notification.api.dto.filter.IdmNotificationRecipientFilter;
 import eu.bcvsolutions.idm.core.notification.api.service.IdmNotificationRecipientService;
 import eu.bcvsolutions.idm.core.notification.domain.NotificationGroupPermission;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Read notification recipients.
@@ -76,8 +79,10 @@ public class IdmNotificationRecipientController extends AbstractReadWriteDtoCont
 						NotificationGroupPermission.NOTIFICATION_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -98,8 +103,10 @@ public class IdmNotificationRecipientController extends AbstractReadWriteDtoCont
 						NotificationGroupPermission.NOTIFICATION_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -132,7 +139,17 @@ public class IdmNotificationRecipientController extends AbstractReadWriteDtoCont
 	@Operation(
 			summary = "Notification recipient detail", 
 			/* nickname = "getNotificationRecipient", */ 
-			/* response = IdmNotificationRecipientDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmNotificationRecipientDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmNotificationRecipientController.TAG })
     @SecurityRequirements(
         value = {
@@ -144,7 +161,7 @@ public class IdmNotificationRecipientController extends AbstractReadWriteDtoCont
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Recipient's uuid identifier.", required = true)
+			 @Parameter(description = "Recipient's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -167,7 +184,7 @@ public class IdmNotificationRecipientController extends AbstractReadWriteDtoCont
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Notification recipient uuid identifier.", required = true)
+			 @Parameter(description = "Notification recipient uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}

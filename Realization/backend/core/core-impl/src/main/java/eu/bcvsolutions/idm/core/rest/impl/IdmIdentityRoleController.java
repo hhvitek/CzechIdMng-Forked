@@ -4,14 +4,13 @@ import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
-import eu.bcvsolutions.idm.core.api.dto.filter.BaseRoleAssignmentFilter;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -30,6 +29,7 @@ import eu.bcvsolutions.idm.core.api.domain.CoreResultCode;
 import eu.bcvsolutions.idm.core.api.dto.IdmIdentityDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmIdentityRoleDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmRoleDto;
+import eu.bcvsolutions.idm.core.api.dto.filter.BaseRoleAssignmentFilter;
 import eu.bcvsolutions.idm.core.api.dto.filter.IdmIdentityRoleFilter;
 import eu.bcvsolutions.idm.core.api.exception.ResultCodeException;
 import eu.bcvsolutions.idm.core.api.rest.AbstractReadWriteDtoController;
@@ -44,11 +44,14 @@ import eu.bcvsolutions.idm.core.eav.rest.impl.IdmFormDefinitionController;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.model.entity.IdmIdentityRole_;
 import eu.bcvsolutions.idm.core.security.api.domain.RoleBasePermission;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Identity role controller
@@ -97,8 +100,10 @@ public class IdmIdentityRoleController extends AbstractReadWriteDtoController<Id
 						CoreGroupPermission.IDENTITYROLE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -119,8 +124,10 @@ public class IdmIdentityRoleController extends AbstractReadWriteDtoController<Id
 						CoreGroupPermission.IDENTITYROLE_READ })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -141,8 +148,10 @@ public class IdmIdentityRoleController extends AbstractReadWriteDtoController<Id
 						CoreGroupPermission.IDENTITYROLE_AUTOCOMPLETE })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -163,8 +172,10 @@ public class IdmIdentityRoleController extends AbstractReadWriteDtoController<Id
 						CoreGroupPermission.IDENTITYROLE_CANBEREQUESTED })
         }
     )
+	@PageableAsQueryParam
 	public CollectionModel<?> findCanBeRequested(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return toCollectionModel(find(toFilter(parameters), pageable, RoleBasePermission.CANBEREQUESTED), getDtoClass());
 	}
@@ -197,7 +208,17 @@ public class IdmIdentityRoleController extends AbstractReadWriteDtoController<Id
 	@Operation(
 			summary = "Identity role detail",
 			/* nickname = "getIdentityRole", */ 
-			/* response = IdmIdentityRoleDto.class, */ 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmIdentityRoleDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmIdentityRoleController.TAG })
     @SecurityRequirements(
         value = {
@@ -209,7 +230,7 @@ public class IdmIdentityRoleController extends AbstractReadWriteDtoController<Id
         }
     )
 	public ResponseEntity<?> get(
-			@Parameter(name = "Identity role's uuid identifier.", required = true)
+			 @Parameter(description = "Identity role's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -232,7 +253,7 @@ public class IdmIdentityRoleController extends AbstractReadWriteDtoController<Id
         }
     )
 	public Set<String> getPermissions(
-			@Parameter(name = "Identity role's uuid identifier.", required = true)
+			 @Parameter(description = "Identity role's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -261,7 +282,7 @@ public class IdmIdentityRoleController extends AbstractReadWriteDtoController<Id
         }
     )
 	public ResponseEntity<?> getFormDefinitions(
-			@Parameter(name = "Role's uuid identifier or code.", required = true)
+			 @Parameter(description = "Role's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		
 		IdmIdentityRoleDto dto = getDto(backendId);
@@ -303,9 +324,9 @@ public class IdmIdentityRoleController extends AbstractReadWriteDtoController<Id
         }
     )
 	public EntityModel<?> getFormValues(
-			@Parameter(name = "Identity role's uuid identifier or code.", required = true)
+			 @Parameter(description = "Identity role's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId, 
-			@Parameter(name = "Code of form definition (default will be used if no code is given)."
+			 @Parameter(description = "Code of form definition (default will be used if no code is given)."
 					+ " In this case is code of definition ignored, we will loaded only definition by given role and sub-definition.",
 					required = false, example = FormService.DEFAULT_DEFINITION_CODE)
 			@RequestParam(name = "definitionCode", required = false) String definitionCode) {
