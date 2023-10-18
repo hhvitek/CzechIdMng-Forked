@@ -26,9 +26,9 @@ public class VsConnectorObjectDto extends AbstractDto {
 	
 	@NotEmpty
 	@Size(min = 1, max = DefaultFieldLengths.NAME)
-	@Schema(required = true, description = "Unique account identifier. UID on system and for connector.")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Unique account identifier. UID on system and for connector.")
 	private String uid;
-	@Schema(required = false, description = "Object attributes with mark changes")
+	@Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, description = "Object attributes with mark changes")
 	private List<SysAttributeDifferenceDto> attributes;
 
 	public String getUid() {

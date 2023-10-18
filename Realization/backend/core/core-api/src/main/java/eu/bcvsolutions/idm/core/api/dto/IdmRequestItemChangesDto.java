@@ -26,9 +26,9 @@ public class IdmRequestItemChangesDto implements Serializable {
 	
 	@NotEmpty
 	@Size(min = 1, max = DefaultFieldLengths.NAME)
-	@Schema(required = true, description = "Request item")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Request item")
 	private IdmRequestItemDto requestItem;
-	@Schema(required = false, description = "Object attributes with mark changes")
+	@Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, description = "Object attributes with mark changes")
 	private List<IdmRequestItemAttributeDto> attributes;
 
 	public IdmRequestItemDto getRequestItem() {

@@ -27,15 +27,15 @@ public class VsSystemDto extends AbstractDto {
 
 	@NotEmpty
 	@Size(min = 1, max = DefaultFieldLengths.NAME)
-	@Schema(required = true, description = "Name of vs system")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Name of vs system")
 	private String name;
-	@Schema(required = false, description = "Identities in IdM. Will be implementers for this system.")
+	@Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, description = "Identities in IdM. Will be implementers for this system.")
 	private List<UUID> implementers;
-	@Schema(required = false, description = "Roles where his identities will be implementers for this system.")
+	@Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, description = "Roles where his identities will be implementers for this system.")
 	private List<UUID> implementerRoles;
-	@Schema(required = false, description = "Attributes of systems, if is empty then will be used default attributes.")
+	@Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, description = "Attributes of systems, if is empty then will be used default attributes.")
 	private List<String> attributes;
-	@Schema(required = true, description = "For virtula system will be created and mapped new role.")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "For virtula system will be created and mapped new role.")
 	private boolean createDefaultRole = false;
 	private String roleName;
 

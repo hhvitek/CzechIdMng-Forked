@@ -30,7 +30,7 @@ public class IdmMonitoringDto extends AbstractDto implements Disableable, Instan
 
 	private static final long serialVersionUID = 1L;
 	//
-	@Schema(required = true, description = "Monitoring code.")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Monitoring code.")
     @Size(max = DefaultFieldLengths.NAME)
     private String code;
 	@NotNull

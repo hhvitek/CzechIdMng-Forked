@@ -20,17 +20,17 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class TwoFactorRegistrationConfirmDto {
 
 	@NotNull
-	@Schema(required = true, description = "Two factor verification secret.")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Two factor verification secret.")
 	@JsonProperty(access = Access.WRITE_ONLY)
 	@JsonDeserialize(using = GuardedStringDeserializer.class)
 	private GuardedString verificationSecret;
 	@NotNull
-	@Schema(required = true, description = "Two factor authentication verify 6-digit code.", example = "123456")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Two factor authentication verify 6-digit code.", example = "123456")
 	@JsonProperty(access = Access.WRITE_ONLY)
 	@JsonDeserialize(using = GuardedStringDeserializer.class)
 	private GuardedString verificationCode;
 	@NotNull
-	@Schema(required = true, description = "Two factor authentication type.", example = "APPLICATION")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Two factor authentication type.", example = "APPLICATION")
 	private TwoFactorAuthenticationType twoFactorAuthenticationType;
 	
 	public GuardedString getVerificationSecret() {

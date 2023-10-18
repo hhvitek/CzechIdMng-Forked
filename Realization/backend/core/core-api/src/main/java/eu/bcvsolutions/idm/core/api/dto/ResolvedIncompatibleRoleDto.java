@@ -27,7 +27,7 @@ public class ResolvedIncompatibleRoleDto implements BaseDto {
     
     @NotNull
     @JsonDeserialize(as = UUID.class)
-	@Schema(required = true, description = "Unique uuid identifier. Used as incompatible role identifier in rest endpoints", type = "java.util.UUID")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Unique uuid identifier. Used as incompatible role identifier in rest endpoints", type = "java.util.UUID")
 	private UUID id;
     @NotNull
     @Schema(description = "Role, which cause incompatibility - owner role used in concept, business role, directly assigned role")

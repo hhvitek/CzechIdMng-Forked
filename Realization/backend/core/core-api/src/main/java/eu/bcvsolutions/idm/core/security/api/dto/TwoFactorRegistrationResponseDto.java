@@ -13,10 +13,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class TwoFactorRegistrationResponseDto {
 
 	@NotEmpty
-	@Schema(required = true, description = "Normalized identity username to two factor authentication registration (spinal-case).")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Normalized identity username to two factor authentication registration (spinal-case).")
 	private String username;
 	@NotEmpty
-	@Schema(required = true, description = "Two factor authentication registration secret.")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Two factor authentication registration secret.")
 	private String verificationSecret;
 	@Schema(description = "Two factor authentication registration qrcode (uri), when application is used.")
 	private String qrcode;

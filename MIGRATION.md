@@ -856,3 +856,139 @@ Due to breaking changes above, custom module requires some refactoring, before i
   ```
 
 ### Migrate from springfox to springdoc
+Change annotations
+
+- 🟠 ``@Api`` ⇒ ``@Tag``
+- 🟠 ``@Api.value`` ⇒ ``@Tag.name``
+- 🟠 ``@Api.tags``, ``@Api.produces``, ``@Api.consumes`` ⇒ can be removed
+- 🟠 ``import io.swagger.annotations.Api;`` ⇒ ``import io.swagger.v3.oas.annotations.tags.Tag;``
+
+    - Example:
+  ```java
+  @Api( value = IdmAuthorizationPolicyController.TAG, 
+        description = "Operations with authorization policies", 
+        tags = { IdmAuthorizationPolicyController.TAG }, 
+        produces = BaseController.APPLICATION_HAL_JSON_VALUE,
+        consumes = MediaType.APPLICATION_JSON_VALUE)
+  ```
+    - to
+  ```java
+  @Tag( name = IdmAuthorizationPolicyController.TAG, 
+        description = "Operations with authorization policies" )
+  ```
+- 🟠 ``@ApiOperation`` ⇒ ``@Operation``
+- 🟠 ``@ApiOperation.value`` ⇒ ``@Operation.summary``
+- 🟠 ``@ApiOperation.authorizations`` ⇒ ``@SecurityRequirements``
+- 🟠 ``@ApiOperation.response`` ⇒ ``@Operation.responses = @ApiResponse``
+- 🟠 
+        ```
+        import io.swagger.annotations.ApiOperation;
+        import io.swagger.annotations.Authorization;
+        import io.swagger.annotations.AuthorizationScope;
+        ``` 
+        ⇒
+        ```
+        import io.swagger.v3.oas.annotations.Operation;
+        import io.swagger.v3.oas.annotations.media.Content;
+        import io.swagger.v3.oas.annotations.media.Schema;
+        import io.swagger.v3.oas.annotations.responses.ApiResponse;
+        import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+        import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+        ```
+
+    - Example:
+  ```java
+  @ApiOperation(
+      value = "Authorization policy detail",
+      nickname = "getAuthorizationPolicy",
+      response = IdmAuthorizationPolicyDto.class,
+      tags = { IdmAuthorizationPolicyController.TAG },
+      authorizations = {
+          @Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+              @AuthorizationScope(scope = CoreGroupPermission.AUTHORIZATIONPOLICY_READ, description = "") }),
+          @Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+              @AuthorizationScope(scope = CoreGroupPermission.AUTHORIZATIONPOLICY_READ, description = "") })
+      }
+  )
+  ```
+    - to
+  ```java
+  @Operation(
+      summary = "Authorization policy detail",
+      responses = @ApiResponse(
+          responseCode = "200",
+          content = {
+              @Content(
+                  mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                  schema = @Schema(
+                      implementation = IdmAuthorizationPolicyDto.class
+                  )
+              )
+          }
+      ),
+      tags = { IdmAuthorizationPolicyController.TAG }
+  )
+  @SecurityRequirements({
+      @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {CoreGroupPermission.AUTHORIZATIONPOLICY_READ }),
+      @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {CoreGroupPermission.AUTHORIZATIONPOLICY_READ })
+  })
+  ```
+- 🟠 ``@ApiParam`` ⇒ ``@Parameter``
+- 🟠 ``@ApiParam.value`` ⇒ ``@Parameter.description``
+- 🟠 ``import io.swagger.annotations.ApiParam;`` ⇒ ``import io.swagger.v3.oas.annotations.Parameter;``
+
+    - Example:
+  ```java
+  @ApiParam(value = "Policy's uuid identifier.", required = true)
+  ```
+    - to
+  ```java
+  @Parameter(description = "Policy's uuid identifier.", required = true)
+  ```
+- 🟠 ``@ApiModel`` ⇒ ``@Schema``
+- 🟠 ``@ApiModelProperty`` ⇒ ``@Schema``
+- 🟠 ``@ApiModelProperty.notes`` ⇒ ``@Schema.description``
+- 🟠 ``@ApiModelProperty.required = true`` ⇒ ``@Parameter.requiredMode = Schema.RequiredMode.REQUIRED``
+- 🟠 ``@ApiModelProperty.required = false`` ⇒ ``@Parameter.requiredMode = Schema.RequiredMode.NOT_REQUIRED``
+- 🟠
+      ```
+      import io.swagger.annotations.ApiModel;
+      import io.swagger.annotations.ApiModelProperty;
+      ```
+      ⇒
+      ```
+      import io.swagger.v3.oas.annotations.media.Schema;
+      ```
+
+  - Example:
+  ```java
+  @Relation(collectionRelation = "attributes")
+  @ApiModel(description = "Attribute of request item")
+  public class IdmRequestItemAttributeDto implements Serializable {
+  
+      @NotEmpty
+      @Size(min = 1, max = DefaultFieldLengths.NAME)
+      @ApiModelProperty(required = true, notes = "Name of attribute")
+      private String name;
+      ...
+  ```
+    - to
+  ```java
+  @Relation(collectionRelation = "attributes")
+  @Schema(description = "Attribute of request item")
+  public class IdmRequestItemAttributeDto implements Serializable {
+  
+      @NotEmpty
+      @Size(min = 1, max = DefaultFieldLengths.NAME)
+      @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Name of attribute")
+      private String name;
+      ...
+  ```
+
+and then in your implementation of ``AbstractSwaggerConfig`` change this:
+
+- 🟠 ``@ConditionalOnProperty(prefix = "springfox.documentation.swagger", name = "enabled", matchIfMissing = true)`` ⇒ ``@ConditionalOnProperty(prefix = "springdoc.swagger-ui", name = "enabled", matchIfMissing = true)``
+- 🟠 and ``api()`` now returns ``GroupedOpenApi`` instead of  ``Docket``
+- 🟠 ``import springfox.documentation.spring.web.plugins.Docket;`` ⇒ ``import org.springdoc.core.GroupedOpenApi;``
+
+

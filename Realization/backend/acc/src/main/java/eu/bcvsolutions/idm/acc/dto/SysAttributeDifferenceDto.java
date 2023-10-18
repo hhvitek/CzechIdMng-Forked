@@ -27,7 +27,7 @@ public class SysAttributeDifferenceDto extends AbstractDto {
 	
 	@NotEmpty
 	@Size(min = 1, max = DefaultFieldLengths.NAME)
-	@Schema(required = true, description = "Name of attribute")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Name of attribute")
 	private String name;
 	private boolean multivalue;
 	private boolean changed = false;

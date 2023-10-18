@@ -41,7 +41,7 @@ public class IdmIdentityDto extends FormableDto implements Disableable, Codeable
 	private static final long serialVersionUID = 1L;
 	//
 	@Size(max = DefaultFieldLengths.NAME)
-	@Schema(required = true, description = "Unique identity username. Could be used as identifier in rest endpoints")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Unique identity username. Could be used as identifier in rest endpoints")
 	private String username;	
 	@Size(max = DefaultFieldLengths.NAME)
 	@Schema(description = "External code.")

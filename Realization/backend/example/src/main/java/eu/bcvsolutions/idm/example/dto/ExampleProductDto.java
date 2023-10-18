@@ -27,7 +27,7 @@ public class ExampleProductDto extends AbstractDto implements Codeable, Disablea
 
 	@NotEmpty
 	@Size(min = 0, max = DefaultFieldLengths.NAME)
-	@Schema(required = true, description = "Unique example product's code. Could be used as identifier in rest endpoints.")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Unique example product's code. Could be used as identifier in rest endpoints.")
 	private String code;
 	@NotEmpty
 	@Size(min = 0, max = DefaultFieldLengths.NAME)

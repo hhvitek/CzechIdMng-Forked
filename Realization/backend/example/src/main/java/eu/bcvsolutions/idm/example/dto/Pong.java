@@ -20,11 +20,11 @@ public class Pong implements BaseDto {
 	
 	private static final long serialVersionUID = 1L;
 	//
-	@Schema(required = true, description = "Unique pong identifier")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Unique pong identifier")
 	private UUID id;
 	@Schema(description = "Ping - Pong response message")
 	private String message;
-	@Schema(required = true, description = "Creation time")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Creation time")
 	private ZonedDateTime created;
 
 	@Override

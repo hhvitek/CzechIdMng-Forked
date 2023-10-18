@@ -56,12 +56,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/authorization-policies")
 @Tag(
-		name = IdmAuthorizationPolicyController.TAG,
-		description = "Operations with authorization policies"//, 
-
-
-		
-
+    name = IdmAuthorizationPolicyController.TAG,
+    description = "Operations with authorization policies"
 )
 public class IdmAuthorizationPolicyController extends AbstractReadWriteDtoController<IdmAuthorizationPolicyDto, IdmAuthorizationPolicyFilter> {
 	
@@ -83,19 +79,19 @@ public class IdmAuthorizationPolicyController extends AbstractReadWriteDtoContro
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUTHORIZATIONPOLICY_READ + "')")
-	@Operation(
-			summary = "Search authorization policies (/search/quick alias)", 
-			/* nickname = "searchAuthorizationPolicies", */
-			tags = { IdmAuthorizationPolicyController.TAG })
-    @SecurityRequirements(
-        value = {
+        @Operation(
+                summary = "Search authorization policies (/search/quick alias)",
+                /* nickname = "searchAuthorizationPolicies", */
+                tags = { IdmAuthorizationPolicyController.TAG })
+        @SecurityRequirements(
+            value = {
 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.AUTHORIZATIONPOLICY_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.AUTHORIZATIONPOLICY_READ })
-        }
-    )
+                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+                            CoreGroupPermission.AUTHORIZATIONPOLICY_READ }),
+                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+                            CoreGroupPermission.AUTHORIZATIONPOLICY_READ })
+            }
+        )
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -167,18 +163,14 @@ public class IdmAuthorizationPolicyController extends AbstractReadWriteDtoContro
                             )
                     }
             ), 
-			tags = { IdmAuthorizationPolicyController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.AUTHORIZATIONPOLICY_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.AUTHORIZATIONPOLICY_READ })
-        }
+			tags = { IdmAuthorizationPolicyController.TAG }
     )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {CoreGroupPermission.AUTHORIZATIONPOLICY_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {CoreGroupPermission.AUTHORIZATIONPOLICY_READ })
+    })
 	public ResponseEntity<?> get(
-			 @Parameter(description = "Policy's uuid identifier.", required = true)
+            @Parameter(description = "Policy's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}

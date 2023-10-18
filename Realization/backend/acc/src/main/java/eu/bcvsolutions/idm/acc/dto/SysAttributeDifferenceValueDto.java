@@ -20,7 +20,7 @@ public class SysAttributeDifferenceValueDto extends AbstractDto {
 
 	private Object value;
 	private Object oldValue;
-	@Schema(required = false, description = "Type of value change")
+	@Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, description = "Type of value change")
 	private SysValueChangeType change;
 
 	public SysAttributeDifferenceValueDto() {

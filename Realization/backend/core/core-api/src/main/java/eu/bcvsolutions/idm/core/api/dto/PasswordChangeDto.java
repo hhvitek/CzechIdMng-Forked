@@ -27,7 +27,7 @@ public class PasswordChangeDto implements Serializable {
     private GuardedString oldPassword;
     @NotNull
     @JsonDeserialize(using = GuardedStringDeserializer.class)
-    @Schema(required = true, description = "New password.", type = "java.lang.String", example = "admin")
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "New password.", type = "java.lang.String", example = "admin")
     private GuardedString newPassword;
     @Schema(description = "Change IdM password.")
     private boolean idm = false; // change in idm

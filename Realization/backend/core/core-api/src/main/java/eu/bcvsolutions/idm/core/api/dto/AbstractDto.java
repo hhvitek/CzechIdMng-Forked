@@ -43,7 +43,7 @@ public abstract class AbstractDto implements BaseDto, Auditable {
 	public static final String PROPERTY_DTO_TYPE = "_dtotype";
 	//
 	@JsonDeserialize(as = UUID.class)
-	@Schema(required = true, description = "Unique uuid identifier. Used as identifier in rest endpoints", type = "java.util.UUID")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Unique uuid identifier. Used as identifier in rest endpoints", type = "java.util.UUID")
 	private UUID id;
 	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
 	private ZonedDateTime created;

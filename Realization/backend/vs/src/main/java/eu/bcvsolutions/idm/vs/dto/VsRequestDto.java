@@ -40,12 +40,12 @@ public class VsRequestDto extends AbstractDto implements ExternalIdentifiable {
 
 	@NotEmpty
 	@Size(min = 1, max = DefaultFieldLengths.NAME)
-	@Schema(required = true, description = "Unique account identifier. UID on system and for connector.")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Unique account identifier. UID on system and for connector.")
 	private String uid;
-	@Schema(required = true, description = "CzechIdM system identifier. UID on system and for connector.")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "CzechIdM system identifier. UID on system and for connector.")
 	@Embedded(dtoClass = SysSystemDto.class)
 	private UUID system;
-	@Schema(required = true, description = "Connector identifier. UID on system and for connector.")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Connector identifier. UID on system and for connector.")
 	private String connectorKey;
 	private VsOperationType operationType;
 	@NotNull

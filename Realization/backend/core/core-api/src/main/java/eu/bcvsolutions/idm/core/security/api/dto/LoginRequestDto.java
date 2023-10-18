@@ -16,11 +16,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
  */
 public class LoginRequestDto {
 
-	@Schema(required = true, description = "Identity username.", example = "admin")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Identity username.", example = "admin")
 	private String username;
 	@JsonProperty(access = Access.WRITE_ONLY)
 	@JsonDeserialize(using = GuardedStringDeserializer.class)
-	@Schema(required = true, description = "Identity password.", type = "java.lang.String", example = "admin")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Identity password.", type = "java.lang.String", example = "admin")
 	private GuardedString password;
 	
 	public LoginRequestDto() {

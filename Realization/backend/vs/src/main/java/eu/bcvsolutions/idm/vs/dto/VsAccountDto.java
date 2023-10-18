@@ -25,12 +25,12 @@ public class VsAccountDto extends AbstractDto {
 	
 	@NotEmpty
 	@Size(min = 1, max = DefaultFieldLengths.NAME)
-	@Schema(required = true, description = "Unique account identifier. UID on system and for connector.")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Unique account identifier. UID on system and for connector.")
 	private String uid;
 	private boolean enable;
-	@Schema(required = true, description = "CzechIdM system identifier. UID on system and for connector.")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "CzechIdM system identifier. UID on system and for connector.")
 	private UUID systemId;
-	@Schema(required = true, description = "Connector identifier. UID on system and for connector.")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Connector identifier. UID on system and for connector.")
 	private String connectorKey;
 
 	public String getUid() {

@@ -39,7 +39,7 @@ public class IdmFormInstanceDto implements BaseDto {
 	public static final String PROPERTY_FORM_INSTANCE = "formInstance";
 	//
 	@JsonDeserialize(as = UUID.class)
-	@Schema(required = true, description = "Unique uuid identifier. It's ID of FormDefinition here.", type = "java.util.UUID")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Unique uuid identifier. It's ID of FormDefinition here.", type = "java.util.UUID")
 	private UUID id;
 	@NotNull
 	private IdmFormDefinitionDto formDefinition;
