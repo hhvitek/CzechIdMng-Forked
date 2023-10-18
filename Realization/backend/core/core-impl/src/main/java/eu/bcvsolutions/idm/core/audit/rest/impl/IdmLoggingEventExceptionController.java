@@ -43,8 +43,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/logging-event-exceptions")
 @Tag(name = IdmLoggingEventExceptionController.TAG, description = "Read / search log exception from LOG4J"
-//, //produces = BaseController.APPLICATION_HAL_JSON_VALUE
-//consumes = MediaType.APPLICATION_JSON_VALUE
+//,
+
 )
 public class IdmLoggingEventExceptionController
 		extends AbstractReadDtoController<IdmLoggingEventExceptionDto, IdmLoggingEventExceptionFilter> {

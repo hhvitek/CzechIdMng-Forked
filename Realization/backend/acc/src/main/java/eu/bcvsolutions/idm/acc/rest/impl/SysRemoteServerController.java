@@ -79,9 +79,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(
 		name = SysRemoteServerController.TAG,
 		description = "Remote server with connectors"//,
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+
 )
 public class SysRemoteServerController extends AbstractReadWriteDtoController<SysConnectorServerDto, SysRemoteServerFilter> {
 

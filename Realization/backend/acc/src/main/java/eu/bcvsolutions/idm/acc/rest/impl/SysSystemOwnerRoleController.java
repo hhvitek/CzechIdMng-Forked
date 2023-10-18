@@ -55,9 +55,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = SysSystemOwnerRoleController.TAG,
 		description = "Operations with system owners by role"//, 
 		
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		
+
 )
 public class SysSystemOwnerRoleController extends AbstractEventableDtoController<SysSystemOwnerRoleDto, SysSystemOwnerRoleFilter> {
 	

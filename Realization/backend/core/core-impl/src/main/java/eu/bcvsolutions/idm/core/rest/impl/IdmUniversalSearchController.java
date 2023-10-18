@@ -52,9 +52,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = IdmUniversalSearchController.TAG,
 		
 		description = "Universal search"//,
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+
 )
 public class IdmUniversalSearchController extends AbstractReadDtoController<UniversalSearchDto, IdmUniversalSearchFilter> {
 

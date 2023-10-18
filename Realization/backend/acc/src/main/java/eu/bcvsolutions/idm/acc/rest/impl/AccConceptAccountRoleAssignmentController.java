@@ -78,8 +78,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/" + AccModuleDescriptor.MODULE_ID + "/concept-role-requests")
 @Tag(name = AccConceptAccountRoleAssignmentController.TAG, description = "Operations with account role assignment concepts"//, tags = {
-//		AccConceptAccountRoleAssignmentController.TAG }//, //produces = BaseController.APPLICATION_HAL_JSON_VALUE
-//consumes = MediaType.APPLICATION_JSON_VALUE
+//		AccConceptAccountRoleAssignmentController.TAG }//, 
+
 )
 public class AccConceptAccountRoleAssignmentController
 		extends AbstractReadWriteDtoController<AccAccountConceptRoleRequestDto, AccAccountConceptRoleRequestFilter> {

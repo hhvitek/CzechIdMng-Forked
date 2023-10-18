@@ -52,9 +52,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = IdmIncompatibleRoleController.TAG, 
 		description = "Operations with incompatible role - defines incompatible roles"//,
 
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
 
-//consumes = MediaType.APPLICATION_JSON_VALUE
+
 )
 public class IdmIncompatibleRoleController extends AbstractEventableDtoController<IdmIncompatibleRoleDto, IdmIncompatibleRoleFilter> {
 	

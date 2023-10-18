@@ -121,14 +121,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  * @author Tomáš Doischer
  */
 @RestController
-@RequestMapping(value = BaseDtoController.BASE_PATH + "/identities") //produces= BaseController.APPLICATION_HAL_JSON_VALUE - I have to remove this (username cannot have "@.com" in user name)
+@RequestMapping(value = BaseDtoController.BASE_PATH + "/identities") //I have to remove this (username cannot have "@.com" in user name)
 @Tag(
 		name = IdmIdentityController.TAG,  
 		 
 		description = "Operations with identities"//,
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
 
-//consumes = MediaType.APPLICATION_JSON_VALUE
+
 )
 public class IdmIdentityController extends AbstractFormableDtoController<IdmIdentityDto, IdmIdentityFilter> {
 

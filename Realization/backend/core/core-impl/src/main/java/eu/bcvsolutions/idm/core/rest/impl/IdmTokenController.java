@@ -77,9 +77,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = IdmTokenController.TAG, 
 		description = "Operations with IdM tokens"//, 
 		 
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		
+
 )
 public class IdmTokenController extends AbstractEventableDtoController<IdmTokenDto, IdmTokenFilter> {
 	

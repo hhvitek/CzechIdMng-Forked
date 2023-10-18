@@ -53,8 +53,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/automatic-role-rule-requests")
 @Tag(name = IdmAutomaticRoleAttributeRuleRequestController.TAG, description = "Operations with single roles in request"//, tags = {
-		//IdmAutomaticRoleAttributeRuleRequestController.TAG }//, //produces = BaseController.APPLICATION_HAL_JSON_VALUE
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		//IdmAutomaticRoleAttributeRuleRequestController.TAG }//,
+
 )
 public class IdmAutomaticRoleAttributeRuleRequestController extends
 		AbstractReadWriteDtoController<IdmAutomaticRoleAttributeRuleRequestDto, IdmAutomaticRoleAttributeRuleRequestFilter> {

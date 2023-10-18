@@ -53,9 +53,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = AccRoleAccountController.TAG,
 
 		description = "Assigned role accoutns on target system"//,
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		
+
 )
 public class AccRoleAccountController extends AbstractReadWriteDtoController<AccRoleAccountDto, AccRoleAccountFilter> {
 	

@@ -53,9 +53,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(
 		name = IdmPasswordPolicyController.TAG,
 		description = "Operations with password policies"//,
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+
 )
 public class IdmPasswordPolicyController extends DefaultReadWriteDtoController<IdmPasswordPolicyDto, IdmPasswordPolicyFilter> {
 	

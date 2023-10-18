@@ -50,9 +50,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = IdmRoleSystemController.TAG,
 		description = "IdM role-system controller - (we need to work with role-system also in the core module)"//,
 
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 
-//consumes = MediaType.APPLICATION_JSON_VALUE
+
+
 )
 public class IdmRoleSystemController extends AbstractReadDtoController<IdmRoleSystemDto, IdmRoleSystemFilter> {
 

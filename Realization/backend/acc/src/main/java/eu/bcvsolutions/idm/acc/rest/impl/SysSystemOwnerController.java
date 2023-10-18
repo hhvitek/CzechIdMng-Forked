@@ -55,9 +55,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = SysSystemOwnerController.TAG, 
 		description = "Operations with identity system owners"//, 
 		 
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		
+
 )
 public class SysSystemOwnerController extends AbstractReadWriteDtoController<SysSystemOwnerDto, SysSystemOwnerFilter> {
 	

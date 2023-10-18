@@ -55,9 +55,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = ModuleController.TAG,
 		description = "Application modules configuration"//,
 
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		
+
 )
 public class ModuleController {
 

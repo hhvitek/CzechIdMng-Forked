@@ -63,9 +63,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = VsAccountController.TAG,
 		 
 		description = "Operations with accounts (in virtual system)"//,
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
 
-//consumes = MediaType.APPLICATION_JSON_VALUE
+
 )
 public class VsAccountController extends AbstractReadWriteDtoController<VsAccountDto, VsAccountFilter> {
 

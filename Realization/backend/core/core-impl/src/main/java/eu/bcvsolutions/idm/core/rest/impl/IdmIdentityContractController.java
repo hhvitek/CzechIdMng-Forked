@@ -75,9 +75,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = IdmIdentityContractController.TAG, 
 		description = "Operations with identity contracts"//, 
 		 
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		
+
 )
 public class IdmIdentityContractController extends AbstractFormableDtoController<IdmIdentityContractDto, IdmIdentityContractFilter> {
 	

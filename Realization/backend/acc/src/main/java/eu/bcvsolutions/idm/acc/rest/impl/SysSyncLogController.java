@@ -50,9 +50,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(
 		name = SysSyncLogController.TAG,
 		description = "Logs contains actions and items"//,
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		
+
 )
 public class SysSyncLogController
 		extends AbstractReadWriteDtoController<SysSyncLogDto, SysSyncLogFilter> {

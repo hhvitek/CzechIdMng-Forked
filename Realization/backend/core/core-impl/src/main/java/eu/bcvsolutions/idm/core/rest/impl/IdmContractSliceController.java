@@ -64,8 +64,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/contract-slices")
 @Tag(name = IdmContractSliceController.TAG, description = "Operations with contract slices"
-//, //produces = BaseController.APPLICATION_HAL_JSON_VALUE
-//consumes = MediaType.APPLICATION_JSON_VALUE
+//, 
+
 )
 public class IdmContractSliceController
 		extends AbstractEventableDtoController<IdmContractSliceDto, IdmContractSliceFilter> {

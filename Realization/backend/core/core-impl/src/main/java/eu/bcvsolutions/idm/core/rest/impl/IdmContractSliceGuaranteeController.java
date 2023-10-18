@@ -50,9 +50,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = IdmContractSliceGuaranteeController.TAG, 
 		description = "Operations with identity contract slice guarantees"//,
 
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		
+
 )
 public class IdmContractSliceGuaranteeController extends AbstractEventableDtoController<IdmContractSliceGuaranteeDto, IdmContractSliceGuaranteeFilter> {
 	

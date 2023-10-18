@@ -102,9 +102,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(
 		name = AccAccountController.TAG,
 		description = "Account on target system"//,
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+
 )
 public class AccAccountController extends AbstractFormableDtoController<AccAccountDto, AccAccountFilter> implements WizardController<AccountWizardDto> {
 	

@@ -46,9 +46,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = IdmSmsLogController.TAG, 
 		description = "Sms history"//, 
 		
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		
+
 )
 public class IdmSmsLogController extends AbstractReadDtoController<IdmSmsLogDto, IdmNotificationFilter> {
 

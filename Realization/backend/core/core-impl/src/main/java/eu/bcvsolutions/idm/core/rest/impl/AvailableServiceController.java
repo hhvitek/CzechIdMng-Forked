@@ -38,9 +38,9 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 		name = AvailableServiceController.TAG,
 		description = "Displays available services"//,
 		
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		
+
 )
 public class AvailableServiceController  {
 
@@ -59,10 +59,10 @@ public class AvailableServiceController  {
     @SecurityRequirements(
         value = {
 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.MODULE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.MODULE_READ })
+            @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+                    CoreGroupPermission.MODULE_READ }),
+            @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+                    CoreGroupPermission.MODULE_READ })
         }
     )
 	@SuppressWarnings({ "unchecked", "rawtypes" })

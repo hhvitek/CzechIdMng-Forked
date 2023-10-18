@@ -50,9 +50,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = IdmRequestRoleCatalogueRoleController.TAG,
 		description = "Operations with role catalogues by role"//,
 
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
 
-//consumes = MediaType.APPLICATION_JSON_VALUE
+
 )
 public class IdmRequestRoleCatalogueRoleController extends AbstractRequestDtoController<IdmRoleCatalogueRoleDto, IdmRoleCatalogueRoleFilter> {
 	

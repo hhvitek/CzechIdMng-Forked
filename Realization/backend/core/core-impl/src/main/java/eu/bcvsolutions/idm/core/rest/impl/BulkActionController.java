@@ -50,9 +50,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = BulkActionController.TAG, 
 		description = "Configure bulk actions"//,
 
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		
+
 )
 public class BulkActionController {
 

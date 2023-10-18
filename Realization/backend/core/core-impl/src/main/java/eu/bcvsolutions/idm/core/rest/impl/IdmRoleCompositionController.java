@@ -56,9 +56,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = IdmRoleCompositionController.TAG,
 		description = "Operations with role composition - defines business roles"//,
 
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+
 )
 public class IdmRoleCompositionController extends AbstractEventableDtoController<IdmRoleCompositionDto, IdmRoleCompositionFilter> {
 	

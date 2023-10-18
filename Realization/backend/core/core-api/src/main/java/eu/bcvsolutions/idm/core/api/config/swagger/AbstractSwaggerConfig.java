@@ -3,7 +3,6 @@ package eu.bcvsolutions.idm.core.api.config.swagger;
 import org.springdoc.core.GroupedOpenApi;
 
 import eu.bcvsolutions.idm.core.api.domain.ModuleDescriptor;
-import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
@@ -28,13 +27,15 @@ public abstract class AbstractSwaggerConfig implements SwaggerConfig {
 	protected abstract ModuleDescriptor getModuleDescriptor();
 
 	/**
-	 * Docket initialization by module conventions.
+	 * GroupedOpenApi initialization by module conventions.
 	 *
 	 * @see ModuleDescriptor
 	 * @param basePackages Expose endpoints from given base basePackages
-	 * @return
+	 * @return GroupedOpenApi
 	 */
 	protected GroupedOpenApi api(String... basePackages) {
+        getModuleDescriptor().isDocumentationAvailable();
+
 		return GroupedOpenApi.builder()
 				// common
                 .displayName(getModuleDescriptor().getId())
@@ -48,9 +49,11 @@ public abstract class AbstractSwaggerConfig implements SwaggerConfig {
                                 .termsOfService("Terms of service")
                                 .contact((new Contact()).name(getModuleDescriptor().getVendor()).url(getModuleDescriptor().getVendorUrl()).email(getModuleDescriptor().getVendorEmail()))
                                 .license(new License().name("MIT").url("https://github.com/bcvsolutions/CzechIdMng/blob/develop/LICENSE")));
-                        openApi.setComponents(new Components()
+
+                        openApi.getComponents()
                                 .addSecuritySchemes(AUTHENTICATION_BASIC, new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("basic"))
-                                .addSecuritySchemes(AUTHENTICATION_CIDMST, new SecurityScheme().type(SecurityScheme.Type.APIKEY).in(SecurityScheme.In.HEADER).name(AUTHENTICATION_CIDMST_TOKEN)));
+                                .addSecuritySchemes(AUTHENTICATION_CIDMST, new SecurityScheme().type(SecurityScheme.Type.APIKEY).in(SecurityScheme.In.HEADER).name(AUTHENTICATION_CIDMST_TOKEN));
+
                         openApi.getPaths().values().forEach(pathItem -> pathItem.readOperations().forEach(operation -> {
                             ApiResponses apiResponses = operation.getResponses();
                             apiResponses.addApiResponse("401", new ApiResponse().description("Unauthorized"));

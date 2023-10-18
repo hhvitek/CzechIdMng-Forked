@@ -53,9 +53,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(
 		name = SysAttributeControlledValueController.TAG,
 		description = "Controlled values for attribute. Is using in the provisioning merge."//,
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+
 )
 public class SysAttributeControlledValueController extends AbstractReadWriteDtoController<SysAttributeControlledValueDto, SysAttributeControlledValueFilter> {
 

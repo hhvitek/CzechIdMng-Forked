@@ -66,9 +66,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = IdmIdentityRoleController.TAG, 
 		description = "Operations with identity roles"//, 
 		 
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		
+
 )
 public class IdmIdentityRoleController extends AbstractReadWriteDtoController<IdmIdentityRoleDto, IdmIdentityRoleFilter> {
 	

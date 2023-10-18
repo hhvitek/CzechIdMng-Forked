@@ -50,9 +50,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(
 		name = SysSchemaAttributeController.TAG,
 		description = "Schema attribute configuration"//,
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		
+
 )
 public class SysSchemaAttributeController extends AbstractReadWriteDtoController<SysSchemaAttributeDto, SysSchemaAttributeFilter> {
 

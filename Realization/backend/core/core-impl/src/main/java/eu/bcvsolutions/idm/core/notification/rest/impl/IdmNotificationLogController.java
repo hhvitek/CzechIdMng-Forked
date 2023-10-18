@@ -64,9 +64,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = IdmNotificationLogController.TAG, 
 		description = "Operations with notifications, history"//,
 		 
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		
+
 )
 public class IdmNotificationLogController
 		extends AbstractReadWriteDtoController<IdmNotificationLogDto, IdmNotificationFilter> {

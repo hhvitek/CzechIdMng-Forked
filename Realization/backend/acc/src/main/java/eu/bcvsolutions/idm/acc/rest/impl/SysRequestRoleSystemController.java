@@ -50,9 +50,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(
 		name = SysRequestRoleSystemController.TAG,
 		description = "Reqeusts for - Assign system to role"//,
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		
+
 )
 public class SysRequestRoleSystemController extends AbstractRequestDtoController<SysRoleSystemDto, SysRoleSystemFilter> {
 	

@@ -22,6 +22,7 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
@@ -125,7 +126,7 @@ public abstract class AbstractReadDtoController<DTO extends BaseDto, F extends B
             @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
         }
     )
-	public ResponseEntity<?> get(
+    public ResponseEntity<?> get(
 			 @Parameter(description = "Record's uuid identifier or unique code, if record supports Codeable interface.", required = true)
 			@PathVariable @NotNull String backendId) {
 		DTO dto = getDto(backendId);
@@ -200,6 +201,7 @@ public abstract class AbstractReadDtoController<DTO extends BaseDto, F extends B
             }
     )
 	@PageableAsQueryParam
+    //PagedModel<?>
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@Parameter(hidden = true)

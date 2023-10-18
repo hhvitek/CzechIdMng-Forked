@@ -54,9 +54,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = IdmNotificationConfigurationController.TAG, 
 		description = "Configure message sending"//,
 
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
 
-//consumes = MediaType.APPLICATION_JSON_VALUE
+
 )
 public class IdmNotificationConfigurationController extends AbstractReadWriteDtoController<NotificationConfigurationDto, IdmNotificationConfigurationFilter> {
 

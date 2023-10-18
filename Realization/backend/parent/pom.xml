@@ -438,6 +438,18 @@
             <artifactId>springdoc-openapi-hateoas</artifactId>
             <version>1.7.0</version>
         </dependency>
+        <dependency>
+            <groupId>io.github.swagger2markup</groupId>
+            <artifactId>swagger2markup</artifactId>
+            <version>${swagger2markup.version}</version>
+            <exclusions>
+                <!-- Unable to send emails see https://redmine.czechidm.com/issues/655 -->
+                <exclusion>
+                    <groupId>javax.mail</groupId>
+                    <artifactId>mailapi</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 		<!-- Excel -->
 		<dependency>
 			<groupId>org.apache.poi</groupId>

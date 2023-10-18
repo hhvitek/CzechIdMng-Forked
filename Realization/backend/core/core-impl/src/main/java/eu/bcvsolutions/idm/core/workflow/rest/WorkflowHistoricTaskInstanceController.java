@@ -60,9 +60,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = WorkflowHistoricTaskInstanceController.TAG,
 		
 		description = "Read WF audit"//,
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		
+
 )
 public class WorkflowHistoricTaskInstanceController extends AbstractReadDtoController<WorkflowHistoricTaskInstanceDto, WorkflowFilterDto> {
 

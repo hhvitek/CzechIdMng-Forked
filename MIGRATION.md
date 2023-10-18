@@ -854,3 +854,5 @@ Due to breaking changes above, custom module requires some refactoring, before i
   org.quartz.dataSource.quartzDataSource.validationQuery=SELECT 1
   org.quartz.dataSource.quartzDataSource.maxConnections =20
   ```
+
+### Migrate from springfox to springdoc

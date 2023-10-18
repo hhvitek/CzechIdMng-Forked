@@ -54,9 +54,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = SysSystemGroupSystemController.TAG,
 		description = "System groups system - relation between a system and a group of systems."//,
 
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
 
-//consumes = MediaType.APPLICATION_JSON_VALUE
+
 )
 public class SysSystemGroupSystemController extends AbstractEventableDtoController<SysSystemGroupSystemDto, SysSystemGroupSystemFilter> {
 

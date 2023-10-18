@@ -80,8 +80,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/role-requests")
 @Tag(name = IdmRoleRequestController.TAG, description = "Operations with role requests"//, tags = {
-		//IdmRoleRequestController.TAG }//, //produces = BaseController.APPLICATION_HAL_JSON_VALUE
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		//IdmRoleRequestController.TAG }//,
+
 )
 public class IdmRoleRequestController extends AbstractReadWriteDtoController<IdmRoleRequestDto, IdmRoleRequestFilter> {
 

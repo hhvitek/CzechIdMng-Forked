@@ -51,9 +51,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = IdmRoleFormAttributeController.TAG, 
 		description = "Operations with role form attributes"//,
 
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
 
-//consumes = MediaType.APPLICATION_JSON_VALUE
+
 )
 public class IdmRoleFormAttributeController extends AbstractReadWriteDtoController<IdmRoleFormAttributeDto, IdmRoleFormAttributeFilter> {
 	

@@ -11,6 +11,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
@@ -50,9 +51,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = WorkflowHistoricProcessInstanceController.TAG,  
 
 		description = "Read WF audit"//,
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 
-//consumes = MediaType.APPLICATION_JSON_VALUE
+
+
 )
 public class WorkflowHistoricProcessInstanceController extends AbstractReadDtoController<WorkflowHistoricProcessInstanceDto, WorkflowFilterDto> {
 
@@ -74,6 +75,7 @@ public class WorkflowHistoricProcessInstanceController extends AbstractReadDtoCo
 			/* nickname = "searchQuickHistoricProcessInstances", */ 
 			tags = { WorkflowHistoricProcessInstanceController.TAG })
 	@PageableAsQueryParam
+    //PagedModel<?>
 	public CollectionModel<?> searchQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@Parameter(hidden = true)

@@ -53,9 +53,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = IdmScriptAuthorityController.TAG,
 		 
 		description = "Allowed services and clasess in scripts"//,
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		
+
 )
 public class IdmScriptAuthorityController extends AbstractReadWriteDtoController<IdmScriptAuthorityDto, IdmScriptAuthorityFilter>{
 	

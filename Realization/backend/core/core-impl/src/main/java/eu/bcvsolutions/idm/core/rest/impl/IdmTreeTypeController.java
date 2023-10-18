@@ -70,9 +70,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = IdmTreeTypeController.TAG,  
 		 
 		description = "Operation with tree types"//,
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 
-//consumes = MediaType.APPLICATION_JSON_VALUE
+
+
 )
 public class IdmTreeTypeController extends AbstractEventableDtoController<IdmTreeTypeDto, IdmTreeTypeFilter> {
 	

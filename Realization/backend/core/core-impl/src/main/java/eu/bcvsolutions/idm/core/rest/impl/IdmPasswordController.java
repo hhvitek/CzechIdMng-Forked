@@ -54,9 +54,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(
 		name = IdmPasswordController.TAG,
 		description = "Get password"//,
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		
+
 )
 public class IdmPasswordController extends AbstractReadWriteDtoController<IdmPasswordDto, IdmPasswordFilter> {
 

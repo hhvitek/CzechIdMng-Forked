@@ -74,9 +74,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = IdmEntityEventController.TAG, 
 		description = "Operations with entity events"//, 
 
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		
+
 )
 public class IdmEntityEventController extends AbstractEventableDtoController<IdmEntityEventDto, IdmEntityEventFilter> {
 	

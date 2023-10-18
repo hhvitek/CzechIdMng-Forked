@@ -55,9 +55,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(
 		name = SysProvisioningBatchController.TAG,
 		description = "Active provisioning operations in queue - grouped by system entity."//,
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		
+
 )
 public class SysProvisioningBatchController
 		extends AbstractReadDtoController<SysProvisioningBatchDto, EmptyFilter> {

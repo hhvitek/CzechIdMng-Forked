@@ -80,8 +80,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/concept-role-requests")
 @Tag(name = IdmConceptRoleRequestController.TAG, description = "Operations with single roles in request"//, tags = {
-//IdmConceptRoleRequestController.TAG }//, //produces = BaseController.APPLICATION_HAL_JSON_VALUE
-//consumes = MediaType.APPLICATION_JSON_VALUE
+//IdmConceptRoleRequestController.TAG }//, 
+
 )
 public class IdmConceptRoleRequestController
 		extends AbstractReadWriteDtoController<IdmConceptRoleRequestDto, IdmConceptRoleRequestFilter> {

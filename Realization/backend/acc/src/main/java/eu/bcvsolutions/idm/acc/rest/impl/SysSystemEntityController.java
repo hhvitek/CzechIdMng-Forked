@@ -57,9 +57,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(
 		name = SysSystemEntityController.TAG,
 		description = "Raw entities on target system"//,
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		
+
 )
 public class SysSystemEntityController extends AbstractReadWriteDtoController<SysSystemEntityDto, SysSystemEntityFilter> {
 

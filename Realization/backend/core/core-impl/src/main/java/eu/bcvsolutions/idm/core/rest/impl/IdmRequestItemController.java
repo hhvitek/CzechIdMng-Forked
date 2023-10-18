@@ -69,9 +69,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = IdmRequestItemController.TAG,
 		description = "Operations with request items"//, 
 		 
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		
+
 )
 public class IdmRequestItemController extends AbstractReadWriteDtoController<IdmRequestItemDto, IdmRequestItemFilter>{
 

@@ -71,9 +71,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(
 		name = IdmRequestRoleController.TAG,
 		description = "Requests for - Operations with request of roles"//,
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+
 )
 public class IdmRequestRoleController extends AbstractRequestDtoController<IdmRoleDto, IdmRoleFilter> {
 	

@@ -44,9 +44,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = FilterBuilderController.TAG,
 		description = "Configure filter builders"//,
 		
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		
+
 )
 public class FilterBuilderController  {
 

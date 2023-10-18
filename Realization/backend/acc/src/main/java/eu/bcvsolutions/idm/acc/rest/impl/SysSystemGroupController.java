@@ -54,9 +54,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = SysSystemGroupController.TAG,
 		description = "System groups (cross-domain)"//,
 		
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		
+
 )
 public class SysSystemGroupController extends AbstractEventableDtoController<SysSystemGroupDto, SysSystemGroupFilter> {
 

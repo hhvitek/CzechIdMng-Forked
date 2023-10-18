@@ -69,9 +69,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = IdmMonitoringController.TAG,
 		description = "Operations with configured monitoring evaluators"//,
 
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
 
-//consumes = MediaType.APPLICATION_JSON_VALUE
+
 )
 public class IdmMonitoringController extends AbstractEventableDtoController<IdmMonitoringDto, IdmMonitoringFilter> {
 	

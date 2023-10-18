@@ -56,9 +56,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(
 		name = SysSyncItemLogController.TAG,
 		description = "Single entity log"//,
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		
+
 )
 public class SysSyncItemLogController
 		extends AbstractReadWriteDtoController<SysSyncItemLogDto, SysSyncItemLogFilter> {

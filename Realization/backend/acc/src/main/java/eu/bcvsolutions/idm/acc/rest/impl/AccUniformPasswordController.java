@@ -60,9 +60,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(
 		name = AccUniformPasswordController.TAG,
 		description = "Uniform password definitions and method for check a valid"//,
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		
+
 )
 public class AccUniformPasswordController extends AbstractReadWriteDtoController<AccUniformPasswordDto, AccUniformPasswordFilter> {
 

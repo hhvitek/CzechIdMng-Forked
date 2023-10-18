@@ -40,9 +40,9 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 		name = CsvConnectorTypeController.TAG,
 		
 		description = "Controller for CSV connector wizard."//,
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+
 )
 public class CsvConnectorTypeController {
 

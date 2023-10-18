@@ -59,14 +59,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  * @since 9.0.0
  */
 @RestController
-@RequestMapping(value = BaseDtoController.BASE_PATH + "/profiles") //produces= BaseController.APPLICATION_HAL_JSON_VALUE - I have to remove this (username cannot have "@.com" in user name)
+@RequestMapping(value = BaseDtoController.BASE_PATH + "/profiles")
 @Tag(
 		name = IdmProfileController.TAG,  
 		 
 		description = "Operations with profiles"//,
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 
-//consumes = MediaType.APPLICATION_JSON_VALUE
+
+
 )
 public class IdmProfileController extends AbstractEventableDtoController<IdmProfileDto, IdmProfileFilter> {
 

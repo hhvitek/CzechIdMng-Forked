@@ -56,9 +56,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = IdmDelegationDefinitionController.TAG,  
 		 
 		description = "Delegation definitions"//,
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		
+
 )
 public class IdmDelegationDefinitionController extends AbstractReadWriteDtoController<IdmDelegationDefinitionDto, IdmDelegationDefinitionFilter>  {
 

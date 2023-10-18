@@ -48,9 +48,9 @@
 		name = IdmEmailLogController.TAG, 
 		description = "Emails history"//,
 
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
 
-//consumes = MediaType.APPLICATION_JSON_VALUE
+
 )
 public class IdmEmailLogController extends AbstractReadWriteDtoController<IdmEmailLogDto, IdmNotificationFilter> {
 	

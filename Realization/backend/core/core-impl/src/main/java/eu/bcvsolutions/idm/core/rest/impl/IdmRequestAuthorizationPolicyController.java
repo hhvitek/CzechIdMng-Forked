@@ -55,9 +55,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = IdmRequestAuthorizationPolicyController.TAG, 
 		description = "Requests for -Operations with authorization policies"//,
 
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
 
-//consumes = MediaType.APPLICATION_JSON_VALUE
+
 )
 public class IdmRequestAuthorizationPolicyController extends AbstractRequestDtoController<IdmAuthorizationPolicyDto, IdmAuthorizationPolicyFilter> {
 	

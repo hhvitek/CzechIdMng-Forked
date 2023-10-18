@@ -47,9 +47,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(
         name = IdmConfigurationController.TAG,
         description = "Public configuration items"//,
-        //produces = BaseController.APPLICATION_HAL_JSON_VALUE
+        
 
-//consumes = MediaType.APPLICATION_JSON_VALUE
+
 )
 public class PublicIdmConfigurationController implements BaseController {
 	

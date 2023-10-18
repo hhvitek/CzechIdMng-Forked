@@ -76,9 +76,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = IdmConfigurationController.TAG,
 		description = "Application configuration"//, 
 		 
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		
+
 )
 public class IdmConfigurationController extends AbstractEventableDtoController<IdmConfigurationDto, DataFilter> {
 	
@@ -398,7 +398,7 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	@PreAuthorize("hasAuthority('" + IdmGroupPermission.APP_ADMIN + "')")
 	@RequestMapping(value = "/bulk/save", method = RequestMethod.PUT) ////, 
-//consumes = MediaType.TEXT_PLAIN_VALUE produces = BaseController.APPLICATION_HAL_JSON_VALUE
+
 //)
 	@Operation(
 			summary = "Save configuration items in bulk",

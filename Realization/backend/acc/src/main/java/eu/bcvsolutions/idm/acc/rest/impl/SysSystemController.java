@@ -118,9 +118,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(
 		name = SysSystemController.TAG,
 		description = "Operations with target systems"//,
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		
+
 )
 public class SysSystemController extends AbstractReadWriteDtoController<SysSystemDto, SysSystemFilter> implements WizardController<ConnectorTypeDto> {
 

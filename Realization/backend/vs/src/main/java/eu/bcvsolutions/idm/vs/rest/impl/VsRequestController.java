@@ -68,8 +68,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/vs/requests")
-@Tag(name = VsRequestController.TAG, description = "Operations with requests (in virtual system)"//, //produces = BaseController.APPLICATION_HAL_JSON_VALUE
-//consumes = MediaType.APPLICATION_JSON_VALUE
+@Tag(name = VsRequestController.TAG, description = "Operations with requests (in virtual system)"//, 
+
 )
 public class VsRequestController extends AbstractReadWriteDtoController<VsRequestDto, VsRequestFilter> {
 

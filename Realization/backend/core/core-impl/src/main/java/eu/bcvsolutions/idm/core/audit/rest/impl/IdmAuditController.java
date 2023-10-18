@@ -78,9 +78,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = IdmAuditController.TAG,
 		description = "Read / search audit log"//, 
 
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		
+
 )
 @Transactional(readOnly = true)
 public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditDto, IdmAuditFilter> {

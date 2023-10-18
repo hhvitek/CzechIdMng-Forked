@@ -49,9 +49,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(
 		name = SysRequestRoleSystemAttributeController.TAG,
 		description = "Requests for - Override system mapping attribute by role"//,
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
+		
 
-//consumes = MediaType.APPLICATION_JSON_VALUE
+
 )
 public class SysRequestRoleSystemAttributeController
 		extends AbstractRequestDtoController<SysRoleSystemAttributeDto, SysRoleSystemAttributeFilter> {

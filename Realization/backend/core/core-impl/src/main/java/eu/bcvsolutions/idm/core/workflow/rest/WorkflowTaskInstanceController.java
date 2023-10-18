@@ -78,9 +78,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 		name = WorkflowTaskInstanceController.TAG,
 		
 		description = "Running WF tasks"//,
-		//produces = BaseController.APPLICATION_HAL_JSON_VALUE
 		
-//consumes = MediaType.APPLICATION_JSON_VALUE
+		
+
 )
 public class WorkflowTaskInstanceController extends AbstractReadDtoController<WorkflowTaskInstanceDto, WorkflowFilterDto> {
 
