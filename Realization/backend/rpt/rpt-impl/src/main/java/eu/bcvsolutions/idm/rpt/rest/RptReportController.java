@@ -72,14 +72,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @Enabled(RptModuleDescriptor.MODULE_ID)
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/" + RptModuleDescriptor.MODULE_ID + "/reports")
-@Tag(
-		name = RptReportController.TAG,
-		 
-		description = "Reports"//,
-		
-		
-
-)
+@Tag(name = RptReportController.TAG, description = "Reports")
 public class RptReportController extends AbstractReadWriteDtoController<RptReportDto, RptReportFilter>  {
 
 	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(RptReportController.class);

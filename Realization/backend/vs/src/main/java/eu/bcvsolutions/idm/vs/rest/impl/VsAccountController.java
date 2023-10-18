@@ -59,14 +59,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/vs/accounts")
-@Tag(
-		name = VsAccountController.TAG,
-		 
-		description = "Operations with accounts (in virtual system)"//,
-		
-
-
-)
+@Tag(name = VsAccountController.TAG, description = "Operations with accounts (in virtual system)")
 public class VsAccountController extends AbstractReadWriteDtoController<VsAccountDto, VsAccountFilter> {
 
 	protected static final String TAG = "Accounts";

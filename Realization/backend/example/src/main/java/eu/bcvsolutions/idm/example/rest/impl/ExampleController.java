@@ -146,7 +146,7 @@ public class ExampleController {
             }
     )
 	public void serverError(
-			 @Parameter(description = "Error parameter", example = "parameter")
+            @Parameter(description = "Error parameter", example = "parameter")
 			@RequestParam(required = false, defaultValue = "parameter") String parameter) {
 		// lookout - ImmutableMap parameter values cannot be {@code null}
 		throw new ResultCodeException(ExampleResultCode.EXAMPLE_SERVER_ERROR, ImmutableMap.of("parameter", String.valueOf(parameter)));
