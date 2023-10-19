@@ -30,11 +30,11 @@ public abstract class AbstractSwaggerTest extends AbstractRestTest {
 	 * Swagger output directory will contain swagger input files for next asciidoc processing.
 	 * Properties can be overriden in profile configuration.
 	 */
-	@Value("${springfox.documentation.swagger.v2.path:/api/doc}")
+	@Value("${springdoc.api-docs.path:/api/doc}")
 	private String path;
-	@Value("${springfox.documentation.swagger.outputDir:target/swagger}")
+	@Value("${swagger.output.dir:target/swagger}")
 	private String outputDir;
-	@Value("${springfox.documentation.swagger.outputFilename:swagger.json}")
+	@Value("${swagger.output.filename:swagger.json}")
 	private String filename;
 	
 	@BeforeClass
@@ -51,7 +51,7 @@ public abstract class AbstractSwaggerTest extends AbstractRestTest {
 	 * @throws Exception
 	 */
     public void convertSwagger(String moduleId) throws Exception {    	
-        MvcResult mvcResult = getMockMvc().perform(get(String.format("%s?group=%s", path, moduleId))
+        MvcResult mvcResult = getMockMvc().perform(get(String.format("%s/%s", path, moduleId))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
