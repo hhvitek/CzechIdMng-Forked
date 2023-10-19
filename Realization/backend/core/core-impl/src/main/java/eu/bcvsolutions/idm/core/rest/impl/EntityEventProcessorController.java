@@ -49,14 +49,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseController.BASE_PATH + "/entity-event-processors")
-@Tag(
-		name = EntityEventProcessorController.TAG, 
-		description = "Configure event processing"//, 
-
-		
-		
-
-)
+@Tag(name = EntityEventProcessorController.TAG, description = "Configure event processing")
 public class EntityEventProcessorController {
 
 	protected static final String TAG = "Entity event processors";
@@ -80,18 +73,13 @@ public class EntityEventProcessorController {
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.MODULE_READ + "')")
 	@Operation(
 			summary = "Find all processors", 
-			/* nickname = "findAllEntityEventProcessors", */ 
+			operationId = "findAllEntityEventProcessors", 
 			tags = { EntityEventProcessorController.TAG }, 
 						description = "Returns all registered entity event processors with state properties (disabled, order).")
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.MODULE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.MODULE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.MODULE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.MODULE_READ })
+    })
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
@@ -112,17 +100,12 @@ public class EntityEventProcessorController {
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.MODULE_UPDATE + "')")
 	@Operation(
 			summary = "Enable processor",
-			/* nickname = "enableProcessor", */
+			operationId = "enableProcessor",
 			tags = { EntityEventProcessorController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.MODULE_UPDATE }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.MODULE_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.MODULE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.MODULE_UPDATE })
+    })
 	public void enable(
 			 @Parameter(description = "Processor's identifier.", required = true)
 			@PathVariable @NotNull String processorId) {
@@ -138,17 +121,12 @@ public class EntityEventProcessorController {
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.MODULE_UPDATE + "')")
 	@Operation(
 			summary = "Disable processor",
-			/* nickname = "disableProcessor", */
+			operationId = "disableProcessor",
 			tags = { EntityEventProcessorController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.MODULE_UPDATE }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.MODULE_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.MODULE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.MODULE_UPDATE })
+    })
 	public void disable(
 			 @Parameter(description = "Processor's identifier.", required = true)
 			@PathVariable @NotNull String processorId) {

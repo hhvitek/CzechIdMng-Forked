@@ -83,17 +83,12 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_ACCOUNT_READ + "')")
 	@Operation(
 			summary = "Search accounts (/search/quick alias)", 
-			/* nickname = "searchAccounts", */
+			operationId = "searchAccounts",
 			tags = { VsAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						VirtualSystemGroupPermission.VS_ACCOUNT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						VirtualSystemGroupPermission.VS_ACCOUNT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -108,17 +103,12 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_ACCOUNT_READ + "')")
 	@Operation(
 			summary = "Search accounts", 
-			/* nickname = "searchQuickAccounts", */
+			operationId = "searchQuickAccounts",
 			tags = { VsAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						VirtualSystemGroupPermission.VS_ACCOUNT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						VirtualSystemGroupPermission.VS_ACCOUNT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -133,17 +123,12 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_ACCOUNT_AUTOCOMPLETE + "')")
 	@Operation(
 			summary = "Autocomplete accounts (selectbox usage)", 
-			/* nickname = "autocompleteAccounts", */
+			operationId = "autocompleteAccounts",
 			tags = { VsAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						VirtualSystemGroupPermission.VS_ACCOUNT_AUTOCOMPLETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						VirtualSystemGroupPermission.VS_ACCOUNT_AUTOCOMPLETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_AUTOCOMPLETE })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -158,7 +143,7 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_ACCOUNT_READ + "')")
 	@Operation(
 			summary = "Account detail", 
-			/* nickname = "getAccount", */
+			operationId = "getAccount",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -171,15 +156,10 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
                     }
             ),
 			tags = { VsAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						VirtualSystemGroupPermission.VS_ACCOUNT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						VirtualSystemGroupPermission.VS_ACCOUNT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -192,7 +172,7 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_ACCOUNT_CREATE + "') or hasAuthority('" + VirtualSystemGroupPermission.VS_ACCOUNT_UPDATE + "')")
 	@Operation(
 			summary = "Create / update account", 
-			/* nickname = "postAccount", */
+			operationId = "postAccount",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -205,9 +185,8 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
                     }
             ),
 			tags = { VsAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						VirtualSystemGroupPermission.VS_ACCOUNT_CREATE,
 						VirtualSystemGroupPermission.VS_ACCOUNT_UPDATE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
@@ -225,7 +204,7 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_ACCOUNT_UPDATE + "')")
 	@Operation(
 			summary = "Update account", 
-			/* nickname = "putAccount", */
+			operationId = "putAccount",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -238,15 +217,10 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
                     }
             ),
 			tags = { VsAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						VirtualSystemGroupPermission.VS_ACCOUNT_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						VirtualSystemGroupPermission.VS_ACCOUNT_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_UPDATE })
+    })
 	public ResponseEntity<?> put(
 			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
@@ -261,17 +235,12 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_ACCOUNT_DELETE + "')")
 	@Operation(
 			summary = "Delete account", 
-			/* nickname = "deleteAccount", */
+			operationId = "deleteAccount",
 			tags = { VsAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						VirtualSystemGroupPermission.VS_ACCOUNT_DELETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						VirtualSystemGroupPermission.VS_ACCOUNT_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_DELETE })
+    })
 	public ResponseEntity<?> delete(
 			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -285,12 +254,10 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 			+ " or hasAuthority('" + VirtualSystemGroupPermission.VS_ACCOUNT_AUTOCOMPLETE + "')")
 	@Operation(
 			summary = "What logged account can do with given record", 
-			/* nickname = "getPermissionsOnAccount", */
+			operationId = "getPermissionsOnAccount",
 			tags = { VsAccountController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						VirtualSystemGroupPermission.VS_ACCOUNT_READ,
 						VirtualSystemGroupPermission.VS_ACCOUNT_AUTOCOMPLETE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
@@ -315,17 +282,12 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_ACCOUNT_READ + "')")
 	@Operation(
 			summary = "Account extended attributes form definitions", 
-			/* nickname = "getAccountFormDefinitions", */
+			operationId = "getAccountFormDefinitions",
 			tags = { VsAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						VirtualSystemGroupPermission.VS_ACCOUNT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						VirtualSystemGroupPermission.VS_ACCOUNT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_READ })
+    })
 	public ResponseEntity<?> getFormDefinitions(
 			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -343,17 +305,12 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_ACCOUNT_READ + "')")
 	@Operation(
 			summary = "Account form definition - read values", 
-			/* nickname = "getAccountFormValues", */
+			operationId = "getAccountFormValues",
 			tags = { VsAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						VirtualSystemGroupPermission.VS_ACCOUNT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						VirtualSystemGroupPermission.VS_ACCOUNT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_READ })
+    })
 	public EntityModel<?> getFormValues(
 			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
@@ -381,17 +338,12 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 	@RequestMapping(value = "/{backendId}/form-values", method = RequestMethod.POST)
 	@Operation(
 			summary = "Account form definition - save values", 
-			/* nickname = "postAccountFormValues", */
+			operationId = "postAccountFormValues",
 			tags = { VsAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						VirtualSystemGroupPermission.VS_ACCOUNT_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						VirtualSystemGroupPermission.VS_ACCOUNT_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_UPDATE })
+    })
 	public EntityModel<?> saveFormValues(
 			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,

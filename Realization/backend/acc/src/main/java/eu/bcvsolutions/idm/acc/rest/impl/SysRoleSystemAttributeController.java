@@ -45,13 +45,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @Enabled(AccModuleDescriptor.MODULE_ID)
 @RequestMapping(value = BaseController.BASE_PATH + "/role-system-attributes")
-@Tag(
-		name = SysRoleSystemAttributeController.TAG,
-		description = "Override system mapping attribute by role"//,
-		
-
-
-)
+@Tag(name = SysRoleSystemAttributeController.TAG, description = "Override system mapping attribute by role")
 public class SysRoleSystemAttributeController
 		extends AbstractReadWriteDtoController<SysRoleSystemAttributeDto, SysRoleSystemAttributeFilter> {
 
@@ -67,19 +61,13 @@ public class SysRoleSystemAttributeController
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_READ + "')")
 	@Operation(
-			summary = "Search role system attributes (/search/quick alias)"
-			/* nickname = "searchRoleSystemAttributes", */
-			 
-			)
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.ROLE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.ROLE_READ })
-        }
+        summary = "Search role system attributes (/search/quick alias)",
+        operationId = "searchRoleSystemAttributes"
     )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ROLE_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -93,17 +81,12 @@ public class SysRoleSystemAttributeController
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@Operation(
 			summary = "Search role system attributes", 
-			/* nickname = "searchQuickRoleSystemAttributes", */
+			operationId = "searchQuickRoleSystemAttributes",
 			tags = { SysRoleSystemAttributeController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.ROLE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.ROLE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ROLE_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -118,7 +101,7 @@ public class SysRoleSystemAttributeController
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@Operation(
 			summary = "Role system attribute detail", 
-			/* nickname = "getRoleSystemAttribute", */ 
+			operationId = "getRoleSystemAttribute", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -131,15 +114,10 @@ public class SysRoleSystemAttributeController
                     }
             ), 
 			tags = { SysRoleSystemAttributeController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.ROLE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.ROLE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ROLE_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Role system attribute's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -152,7 +130,7 @@ public class SysRoleSystemAttributeController
 	@RequestMapping(method = RequestMethod.POST)
 	@Operation(
 			summary = "Create / update role system attribute", 
-			/* nickname = "postRoleSystemAttribute", */ 
+			operationId = "postRoleSystemAttribute", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -165,10 +143,8 @@ public class SysRoleSystemAttributeController
                     }
             ), 
 			tags = { SysRoleSystemAttributeController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						CoreGroupPermission.ROLE_UPDATE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 						CoreGroupPermission.ROLE_UPDATE})
@@ -184,7 +160,7 @@ public class SysRoleSystemAttributeController
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	@Operation(
 			summary = "Update role system attribute",
-			/* nickname = "putRoleSystemAttribute", */ 
+			operationId = "putRoleSystemAttribute", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -197,15 +173,10 @@ public class SysRoleSystemAttributeController
                     }
             ), 
 			tags = { SysRoleSystemAttributeController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.ROLE_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.ROLE_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ROLE_UPDATE })
+    })
 	public ResponseEntity<?> put(
 			 @Parameter(description = "Role system attribute's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
@@ -219,17 +190,12 @@ public class SysRoleSystemAttributeController
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@Operation(
 			summary = "Delete role system attribute", 
-			/* nickname = "deleteRoleSystemAttribute", */ 
+			operationId = "deleteRoleSystemAttribute", 
 			tags = { SysRoleSystemAttributeController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.ROLE_DELETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.ROLE_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLE_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ROLE_DELETE })
+    })
 	public ResponseEntity<?> delete(
 			 @Parameter(description = "Role system attribute's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {

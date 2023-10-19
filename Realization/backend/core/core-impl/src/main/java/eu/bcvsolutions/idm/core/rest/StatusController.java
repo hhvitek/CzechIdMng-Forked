@@ -18,14 +18,7 @@ import io.swagger.v3.oas.annotations.Operation;
  */
 @RestController
 @RequestMapping(value = BaseController.BASE_PATH + "/status")
-@Tag(
-		name = StatusController.TAG,  
-
-		description = "Application status"//,
-		
-
-
-)
+@Tag(name = StatusController.TAG, description = "Application status")
 public class StatusController implements PublicController {
 
 	public static final String OK_STATUS_PLAIN = "OK";
@@ -35,7 +28,7 @@ public class StatusController implements PublicController {
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
 	@Operation(
 			summary = "Get status", 
-			/* nickname = "getPlainStatus", */
+			operationId = "getPlainStatus",
 			tags = { StatusController.TAG })
 	public String getPlainStatus() {
 		return OK_STATUS_PLAIN;
@@ -43,7 +36,7 @@ public class StatusController implements PublicController {
 	
 	@Operation(
 			summary = "Get status",
-			/* nickname = "getPlainStatus", */
+			operationId = "getPlainStatus",
 			tags = { StatusController.TAG })
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
 	public String getHtmlStatus() {

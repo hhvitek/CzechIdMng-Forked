@@ -65,14 +65,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/entity-states")
-@Tag(
-		name = IdmEntityStateController.TAG, 
-		description = "Operations with entity states"//, 
-		 
-		
-		
-
-)
+@Tag(name = IdmEntityStateController.TAG, description = "Operations with entity states")
 public class IdmEntityStateController extends AbstractEventableDtoController<IdmEntityStateDto, IdmEntityStateFilter> {
 	
 	protected static final String TAG = "Entity states";
@@ -91,17 +84,12 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ENTITYSTATE_READ + "')")
 	@Operation(
 			summary = "Search entity states (/search/quick alias)",
-			/* nickname = "searchEntityStates", */ 
+			operationId = "searchEntityStates", 
 			tags = { IdmEntityStateController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.ENTITYSTATE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.ENTITYSTATE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ENTITYSTATE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ENTITYSTATE_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -116,17 +104,12 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ENTITYSTATE_READ + "')")
 	@Operation(
 			summary = "Search entity states",
-			/* nickname = "searchQuickEntityStates", */ 
+			operationId = "searchQuickEntityStates", 
 			tags = { IdmEntityStateController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.ENTITYSTATE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.ENTITYSTATE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ENTITYSTATE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ENTITYSTATE_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -141,17 +124,12 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ENTITYSTATE_AUTOCOMPLETE + "')")
 	@Operation(
 			summary = "Autocomplete entity states (selectbox usage)",
-			/* nickname = "autocompleteEntityStates", */ 
+			operationId = "autocompleteEntityStates", 
 			tags = { IdmEntityStateController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.ENTITYSTATE_AUTOCOMPLETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.ENTITYSTATE_AUTOCOMPLETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ENTITYSTATE_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ENTITYSTATE_AUTOCOMPLETE })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -166,17 +144,12 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ENTITYSTATE_COUNT + "')")
 	@Operation(
 			summary = "The number of entities that match the filter",
-			/* nickname = "countEntityStates", */ 
+			operationId = "countEntityStates", 
 			tags = { IdmEntityStateController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.ENTITYSTATE_COUNT }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.ENTITYSTATE_COUNT })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ENTITYSTATE_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ENTITYSTATE_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -187,7 +160,7 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ENTITYSTATE_READ + "')")
 	@Operation(
 			summary = "EntityState detail",
-			/* nickname = "getEntityState", */ 
+			operationId = "getEntityState", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -200,15 +173,10 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
                     }
             ), 
 			tags = { IdmEntityStateController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.ENTITYSTATE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.ENTITYSTATE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ENTITYSTATE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ENTITYSTATE_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "EntityState's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -222,7 +190,7 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
 			+ " or hasAuthority('" + CoreGroupPermission.ENTITYSTATE_UPDATE + "')")
 	@Operation(
 			summary = "Create / update entity state",
-			/* nickname = "postEntityState", */ 
+			operationId = "postEntityState", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -235,10 +203,8 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
                     }
             ), 
 			tags = { IdmEntityStateController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						CoreGroupPermission.ENTITYSTATE_CREATE,
 						CoreGroupPermission.ENTITYSTATE_UPDATE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
@@ -256,7 +222,7 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ENTITYSTATE_UPDATE + "')")
 	@Operation(
 			summary = "Update entity state",
-			/* nickname = "putEntityState", */ 
+			operationId = "putEntityState", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -269,15 +235,10 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
                     }
             ), 
 			tags = { IdmEntityStateController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.ENTITYSTATE_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.ENTITYSTATE_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ENTITYSTATE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ENTITYSTATE_UPDATE })
+    })
 	public ResponseEntity<?> put(
 			 @Parameter(description = "EntityState's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId, 
@@ -291,7 +252,7 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ENTITYSTATE_UPDATE + "')")
 	@Operation(
 			summary = "Update entity state",
-			/* nickname = "patchEntityState", */ 
+			operationId = "patchEntityState", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -304,15 +265,10 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
                     }
             ), 
 			tags = { IdmEntityStateController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.ENTITYSTATE_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.ENTITYSTATE_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ENTITYSTATE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ENTITYSTATE_UPDATE })
+    })
 	public ResponseEntity<?> patch(
 			 @Parameter(description = "EntityState's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId,
@@ -327,17 +283,12 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ENTITYSTATE_DELETE + "')")
 	@Operation(
 			summary = "Delete entity state",
-			/* nickname = "deleteEntityState", */ 
+			operationId = "deleteEntityState", 
 			tags = { IdmEntityStateController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.ENTITYSTATE_DELETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.ENTITYSTATE_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ENTITYSTATE_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ENTITYSTATE_DELETE })
+    })
 	public ResponseEntity<?> delete(
 			 @Parameter(description = "EntityState's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -351,12 +302,10 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
 			+ " or hasAuthority('" + CoreGroupPermission.ENTITYSTATE_AUTOCOMPLETE + "')")
 	@Operation(
 			summary = "What logged identity can do with given record",
-			/* nickname = "getPermissionsOnEntityState", */ 
+			operationId = "getPermissionsOnEntityState", 
 			tags = { IdmEntityStateController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						CoreGroupPermission.ENTITYSTATE_READ,
 						CoreGroupPermission.ENTITYSTATE_AUTOCOMPLETE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
@@ -399,12 +348,10 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
     @PreAuthorize("hasAuthority('" + CoreGroupPermission.ENTITYSTATE_READ + "')")
     @Operation(
             summary = "Get available bulk actions",
-            /* nickname = "availableBulkAction", */
+            operationId = "availableBulkAction",
             tags = {IdmEntityStateController.TAG})
-    @SecurityRequirements(
-        value = {
-
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
                             CoreGroupPermission.ENTITYSTATE_READ}),
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
                             CoreGroupPermission.ENTITYSTATE_READ})
@@ -425,7 +372,7 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
     @PreAuthorize("hasAuthority('" + CoreGroupPermission.ENTITYSTATE_READ + "')")
     @Operation(
             summary = "Process bulk action for entity state",
-            /* nickname = "bulkAction", */
+            operationId = "bulkAction",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -438,10 +385,8 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
                     }
             ),
             tags = {IdmEntityStateController.TAG})
-    @SecurityRequirements(
-        value = {
-
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
                             CoreGroupPermission.ENTITYSTATE_READ}),
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
                             CoreGroupPermission.ENTITYSTATE_READ})
@@ -462,7 +407,7 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
     @PreAuthorize("hasAuthority('" + CoreGroupPermission.ENTITYSTATE_READ + "')")
     @Operation(
             summary = "Prevalidate bulk action for entity state",
-            /* nickname = "prevalidateBulkAction", */
+            operationId = "prevalidateBulkAction",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -475,10 +420,8 @@ public class IdmEntityStateController extends AbstractEventableDtoController<Idm
                     }
             ),
             tags = {IdmEntityStateController.TAG})
-    @SecurityRequirements(
-        value = {
-
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
                             CoreGroupPermission.ENTITYSTATE_READ}),
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
                             CoreGroupPermission.ENTITYSTATE_READ})

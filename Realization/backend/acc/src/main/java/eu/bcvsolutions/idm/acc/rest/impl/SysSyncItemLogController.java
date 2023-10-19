@@ -53,13 +53,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @Enabled(AccModuleDescriptor.MODULE_ID)
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/system-synchronization-item-logs")
-@Tag(
-		name = SysSyncItemLogController.TAG,
-		description = "Single entity log"//,
-		
-		
-
-)
+@Tag(name = SysSyncItemLogController.TAG, description = "Single entity log")
 public class SysSyncItemLogController
 		extends AbstractReadWriteDtoController<SysSyncItemLogDto, SysSyncItemLogFilter> {
 
@@ -75,19 +69,13 @@ public class SysSyncItemLogController
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
 	@Operation(
-			summary = "Search synchronization item logs (/search/quick alias)"
-			/* nickname = "searchSyncItemLogs", */
-			 
-			)
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.SYSTEM_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.SYSTEM_READ })
-        }
+        summary = "Search synchronization item logs (/search/quick alias)",
+        operationId = "searchSyncItemLogs"
     )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -101,17 +89,12 @@ public class SysSyncItemLogController
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@Operation(
 			summary = "Search synchronization item logs",
-			/* nickname = "searchQuickSyncItemLogs", */
+			operationId = "searchQuickSyncItemLogs",
 			tags = { SysSyncItemLogController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.SYSTEM_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.SYSTEM_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -126,7 +109,7 @@ public class SysSyncItemLogController
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@Operation(
 			summary = "Synchronization item log detail",
-			/* nickname = "getSyncItemLog", */
+			operationId = "getSyncItemLog",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -139,15 +122,10 @@ public class SysSyncItemLogController
                     }
             ), 
 			tags = { SysSyncItemLogController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.SYSTEM_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.SYSTEM_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Item log's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -161,12 +139,10 @@ public class SysSyncItemLogController
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@Operation(
 			summary = "Delete synchronization item log",
-			/* nickname = "deleteSyncItemLog", */
+			operationId = "deleteSyncItemLog",
 			tags = { SysSyncItemLogController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
 						AccGroupPermission.SYNCHRONIZATION_UPDATE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						AccGroupPermission.SYNCHRONIZATION_UPDATE})
@@ -185,17 +161,12 @@ public class SysSyncItemLogController
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
 	@Operation(
 			summary = "Get available bulk actions",
-			/* nickname = "availableBulkAction", */
+			operationId = "availableBulkAction",
 			tags = { SysSyncItemLogController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							AccGroupPermission.SYSTEM_READ }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							AccGroupPermission.SYSTEM_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_READ })
+    })
 	public List<IdmBulkActionDto> getAvailableBulkActions() {
 		return super.getAvailableBulkActions();
 	}
@@ -206,7 +177,7 @@ public class SysSyncItemLogController
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
 	@Operation(
 			summary = "Process bulk action for sync log",
-			/* nickname = "bulkAction", */
+			operationId = "bulkAction",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -219,10 +190,8 @@ public class SysSyncItemLogController
                     }
             ),
 			tags = { SysSyncItemLogController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							AccGroupPermission.SYSTEM_READ}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							AccGroupPermission.SYSTEM_READ})
@@ -238,7 +207,7 @@ public class SysSyncItemLogController
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
 	@Operation(
 			summary = "Prevalidate bulk action for sync log",
-			/* nickname = "prevalidateBulkAction", */
+			operationId = "prevalidateBulkAction",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -251,10 +220,8 @@ public class SysSyncItemLogController
                     }
             ),
 			tags = { SysSyncItemLogController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							AccGroupPermission.SYSTEM_READ}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							AccGroupPermission.SYSTEM_READ})

@@ -17,6 +17,9 @@ import eu.bcvsolutions.idm.core.security.api.dto.RecaptchaResponse;
 import eu.bcvsolutions.idm.core.security.api.service.RecaptchaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
@@ -40,10 +43,20 @@ public class RecaptchaController implements BaseController {
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.POST)
 	@Operation(
-			summary = "Check reCAPTCHA protection"
-			/* nickname = "confirmRecaptcha", */ 
-			
-			/*response = RecaptchaResponse.class*/)
+        summary = "Check reCAPTCHA protection",
+        operationId = "confirmRecaptcha",
+        responses = @ApiResponse(
+            responseCode = "200",
+            content = {
+                @Content(
+                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                    schema = @Schema(
+                        implementation = RecaptchaResponse.class
+                    )
+                )
+            }
+        )
+    )
 	public ResponseEntity<RecaptchaResponse> confirmRecaptcha(
 			 @Parameter(description = "Request to check.", required = true)
 			@RequestBody @Valid RecaptchaRequest request) {

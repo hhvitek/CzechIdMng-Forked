@@ -46,13 +46,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/password-histories")
-@Tag(
-		name = IdmPasswordHistoryController.TAG,
-		description = "Get password history"//,
-		
-		
-
-)
+@Tag(name = IdmPasswordHistoryController.TAG, description = "Get password history")
 public class IdmPasswordHistoryController extends AbstractReadDtoController<IdmPasswordHistoryDto, IdmPasswordHistoryFilter> {
 
 	protected static final String TAG = "Password histories";
@@ -67,19 +61,13 @@ public class IdmPasswordHistoryController extends AbstractReadDtoController<IdmP
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUDIT_READ + "')")
 	@Operation(
-			summary = "Search password histories (/search/quick alias)"
-			/* nickname = "searchPasswordHistories", */
-
-			)
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.AUDIT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.AUDIT_READ })
-        }
+			summary = "Search password histories (/search/quick alias)",
+			operationId = "searchPasswordHistories"
     )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUDIT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUDIT_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -93,17 +81,12 @@ public class IdmPasswordHistoryController extends AbstractReadDtoController<IdmP
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@Operation(
 			summary = "Search password history items", 
-			/* nickname = "searchQuickPasswordHistories", */
+			operationId = "searchQuickPasswordHistories",
 			tags = { IdmPasswordHistoryController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.AUDIT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.AUDIT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUDIT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUDIT_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -118,7 +101,7 @@ public class IdmPasswordHistoryController extends AbstractReadDtoController<IdmP
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@Operation(
 			summary = "Password history item detail", 
-			/* nickname = "getPasswordHistory", */ 
+			operationId = "getPasswordHistory", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -131,15 +114,10 @@ public class IdmPasswordHistoryController extends AbstractReadDtoController<IdmP
                     }
             ), 
 			tags = { IdmPasswordHistoryController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.AUDIT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.AUDIT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUDIT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUDIT_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Passsword history item's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {

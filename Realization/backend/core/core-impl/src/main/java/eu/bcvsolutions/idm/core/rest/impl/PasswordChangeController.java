@@ -42,14 +42,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  *
  */
 @RestController
-@Tag(
-		name = PasswordChangeController.TAG,  
-		 
-		description = "Change identity's password"//,
-		
-		
-
-)
+@Tag(name = PasswordChangeController.TAG, description = "Change identity's password")
 public class PasswordChangeController {
 	
 	protected static final String TAG = "Password change";
@@ -92,7 +85,7 @@ public class PasswordChangeController {
 	@RequestMapping(value = BaseController.BASE_PATH + "/public/identities/{backendId}/password-change", method = RequestMethod.PUT)
 	@Operation(
 			summary = "Change identity's password", 
-			/* nickname = "passwordChange", */
+			operationId = "passwordChange",
 			tags = { PasswordChangeController.TAG })
 	public List<OperationResult> passwordChange(
 			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
@@ -139,7 +132,7 @@ public class PasswordChangeController {
 	@RequestMapping(value = BaseController.BASE_PATH + "/public/identities/prevalidate", method = RequestMethod.PUT)
 	@Operation(
 			summary = "Validation of password before applying", 
-			/* nickname = "validationOfPasswordBeforeApplying", */
+			operationId = "validationOfPasswordBeforeApplying",
 			tags = { PasswordChangeController.TAG })
 	public ResponseEntity<?> validate(
 			@RequestBody PasswordChangeDto passwordChangeDto) {

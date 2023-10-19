@@ -49,14 +49,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/script-authorities")
-@Tag(
-		name = IdmScriptAuthorityController.TAG,
-		 
-		description = "Allowed services and clasess in scripts"//,
-		
-		
-
-)
+@Tag(name = IdmScriptAuthorityController.TAG, description = "Allowed services and clasess in scripts")
 public class IdmScriptAuthorityController extends AbstractReadWriteDtoController<IdmScriptAuthorityDto, IdmScriptAuthorityFilter>{
 	
 	protected static final String TAG = "Script authorities";
@@ -77,17 +70,12 @@ public class IdmScriptAuthorityController extends AbstractReadWriteDtoController
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_READ + "')")
 	@Operation(
 			summary = "Search script authorities (/search/quick alias)", 
-			/* nickname = "searchScriptAuthorities", */
+			operationId = "searchScriptAuthorities",
 			tags = { IdmScriptAuthorityController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.SCRIPT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.SCRIPT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCRIPT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCRIPT_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -102,17 +90,12 @@ public class IdmScriptAuthorityController extends AbstractReadWriteDtoController
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_READ + "')")
 	@Operation(
 			summary = "Search script authorities", 
-			/* nickname = "searchQuickScriptAuthorities", */
+			operationId = "searchQuickScriptAuthorities",
 			tags = { IdmScriptAuthorityController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.SCRIPT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.SCRIPT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCRIPT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCRIPT_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -126,17 +109,12 @@ public class IdmScriptAuthorityController extends AbstractReadWriteDtoController
 	@RequestMapping(value = "/search/autocomplete", method = RequestMethod.GET)
 	@Operation(
 			summary = "Autocomplete script authorities (selectbox usage)", 
-			/* nickname = "autocompleteScriptAuthorities", */
+			operationId = "autocompleteScriptAuthorities",
 			tags = { IdmScriptAuthorityController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.SCRIPT_AUTOCOMPLETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.SCRIPT_AUTOCOMPLETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCRIPT_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCRIPT_AUTOCOMPLETE })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -150,18 +128,13 @@ public class IdmScriptAuthorityController extends AbstractReadWriteDtoController
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_READ + "')")
 	@Operation(
 			summary = "Get available services", 
-			/* nickname = "searchScriptAvailableServices", */
+			operationId = "searchScriptAvailableServices",
 			tags = { IdmScriptAuthorityController.TAG }, 
 						description = "Returns IdM services (key, class), whitch can be used in scripts, if they will be assigned to the script by script authority.")
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.SCRIPT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.SCRIPT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCRIPT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCRIPT_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findService(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -187,7 +160,7 @@ public class IdmScriptAuthorityController extends AbstractReadWriteDtoController
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_READ + "')")
 	@Operation(
 			summary = "Script authority detail", 
-			/* nickname = "getScriptAuthority", */
+			operationId = "getScriptAuthority",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -200,15 +173,10 @@ public class IdmScriptAuthorityController extends AbstractReadWriteDtoController
                     }
             ),
 			tags = { IdmScriptAuthorityController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.SCRIPT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.SCRIPT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCRIPT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCRIPT_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Authority's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -222,7 +190,7 @@ public class IdmScriptAuthorityController extends AbstractReadWriteDtoController
 	@RequestMapping(method = RequestMethod.POST)
 	@Operation(
 			summary = "Create / update script authority", 
-			/* nickname = "postScriptAuthority", */
+			operationId = "postScriptAuthority",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -235,10 +203,8 @@ public class IdmScriptAuthorityController extends AbstractReadWriteDtoController
                     }
             ),
 			tags = { IdmScriptAuthorityController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
 						CoreGroupPermission.SCRIPT_CREATE,
 						CoreGroupPermission.SCRIPT_UPDATE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
@@ -256,7 +222,7 @@ public class IdmScriptAuthorityController extends AbstractReadWriteDtoController
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_UPDATE + "')")
 	@Operation(
 			summary = "Update script authority", 
-			/* nickname = "putScriptAuthority", */
+			operationId = "putScriptAuthority",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -269,15 +235,10 @@ public class IdmScriptAuthorityController extends AbstractReadWriteDtoController
                     }
             ),
 			tags = { IdmScriptAuthorityController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.SCRIPT_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.SCRIPT_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCRIPT_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCRIPT_UPDATE })
+    })
 	public ResponseEntity<?> put(
 			 @Parameter(description = "Authority's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
@@ -291,17 +252,12 @@ public class IdmScriptAuthorityController extends AbstractReadWriteDtoController
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@Operation(
 			summary = "Delete script authority", 
-			/* nickname = "deleteScriptAuthority", */
+			operationId = "deleteScriptAuthority",
 			tags = { IdmScriptAuthorityController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.SCRIPT_DELETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.SCRIPT_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCRIPT_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCRIPT_DELETE })
+    })
 	public ResponseEntity<?> delete(
 			 @Parameter(description = "Authority's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {

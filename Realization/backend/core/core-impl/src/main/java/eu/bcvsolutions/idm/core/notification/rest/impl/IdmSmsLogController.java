@@ -42,14 +42,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/notification-sms")
-@Tag(
-		name = IdmSmsLogController.TAG, 
-		description = "Sms history"//, 
-		
-		
-		
-
-)
+@Tag(name = IdmSmsLogController.TAG, description = "Sms history")
 public class IdmSmsLogController extends AbstractReadDtoController<IdmSmsLogDto, IdmNotificationFilter> {
 
 	protected static final String TAG = "Notification logs - sms";
@@ -65,17 +58,12 @@ public class IdmSmsLogController extends AbstractReadDtoController<IdmSmsLogDto,
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATION_READ + "')")
 	@Operation(
 			summary = "Search sms logs (/search/quick alias)", 
-			/* nickname = "searchSmsLogs", */ 
+			operationId = "searchSmsLogs",
 			tags = { IdmSmsLogController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						NotificationGroupPermission.NOTIFICATION_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						NotificationGroupPermission.NOTIFICATION_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { NotificationGroupPermission.NOTIFICATION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { NotificationGroupPermission.NOTIFICATION_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -89,17 +77,12 @@ public class IdmSmsLogController extends AbstractReadDtoController<IdmSmsLogDto,
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@Operation(
 			summary = "Search sms logs", 
-			/* nickname = "searchQuickSmsLogs", */ 
+			operationId = "searchQuickSmsLogs",
 			tags = { IdmSmsLogController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						NotificationGroupPermission.NOTIFICATION_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						NotificationGroupPermission.NOTIFICATION_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { NotificationGroupPermission.NOTIFICATION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { NotificationGroupPermission.NOTIFICATION_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -114,7 +97,7 @@ public class IdmSmsLogController extends AbstractReadDtoController<IdmSmsLogDto,
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@Operation(
 			summary = "Sms log detail", 
-			/* nickname = "getSmsLog", */ 
+			operationId = "getSmsLog",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -127,15 +110,10 @@ public class IdmSmsLogController extends AbstractReadDtoController<IdmSmsLogDto,
                     }
             ), 
 			tags = { IdmSmsLogController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						NotificationGroupPermission.NOTIFICATION_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						NotificationGroupPermission.NOTIFICATION_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { NotificationGroupPermission.NOTIFICATION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { NotificationGroupPermission.NOTIFICATION_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Sms log's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {

@@ -57,14 +57,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/notification-attachments")
-@Tag(
-		name = IdmNotificationAttachmentController.TAG,
-		description = "Read notification attachments"//,
-
-		
-
-
-)
+@Tag(name = IdmNotificationAttachmentController.TAG, description = "Read notification attachments")
 public class IdmNotificationAttachmentController extends AbstractReadWriteDtoController<IdmNotificationAttachmentDto, IdmNotificationAttachmentFilter> {
 
 	protected static final String TAG = "Notification attachments";
@@ -82,17 +75,12 @@ public class IdmNotificationAttachmentController extends AbstractReadWriteDtoCon
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATION_READ + "')")
 	@Operation(
 			summary = "Search notification attachments (/search/quick alias)",
-			/* nickname = "searchNotificationAttachments", */
+			operationId = "searchNotificationAttachments",
 			tags = { IdmNotificationAttachmentController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						NotificationGroupPermission.NOTIFICATION_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						NotificationGroupPermission.NOTIFICATION_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { NotificationGroupPermission.NOTIFICATION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { NotificationGroupPermission.NOTIFICATION_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -106,17 +94,12 @@ public class IdmNotificationAttachmentController extends AbstractReadWriteDtoCon
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@Operation(
 			summary = "Search notification attachments",
-			/* nickname = "searchQuickNotificationAttachments", */
+			operationId = "searchQuickNotificationAttachments",
 			tags = { IdmNotificationAttachmentController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						NotificationGroupPermission.NOTIFICATION_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						NotificationGroupPermission.NOTIFICATION_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { NotificationGroupPermission.NOTIFICATION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { NotificationGroupPermission.NOTIFICATION_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -131,17 +114,12 @@ public class IdmNotificationAttachmentController extends AbstractReadWriteDtoCon
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATION_COUNT + "')")
 	@Operation(
 			summary = "The number of entities that match the filter",
-			/* nickname = "countNotificationAttachments", */
+			operationId = "countNotificationAttachments",
 			tags = { IdmNotificationAttachmentController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						NotificationGroupPermission.NOTIFICATION_COUNT }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						NotificationGroupPermission.NOTIFICATION_COUNT })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { NotificationGroupPermission.NOTIFICATION_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { NotificationGroupPermission.NOTIFICATION_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -152,7 +130,7 @@ public class IdmNotificationAttachmentController extends AbstractReadWriteDtoCon
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@Operation(
 			summary = "Notification attachment detail",
-			/* nickname = "getNotificationAttachment", */
+			operationId = "getNotificationAttachment",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -165,15 +143,10 @@ public class IdmNotificationAttachmentController extends AbstractReadWriteDtoCon
                     }
             ),
 			tags = { IdmNotificationAttachmentController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						NotificationGroupPermission.NOTIFICATION_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						NotificationGroupPermission.NOTIFICATION_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { NotificationGroupPermission.NOTIFICATION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { NotificationGroupPermission.NOTIFICATION_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Notification attachment uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -186,12 +159,10 @@ public class IdmNotificationAttachmentController extends AbstractReadWriteDtoCon
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATION_READ + "')")
 	@Operation(
 			summary = "What logged identity can do with given record",
-			/* nickname = "getPermissionsOnNotificationAttachment", */
+			operationId = "getPermissionsOnNotificationAttachment",
 			tags = { IdmNotificationAttachmentController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						NotificationGroupPermission.NOTIFICATION_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 						NotificationGroupPermission.NOTIFICATION_READ})
@@ -208,18 +179,13 @@ public class IdmNotificationAttachmentController extends AbstractReadWriteDtoCon
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATION_READ + "')")
 	@Operation(
 			summary = "Download notification attachment",
-			/* nickname = "downloadNotificationAttachment", */
+			operationId = "downloadNotificationAttachment",
 			tags = { IdmNotificationAttachmentController.TAG },
 			description = "Returns input stream to notification attachment.")
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							NotificationGroupPermission.NOTIFICATION_READ }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							NotificationGroupPermission.NOTIFICATION_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { NotificationGroupPermission.NOTIFICATION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { NotificationGroupPermission.NOTIFICATION_READ })
+    })
 	public ResponseEntity<InputStreamResource> download(
 			 @Parameter(description = "Notification attachment uuid identifier.", required = true)
 			@PathVariable String backendId) {

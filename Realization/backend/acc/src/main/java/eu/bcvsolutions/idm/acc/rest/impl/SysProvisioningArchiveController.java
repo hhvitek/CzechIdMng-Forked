@@ -60,13 +60,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @Enabled(AccModuleDescriptor.MODULE_ID)
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/provisioning-archives")
-@Tag(
-		name = SysProvisioningArchiveController.TAG,
-		description = "Archived provisioning operations (completed, canceled)"//,
-		
-		
-
-)
+@Tag(name = SysProvisioningArchiveController.TAG, description = "Archived provisioning operations (completed, canceled)")
 public class SysProvisioningArchiveController extends AbstractReadWriteDtoController<SysProvisioningArchiveDto, SysProvisioningOperationFilter> {
 
 	protected static final String TAG = "Provisioning - archive";
@@ -83,19 +77,13 @@ public class SysProvisioningArchiveController extends AbstractReadWriteDtoContro
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.PROVISIONING_ARCHIVE_READ + "')")
 	@Operation(
-			summary = "Search provisioning archive items (/search/quick alias)"
-			/* nickname = "searchProvisioningArchives", */
-
-			)
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.PROVISIONING_ARCHIVE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.PROVISIONING_ARCHIVE_READ })
-        }
+        summary = "Search provisioning archive items (/search/quick alias)",
+        operationId = "searchProvisioningArchives"
     )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.PROVISIONING_ARCHIVE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.PROVISIONING_ARCHIVE_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -109,17 +97,12 @@ public class SysProvisioningArchiveController extends AbstractReadWriteDtoContro
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@Operation(
 			summary = "Search provisioning archive items",
-			/* nickname = "searchQuickProvisioningArchives", */
+			operationId = "searchQuickProvisioningArchives",
 			tags = { SysProvisioningArchiveController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.PROVISIONING_ARCHIVE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.PROVISIONING_ARCHIVE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.PROVISIONING_ARCHIVE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.PROVISIONING_ARCHIVE_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -134,17 +117,12 @@ public class SysProvisioningArchiveController extends AbstractReadWriteDtoContro
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.PROVISIONING_ARCHIVE_COUNT + "')")
 	@Operation(
 			summary = "The number of entities that match the filter",
-			/* nickname = "countProvisioningArchives", */
+			operationId = "countProvisioningArchives",
 			tags = { SysProvisioningArchiveController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.PROVISIONING_ARCHIVE_COUNT }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.PROVISIONING_ARCHIVE_COUNT })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.PROVISIONING_ARCHIVE_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.PROVISIONING_ARCHIVE_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -179,7 +157,7 @@ public class SysProvisioningArchiveController extends AbstractReadWriteDtoContro
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@Operation(
 			summary = "Provisioning archive item detail",
-			/* nickname = "getProvisioningArchive", */
+			operationId = "getProvisioningArchive",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -192,15 +170,10 @@ public class SysProvisioningArchiveController extends AbstractReadWriteDtoContro
                     }
             ),
 			tags = { SysProvisioningArchiveController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.PROVISIONING_ARCHIVE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.PROVISIONING_ARCHIVE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.PROVISIONING_ARCHIVE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.PROVISIONING_ARCHIVE_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Provisioning archive item's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -213,12 +186,10 @@ public class SysProvisioningArchiveController extends AbstractReadWriteDtoContro
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.PROVISIONING_ARCHIVE_READ + "')")
 	@Operation(
 			summary = "What logged identity can do with given record",
-			/* nickname = "getPermissionsOnProvisioningArchive", */
+			operationId = "getPermissionsOnProvisioningArchive",
 			tags = { SysProvisioningArchiveController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
 						AccGroupPermission.PROVISIONING_ARCHIVE_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						AccGroupPermission.PROVISIONING_ARCHIVE_READ})
@@ -236,12 +207,10 @@ public class SysProvisioningArchiveController extends AbstractReadWriteDtoContro
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.PROVISIONING_ARCHIVE_READ + "')")
 	@Operation(
 			summary = "Detail of the provisioning changes",
-			/* nickname = "getProvisioningDetail", */
+			operationId = "getProvisioningDetail",
 			tags = { SysProvisioningArchiveController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
 						AccGroupPermission.PROVISIONING_ARCHIVE_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						AccGroupPermission.PROVISIONING_ARCHIVE_READ})

@@ -44,14 +44,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/logging-events")
-@Tag(
-		name = IdmLoggingEventController.TAG, 
-		description = "Read / search log from LOG4J"//, 
-		 
-		
-		
-
-)
+@Tag(name = IdmLoggingEventController.TAG, description = "Read / search log from LOG4J")
 public class IdmLoggingEventController extends AbstractReadDtoController<IdmLoggingEventDto, IdmLoggingEventFilter> {
 
 	protected static final String TAG = "Logging events";
@@ -66,17 +59,12 @@ public class IdmLoggingEventController extends AbstractReadDtoController<IdmLogg
 	@RequestMapping(value= "/search/quick", method = RequestMethod.GET)
 	@Operation(
 			summary = "Search logging events",
-			/* nickname = "searchQuickLoggingEvents", */ 
+			operationId = "searchQuickLoggingEvents", 
 			tags = { IdmLoggingEventController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.AUDIT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.AUDIT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUDIT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUDIT_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -91,7 +79,7 @@ public class IdmLoggingEventController extends AbstractReadDtoController<IdmLogg
 	@Override
 	@Operation(
 			summary = "Logging event detail",
-			/* nickname = "getLoggingEvent", */ 
+			operationId = "getLoggingEvent", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -104,15 +92,10 @@ public class IdmLoggingEventController extends AbstractReadDtoController<IdmLogg
                     }
             ), 
 			tags = { IdmLoggingEventController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.AUDIT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.AUDIT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUDIT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUDIT_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Logging event's identifier.", required = true)
 			@PathVariable @NotNull String backendId) {

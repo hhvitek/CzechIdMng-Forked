@@ -48,7 +48,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping(BaseController.BASE_PATH + "/scheduler-tasks")
 @ConditionalOnProperty(prefix = "scheduler", name = "enabled", matchIfMissing = true)
-@Tag(name = SchedulerController.TAG, description = "Scheduled tasks administration" )
+@Tag(name = SchedulerController.TAG, description = "Scheduled tasks administration")
 public class SchedulerController implements BaseController {
 
 	protected static final String TAG = "Scheduler";
@@ -68,17 +68,12 @@ public class SchedulerController implements BaseController {
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_READ + "')")
 	@Operation(
 			summary = "Get supported tasks",
-			/* nickname = "getSupportedSchedulerTasks", */ 
+			operationId = "getSupportedSchedulerTasks",
 			tags={ SchedulerController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.SCHEDULER_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.SCHEDULER_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_READ })
+    })
 	public CollectionModel<Task> getSupportedTasks() {
 		return new CollectionModel<>(schedulerService.getSupportedTasks());
 	}
@@ -94,17 +89,12 @@ public class SchedulerController implements BaseController {
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_READ + "')")
 	@Operation(
 			summary = "Search scheduled tasks",
-			/* nickname = "searchSchedulerTasks", */ 
+			operationId = "searchSchedulerTasks",
 			tags={ SchedulerController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.SCHEDULER_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.SCHEDULER_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -120,17 +110,12 @@ public class SchedulerController implements BaseController {
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_READ + "')")
 	@Operation(
 			summary = "Get scheduled task detail",
-			/* nickname = "getSchedulerTask", */ 
+			operationId = "getSchedulerTask",
 			tags={ SchedulerController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.SCHEDULER_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.SCHEDULER_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_READ })
+    })
 	public Task getTask(
 			 @Parameter(description = "Task identifier.", required = true)
 			@PathVariable String taskId) {
@@ -148,17 +133,12 @@ public class SchedulerController implements BaseController {
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_CREATE + "')")
 	@Operation(
 			summary = "Create scheduled task",
-			/* nickname = "postSchedulerTask", */ 
+			operationId = "postSchedulerTask",
 			tags={ SchedulerController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.SCHEDULER_CREATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.SCHEDULER_CREATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_CREATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_CREATE })
+    })
 	public Task createTask(
 			 @Parameter(description = "Task.", required = true)
 			@Valid @RequestBody Task task) {
@@ -175,17 +155,12 @@ public class SchedulerController implements BaseController {
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_UPDATE + "')")
 	@Operation(
 			summary = "Update scheduled task",
-			/* nickname = "updateSchedulerTask", */ 
+			operationId = "updateSchedulerTask",
 			tags={ SchedulerController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							CoreGroupPermission.SCHEDULER_UPDATE }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							CoreGroupPermission.SCHEDULER_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_UPDATE })
+    })
 	public Task updateTask(
 		 @Parameter(description = "Task identifier.", required = true)
 		@PathVariable String taskId,
@@ -204,17 +179,12 @@ public class SchedulerController implements BaseController {
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_DELETE + "')")
 	@Operation(
 			summary = "Delete scheduled task",
-			/* nickname = "deleteSchedulerTask", */ 
+			operationId = "deleteSchedulerTask",
 			tags={ SchedulerController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.SCHEDULER_DELETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.SCHEDULER_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_DELETE })
+    })
 	public ResponseEntity<?> deleteTask(
 			 @Parameter(description = "Task identifier.", required = true)
 			@PathVariable String taskId) {
@@ -227,18 +197,13 @@ public class SchedulerController implements BaseController {
 	@RequestMapping(method = RequestMethod.POST, value = "/{taskId}/run")
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_EXECUTE + "')")
 	@Operation(summary = "Execute scheduled task",
-			/* nickname = "executeSchedulerTask", */ 
+			operationId = "executeSchedulerTask",
 			tags={ SchedulerController.TAG }, 
 						description = "Create long running task (LRT) by scheduled task definition immediately. Created task will be added to LRTs queue.")
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.SCHEDULER_EXECUTE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.SCHEDULER_EXECUTE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_EXECUTE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_EXECUTE })
+    })
 
 	public AbstractTaskTrigger runTask(
 			 @Parameter(description = "Task identifier.", required = true)
@@ -252,18 +217,13 @@ public class SchedulerController implements BaseController {
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_EXECUTE + "')")
 	@Operation(
 			summary = "Execute scheduled task in dry run mode",
-			/* nickname = "executeSchedulerTaskDryRun", */
+			operationId = "executeSchedulerTaskDryRun",
 			tags={ SchedulerController.TAG },
 						description = "Create long running task (LRT) by scheduled task definition immediately in dry run mode. Created task will be added to LRTs queue.")
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.SCHEDULER_EXECUTE }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.SCHEDULER_EXECUTE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_EXECUTE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_EXECUTE })
+    })
 	public AbstractTaskTrigger dryRunTask(
 			 @Parameter(description = "Task identifier.", required = true)
 			@PathVariable String taskId) {
@@ -282,18 +242,13 @@ public class SchedulerController implements BaseController {
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_CREATE + "')")
 	@Operation(
 			summary = "Create simple trigger",
-			/* nickname = "postSimpleTrigger", */ 
+			operationId = "postSimpleTrigger",
 			tags={ SchedulerController.TAG }, 
 						description = "Create simple trigger by given execution date.")
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.SCHEDULER_CREATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.SCHEDULER_CREATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_CREATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_CREATE })
+    })
 	public AbstractTaskTrigger createSimpleTrigger(
 			 @Parameter(description = "Task identifier.", required = true)
 			@PathVariable String taskId, 
@@ -314,18 +269,13 @@ public class SchedulerController implements BaseController {
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_CREATE + "')")
 	@Operation(
 			summary = "Create cron trigger",
-			/* nickname = "postCronTrigger", */ 
+			operationId = "postCronTrigger",
 			tags={ SchedulerController.TAG }, 
 						description = "Create trigger by given quartz cron expression.")
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.SCHEDULER_CREATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.SCHEDULER_CREATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_CREATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_CREATE })
+    })
 	public AbstractTaskTrigger createCronTrigger(
 			 @Parameter(description = "Task identifier.", required = true)
 			@PathVariable String taskId,
@@ -346,18 +296,13 @@ public class SchedulerController implements BaseController {
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_CREATE + "')")
 	@Operation(
 			summary = "Create dependent trigger",
-			/* nickname = "postDependentTrigger", */ 
+			operationId = "postDependentTrigger",
 			tags={ SchedulerController.TAG }, 
 						description = "Create trigger, which is triggered, when other scheduled task ends.")
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.SCHEDULER_CREATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.SCHEDULER_CREATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_CREATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_CREATE })
+    })
 	public AbstractTaskTrigger createDependentTrigger(
 			 @Parameter(description = "Task identifier.", required = true)
 			@PathVariable String taskId, 
@@ -377,17 +322,12 @@ public class SchedulerController implements BaseController {
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_DELETE + "')")
 	@Operation(
 			summary = "Delete trigger",
-			/* nickname = "deleteTrigger", */ 
+			operationId = "deleteTrigger",
 			tags={ SchedulerController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.SCHEDULER_DELETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.SCHEDULER_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_DELETE })
+    })
 	public ResponseEntity<?> deleteTrigger(
 			 @Parameter(description = "Task identifier.", required = true)
 			@PathVariable String taskId, 
@@ -409,17 +349,12 @@ public class SchedulerController implements BaseController {
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_UPDATE + "')")
 	@Operation(
 			summary = "Pause trigger",
-			/* nickname = "pauseTrigger", */ 
+			operationId = "pauseTrigger",
 			tags={ SchedulerController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.SCHEDULER_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.SCHEDULER_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_UPDATE })
+    })
 	public ResponseEntity<?> pauseTrigger(
 			 @Parameter(description = "Task identifier.", required = true)
 			@PathVariable String taskId, 
@@ -441,17 +376,12 @@ public class SchedulerController implements BaseController {
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_UPDATE + "')")
 	@Operation(
 			summary = "Resume trigger",
-			/* nickname = "resumeTrigger", */ 
+			operationId = "resumeTrigger",
 			tags={ SchedulerController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.SCHEDULER_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.SCHEDULER_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_UPDATE })
+    })
 	public ResponseEntity<?> resumeTrigger(
 			 @Parameter(description = "Task identifier.", required = true)
 			@PathVariable String taskId, 

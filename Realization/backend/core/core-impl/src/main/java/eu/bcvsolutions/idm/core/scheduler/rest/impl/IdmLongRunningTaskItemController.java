@@ -60,10 +60,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/long-running-task-items")
-@Tag(
-		name = IdmLongRunningTaskItemController.TAG,
-		description = "Operations with processed task items"//,
-		)
+@Tag(name = IdmLongRunningTaskItemController.TAG, description = "Operations with processed task items")
 public class IdmLongRunningTaskItemController extends AbstractReadWriteDtoController<IdmProcessedTaskItemDto, IdmProcessedTaskItemFilter> {
 
 	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(IdmLongRunningTaskItemController.class);
@@ -88,7 +85,7 @@ public class IdmLongRunningTaskItemController extends AbstractReadWriteDtoContro
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_READ + "')")
 	@Operation(
 			summary = "Processed task items",
-			/* nickname = "getProcessedTaskItems", */
+			operationId = "getProcessedTaskItems",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -101,15 +98,10 @@ public class IdmLongRunningTaskItemController extends AbstractReadWriteDtoContro
                     }
             ),
 			tags={ IdmLongRunningTaskItemController.TAG})
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.SCHEDULER_READ }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.SCHEDULER_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Processed task's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -120,16 +112,11 @@ public class IdmLongRunningTaskItemController extends AbstractReadWriteDtoContro
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_READ + "')")
-	@Operation(summary = "Search processed task's items (/search/quick alias)", /* nickname = "searchProcessedTaskItems", */ tags={ IdmLongRunningTaskItemController.TAG })
-    @SecurityRequirements(
-        value = {
-
-			@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-					CoreGroupPermission.SCHEDULER_READ }),
-			@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-					CoreGroupPermission.SCHEDULER_READ })
-        }
-    )
+	@Operation(summary = "Search processed task's items (/search/quick alias)", operationId = "searchProcessedTaskItems", tags={ IdmLongRunningTaskItemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -149,16 +136,11 @@ public class IdmLongRunningTaskItemController extends AbstractReadWriteDtoContro
 	@ResponseBody
 	@RequestMapping(value= "/search/quick", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_READ + "')")
-	@Operation(summary = "Search processed task's items", /* nickname = "searchQuickProcessedTaskItems", */ tags={ IdmLongRunningTaskItemController.TAG })
-    @SecurityRequirements(
-        value = {
-
-			@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-					CoreGroupPermission.SCHEDULER_READ }),
-			@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-					CoreGroupPermission.SCHEDULER_READ })
-        }
-    )
+	@Operation(summary = "Search processed task's items", operationId = "searchQuickProcessedTaskItems", tags={ IdmLongRunningTaskItemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -185,17 +167,12 @@ public class IdmLongRunningTaskItemController extends AbstractReadWriteDtoContro
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_DELETE + "')")
 	@Operation(
 			summary = "Delete record",
-			/* nickname = "deleteRecord", */
+			operationId = "deleteRecord",
 			tags = { IdmLongRunningTaskItemController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.SCHEDULER_DELETE }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.SCHEDULER_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_DELETE })
+    })
 	public ResponseEntity<?> delete(
 			 @Parameter(description = "Records's uuid identifier", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -207,17 +184,12 @@ public class IdmLongRunningTaskItemController extends AbstractReadWriteDtoContro
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_CREATE + "')")
 	@Operation(
 			summary = "Create record",
-			/* nickname = "createRecord", */
+			operationId = "createRecord",
 			tags = { IdmLongRunningTaskItemController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.SCHEDULER_CREATE }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.SCHEDULER_CREATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_CREATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_CREATE })
+    })
 	public ResponseEntity<?> addToQueue(
 			 @Parameter(description = "Records's uuid identifier", required = true)
 			@PathVariable @NotNull String backendId, @Valid @RequestBody UUID scheduledTask) {

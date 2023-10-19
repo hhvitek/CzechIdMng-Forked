@@ -46,14 +46,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value= BaseDtoController.BASE_PATH + "/requests")
-@Tag(
-		name = IdmRequestIncompatibleRoleController.TAG, 
-		description = "Operations with incompatible role - defines incompatible roles"//, 
-		 
-		
-		
-
-)
+@Tag(name = IdmRequestIncompatibleRoleController.TAG, description = "Operations with incompatible role - defines incompatible roles")
 public class IdmRequestIncompatibleRoleController extends AbstractRequestDtoController<IdmIncompatibleRoleDto, IdmIncompatibleRoleFilter> {
 	
 	protected static final String TAG = "Incompatible roles - by roles";
@@ -75,17 +68,12 @@ public class IdmRequestIncompatibleRoleController extends AbstractRequestDtoCont
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.INCOMPATIBLEROLE_READ + "')")
 	@Operation(
 			summary = "Search incompatible role roles (/search/quick alias)", 
-			/* nickname = "searchIncompatibleRoles", */
+			operationId = "searchIncompatibleRoles",
 			tags = { IdmRequestIncompatibleRoleController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.INCOMPATIBLEROLE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.INCOMPATIBLEROLE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.INCOMPATIBLEROLE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.INCOMPATIBLEROLE_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@PathVariable @NotNull String requestId,
@@ -100,17 +88,12 @@ public class IdmRequestIncompatibleRoleController extends AbstractRequestDtoCont
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.INCOMPATIBLEROLE_READ + "')")
 	@Operation(
 			summary = "Search incompatible role roles", 
-			/* nickname = "searchQuickIncompatibleRoles", */
+			operationId = "searchQuickIncompatibleRoles",
 			tags = { IdmRequestIncompatibleRoleController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.INCOMPATIBLEROLE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.INCOMPATIBLEROLE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.INCOMPATIBLEROLE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.INCOMPATIBLEROLE_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@PathVariable @NotNull String requestId,
@@ -125,17 +108,12 @@ public class IdmRequestIncompatibleRoleController extends AbstractRequestDtoCont
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.INCOMPATIBLEROLE_AUTOCOMPLETE + "')")
 	@Operation(
 			summary = "Autocomplete incompatible role roles (selectbox usage)", 
-			/* nickname = "autocompleteIncompatibleRoles", */
+			operationId = "autocompleteIncompatibleRoles",
 			tags = { IdmRequestIncompatibleRoleController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.INCOMPATIBLEROLE_AUTOCOMPLETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.INCOMPATIBLEROLE_AUTOCOMPLETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.INCOMPATIBLEROLE_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.INCOMPATIBLEROLE_AUTOCOMPLETE })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@PathVariable @NotNull String requestId,
@@ -151,17 +129,12 @@ public class IdmRequestIncompatibleRoleController extends AbstractRequestDtoCont
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.INCOMPATIBLEROLE_COUNT + "')")
 	@Operation(
 			summary = "The number of entities that match the filter", 
-			/* nickname = "countIncompatibleRoles", */
+			operationId = "countIncompatibleRoles",
 			tags = { IdmRequestIncompatibleRoleController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.INCOMPATIBLEROLE_COUNT }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.INCOMPATIBLEROLE_COUNT })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.INCOMPATIBLEROLE_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.INCOMPATIBLEROLE_COUNT })
+    })
 	public long count(
 			@PathVariable @NotNull String requestId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
@@ -174,7 +147,7 @@ public class IdmRequestIncompatibleRoleController extends AbstractRequestDtoCont
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.INCOMPATIBLEROLE_READ + "')")
 	@Operation(
 			summary = "Incompatible role role detail", 
-			/* nickname = "getIncompatibleRole", */
+			operationId = "getIncompatibleRole",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -187,15 +160,10 @@ public class IdmRequestIncompatibleRoleController extends AbstractRequestDtoCont
                     }
             ), 
 			tags = { IdmRequestIncompatibleRoleController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.INCOMPATIBLEROLE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.INCOMPATIBLEROLE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.INCOMPATIBLEROLE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.INCOMPATIBLEROLE_READ })
+    })
 	public ResponseEntity<?> get(
 			@PathVariable @NotNull String requestId,
 			 @Parameter(description = "Incompatible role's uuid identifier.", required = true)
@@ -210,7 +178,7 @@ public class IdmRequestIncompatibleRoleController extends AbstractRequestDtoCont
 			+ " or hasAuthority('" + CoreGroupPermission.INCOMPATIBLEROLE_UPDATE + "')")
 	@Operation(
 			summary = "Create / update incompatible role role", 
-			/* nickname = "postIncompatibleRole", */
+			operationId = "postIncompatibleRole",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -223,10 +191,8 @@ public class IdmRequestIncompatibleRoleController extends AbstractRequestDtoCont
                     }
             ), 
 			tags = { IdmRequestIncompatibleRoleController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
 						CoreGroupPermission.INCOMPATIBLEROLE_CREATE,
 						CoreGroupPermission.INCOMPATIBLEROLE_UPDATE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
@@ -246,7 +212,7 @@ public class IdmRequestIncompatibleRoleController extends AbstractRequestDtoCont
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.INCOMPATIBLEROLE_UPDATE + "')")
 	@Operation(
 			summary = "Update incompatible role role", 
-			/* nickname = "putIncompatibleRole", */
+			operationId = "putIncompatibleRole",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -259,15 +225,10 @@ public class IdmRequestIncompatibleRoleController extends AbstractRequestDtoCont
                     }
             ), 
 			tags = { IdmRequestIncompatibleRoleController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.INCOMPATIBLEROLE_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.INCOMPATIBLEROLE_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.INCOMPATIBLEROLE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.INCOMPATIBLEROLE_UPDATE })
+    })
 	public ResponseEntity<?> put(
 			@PathVariable @NotNull String requestId,
 			 @Parameter(description = "Incompatible role's uuid identifier.", required = true)
@@ -282,17 +243,12 @@ public class IdmRequestIncompatibleRoleController extends AbstractRequestDtoCont
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.INCOMPATIBLEROLE_DELETE + "')")
 	@Operation(
 			summary = "Delete incompatible role role", 
-			/* nickname = "deleteIncompatibleRole", */
+			operationId = "deleteIncompatibleRole",
 			tags = { IdmRequestIncompatibleRoleController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.INCOMPATIBLEROLE_DELETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.INCOMPATIBLEROLE_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.INCOMPATIBLEROLE_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.INCOMPATIBLEROLE_DELETE })
+    })
 	public ResponseEntity<?> delete(
 			@PathVariable @NotNull String requestId,
 			 @Parameter(description = "Incompatible role's uuid identifier.", required = true)
@@ -306,17 +262,12 @@ public class IdmRequestIncompatibleRoleController extends AbstractRequestDtoCont
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.INCOMPATIBLEROLE_READ + "')")
 	@Operation(
 			summary = "What logged identity can do with given record", 
-			/* nickname = "getPermissionsOnIncompatibleRole", */
+			operationId = "getPermissionsOnIncompatibleRole",
 			tags = { IdmRequestIncompatibleRoleController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.INCOMPATIBLEROLE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.INCOMPATIBLEROLE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.INCOMPATIBLEROLE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.INCOMPATIBLEROLE_READ })
+    })
 	public Set<String> getPermissions(
 			@PathVariable @NotNull String requestId,
 			 @Parameter(description = "Incompatible role's uuid identifier.", required = true)

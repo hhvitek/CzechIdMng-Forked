@@ -49,14 +49,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @Enabled(AccModuleDescriptor.MODULE_ID)
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/role-accounts")
-@Tag(
-		name = AccRoleAccountController.TAG,
-
-		description = "Assigned role accoutns on target system"//,
-		
-		
-
-)
+@Tag(name = AccRoleAccountController.TAG, description = "Assigned role accoutns on target system")
 public class AccRoleAccountController extends AbstractReadWriteDtoController<AccRoleAccountDto, AccRoleAccountFilter> {
 	
 	protected static final String TAG = "Role accounts";
@@ -72,17 +65,12 @@ public class AccRoleAccountController extends AbstractReadWriteDtoController<Acc
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ROLE_ACCOUNT_READ + "')")
 	@Operation(
 			summary = "Search role accounts (/search/quick alias)", 
-			/* nickname = "searchRoleAccounts", */ 
+			operationId = "searchRoleAccounts", 
 			tags = { AccRoleAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.ROLE_ACCOUNT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.ROLE_ACCOUNT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.ROLE_ACCOUNT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.ROLE_ACCOUNT_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -97,17 +85,12 @@ public class AccRoleAccountController extends AbstractReadWriteDtoController<Acc
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ROLE_ACCOUNT_READ + "')")
 	@Operation(
 			summary = "Search role accounts", 
-			/* nickname = "searchQuickRoleAccounts", */ 
+			operationId = "searchQuickRoleAccounts", 
 			tags = { AccRoleAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.ROLE_ACCOUNT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.ROLE_ACCOUNT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.ROLE_ACCOUNT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.ROLE_ACCOUNT_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -121,7 +104,7 @@ public class AccRoleAccountController extends AbstractReadWriteDtoController<Acc
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ROLE_ACCOUNT_READ + "')")
 	@Operation(
 			summary = "Role account detail",
-			/* nickname = "getRoleAccount", */
+			operationId = "getRoleAccount",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -134,10 +117,8 @@ public class AccRoleAccountController extends AbstractReadWriteDtoController<Acc
                     }
             ),
 			tags = { AccRoleAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						AccGroupPermission.ROLE_ACCOUNT_READ	}),
 						@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 								AccGroupPermission.ROLE_ACCOUNT_READ	})
@@ -155,7 +136,7 @@ public class AccRoleAccountController extends AbstractReadWriteDtoController<Acc
 			+ " or hasAuthority('" + AccGroupPermission.ROLE_ACCOUNT_UPDATE + "')")
 	@Operation(
 			summary = "Create / update role account",
-			/* nickname = "postRoleAccount", */
+			operationId = "postRoleAccount",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -168,10 +149,8 @@ public class AccRoleAccountController extends AbstractReadWriteDtoController<Acc
                     }
             ),
 			tags = { AccRoleAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						AccGroupPermission.ROLE_ACCOUNT_CREATE,
 						AccGroupPermission.ROLE_ACCOUNT_UPDATE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
@@ -190,7 +169,7 @@ public class AccRoleAccountController extends AbstractReadWriteDtoController<Acc
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	@Operation(
 			summary = "Update role account", 
-			/* nickname = "putRoleAccount", */ 
+			operationId = "putRoleAccount", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -203,15 +182,10 @@ public class AccRoleAccountController extends AbstractReadWriteDtoController<Acc
                     }
             ), 
 			tags = { AccRoleAccountController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.ROLE_ACCOUNT_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.ROLE_ACCOUNT_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.ROLE_ACCOUNT_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.ROLE_ACCOUNT_UPDATE })
+    })
 	public ResponseEntity<?> put(
 			 @Parameter(description = "Role account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
@@ -225,17 +199,12 @@ public class AccRoleAccountController extends AbstractReadWriteDtoController<Acc
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@Operation(
 			summary = "Delete role account", 
-			/* nickname = "deleteRoleAccount", */ 
+			operationId = "deleteRoleAccount", 
 			tags = { AccRoleAccountController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.ROLE_ACCOUNT_DELETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.ROLE_ACCOUNT_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.ROLE_ACCOUNT_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.ROLE_ACCOUNT_DELETE })
+    })
 	public ResponseEntity<?> delete(
 			 @Parameter(description = "Role account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -248,17 +217,12 @@ public class AccRoleAccountController extends AbstractReadWriteDtoController<Acc
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ROLE_ACCOUNT_READ + "')")
 	@Operation(
 			summary = "What logged identity can do with given record", 
-			/* nickname = "getPermissionsOnRoleAccount", */ 
+			operationId = "getPermissionsOnRoleAccount", 
 			tags = { AccRoleAccountController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.ROLE_ACCOUNT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.ROLE_ACCOUNT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.ROLE_ACCOUNT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.ROLE_ACCOUNT_READ })
+    })
 	public Set<String> getPermissions(
 			 @Parameter(description = "Role account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {

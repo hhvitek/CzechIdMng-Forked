@@ -46,14 +46,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/requests")
-@Tag(
-		name = IdmRequestRoleCatalogueRoleController.TAG,
-		description = "Operations with role catalogues by role"//,
-
-		
-
-
-)
+@Tag(name = IdmRequestRoleCatalogueRoleController.TAG, description = "Operations with role catalogues by role")
 public class IdmRequestRoleCatalogueRoleController extends AbstractRequestDtoController<IdmRoleCatalogueRoleDto, IdmRoleCatalogueRoleFilter> {
 	
 	protected static final String TAG = "Request for role catalogues - role relations";
@@ -75,17 +68,12 @@ public class IdmRequestRoleCatalogueRoleController extends AbstractRequestDtoCon
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUEROLE_READ + "')")
 	@Operation(
 			summary = "Search role catalogue roles (/search/quick alias)",
-			/* nickname = "searchRoleCatalogueRoles", */
+			operationId = "searchRoleCatalogueRoles",
 			tags = { IdmRequestRoleCatalogueRoleController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.ROLECATALOGUEROLE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.ROLECATALOGUEROLE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@PathVariable @NotNull String requestId,
@@ -100,17 +88,12 @@ public class IdmRequestRoleCatalogueRoleController extends AbstractRequestDtoCon
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUEROLE_READ + "')")
 	@Operation(
 			summary = "Search role catalogue roles",
-			/* nickname = "searchQuickRoleCatalogueRoles", */
+			operationId = "searchQuickRoleCatalogueRoles",
 			tags = { IdmRequestRoleCatalogueRoleController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.ROLECATALOGUEROLE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.ROLECATALOGUEROLE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@PathVariable @NotNull String requestId,
@@ -125,17 +108,12 @@ public class IdmRequestRoleCatalogueRoleController extends AbstractRequestDtoCon
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUEROLE_AUTOCOMPLETE + "')")
 	@Operation(
 			summary = "Autocomplete role catalogue roles (selectbox usage)",
-			/* nickname = "autocompleteRoleCatalogueRoles", */
+			operationId = "autocompleteRoleCatalogueRoles",
 			tags = { IdmRequestRoleCatalogueRoleController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.ROLECATALOGUEROLE_AUTOCOMPLETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.ROLECATALOGUEROLE_AUTOCOMPLETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_AUTOCOMPLETE })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@PathVariable @NotNull String requestId,
@@ -151,17 +129,12 @@ public class IdmRequestRoleCatalogueRoleController extends AbstractRequestDtoCon
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUEROLE_COUNT + "')")
 	@Operation(
 			summary = "The number of entities that match the filter",
-			/* nickname = "countRoleCatalogueRoles", */
+			operationId = "countRoleCatalogueRoles",
 			tags = { IdmRequestRoleCatalogueRoleController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.ROLECATALOGUEROLE_COUNT }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.ROLECATALOGUEROLE_COUNT })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_COUNT })
+    })
 	public long count(@PathVariable @NotNull String requestId, @RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(requestId, parameters);
 	}
@@ -172,7 +145,7 @@ public class IdmRequestRoleCatalogueRoleController extends AbstractRequestDtoCon
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUEROLE_READ + "')")
 	@Operation(
 			summary = "Role catalogue role detail",
-			/* nickname = "getRoleCatalogueRole", */
+			operationId = "getRoleCatalogueRole",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -185,15 +158,10 @@ public class IdmRequestRoleCatalogueRoleController extends AbstractRequestDtoCon
                     }
             ),
 			tags = { IdmRequestRoleCatalogueRoleController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.ROLECATALOGUEROLE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.ROLECATALOGUEROLE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_READ })
+    })
 	public ResponseEntity<?> get(
 			@PathVariable @NotNull String requestId,
 			 @Parameter(description = "Role catalogue's uuid identifier.", required = true)
@@ -208,7 +176,7 @@ public class IdmRequestRoleCatalogueRoleController extends AbstractRequestDtoCon
 			+ " or hasAuthority('" + CoreGroupPermission.ROLECATALOGUEROLE_UPDATE + "')")
 	@Operation(
 			summary = "Create / update role catalogue role",
-			/* nickname = "postRoleCatalogueRole", */
+			operationId = "postRoleCatalogueRole",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -221,10 +189,8 @@ public class IdmRequestRoleCatalogueRoleController extends AbstractRequestDtoCon
                     }
             ),
 			tags = { IdmRequestRoleCatalogueRoleController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						CoreGroupPermission.ROLECATALOGUEROLE_CREATE,
 						CoreGroupPermission.ROLECATALOGUEROLE_UPDATE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
@@ -242,7 +208,7 @@ public class IdmRequestRoleCatalogueRoleController extends AbstractRequestDtoCon
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUEROLE_UPDATE + "')")
 	@Operation(
 			summary = "Update role catalogue role",
-			/* nickname = "putRoleCatalogueRole", */
+			operationId = "putRoleCatalogueRole",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -255,15 +221,10 @@ public class IdmRequestRoleCatalogueRoleController extends AbstractRequestDtoCon
                     }
             ),
 			tags = { IdmRequestRoleCatalogueRoleController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.ROLECATALOGUEROLE_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.ROLECATALOGUEROLE_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_UPDATE })
+    })
 	public ResponseEntity<?> put(
 			@PathVariable @NotNull String requestId,
 			 @Parameter(description = "Role catalogue's uuid identifier.", required = true)
@@ -278,7 +239,7 @@ public class IdmRequestRoleCatalogueRoleController extends AbstractRequestDtoCon
 //	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUEROLE_UPDATE + "')")
 //	@Operation(
 //			summary = "Update role catalogue role",
-//			/* nickname = "patchRoleCatalogueRole", */
+//			operationId = "patchRoleCatalogueRole",
 //            responses = @ApiResponse(
 //                    responseCode = "200",
 //                    content = {
@@ -294,9 +255,7 @@ public class IdmRequestRoleCatalogueRoleController extends AbstractRequestDtoCon
 //			authorizations = { 
 //				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 //						CoreGroupPermission.ROLECATALOGUEROLE_UPDATE }),
-//				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-//						CoreGroupPermission.ROLECATALOGUEROLE_UPDATE })
-//				})
+//        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { //						CoreGroupPermission.ROLECATALOGUEROLE_UPDATE })})
 //	public ResponseEntity<?> patch(
 //			 @Parameter(description = "Role catalogue's uuid identifier.", required = true)
 //			@PathVariable @NotNull String backendId,
@@ -311,17 +270,12 @@ public class IdmRequestRoleCatalogueRoleController extends AbstractRequestDtoCon
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUEROLE_DELETE + "')")
 	@Operation(
 			summary = "Delete role catalogue role",
-			/* nickname = "deleteRoleCatalogueRole", */
+			operationId = "deleteRoleCatalogueRole",
 			tags = { IdmRequestRoleCatalogueRoleController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.ROLECATALOGUEROLE_DELETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.ROLECATALOGUEROLE_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_DELETE })
+    })
 	public ResponseEntity<?> delete(
 			@PathVariable @NotNull String requestId,
 			 @Parameter(description = "Role catalogue's uuid identifier.", required = true)
@@ -335,17 +289,12 @@ public class IdmRequestRoleCatalogueRoleController extends AbstractRequestDtoCon
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUEROLE_READ + "')")
 	@Operation(
 			summary = "What logged identity can do with given record",
-			/* nickname = "getPermissionsOnRoleCatalogueRole", */
+			operationId = "getPermissionsOnRoleCatalogueRole",
 			tags = { IdmRequestRoleCatalogueRoleController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.ROLECATALOGUEROLE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.ROLECATALOGUEROLE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_READ })
+    })
 	public Set<String> getPermissions(
 			@PathVariable @NotNull String requestId,
 			 @Parameter(description = "Role catalogue's uuid identifier.", required = true)

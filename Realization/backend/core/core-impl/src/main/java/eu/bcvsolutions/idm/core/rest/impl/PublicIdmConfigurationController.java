@@ -44,13 +44,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseController.BASE_PATH + "/public/configurations")
-@Tag(
-        name = IdmConfigurationController.TAG,
-        description = "Public configuration items"//,
-        
-
-
-)
+@Tag(name = IdmConfigurationController.TAG, description = "Public configuration items")
 public class PublicIdmConfigurationController implements BaseController {
 	
 	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(PublicIdmConfigurationController.class);
@@ -75,7 +69,7 @@ public class PublicIdmConfigurationController implements BaseController {
 	@RequestMapping(method = RequestMethod.GET)
 	@Operation(
 			summary = "Read public configuration items", 
-			/* nickname = "findAllPublicConfigurations", */ 
+			operationId = "findAllPublicConfigurations", 
 			tags = { IdmConfigurationController.TAG })
 	public List<IdmConfigurationDto> getAllPublicConfigurations() {
 		// TODO: resource wrapper + assembler
@@ -91,7 +85,7 @@ public class PublicIdmConfigurationController implements BaseController {
 	@RequestMapping(value = "/application/logo", method = RequestMethod.GET)
 	@Operation(
 			summary = "Download application logo", 
-			/* nickname = "downloadApplicationLogo", */ 
+			operationId = "downloadApplicationLogo", 
 			tags = { IdmConfigurationController.TAG })
 	public ResponseEntity<InputStreamResource> downloadApplicationLogo() {
 		UUID uuid = applicationConfiguration.getApplicationLogoId();
@@ -136,7 +130,7 @@ public class PublicIdmConfigurationController implements BaseController {
 	@RequestMapping(value = "/application/theme", method = RequestMethod.GET)
 	@Operation(
 			summary = "Identity detail", 
-			/* nickname = "getApplicationTheme", */ 
+			operationId = "getApplicationTheme", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {

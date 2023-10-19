@@ -62,14 +62,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/identity-roles")
-@Tag(
-		name = IdmIdentityRoleController.TAG, 
-		description = "Operations with identity roles"//, 
-		 
-		
-		
-
-)
+@Tag(name = IdmIdentityRoleController.TAG, description = "Operations with identity roles")
 public class IdmIdentityRoleController extends AbstractReadWriteDtoController<IdmIdentityRoleDto, IdmIdentityRoleFilter> {
 	
 	public static final String TAG = "Identity roles ~ assigned roles";
@@ -89,17 +82,12 @@ public class IdmIdentityRoleController extends AbstractReadWriteDtoController<Id
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITYROLE_READ + "')")
 	@Operation(
 			summary = "Search identity roles (/search/quick alias)",
-			/* nickname = "searchIdentityRoles", */ 
+			operationId = "searchIdentityRoles",
 			tags = { IdmIdentityRoleController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.IDENTITYROLE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.IDENTITYROLE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITYROLE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITYROLE_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -113,17 +101,12 @@ public class IdmIdentityRoleController extends AbstractReadWriteDtoController<Id
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITYROLE_READ + "')")
 	@Operation(
 			summary = "Search identity roles",
-			/* nickname = "searchQuickIdentityRoles", */ 
+			operationId = "searchQuickIdentityRoles",
 			tags = { IdmIdentityRoleController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.IDENTITYROLE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.IDENTITYROLE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITYROLE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITYROLE_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -137,17 +120,12 @@ public class IdmIdentityRoleController extends AbstractReadWriteDtoController<Id
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITYROLE_AUTOCOMPLETE + "')")
 	@Operation(
 			summary = "Autocomplete identity roles (selectbox usage)",
-			/* nickname = "autocompleteIdentityRoles", */ 
+			operationId = "autocompleteIdentityRoles",
 			tags = { IdmIdentityRoleController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.IDENTITYROLE_AUTOCOMPLETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.IDENTITYROLE_AUTOCOMPLETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITYROLE_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITYROLE_AUTOCOMPLETE })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -161,17 +139,12 @@ public class IdmIdentityRoleController extends AbstractReadWriteDtoController<Id
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITYROLE_CANBEREQUESTED + "')")
 	@Operation(
 			summary = "Find assigned roles, which can be requested",
-			/* nickname = "findCanBeRequestedIdentityRoles", */ 
+			operationId = "findCanBeRequestedIdentityRoles",
 			tags = { IdmIdentityRoleController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.IDENTITYROLE_CANBEREQUESTED }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.IDENTITYROLE_CANBEREQUESTED })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITYROLE_CANBEREQUESTED }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITYROLE_CANBEREQUESTED })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findCanBeRequested(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -186,17 +159,12 @@ public class IdmIdentityRoleController extends AbstractReadWriteDtoController<Id
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITYROLE_COUNT + "')")
 	@Operation(
 			summary = "The number of entities that match the filter",
-			/* nickname = "countIdentityRoles", */ 
+			operationId = "countIdentityRoles",
 			tags = { IdmIdentityRoleController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.IDENTITYROLE_COUNT }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.IDENTITYROLE_COUNT })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITYROLE_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITYROLE_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -207,7 +175,7 @@ public class IdmIdentityRoleController extends AbstractReadWriteDtoController<Id
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITYROLE_READ + "')")
 	@Operation(
 			summary = "Identity role detail",
-			/* nickname = "getIdentityRole", */ 
+			operationId = "getIdentityRole",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -220,15 +188,10 @@ public class IdmIdentityRoleController extends AbstractReadWriteDtoController<Id
                     }
             ), 
 			tags = { IdmIdentityRoleController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.IDENTITYROLE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.IDENTITYROLE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITYROLE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITYROLE_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Identity role's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -241,17 +204,12 @@ public class IdmIdentityRoleController extends AbstractReadWriteDtoController<Id
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITYROLE_READ + "')")
 	@Operation(
 			summary = "What logged identity can do with given record",
-			/* nickname = "getPermissionsOnIdentityRole", */ 
+			operationId = "getPermissionsOnIdentityRole",
 			tags = { IdmIdentityRoleController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.IDENTITYROLE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.IDENTITYROLE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITYROLE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITYROLE_READ })
+    })
 	public Set<String> getPermissions(
 			 @Parameter(description = "Identity role's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -270,17 +228,12 @@ public class IdmIdentityRoleController extends AbstractReadWriteDtoController<Id
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITYROLE_READ + "')")
 	@Operation(
 			summary = "Identity role extended attributes form definitions",
-			/* nickname = "getIdentityRoleFormDefinitions", */ 
+			operationId = "getIdentityRoleFormDefinitions",
 			tags = { IdmIdentityRoleController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.IDENTITYROLE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.IDENTITYROLE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITYROLE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITYROLE_READ })
+    })
 	public ResponseEntity<?> getFormDefinitions(
 			 @Parameter(description = "Role's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -312,17 +265,12 @@ public class IdmIdentityRoleController extends AbstractReadWriteDtoController<Id
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITYROLE_READ + "')")
 	@Operation(
 			summary = "Identity role form definition - read values",
-			/* nickname = "getRoleFormValues", */ 
+			operationId = "getRoleFormValues",
 			tags = { IdmIdentityRoleController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.IDENTITYROLE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.IDENTITYROLE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITYROLE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITYROLE_READ })
+    })
 	public EntityModel<?> getFormValues(
 			 @Parameter(description = "Identity role's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId, 

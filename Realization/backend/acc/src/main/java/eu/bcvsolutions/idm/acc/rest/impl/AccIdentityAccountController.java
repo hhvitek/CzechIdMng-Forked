@@ -50,14 +50,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @Enabled(AccModuleDescriptor.MODULE_ID)
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/identity-accounts")
-@Tag(
-		name = AccIdentityAccountController.TAG,  
-
-		description = "Assigned accounts on target system"//,
-
-		
-
-)
+@Tag(name = AccIdentityAccountController.TAG, description = "Assigned accounts on target system")
 public class AccIdentityAccountController extends AbstractReadWriteDtoController<AccIdentityAccountDto, AccIdentityAccountFilter> {
 	
 	protected static final String TAG = "Identity accounts";
@@ -73,17 +66,12 @@ public class AccIdentityAccountController extends AbstractReadWriteDtoController
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.IDENTITY_ACCOUNT_READ + "')")
 	@Operation(
 			summary = "Search identity accounts (/search/quick alias)",
-			/* nickname = "searchIdentityAccounts", */ 
+			operationId = "searchIdentityAccounts",
 			tags = { AccIdentityAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.IDENTITY_ACCOUNT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.IDENTITY_ACCOUNT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.IDENTITY_ACCOUNT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.IDENTITY_ACCOUNT_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -98,17 +86,12 @@ public class AccIdentityAccountController extends AbstractReadWriteDtoController
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.IDENTITY_ACCOUNT_READ + "')")
 	@Operation(
 			summary = "Search identity accounts",
-			/* nickname = "searchQuickIdentityAccounts", */ 
+			operationId = "searchQuickIdentityAccounts",
 			tags = { AccIdentityAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.IDENTITY_ACCOUNT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.IDENTITY_ACCOUNT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.IDENTITY_ACCOUNT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.IDENTITY_ACCOUNT_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -122,7 +105,7 @@ public class AccIdentityAccountController extends AbstractReadWriteDtoController
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.IDENTITY_ACCOUNT_READ + "')")
 	@Operation(
 			summary = "Identity account detail",
-			/* nickname = "getIdentityAccount", */ 
+			operationId = "getIdentityAccount",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -135,15 +118,10 @@ public class AccIdentityAccountController extends AbstractReadWriteDtoController
                     }
             ), 
 			tags = { AccIdentityAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							AccGroupPermission.IDENTITY_ACCOUNT_READ }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							AccGroupPermission.IDENTITY_ACCOUNT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.IDENTITY_ACCOUNT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.IDENTITY_ACCOUNT_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Identity account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -156,7 +134,7 @@ public class AccIdentityAccountController extends AbstractReadWriteDtoController
 			+ " or hasAuthority('" + AccGroupPermission.IDENTITY_ACCOUNT_UPDATE + "')")
 	@Operation(
 			summary = "Create / update identity account",
-			/* nickname = "postIdentity", */ 
+			operationId = "postIdentity",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -169,10 +147,8 @@ public class AccIdentityAccountController extends AbstractReadWriteDtoController
                     }
             ), 
 			tags = { AccIdentityAccountController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						AccGroupPermission.IDENTITY_ACCOUNT_CREATE,
 						AccGroupPermission.IDENTITY_ACCOUNT_UPDATE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
@@ -191,7 +167,7 @@ public class AccIdentityAccountController extends AbstractReadWriteDtoController
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	@Operation(
 			summary = "Update identity account",
-			/* nickname = "putIdentityAccount", */ 
+			operationId = "putIdentityAccount",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -204,15 +180,10 @@ public class AccIdentityAccountController extends AbstractReadWriteDtoController
                     }
             ), 
 			tags = { AccIdentityAccountController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.IDENTITY_ACCOUNT_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.IDENTITY_ACCOUNT_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.IDENTITY_ACCOUNT_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.IDENTITY_ACCOUNT_UPDATE })
+    })
 	public ResponseEntity<?> put(
 			 @Parameter(description = "Identity account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
@@ -226,17 +197,12 @@ public class AccIdentityAccountController extends AbstractReadWriteDtoController
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@Operation(
 			summary = "Delete identity account",
-			/* nickname = "deleteIdentityAccount", */ 
+			operationId = "deleteIdentityAccount",
 			tags = { AccIdentityAccountController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.IDENTITY_ACCOUNT_DELETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.IDENTITY_ACCOUNT_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.IDENTITY_ACCOUNT_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.IDENTITY_ACCOUNT_DELETE })
+    })
 	public ResponseEntity<?> delete(
 			 @Parameter(description = "Identity account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -249,17 +215,12 @@ public class AccIdentityAccountController extends AbstractReadWriteDtoController
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.IDENTITY_ACCOUNT_READ + "')")
 	@Operation(
 			summary = "What logged identity can do with given record",
-			/* nickname = "getPermissionsOnIdentityAccount", */ 
+			operationId = "getPermissionsOnIdentityAccount",
 			tags = { AccIdentityAccountController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.IDENTITY_ACCOUNT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.IDENTITY_ACCOUNT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.IDENTITY_ACCOUNT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.IDENTITY_ACCOUNT_READ })
+    })
 	public Set<String> getPermissions(
 			 @Parameter(description = "Identity account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {

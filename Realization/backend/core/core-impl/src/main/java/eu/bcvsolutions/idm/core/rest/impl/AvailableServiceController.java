@@ -34,14 +34,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirements;
  */
 @RestController
 @RequestMapping(value = BaseController.BASE_PATH + "/available-service")
-@Tag(
-		name = AvailableServiceController.TAG,
-		description = "Displays available services"//,
-		
-		
-		
-
-)
+@Tag(name = AvailableServiceController.TAG, description = "Displays available services")
 public class AvailableServiceController  {
 
 	protected static final String TAG = "available service";
@@ -53,18 +46,13 @@ public class AvailableServiceController  {
 	@RequestMapping(method = RequestMethod.GET)
 	@Operation(
 			summary = "Find all available services",
-			/* nickname = "findAllAvailableServices", */
+			operationId = "findAllAvailableServices",
 			tags = { AvailableServiceController.TAG },
 						description = "Returns all available services.")
-    @SecurityRequirements(
-        value = {
-
-            @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-                    CoreGroupPermission.MODULE_READ }),
-            @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-                    CoreGroupPermission.MODULE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.MODULE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.MODULE_READ })
+    })
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters) {

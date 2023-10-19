@@ -36,14 +36,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirements;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/connector-types/csv-connector-type")
-@Tag(
-		name = CsvConnectorTypeController.TAG,
-		
-		description = "Controller for CSV connector wizard."//,
-
-		
-
-)
+@Tag(name = CsvConnectorTypeController.TAG, description = "Controller for CSV connector wizard.")
 public class CsvConnectorTypeController {
 
 	protected static final String TAG = "CSV Wizard";
@@ -67,13 +60,11 @@ public class CsvConnectorTypeController {
 			+ " or hasAuthority('" + AccGroupPermission.SYSTEM_UPDATE + "')")
 	@Operation(
 			summary = "Upload CSV file.",
-			/* nickname = "uploadCSV", */
+			operationId = "uploadCSV",
 			tags = {CsvConnectorTypeController.TAG},
 						description = "CSV file for system wizard.")
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							AccGroupPermission.SYSTEM_CREATE,
 							AccGroupPermission.SYSTEM_UPDATE}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {

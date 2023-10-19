@@ -106,9 +106,8 @@ public abstract class AbstractReadWriteDtoController<DTO extends BaseDto, F exte
 	 * @return
 	 */
 	@Operation(summary = "Create / update record")
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )
@@ -138,9 +137,8 @@ public abstract class AbstractReadWriteDtoController<DTO extends BaseDto, F exte
 	 * @return
 	 */
 	@Operation(summary = "Update record")
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )
@@ -208,9 +206,8 @@ public abstract class AbstractReadWriteDtoController<DTO extends BaseDto, F exte
 	 * @return
 	 */
 	@Operation(summary = "Delete record")
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )

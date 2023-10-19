@@ -48,14 +48,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @Enabled(AccModuleDescriptor.MODULE_ID)
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/tree-accounts")
-@Tag(
-		name = AccTreeAccountController.TAG,
-		
-		description = "Assigned tree node accounts on target system"//,
-		
-		
-
-)
+@Tag(name = AccTreeAccountController.TAG, description = "Assigned tree node accounts on target system")
 public class AccTreeAccountController extends AbstractReadWriteDtoController<AccTreeAccountDto, AccTreeAccountFilter> {
 	protected static final String TAG = "Tree accounts";
 
@@ -70,17 +63,12 @@ public class AccTreeAccountController extends AbstractReadWriteDtoController<Acc
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.TREE_ACCOUNT_READ + "')")
 	@Operation(
 			summary = "Search tree accounts (/search/quick alias)", 
-			/* nickname = "searchTreeAccounts", */
+			operationId = "searchTreeAccounts",
 			tags = { AccTreeAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						AccGroupPermission.TREE_ACCOUNT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						AccGroupPermission.TREE_ACCOUNT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.TREE_ACCOUNT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.TREE_ACCOUNT_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -95,17 +83,12 @@ public class AccTreeAccountController extends AbstractReadWriteDtoController<Acc
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.TREE_ACCOUNT_READ + "')")
 	@Operation(
 			summary = "Search tree accounts", 
-			/* nickname = "searchQuickTreeAccounts", */
+			operationId = "searchQuickTreeAccounts",
 			tags = { AccTreeAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						AccGroupPermission.TREE_ACCOUNT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						AccGroupPermission.TREE_ACCOUNT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.TREE_ACCOUNT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.TREE_ACCOUNT_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -119,7 +102,7 @@ public class AccTreeAccountController extends AbstractReadWriteDtoController<Acc
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.TREE_ACCOUNT_READ + "')")
 	@Operation(
 			summary = "Tree node account detail",
-			/* nickname = "getTreeNodeAccount", */
+			operationId = "getTreeNodeAccount",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -132,10 +115,8 @@ public class AccTreeAccountController extends AbstractReadWriteDtoController<Acc
                     }
             ),
 			tags = { AccTreeAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							AccGroupPermission.TREE_ACCOUNT_READ	}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							AccGroupPermission.TREE_ACCOUNT_READ	})
@@ -153,7 +134,7 @@ public class AccTreeAccountController extends AbstractReadWriteDtoController<Acc
 			+ "or hasAuthority('" + AccGroupPermission.TREE_ACCOUNT_UPDATE + "')")
 	@Operation(
 			summary = "Create / update tree node account",
-			/* nickname = "postTreeNodeAccount", */
+			operationId = "postTreeNodeAccount",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -166,10 +147,8 @@ public class AccTreeAccountController extends AbstractReadWriteDtoController<Acc
                     }
             ),
 			tags = { AccTreeAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							AccGroupPermission.TREE_ACCOUNT_CREATE,
 							AccGroupPermission.TREE_ACCOUNT_UPDATE}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
@@ -188,7 +167,7 @@ public class AccTreeAccountController extends AbstractReadWriteDtoController<Acc
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	@Operation(
 			summary = "Update tree node account",
-			/* nickname = "putTreeNodeAccount", */
+			operationId = "putTreeNodeAccount",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -201,10 +180,8 @@ public class AccTreeAccountController extends AbstractReadWriteDtoController<Acc
                     }
             ),
 			tags = { AccTreeAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							AccGroupPermission.TREE_ACCOUNT_UPDATE}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							AccGroupPermission.TREE_ACCOUNT_UPDATE})
@@ -223,12 +200,10 @@ public class AccTreeAccountController extends AbstractReadWriteDtoController<Acc
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@Operation(
 			summary = "Delete tree node account",
-			/* nickname = "deleteTreeNodeAccount", */
+			operationId = "deleteTreeNodeAccount",
 			tags = { AccTreeAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							AccGroupPermission.TREE_ACCOUNT_DELETE}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							AccGroupPermission.TREE_ACCOUNT_DELETE})
@@ -246,17 +221,12 @@ public class AccTreeAccountController extends AbstractReadWriteDtoController<Acc
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.TREE_ACCOUNT_READ + "')")
 	@Operation(
 			summary = "What logged identity can do with given record", 
-			/* nickname = "getPermissionsOnTreeAccount", */
+			operationId = "getPermissionsOnTreeAccount",
 			tags = { AccTreeAccountController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						AccGroupPermission.TREE_ACCOUNT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						AccGroupPermission.TREE_ACCOUNT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.TREE_ACCOUNT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.TREE_ACCOUNT_READ })
+    })
 	public Set<String> getPermissions(
 			 @Parameter(description = "Tree account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {

@@ -50,10 +50,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/request-identity-roles")
-@Tag(name = IdmRequestIdentityRoleController.TAG, description = "Operations with single roles in request"
-//, 
-
-)
+@Tag(name = IdmRequestIdentityRoleController.TAG, description = "Operations with single roles in request")
 public class IdmRequestIdentityRoleController
 		extends AbstractReadWriteDtoController<IdmRequestIdentityRoleDto, IdmRequestIdentityRoleFilter> {
 
@@ -72,12 +69,10 @@ public class IdmRequestIdentityRoleController
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_REQUEST_READ + "')")
-	@Operation(summary = "Search concept role requests (/search/quick alias)", /* nickname = "searchConceptRoleRequests", */ tags = {
+	@Operation(summary = "Search concept role requests (/search/quick alias)", operationId = "searchConceptRoleRequests", tags = {
 			IdmRequestIdentityRoleController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							CoreGroupPermission.ROLE_REQUEST_READ,
 							CoreGroupPermission.ROLE_REQUEST_ADMIN }),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
@@ -96,12 +91,10 @@ public class IdmRequestIdentityRoleController
 	@ResponseBody
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_REQUEST_READ + "')")
-	@Operation(summary = "Search concept role requests", /* nickname = "searchQuickConceptRoleRequests", */ tags = {
+	@Operation(summary = "Search concept role requests", operationId = "searchQuickConceptRoleRequests", tags = {
 			IdmRequestIdentityRoleController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							CoreGroupPermission.ROLE_REQUEST_READ,
 							CoreGroupPermission.ROLE_REQUEST_ADMIN }),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
@@ -121,7 +114,7 @@ public class IdmRequestIdentityRoleController
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_REQUEST_READ + "')")
-	@Operation(summary = "Concept detail", /* nickname = "getConceptRoleRequest", */
+	@Operation(summary = "Concept detail", operationId = "getConceptRoleRequest",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -134,15 +127,10 @@ public class IdmRequestIdentityRoleController
                     }
             ), tags = {
 			IdmRequestIdentityRoleController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.ROLE_REQUEST_READ }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.ROLE_REQUEST_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLE_REQUEST_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ROLE_REQUEST_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Concept's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		return super.get(backendId);
@@ -164,7 +152,7 @@ public class IdmRequestIdentityRoleController
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_REQUEST_CREATE + "')" + " or hasAuthority('"
 			+ CoreGroupPermission.ROLE_REQUEST_UPDATE + "')")
-	@Operation(summary = "Create / update request-identity-role", /* nickname = "postRequest-identity-role", */            responses = @ApiResponse(
+	@Operation(summary = "Create / update request-identity-role", operationId = "postRequest-identity-role",            responses = @ApiResponse(
                     responseCode = "200",
                     content = {
                             @Content(
@@ -176,10 +164,8 @@ public class IdmRequestIdentityRoleController
                     }
             ), tags = {
 			IdmRequestIdentityRoleController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							CoreGroupPermission.ROLE_REQUEST_CREATE,
 							CoreGroupPermission.ROLE_REQUEST_UPDATE }),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
@@ -196,7 +182,7 @@ public class IdmRequestIdentityRoleController
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_REQUEST_UPDATE + "')")
-	@Operation(summary = "Update request-identity-role", /* nickname = "putRequest-identity-role", */            responses = @ApiResponse(
+	@Operation(summary = "Update request-identity-role", operationId = "putRequest-identity-role",            responses = @ApiResponse(
                     responseCode = "200",
                     content = {
                             @Content(
@@ -208,15 +194,10 @@ public class IdmRequestIdentityRoleController
                     }
             ), tags = {
 			IdmRequestIdentityRoleController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.ROLE_REQUEST_UPDATE }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.ROLE_REQUEST_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLE_REQUEST_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ROLE_REQUEST_UPDATE })
+    })
 	public ResponseEntity<?> put(
 			 @Parameter(description = "Request-identity-role to update.", required = true) @PathVariable @NotNull String backendId,
 			@RequestBody @NotNull IdmRequestIdentityRoleDto dto) {
@@ -231,17 +212,12 @@ public class IdmRequestIdentityRoleController
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/delete", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_REQUEST_DELETE + "')")
-	@Operation(summary = "Delete request-identity-role", /* nickname = "delete request-identity-role", */ tags = {
+	@Operation(summary = "Delete request-identity-role", operationId = "delete request-identity-role", tags = {
 			IdmRequestIdentityRoleController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.ROLE_REQUEST_DELETE }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.ROLE_REQUEST_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLE_REQUEST_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ROLE_REQUEST_DELETE })
+    })
 	public ResponseEntity<?> delete(
 			 @Parameter(description = "Request-identity-role to delete.", required = true) @PathVariable @NotNull String backendId,
 			@RequestBody @NotNull IdmRequestIdentityRoleDto dto) {

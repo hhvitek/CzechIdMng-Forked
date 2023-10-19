@@ -35,13 +35,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @Enabled(AccModuleDescriptor.MODULE_ID)
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/system-entity-types")
-@Tag(
-		name = SysSystemEntityTypeController.TAG,
-		description = "System entity types"//,
-		
-		
-
-)
+@Tag(name = SysSystemEntityTypeController.TAG, description = "System entity types")
 public class SysSystemEntityTypeController implements BaseController {
 
 	protected static final String TAG = "System entity types";
@@ -53,7 +47,7 @@ public class SysSystemEntityTypeController implements BaseController {
 	@GetMapping(value = "/search/supported")
 	@Operation(
         summary = "Get supported system entity types",
-        /* nickname = "getSupportedSystemEntityTypes", */
+        operationId = "getSupportedSystemEntityTypes",
         responses = @ApiResponse(
                 responseCode = "200",
                 content = {
@@ -76,7 +70,7 @@ public class SysSystemEntityTypeController implements BaseController {
 	@GetMapping(value = "/{backendId}")
 	@Operation(
 			summary = "System entity type detail",
-			/* nickname = "getSupportedSystemEntityType", */
+			operationId = "getSupportedSystemEntityType",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -100,7 +94,7 @@ public class SysSystemEntityTypeController implements BaseController {
 	@GetMapping(value = "/{backendId}/{systemMappingId}")
 	@Operation(
 			summary = "System entity type detail by mapping",
-			/* nickname = "getSupportedSystemEntityTypeByMapping", */
+			operationId = "getSupportedSystemEntityTypeByMapping",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {

@@ -47,13 +47,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @Enabled(AccModuleDescriptor.MODULE_ID)
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/schema-object-classes")
-@Tag(
-		name = SysSchemaObjectClassController.TAG,
-		description = "Schema configuration"//,
-
-		
-
-)
+@Tag(name = SysSchemaObjectClassController.TAG, description = "Schema configuration")
 public class SysSchemaObjectClassController extends AbstractReadWriteDtoController<SysSchemaObjectClassDto, SysSchemaObjectClassFilter> {
 
 	protected static final String TAG = "System schema - object classes";
@@ -68,14 +62,11 @@ public class SysSchemaObjectClassController extends AbstractReadWriteDtoControll
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
 	@Operation(
-			summary = "Search schema object classes (/search/quick alias)"
-			/* nickname = "searchSchemaObjectClasses", */
-			 
-			)
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+        summary = "Search schema object classes (/search/quick alias)",
+        operationId = "searchSchemaObjectClasses"
+    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						AccGroupPermission.SYSTEM_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 						AccGroupPermission.SYSTEM_READ})
@@ -94,12 +85,10 @@ public class SysSchemaObjectClassController extends AbstractReadWriteDtoControll
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@Operation(
 			summary = "Search schema object classes", 
-			/* nickname = "searchQuickSchemaObjectClasses", */
+			operationId = "searchQuickSchemaObjectClasses",
 			tags = { SysSchemaObjectClassController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						AccGroupPermission.SYSTEM_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 						AccGroupPermission.SYSTEM_READ})
@@ -119,7 +108,7 @@ public class SysSchemaObjectClassController extends AbstractReadWriteDtoControll
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@Operation(
 			summary = "Schema object class detail", 
-			/* nickname = "getSchemaObjectClass", */ 
+			operationId = "getSchemaObjectClass",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -132,10 +121,8 @@ public class SysSchemaObjectClassController extends AbstractReadWriteDtoControll
                     }
             ), 
 			tags = { SysSchemaObjectClassController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							AccGroupPermission.SYSTEM_READ}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							AccGroupPermission.SYSTEM_READ})
@@ -153,7 +140,7 @@ public class SysSchemaObjectClassController extends AbstractReadWriteDtoControll
 	@RequestMapping(method = RequestMethod.POST)
 	@Operation(
 			summary = "Create / update schema object class", 
-			/* nickname = "postSchemaObjectClass", */ 
+			operationId = "postSchemaObjectClass",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -166,10 +153,8 @@ public class SysSchemaObjectClassController extends AbstractReadWriteDtoControll
                     }
             ), 
 			tags = { SysSchemaObjectClassController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						AccGroupPermission.SYSTEM_UPDATE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 						AccGroupPermission.SYSTEM_UPDATE})
@@ -185,7 +170,7 @@ public class SysSchemaObjectClassController extends AbstractReadWriteDtoControll
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	@Operation(
 			summary = "Update schema object class",
-			/* nickname = "putSchemaObjectClass", */ 
+			operationId = "putSchemaObjectClass",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -198,15 +183,10 @@ public class SysSchemaObjectClassController extends AbstractReadWriteDtoControll
                     }
             ), 
 			tags = { SysSchemaObjectClassController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						AccGroupPermission.SYSTEM_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						AccGroupPermission.SYSTEM_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_UPDATE })
+    })
 	public ResponseEntity<?> put(
 			 @Parameter(description = "System schema's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
@@ -220,17 +200,12 @@ public class SysSchemaObjectClassController extends AbstractReadWriteDtoControll
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@Operation(
 			summary = "Delete schema object class", 
-			/* nickname = "deleteSchemaObjectClass", */ 
+			operationId = "deleteSchemaObjectClass",
 			tags = { SysSchemaObjectClassController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						AccGroupPermission.SYSTEM_DELETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						AccGroupPermission.SYSTEM_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_DELETE })
+    })
 	public ResponseEntity<?> delete(
 			 @Parameter(description = "System schema's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {

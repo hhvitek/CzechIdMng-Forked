@@ -72,14 +72,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/configurations")
-@Tag(
-		name = IdmConfigurationController.TAG,
-		description = "Application configuration"//, 
-		 
-		
-		
-
-)
+@Tag(name = IdmConfigurationController.TAG, description = "Application configuration")
 public class IdmConfigurationController extends AbstractEventableDtoController<IdmConfigurationDto, DataFilter> {
 	
 	protected static final String TAG = "Configuration";
@@ -103,17 +96,12 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONFIGURATION_READ + "')")
 	@Operation(
 			summary = "Search configuration items (/search/quick alias)",
-			/* nickname = "searchConfigurations", */ 
+			operationId = "searchConfigurations", 
 			tags = { IdmConfigurationController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.CONFIGURATION_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.CONFIGURATION_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONFIGURATION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONFIGURATION_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -127,17 +115,12 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONFIGURATION_READ + "')")
 	@Operation(
 			summary = "Search configuration items",
-			/* nickname = "searchQuickConfigurations", */ 
+			operationId = "searchQuickConfigurations", 
 			tags = { IdmConfigurationController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.CONFIGURATION_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.CONFIGURATION_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONFIGURATION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONFIGURATION_READ })
+    })
 	@Override
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
@@ -153,17 +136,12 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONFIGURATION_COUNT + "')")
 	@Operation(
 			summary = "The number of entities that match the filter",
-			/* nickname = "countConfigurations", */ 
+			operationId = "countConfigurations", 
 			tags = { IdmConfigurationController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.CONFIGURATION_COUNT }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.CONFIGURATION_COUNT })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONFIGURATION_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONFIGURATION_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -174,7 +152,7 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONFIGURATION_READ + "')")
 	@Operation(
 			summary = "Configuration item detail",
-			/* nickname = "getConfiguration", */ 
+			operationId = "getConfiguration", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -187,15 +165,10 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
                     }
             ), 
 			tags = { IdmConfigurationController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.CONFIGURATION_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.CONFIGURATION_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONFIGURATION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONFIGURATION_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Item's uuid identifier or name (=> code).", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -209,7 +182,7 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
 			+ " or hasAuthority('" + CoreGroupPermission.CONFIGURATION_UPDATE + "')")
 	@Operation(
 			summary = "Create / update configuration item",
-			/* nickname = "postConfiguration", */ 
+			operationId = "postConfiguration", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -222,10 +195,8 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
                     }
             ), 
 			tags = { IdmConfigurationController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						CoreGroupPermission.CONFIGURATION_CREATE,
 						CoreGroupPermission.CONFIGURATION_UPDATE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
@@ -243,7 +214,7 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONFIGURATION_UPDATE + "')")
 	@Operation(
 			summary = "Update configuration item",
-			/* nickname = "putConfiguration", */ 
+			operationId = "putConfiguration", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -256,15 +227,10 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
                     }
             ), 
 			tags = { IdmConfigurationController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.CONFIGURATION_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.CONFIGURATION_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONFIGURATION_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONFIGURATION_UPDATE })
+    })
 	public ResponseEntity<?> put(
 			 @Parameter(description = "Item's uuid identifier or name (=> code).", required = true)
 			@PathVariable @NotNull String backendId, 
@@ -278,17 +244,12 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONFIGURATION_DELETE + "')")
 	@Operation(
 			summary = "Delete configuration item",
-			/* nickname = "deleteConfiguration", */ 
+			operationId = "deleteConfiguration", 
 			tags = { IdmConfigurationController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.CONFIGURATION_DELETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.CONFIGURATION_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONFIGURATION_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONFIGURATION_DELETE })
+    })
 	public ResponseEntity<?> delete(
 			 @Parameter(description = "Item's uuid identifier or name (=> code).", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -301,17 +262,12 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONFIGURATION_READ + "')")
 	@Operation(
 			summary = "What logged identity can do with given record",
-			/* nickname = "getPermissionsOnConfiguration", */ 
+			operationId = "getPermissionsOnConfiguration", 
 			tags = { IdmIdentityController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.CONFIGURATION_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.CONFIGURATION_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONFIGURATION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONFIGURATION_READ })
+    })
 	public Set<String> getPermissions(
 			 @Parameter(description = "Item's uuid identifier or name (=> code).", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -328,18 +284,13 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
 	@RequestMapping(path = "/all/file", method = RequestMethod.GET)
 	@Operation(
 			summary = "Get all configuration items from files",
-			/* nickname = "getAllConfigurationsFromFiles", */ 
+			operationId = "getAllConfigurationsFromFiles", 
 			tags = { IdmConfigurationController.TAG }, 
 						description = "E.g. from application.properties, module-*.properties etc.")
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.CONFIGURATION_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.CONFIGURATION_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONFIGURATION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONFIGURATION_READ })
+    })
 	public List<IdmConfigurationDto> getAllConfigurationsFromFiles() {
 		// from property files
 		Map<String, IdmConfigurationDto> configurations = configurationService
@@ -373,18 +324,13 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
 	@RequestMapping(path = "/all/environment", method = RequestMethod.GET)
 	@Operation(
 			summary = "Get all configuration items from environment",
-			/* nickname = "getAllConfigurationsFromEnvironment", */ 
+			operationId = "getAllConfigurationsFromEnvironment", 
 			tags = { IdmConfigurationController.TAG }, 
 						description = "Server environment properties.")
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.CONFIGURATION_ADMIN }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.CONFIGURATION_ADMIN })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONFIGURATION_ADMIN }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONFIGURATION_ADMIN })
+    })
 	public List<IdmConfigurationDto> getAllConfigurationsFromEnvironment() {
 		// TODO: resource wrapper + assembler + hateoas links
 		return configurationService.getAllConfigurationsFromEnvironment();
@@ -402,19 +348,14 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
 //)
 	@Operation(
 			summary = "Save configuration items in bulk",
-			/* nickname = "saveConfigurationBulk", */ 
+			operationId = "saveConfigurationBulk", 
 			tags = { IdmConfigurationController.TAG }, 
 						description = "Save configuration properties pasted from configration file (e.q. from application.properties)."
                                 + " Simple text/plain .properties format is accepted.")
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.CONFIGURATION_ADMIN }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.CONFIGURATION_ADMIN })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONFIGURATION_ADMIN }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONFIGURATION_ADMIN })
+    })
 	public void saveProperties(@RequestBody String configuration) {
 		try {
 			Properties p = new Properties();
@@ -440,17 +381,12 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONFIGURATION_READ + "')")
 	@Operation(
 			summary = "Get available bulk actions",
-			/* nickname = "availableBulkAction", */ 
+			operationId = "availableBulkAction", 
 			tags = { IdmConfigurationController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.CONFIGURATION_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.CONFIGURATION_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONFIGURATION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONFIGURATION_READ })
+    })
 	public List<IdmBulkActionDto> getAvailableBulkActions() {
 		return super.getAvailableBulkActions();
 	}
@@ -467,7 +403,7 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONFIGURATION_READ + "')")
 	@Operation(
 			summary = "Process configuration bulk action",
-			/* nickname = "bulkAction", */ 
+			operationId = "bulkAction", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -480,10 +416,8 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
                     }
             ), 
 			tags = { IdmConfigurationController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						CoreGroupPermission.CONFIGURATION_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						CoreGroupPermission.CONFIGURATION_READ})
@@ -505,7 +439,7 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONFIGURATION_READ + "')")
 	@Operation(
 			summary = "Prevalidate configuration bulk action",
-			/* nickname = "prevalidateBulkAction", */ 
+			operationId = "prevalidateBulkAction", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -518,10 +452,8 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
                     }
             ), 
 			tags = { IdmConfigurationController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						CoreGroupPermission.CONFIGURATION_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						CoreGroupPermission.CONFIGURATION_READ})
@@ -541,7 +473,7 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
 	@RequestMapping(method = RequestMethod.GET, value = "/search/read-dto-services")
 	@Operation(
 			summary = "Get all registered read dto services",
-			/* nickname = "getRegisteredReadDtoServices", */ 
+			operationId = "getRegisteredReadDtoServices", 
 			tags = { IdmConfigurationController.TAG },
 			description = "Returns all registered read dto services."
 	)
@@ -588,14 +520,12 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
 			+ " or hasAuthority('" + CoreGroupPermission.CONFIGURATION_UPDATE + "')")
 	@Operation(
 			summary = "Upload new application logo",
-			/* nickname = "postApplicationLogo", */ 
+			operationId = "postApplicationLogo", 
 			tags = {
 			IdmConfigurationController.TAG }, 
 			description = "Upload new application logo")
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							CoreGroupPermission.CONFIGURATION_CREATE,
 							CoreGroupPermission.CONFIGURATION_UPDATE}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
@@ -616,18 +546,13 @@ public class IdmConfigurationController extends AbstractEventableDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONFIGURATION_DELETE + "')")
 	@Operation(
 			summary = "Delete configured application logo",
-			/* nickname = "deleteProfilePicure", */
+			operationId = "deleteProfilePicure",
 			tags = { IdmConfigurationController.TAG },
 			description = "Delete configured application logo.")
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							CoreGroupPermission.CONFIGURATION_DELETE }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							CoreGroupPermission.CONFIGURATION_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONFIGURATION_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONFIGURATION_DELETE })
+    })
 	public ResponseEntity<?> deleteApplicationLogo() {
 		UUID uuid = applicationConfiguration.getApplicationLogoId();
 		// 

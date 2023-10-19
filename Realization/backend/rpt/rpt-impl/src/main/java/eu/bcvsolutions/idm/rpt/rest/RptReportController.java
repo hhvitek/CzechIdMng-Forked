@@ -97,17 +97,12 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 	@PreAuthorize("hasAuthority('" + RptGroupPermission.REPORT_READ + "')")
 	@Operation(
 			summary = "Search reports (/search/quick alias)", 
-			/* nickname = "searchReports", */ 
+			operationId = "searchReports", 
 			tags = { RptReportController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						RptGroupPermission.REPORT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						RptGroupPermission.REPORT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { RptGroupPermission.REPORT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { RptGroupPermission.REPORT_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -122,17 +117,12 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 	@PreAuthorize("hasAuthority('" + RptGroupPermission.REPORT_READ + "')")
 	@Operation(
 			summary = "Search reports", 
-			/* nickname = "searchQuickReports", */ 
+			operationId = "searchQuickReports", 
 			tags = { RptReportController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						RptGroupPermission.REPORT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						RptGroupPermission.REPORT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { RptGroupPermission.REPORT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { RptGroupPermission.REPORT_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -147,17 +137,12 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 	@PreAuthorize("hasAuthority('" + RptGroupPermission.REPORT_AUTOCOMPLETE + "')")
 	@Operation(
 			summary = "Autocomplete reports (selectbox usage)", 
-			/* nickname = "autocompleteReports", */ 
+			operationId = "autocompleteReports", 
 			tags = { RptReportController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						RptGroupPermission.REPORT_AUTOCOMPLETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						RptGroupPermission.REPORT_AUTOCOMPLETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { RptGroupPermission.REPORT_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { RptGroupPermission.REPORT_AUTOCOMPLETE })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -172,17 +157,12 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 	@PreAuthorize("hasAuthority('" + RptGroupPermission.REPORT_COUNT + "')")
 	@Operation(
 			summary = "The number of entities that match the filter", 
-			/* nickname = "countReports", */ 
+			operationId = "countReports", 
 			tags = { RptReportController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						RptGroupPermission.REPORT_COUNT }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						RptGroupPermission.REPORT_COUNT })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { RptGroupPermission.REPORT_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { RptGroupPermission.REPORT_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -193,7 +173,7 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 	@PreAuthorize("hasAuthority('" + RptGroupPermission.REPORT_READ + "')")
 	@Operation(
 			summary = "Report detail", 
-			/* nickname = "getReport", */ 
+			operationId = "getReport", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -206,15 +186,10 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
                     }
             ), 
 			tags = { RptReportController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						RptGroupPermission.REPORT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						RptGroupPermission.REPORT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { RptGroupPermission.REPORT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { RptGroupPermission.REPORT_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Report's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -226,7 +201,7 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 	@PreAuthorize("hasAuthority('" + RptGroupPermission.REPORT_CREATE + "')")
 	@Operation(
 			summary = "Create report", 
-			/* nickname = "createReport", */ 
+			operationId = "createReport", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -239,10 +214,8 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
                     }
             ), 
 			tags = { RptReportController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
 						RptGroupPermission.REPORT_CREATE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						RptGroupPermission.REPORT_CREATE})
@@ -260,17 +233,12 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 	@PreAuthorize("hasAuthority('" + RptGroupPermission.REPORT_DELETE + "')")
 	@Operation(
 			summary = "Delete report", 
-			/* nickname = "deleteReport", */ 
+			operationId = "deleteReport", 
 			tags = { RptReportController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						RptGroupPermission.REPORT_DELETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						RptGroupPermission.REPORT_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { RptGroupPermission.REPORT_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { RptGroupPermission.REPORT_DELETE })
+    })
 	public ResponseEntity<?> delete(
 			 @Parameter(description = "Report's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -284,12 +252,10 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 			+ " or hasAuthority('" + RptGroupPermission.REPORT_AUTOCOMPLETE + "')")
 	@Operation(
 			summary = "What logged identity can do with given record", 
-			/* nickname = "getPermissionsOnReport", */ 
+			operationId = "getPermissionsOnReport", 
 			tags = { RptReportController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
 						RptGroupPermission.REPORT_READ,
 						RptGroupPermission.REPORT_AUTOCOMPLETE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
@@ -370,17 +336,12 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 	@PreAuthorize("hasAuthority('" + RptGroupPermission.REPORT_READ + "')")
 	@Operation(
 			summary = "Get available bulk actions", 
-			/* nickname = "availableBulkAction", */ 
+			operationId = "availableBulkAction", 
 			tags = { RptReportController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						RptGroupPermission.REPORT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						RptGroupPermission.REPORT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { RptGroupPermission.REPORT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { RptGroupPermission.REPORT_READ })
+    })
 	public List<IdmBulkActionDto> getAvailableBulkActions() {
 		return super.getAvailableBulkActions();
 	}
@@ -391,7 +352,7 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 	@PreAuthorize("hasAuthority('" + RptGroupPermission.REPORT_READ + "')")
 	@Operation(
 			summary = "Process bulk action for report", 
-			/* nickname = "bulkAction", */ 
+			operationId = "bulkAction", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -404,10 +365,8 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
                     }
             ), 
 			tags = { RptReportController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
 						RptGroupPermission.REPORT_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						RptGroupPermission.REPORT_READ})
@@ -423,7 +382,7 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 	@PreAuthorize("hasAuthority('" + RptGroupPermission.REPORT_READ + "')")
 	@Operation(
 			summary = "Prevalidate bulk action for reports", 
-			/* nickname = "prevalidateBulkAction", */ 
+			operationId = "prevalidateBulkAction", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -436,10 +395,8 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
                     }
             ), 
 			tags = { RptReportController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
 						RptGroupPermission.REPORT_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						RptGroupPermission.REPORT_READ})
@@ -454,17 +411,12 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 	@PreAuthorize("hasAuthority('" + RptGroupPermission.REPORT_CREATE + "')")
 	@Operation(
 			summary = "Get supported reports", 
-			/* nickname = "getSupportedReports", */ 
+			operationId = "getSupportedReports", 
 			tags={ RptReportController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						RptGroupPermission.REPORT_CREATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						RptGroupPermission.REPORT_CREATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { RptGroupPermission.REPORT_CREATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { RptGroupPermission.REPORT_CREATE })
+    })
 	public CollectionModel<RptReportExecutorDto> find() {
 		return new CollectionModel<>(reportManager.getExecutors());
 	}

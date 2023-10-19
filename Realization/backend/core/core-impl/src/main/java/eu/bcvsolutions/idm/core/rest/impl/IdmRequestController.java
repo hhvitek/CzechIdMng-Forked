@@ -61,14 +61,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/requests")
-@Tag(
-		name = IdmRequestController.TAG, 
-		description = "Operations with requests"//,
-
-
-
-
-)
+@Tag(name = IdmRequestController.TAG, description = "Operations with requests")
 public class IdmRequestController extends AbstractReadWriteDtoController<IdmRequestDto, IdmRequestFilter>{
 
 	protected static final String TAG = "Universal requests";
@@ -90,17 +83,12 @@ public class IdmRequestController extends AbstractReadWriteDtoController<IdmRequ
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.REQUEST_READ + "')")
 	@Operation(
 			summary = "Search requests (/search/quick alias)",
-			/* nickname = "searchRequests", */
+			operationId = "searchRequests",
 			tags = { IdmRequestController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.REQUEST_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.REQUEST_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.REQUEST_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.REQUEST_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -115,17 +103,12 @@ public class IdmRequestController extends AbstractReadWriteDtoController<IdmRequ
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.REQUEST_READ + "')")
 	@Operation(
 			summary = "Search requests",
-			/* nickname = "searchQuickRequests", */
+			operationId = "searchQuickRequests",
 			tags = { IdmRequestController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.REQUEST_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.REQUEST_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.REQUEST_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.REQUEST_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -139,17 +122,12 @@ public class IdmRequestController extends AbstractReadWriteDtoController<IdmRequ
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.REQUEST_AUTOCOMPLETE + "')")
 	@Operation(
 			summary = "Autocomplete requests (selectbox usage)",
-			/* nickname = "autocompleteRequests", */
+			operationId = "autocompleteRequests",
 			tags = { IdmRequestController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.REQUEST_AUTOCOMPLETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.REQUEST_AUTOCOMPLETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.REQUEST_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.REQUEST_AUTOCOMPLETE })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -164,7 +142,7 @@ public class IdmRequestController extends AbstractReadWriteDtoController<IdmRequ
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.REQUEST_READ + "')")
 	@Operation(
 			summary = "Request detail",
-			/* nickname = "getRequest", */
+			operationId = "getRequest",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -177,15 +155,10 @@ public class IdmRequestController extends AbstractReadWriteDtoController<IdmRequ
                     }
             ),
 			tags = { IdmRequestController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.REQUEST_READ }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.REQUEST_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.REQUEST_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.REQUEST_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Request's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -199,7 +172,7 @@ public class IdmRequestController extends AbstractReadWriteDtoController<IdmRequ
 			+ " or hasAuthority('" + CoreGroupPermission.REQUEST_UPDATE + "')")
 	@Operation(
 			summary = "Create / update request",
-			/* nickname = "postRequest", */
+			operationId = "postRequest",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -212,10 +185,8 @@ public class IdmRequestController extends AbstractReadWriteDtoController<IdmRequ
                     }
             ),
 			tags = { IdmRequestController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							CoreGroupPermission.REQUEST_CREATE,
 							CoreGroupPermission.REQUEST_UPDATE}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
@@ -237,7 +208,7 @@ public class IdmRequestController extends AbstractReadWriteDtoController<IdmRequ
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.REQUEST_UPDATE + "')")
 	@Operation(
 			summary = "Update request",
-			/* nickname = "putRequest", */
+			operationId = "putRequest",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -250,15 +221,10 @@ public class IdmRequestController extends AbstractReadWriteDtoController<IdmRequ
                     }
             ),
 			tags = { IdmRequestController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.REQUEST_UPDATE }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.REQUEST_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.REQUEST_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.REQUEST_UPDATE })
+    })
 	public ResponseEntity<?> put(
 			 @Parameter(description = "Request's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
@@ -273,17 +239,12 @@ public class IdmRequestController extends AbstractReadWriteDtoController<IdmRequ
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.REQUEST_DELETE + "')")
 	@Operation(
 			summary = "Delete request",
-			/* nickname = "deleteRequest", */
+			operationId = "deleteRequest",
 			tags = { IdmRequestController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.REQUEST_DELETE }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.REQUEST_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.REQUEST_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.REQUEST_DELETE })
+    })
 	public ResponseEntity<?> delete(
 			 @Parameter(description = "Request's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -314,17 +275,12 @@ public class IdmRequestController extends AbstractReadWriteDtoController<IdmRequ
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.REQUEST_READ + "')")
 	@Operation(
 			summary = "What logged identity can do with given record",
-			/* nickname = "getPermissionsOnRequest", */
+			operationId = "getPermissionsOnRequest",
 			tags = { IdmRequestController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.REQUEST_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.REQUEST_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.REQUEST_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.REQUEST_READ })
+    })
 	public Set<String> getPermissions(
 			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -336,7 +292,7 @@ public class IdmRequestController extends AbstractReadWriteDtoController<IdmRequ
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.REQUEST_UPDATE + "')")
 	@Operation(
 			summary = "Start request",
-			/* nickname = "startRequest", */
+			operationId = "startRequest",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -349,15 +305,10 @@ public class IdmRequestController extends AbstractReadWriteDtoController<IdmRequ
                     }
             ),
 			tags = { IdmRequestController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.REQUEST_UPDATE }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.REQUEST_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.REQUEST_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.REQUEST_UPDATE })
+    })
 	public ResponseEntity<?> startRequest(
 			 @Parameter(description = "Request's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -381,7 +332,7 @@ public class IdmRequestController extends AbstractReadWriteDtoController<IdmRequ
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.REQUEST_READ + "')")
 	@Operation(
 			summary = "Request changes of entity",
-			/* nickname = "getRequestEntityChange", */
+			operationId = "getRequestEntityChange",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -394,15 +345,10 @@ public class IdmRequestController extends AbstractReadWriteDtoController<IdmRequ
                     }
             ),
 			tags = { IdmRequestItemController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.REQUEST_READ }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.REQUEST_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.REQUEST_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.REQUEST_READ })
+    })
 	public ResponseEntity<?> getChanges(
 			 @Parameter(description = "Item's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,

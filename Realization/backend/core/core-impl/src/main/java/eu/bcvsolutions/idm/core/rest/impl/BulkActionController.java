@@ -46,14 +46,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseController.BASE_PATH + "/bulk-actions")
-@Tag(
-		name = BulkActionController.TAG, 
-		description = "Configure bulk actions"//,
-
-		
-		
-
-)
+@Tag(name = BulkActionController.TAG, description = "Configure bulk actions")
 public class BulkActionController {
 
 	protected static final String TAG = "Bulk action administration";	
@@ -70,18 +63,13 @@ public class BulkActionController {
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.MODULE_READ + "')")
 	@Operation(
 			summary = "Find all bulk actions",
-			/* nickname = "findAllBulkActions", */ 
+			operationId = "findAllBulkActions", 
 			tags = { BulkActionController.TAG }, 
 						description = "Returns all registered bulk actions with state properties (disabled, order).")
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.MODULE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.MODULE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.MODULE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.MODULE_READ })
+    })
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
@@ -103,17 +91,12 @@ public class BulkActionController {
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.MODULE_UPDATE + "')")
 	@Operation(
 			summary = "Enable bulk action",
-			/* nickname = "enableBulkAction", */
+			operationId = "enableBulkAction",
 			tags = { BulkActionController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.MODULE_UPDATE }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.MODULE_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.MODULE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.MODULE_UPDATE })
+    })
 	public void enable(
 			 @Parameter(description = "Bulk action identifier.", required = true)
 			@PathVariable @NotNull String bulkActionId) {
@@ -130,17 +113,12 @@ public class BulkActionController {
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.MODULE_UPDATE + "')")
 	@Operation(
 			summary = "Disable bulk action",
-			/* nickname = "disableBulkAction", */
+			operationId = "disableBulkAction",
 			tags = { BulkActionController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.MODULE_UPDATE }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.MODULE_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.MODULE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.MODULE_UPDATE })
+    })
 	public void disable(
 			 @Parameter(description = "Bulk action identifier.", required = true)
 			@PathVariable @NotNull String bulkActionId) {

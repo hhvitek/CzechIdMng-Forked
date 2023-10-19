@@ -56,14 +56,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/workflow-history-tasks")
-@Tag(
-		name = WorkflowHistoricTaskInstanceController.TAG,
-		
-		description = "Read WF audit"//,
-		
-		
-
-)
+@Tag(name = WorkflowHistoricTaskInstanceController.TAG, description = "Read WF audit")
 public class WorkflowHistoricTaskInstanceController extends AbstractReadDtoController<WorkflowHistoricTaskInstanceDto, WorkflowFilterDto> {
 
 	protected static final String TAG = "Workflow - task instances history";
@@ -90,7 +83,7 @@ public class WorkflowHistoricTaskInstanceController extends AbstractReadDtoContr
 	@RequestMapping(method = RequestMethod.GET, value = "/search/quick")
 	@Operation(
 			summary = "Search historic task instances",
-			/* nickname = "searchQuickHistoricTaskInstances", */
+			operationId = "searchQuickHistoricTaskInstances",
 			tags = {WorkflowHistoricTaskInstanceController.TAG})
 	@PageableAsQueryParam
 	public CollectionModel<?> searchQuick(
@@ -108,7 +101,7 @@ public class WorkflowHistoricTaskInstanceController extends AbstractReadDtoContr
 	@RequestMapping(method = RequestMethod.GET, value = "/{backendId}")
 	@Operation(
 			summary = "Historic task instance detail",
-			/* nickname = "getHistoricTaskInstance", */
+			operationId = "getHistoricTaskInstance",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {

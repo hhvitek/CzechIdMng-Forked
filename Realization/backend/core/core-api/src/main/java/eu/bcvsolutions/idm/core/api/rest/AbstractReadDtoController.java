@@ -120,9 +120,8 @@ public abstract class AbstractReadDtoController<DTO extends BaseDto, F extends B
 	 * @return
 	 */
 	@Operation(summary = "Read record")
-    @SecurityRequirements(
-        value = {
-            @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
             @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
         }
     )
@@ -194,9 +193,8 @@ public abstract class AbstractReadDtoController<DTO extends BaseDto, F extends B
      * @see #toFilter(MultiValueMap)
 	 */
 	@Operation(summary = "Search records (/search/quick alias)")
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )
@@ -223,9 +221,8 @@ public abstract class AbstractReadDtoController<DTO extends BaseDto, F extends B
 	 * @see #toFilter(MultiValueMap)
 	 */
 	@Operation(summary = "Search records")
-    @SecurityRequirements(
-        value = {
-            @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
             @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
         }
     )
@@ -246,9 +243,8 @@ public abstract class AbstractReadDtoController<DTO extends BaseDto, F extends B
      * @see #toFilter(MultiValueMap)
 	 */
 	@Operation(summary = "Autocomplete records (selectbox usage)")
-    @SecurityRequirements(
-        value = {
-            @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
             @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
         }
     )
@@ -273,9 +269,8 @@ public abstract class AbstractReadDtoController<DTO extends BaseDto, F extends B
      * @see #toFilter(MultiValueMap)
 	 */
 	@Operation(summary = "The number of entities that match the filter")
-    @SecurityRequirements(
-        value = {
-            @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
             @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
         }
     )
@@ -343,9 +338,8 @@ public abstract class AbstractReadDtoController<DTO extends BaseDto, F extends B
 	 * @return
 	 */
 	@Operation(summary = "What logged identity can do with given record")
-    @SecurityRequirements(
-        value = {
-            @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
             @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
         }
     )

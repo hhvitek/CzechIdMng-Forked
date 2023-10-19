@@ -48,12 +48,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @Enabled(AccModuleDescriptor.MODULE_ID)
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/provisioning-break-recipients")
-@Tag(name = SysProvisioningBreakRecipientController.TAG,
-	description = "Recipients for provisioning break."//,
-	
-	
-
-)
+@Tag(name = SysProvisioningBreakRecipientController.TAG, description = "Recipients for provisioning break.")
 public class SysProvisioningBreakRecipientController 
 	extends AbstractReadWriteDtoController<SysProvisioningBreakRecipientDto, SysProvisioningBreakRecipientFilter> {
 
@@ -70,14 +65,11 @@ public class SysProvisioningBreakRecipientController
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
 	@Operation(
-			summary = "Search provisioning recipients for configuration (/search/quick alias)"
-			/* nickname = "searchProvisioningBreakRecipient", */
-
-			)
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+        summary = "Search provisioning recipients for configuration (/search/quick alias)",
+        operationId = "searchProvisioningBreakRecipient"
+    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						AccGroupPermission.SYSTEM_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						AccGroupPermission.SYSTEM_READ})
@@ -96,12 +88,10 @@ public class SysProvisioningBreakRecipientController
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@Operation(
 			summary = "Search provisioning recipients configuration", 
-			/* nickname = "searchQuickProvisioningBreakRecipient", */
+			operationId = "searchQuickProvisioningBreakRecipient",
 			tags = { SysProvisioningBreakRecipientController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
 						AccGroupPermission.SYSTEM_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						AccGroupPermission.SYSTEM_READ})
@@ -122,7 +112,7 @@ public class SysProvisioningBreakRecipientController
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@Operation(
 			summary = "Provisionign break recipient detail", 
-			/* nickname = "getProvisioningBreakRecipient", */
+			operationId = "getProvisioningBreakRecipient",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -135,10 +125,8 @@ public class SysProvisioningBreakRecipientController
                     }
             ), 
 			tags = { SysProvisioningBreakRecipientController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
 							AccGroupPermission.SYSTEM_READ}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 							AccGroupPermission.SYSTEM_READ})
@@ -157,7 +145,7 @@ public class SysProvisioningBreakRecipientController
 	@RequestMapping(method = RequestMethod.POST)
 	@Operation(
 			summary = "Create / update provisioning break recipient", 
-			/* nickname = "postProvisioningBreakRecipient", */
+			operationId = "postProvisioningBreakRecipient",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -170,10 +158,8 @@ public class SysProvisioningBreakRecipientController
                     }
             ), 
 			tags = { SysProvisioningBreakRecipientController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
 						AccGroupPermission.SYSTEM_CREATE,
 						AccGroupPermission.SYSTEM_UPDATE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
@@ -191,7 +177,7 @@ public class SysProvisioningBreakRecipientController
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	@Operation(
 			summary = "Update provisioning break recipient",
-			/* nickname = "putProvisioningBreakRecipient", */
+			operationId = "putProvisioningBreakRecipient",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -204,15 +190,10 @@ public class SysProvisioningBreakRecipientController
                     }
             ), 
 			tags = { SysProvisioningBreakRecipientController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.SYSTEM_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.SYSTEM_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_UPDATE })
+    })
 	public ResponseEntity<?> put(
 			 @Parameter(description = "Provisioning break recipient's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, @RequestBody @NotNull SysProvisioningBreakRecipientDto dto) {
@@ -225,17 +206,12 @@ public class SysProvisioningBreakRecipientController
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@Operation(
 			summary = "Delete provisioning break recipient", 
-			/* nickname = "deleteProvisioningBreakRecipient", */
+			operationId = "deleteProvisioningBreakRecipient",
 			tags = { SysProvisioningBreakRecipientController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.SYSTEM_DELETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.SYSTEM_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_DELETE })
+    })
 	public ResponseEntity<?> delete(
 			 @Parameter(description = "Provisioning break recipient's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {

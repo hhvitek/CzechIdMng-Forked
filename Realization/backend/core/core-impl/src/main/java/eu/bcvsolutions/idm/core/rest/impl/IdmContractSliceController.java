@@ -63,10 +63,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/contract-slices")
-@Tag(name = IdmContractSliceController.TAG, description = "Operations with contract slices"
-//, 
-
-)
+@Tag(name = IdmContractSliceController.TAG, description = "Operations with contract slices")
 public class IdmContractSliceController
 		extends AbstractEventableDtoController<IdmContractSliceDto, IdmContractSliceFilter> {
 
@@ -89,17 +86,12 @@ public class IdmContractSliceController
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTSLICE_READ + "')")
-	@Operation(summary = "Search contract slices (/search/quick alias)", /* nickname = "searchIdentityContracts", */ tags = {
+	@Operation(summary = "Search contract slices (/search/quick alias)", operationId = "searchIdentityContracts", tags = {
 			IdmContractSliceController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.CONTRACTSLICE_READ }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.CONTRACTSLICE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONTRACTSLICE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONTRACTSLICE_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@Parameter(hidden = true)
@@ -110,17 +102,12 @@ public class IdmContractSliceController
 	@ResponseBody
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTSLICE_READ + "')")
-	@Operation(summary = "Search contract slices", /* nickname = "searchQuickIdentityContracts", */ tags = {
+	@Operation(summary = "Search contract slices", operationId = "searchQuickIdentityContracts", tags = {
 			IdmContractSliceController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.CONTRACTSLICE_READ }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.CONTRACTSLICE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONTRACTSLICE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONTRACTSLICE_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@Parameter(hidden = true)
@@ -131,17 +118,12 @@ public class IdmContractSliceController
 	@ResponseBody
 	@RequestMapping(value = "/search/autocomplete", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTSLICE_AUTOCOMPLETE + "')")
-	@Operation(summary = "Autocomplete contract slices (selectbox usage)", /* nickname = "autocompleteIdentityContracts", */ tags = {
+	@Operation(summary = "Autocomplete contract slices (selectbox usage)", operationId = "autocompleteIdentityContracts", tags = {
 			IdmContractSliceController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.CONTRACTSLICE_AUTOCOMPLETE }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.CONTRACTSLICE_AUTOCOMPLETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONTRACTSLICE_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONTRACTSLICE_AUTOCOMPLETE })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(@RequestParam(required = false) MultiValueMap<String, Object> parameters,
 			@Parameter(hidden = true)
@@ -154,19 +136,14 @@ public class IdmContractSliceController
 	@RequestMapping(value = "/search/count", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTSLICE_COUNT + "')")
 	@Operation(
-			summary = "The number of entities that match the filter"
-			/* nickname = "countContractSlices", */ 
-			 
-			)
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.CONTRACTSLICE_COUNT }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.CONTRACTSLICE_COUNT })
-        }
+			summary = "The number of entities that match the filter",
+			operationId = "countContractSlices",
+            tags = { IdmContractSliceController.TAG }
     )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONTRACTSLICE_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONTRACTSLICE_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -175,7 +152,7 @@ public class IdmContractSliceController
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTSLICE_READ + "')")
-	@Operation(summary = "Contract slice detail", /* nickname = "getIdentityContract", */
+	@Operation(summary = "Contract slice detail", operationId = "getIdentityContract",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -186,17 +163,11 @@ public class IdmContractSliceController
                                     )
                             )
                     }
-            ), tags = {
-			IdmContractSliceController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.CONTRACTSLICE_READ }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.CONTRACTSLICE_READ })
-        }
-    )
+            ), tags = { IdmContractSliceController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONTRACTSLICE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONTRACTSLICE_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Contract's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		return super.get(backendId);
@@ -207,7 +178,7 @@ public class IdmContractSliceController
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTSLICE_CREATE + "')" + " or hasAuthority('"
 			+ CoreGroupPermission.CONTRACTSLICE_UPDATE + "')")
-	@Operation(summary = "Create / update contract slice", /* nickname = "postIdentityContract", */
+	@Operation(summary = "Create / update contract slice", operationId = "postIdentityContract",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -220,10 +191,8 @@ public class IdmContractSliceController
                     }
             ), tags = {
 			IdmContractSliceController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							CoreGroupPermission.CONTRACTSLICE_CREATE,
 							CoreGroupPermission.CONTRACTSLICE_UPDATE }),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
@@ -239,7 +208,7 @@ public class IdmContractSliceController
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTSLICE_UPDATE + "')")
-	@Operation(summary = "Update contract slice", /* nickname = "putIdentityContract", */
+	@Operation(summary = "Update contract slice", operationId = "putIdentityContract",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -252,15 +221,10 @@ public class IdmContractSliceController
                     }
             ), tags = {
 			IdmContractSliceController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.CONTRACTSLICE_UPDATE }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.CONTRACTSLICE_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONTRACTSLICE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONTRACTSLICE_UPDATE })
+    })
 	public ResponseEntity<?> put(
 			 @Parameter(description = "Contract's uuid identifier.", required = true) @PathVariable @NotNull String backendId,
 			@Valid @RequestBody IdmContractSliceDto dto) {
@@ -271,17 +235,12 @@ public class IdmContractSliceController
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTSLICE_DELETE + "')")
-	@Operation(summary = "Delete contract slice", /* nickname = "deleteIdentityContract", */ tags = {
+	@Operation(summary = "Delete contract slice", operationId = "deleteIdentityContract", tags = {
 			IdmContractSliceController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.CONTRACTSLICE_DELETE }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.CONTRACTSLICE_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONTRACTSLICE_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONTRACTSLICE_DELETE })
+    })
 	public ResponseEntity<?> delete(
 			 @Parameter(description = "Contract's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
@@ -291,17 +250,12 @@ public class IdmContractSliceController
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTSLICE_READ + "')")
-	@Operation(summary = "What logged identity can do with given record", /* nickname = "getPermissionsOnIdentityContract", */ tags = {
+	@Operation(summary = "What logged identity can do with given record", operationId = "getPermissionsOnIdentityContract", tags = {
 			IdmContractSliceController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.CONTRACTSLICE_READ }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.CONTRACTSLICE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONTRACTSLICE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONTRACTSLICE_READ })
+    })
 	public Set<String> getPermissions(
 			 @Parameter(description = "Contract's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
@@ -316,17 +270,12 @@ public class IdmContractSliceController
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/form-definitions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTSLICE_READ + "')")
-	@Operation(summary = "Contract slice extended attributes form definitions", /* nickname = "getIdentityContractFormDefinitions", */ tags = {
+	@Operation(summary = "Contract slice extended attributes form definitions", operationId = "getIdentityContractFormDefinitions", tags = {
 			IdmContractSliceController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.CONTRACTSLICE_READ }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.CONTRACTSLICE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONTRACTSLICE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONTRACTSLICE_READ })
+    })
 	public ResponseEntity<?> getFormDefinitions(
 			 @Parameter(description = "Contract's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		return formDefinitionController.getDefinitions(IdmIdentityContract.class);
@@ -341,17 +290,12 @@ public class IdmContractSliceController
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/form-values", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTSLICE_READ + "')")
-	@Operation(summary = "Contract slice form definition - read values", /* nickname = "getIdentityContractFormValues", */ tags = {
+	@Operation(summary = "Contract slice form definition - read values", operationId = "getIdentityContractFormValues", tags = {
 			IdmContractSliceController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.CONTRACTSLICE_READ }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.CONTRACTSLICE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONTRACTSLICE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONTRACTSLICE_READ })
+    })
 	public EntityModel<?> getFormValues(
 			 @Parameter(description = "Identity's uuid identifier or username.", required = true) @PathVariable @NotNull String backendId,
 			 @Parameter(description = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE) @RequestParam(name = "definitionCode", required = false) String definitionCode) {
@@ -378,17 +322,12 @@ public class IdmContractSliceController
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTSLICE_UPDATE + "')")
 	@RequestMapping(value = "/{backendId}/form-values", method = { RequestMethod.POST, RequestMethod.PATCH } )
-	@Operation(summary = "Contract slice form definition - save values", /* nickname = "postIdentityContractFormValues", */ tags = {
+	@Operation(summary = "Contract slice form definition - save values", operationId = "postIdentityContractFormValues", tags = {
 			IdmContractSliceController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.CONTRACTSLICE_UPDATE }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.CONTRACTSLICE_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONTRACTSLICE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONTRACTSLICE_UPDATE })
+    })
 	public EntityModel<?> saveFormValues(
 			 @Parameter(description = "Identity's uuid identifier or username.", required = true) @PathVariable @NotNull String backendId,
 			 @Parameter(description = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE) @RequestParam(name = "definitionCode", required = false) String definitionCode,
@@ -419,17 +358,12 @@ public class IdmContractSliceController
 	@RequestMapping(value = "/{backendId}/form-value", method = { RequestMethod.POST } )
 	@Operation(
 			summary = "Role form definition - save value", 
-			/* nickname = "postRoleFormValue", */ 
+			operationId = "postRoleFormValue", 
 			tags = { IdmContractSliceController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.CONTRACTSLICE_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.CONTRACTSLICE_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONTRACTSLICE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONTRACTSLICE_UPDATE })
+    })
 	public EntityModel<?> saveFormValue(
 			 @Parameter(description = "Slice's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
@@ -456,18 +390,13 @@ public class IdmContractSliceController
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTSLICE_READ + "')")
 	@Operation(
 			summary = "Download form value attachment", 
-			/* nickname = "downloadFormValue", */
+			operationId = "downloadFormValue",
 			tags = { IdmContractSliceController.TAG },
 			description = "Returns input stream to attachment saved in given form value.")
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							CoreGroupPermission.CONTRACTSLICE_READ }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							CoreGroupPermission.CONTRACTSLICE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONTRACTSLICE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONTRACTSLICE_READ })
+    })
 	public ResponseEntity<InputStreamResource> downloadFormValue(
 			 @Parameter(description = "Slice's uuid identifier.", required = true)
 			@PathVariable String backendId,
@@ -497,18 +426,13 @@ public class IdmContractSliceController
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTSLICE_READ + "')")
 	@Operation(
 			summary = "Download form value attachment preview", 
-			/* nickname = "downloadFormValue", */
+			operationId = "downloadFormValue",
 			tags = { IdmContractSliceController.TAG },
 			description = "Returns input stream to attachment preview saved in given form value. Preview is supported for the png, jpg and jpeg mime types only")
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							CoreGroupPermission.CONTRACTSLICE_READ }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							CoreGroupPermission.CONTRACTSLICE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONTRACTSLICE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONTRACTSLICE_READ })
+    })
 	public ResponseEntity<InputStreamResource> previewFormValue(
 			 @Parameter(description = "Slice's uuid identifier.", required = true)
 			@PathVariable String backendId,

@@ -878,6 +878,7 @@ Change annotations
   ```
 - 🟠 ``@ApiOperation`` ⇒ ``@Operation``
 - 🟠 ``@ApiOperation.value`` ⇒ ``@Operation.summary``
+- 🟠 ``@ApiOperation.nickname`` ⇒ ``@Operation.operationId``
 - 🟠 ``@ApiOperation.authorizations`` ⇒ ``@SecurityRequirements``
 - 🟠 ``@ApiOperation.response`` ⇒ ``@Operation.responses = @ApiResponse``
 - 🟠 
@@ -915,6 +916,7 @@ Change annotations
   ```java
   @Operation(
       summary = "Authorization policy detail",
+      operationId = "getAuthorizationPolicy",
       responses = @ApiResponse(
           responseCode = "200",
           content = {

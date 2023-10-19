@@ -52,10 +52,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/automatic-role-rule-requests")
-@Tag(name = IdmAutomaticRoleAttributeRuleRequestController.TAG, description = "Operations with single roles in request"//, tags = {
-		//IdmAutomaticRoleAttributeRuleRequestController.TAG }//,
-
-)
+@Tag(name = IdmAutomaticRoleAttributeRuleRequestController.TAG, description = "Operations with single roles in request")
 public class IdmAutomaticRoleAttributeRuleRequestController extends
 		AbstractReadWriteDtoController<IdmAutomaticRoleAttributeRuleRequestDto, IdmAutomaticRoleAttributeRuleRequestFilter> {
 
@@ -76,12 +73,10 @@ public class IdmAutomaticRoleAttributeRuleRequestController extends
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ + "')")
-	@Operation(summary = "Search rule request role requests (/search/quick alias)", /* nickname = "searchRule requestRoleRequests", */ tags = {
+	@Operation(summary = "Search rule request role requests (/search/quick alias)", operationId = "searchRule requestRoleRequests", tags = {
 			IdmAutomaticRoleAttributeRuleRequestController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ,
 							CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_ADMIN }),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
@@ -100,12 +95,10 @@ public class IdmAutomaticRoleAttributeRuleRequestController extends
 	@ResponseBody
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ + "')")
-	@Operation(summary = "Search rule request role requests", /* nickname = "searchQuickRule requestRoleRequests", */ tags = {
+	@Operation(summary = "Search rule request role requests", operationId = "searchQuickRule requestRoleRequests", tags = {
 			IdmAutomaticRoleAttributeRuleRequestController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ,
 							CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_ADMIN }),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
@@ -142,7 +135,7 @@ public class IdmAutomaticRoleAttributeRuleRequestController extends
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ + "')")
-	@Operation(summary = "Rule request detail", /* nickname = "getRule requestRoleRequest", */
+	@Operation(summary = "Rule request detail", operationId = "getRule requestRoleRequest",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -154,15 +147,10 @@ public class IdmAutomaticRoleAttributeRuleRequestController extends
                             )
                     }
             ), tags = {	IdmAutomaticRoleAttributeRuleRequestController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Rule request's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		return super.get(backendId);
@@ -173,7 +161,7 @@ public class IdmAutomaticRoleAttributeRuleRequestController extends
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_CREATE + "')" + " or hasAuthority('"
 			+ CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_UPDATE + "')")
-	@Operation(summary = "Create / update rule request", /* nickname = "postRule requestRoleRequest", */
+	@Operation(summary = "Create / update rule request", operationId = "postRule requestRoleRequest",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -185,10 +173,8 @@ public class IdmAutomaticRoleAttributeRuleRequestController extends
                             )
                     }
             ), tags = {	IdmAutomaticRoleAttributeRuleRequestController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_CREATE,
 							CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_UPDATE }),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
@@ -204,7 +190,7 @@ public class IdmAutomaticRoleAttributeRuleRequestController extends
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_UPDATE + "')")
-	@Operation(summary = "Update rule request", /* nickname = "putRule requestRoleRequest", */
+	@Operation(summary = "Update rule request", operationId = "putRule requestRoleRequest",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -216,15 +202,10 @@ public class IdmAutomaticRoleAttributeRuleRequestController extends
                             )
                     }
             ), tags = {	IdmAutomaticRoleAttributeRuleRequestController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_UPDATE }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_UPDATE })
+    })
 	public ResponseEntity<?> put(
 			 @Parameter(description = "Rule request's uuid identifier.", required = true) @PathVariable @NotNull String backendId,
 			@RequestBody @NotNull IdmAutomaticRoleAttributeRuleRequestDto dto) {
@@ -235,17 +216,12 @@ public class IdmAutomaticRoleAttributeRuleRequestController extends
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_DELETE + "')")
-	@Operation(summary = "Delete rule request", /* nickname = "delete Rule requestRoleRequest", */ tags = {
+	@Operation(summary = "Delete rule request", operationId = "delete Rule requestRoleRequest", tags = {
 			IdmAutomaticRoleAttributeRuleRequestController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_DELETE }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_DELETE })
+    })
 	public ResponseEntity<?> delete(
 			 @Parameter(description = "Rule request's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
@@ -255,17 +231,12 @@ public class IdmAutomaticRoleAttributeRuleRequestController extends
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ + "')")
-	@Operation(summary = "What logged identity can do with given record", /* nickname = "getPermissionsOnAutomaticRoleRuleRequest", */ tags = {
+	@Operation(summary = "What logged identity can do with given record", operationId = "getPermissionsOnAutomaticRoleRuleRequest", tags = {
 			IdmAutomaticRoleAttributeRuleRequestController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ })
+    })
 	public Set<String> getPermissions(
 			 @Parameter(description = "Rule request's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);

@@ -50,14 +50,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/system-group-systems")
-@Tag(
-		name = SysSystemGroupSystemController.TAG,
-		description = "System groups system - relation between a system and a group of systems."//,
-
-		
-
-
-)
+@Tag(name = SysSystemGroupSystemController.TAG, description = "System groups system - relation between a system and a group of systems.")
 public class SysSystemGroupSystemController extends AbstractEventableDtoController<SysSystemGroupSystemDto, SysSystemGroupSystemFilter> {
 
 	protected static final String TAG = "System groups system - relation between a system and a group of systems.";
@@ -73,12 +66,10 @@ public class SysSystemGroupSystemController extends AbstractEventableDtoControll
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_GROUP_SYSTEM_READ + "')")
 	@Operation(
 			summary = "Search configured SystemGroupSystem relations (/search/quick alias)",
-			/* nickname = "searchSystemGroupSystems", */
+			operationId = "searchSystemGroupSystems",
 			tags = {SysSystemGroupSystemController.TAG})
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							AccGroupPermission.SYSTEM_GROUP_SYSTEM_READ}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							AccGroupPermission.SYSTEM_GROUP_SYSTEM_READ})
@@ -98,12 +89,10 @@ public class SysSystemGroupSystemController extends AbstractEventableDtoControll
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_GROUP_SYSTEM_READ + "')")
 	@Operation(
 			summary = "Search configured SystemGroupSystem relations",
-			/* nickname = "searchQuickSystemGroupSystems", */
+			operationId = "searchQuickSystemGroupSystems",
 			tags = {SysSystemGroupSystemController.TAG})
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							AccGroupPermission.SYSTEM_GROUP_SYSTEM_READ}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							AccGroupPermission.SYSTEM_GROUP_SYSTEM_READ})
@@ -123,12 +112,10 @@ public class SysSystemGroupSystemController extends AbstractEventableDtoControll
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_GROUP_SYSTEM_AUTOCOMPLETE + "')")
 	@Operation(
 			summary = "Autocomplete configured SystemGroupSystem relations (selectbox usage)",
-			/* nickname = "autocompleteSystemGroupSystems", */
+			operationId = "autocompleteSystemGroupSystems",
 			tags = {SysSystemGroupSystemController.TAG})
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							AccGroupPermission.SYSTEM_GROUP_SYSTEM_AUTOCOMPLETE}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							AccGroupPermission.SYSTEM_GROUP_SYSTEM_AUTOCOMPLETE})
@@ -148,12 +135,10 @@ public class SysSystemGroupSystemController extends AbstractEventableDtoControll
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_GROUP_SYSTEM_COUNT + "')")
 	@Operation(
 			summary = "The number of entities that match the filter",
-			/* nickname = "countSystemGroupSystems", */
+			operationId = "countSystemGroupSystems",
 			tags = {SysSystemGroupSystemController.TAG})
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							AccGroupPermission.SYSTEM_GROUP_SYSTEM_COUNT}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							AccGroupPermission.SYSTEM_GROUP_SYSTEM_COUNT})
@@ -169,7 +154,7 @@ public class SysSystemGroupSystemController extends AbstractEventableDtoControll
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_GROUP_SYSTEM_READ + "')")
 	@Operation(
 			summary = "System group-system detail",
-			/* nickname = "getSystemGroupSystem", */
+			operationId = "getSystemGroupSystem",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -182,10 +167,8 @@ public class SysSystemGroupSystemController extends AbstractEventableDtoControll
                     }
             ),
 			tags = {SysSystemGroupSystemController.TAG})
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							AccGroupPermission.SYSTEM_GROUP_SYSTEM_READ}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							AccGroupPermission.SYSTEM_GROUP_SYSTEM_READ})
@@ -204,7 +187,7 @@ public class SysSystemGroupSystemController extends AbstractEventableDtoControll
 			+ " or hasAuthority('" + AccGroupPermission.SYSTEM_GROUP_SYSTEM_UPDATE + "')")
 	@Operation(
 			summary = "Create / update configured SystemGroupSystem relation",
-			/* nickname = "postSystemGroupSystem", */
+			operationId = "postSystemGroupSystem",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -217,10 +200,8 @@ public class SysSystemGroupSystemController extends AbstractEventableDtoControll
                     }
             ),
 			tags = {SysSystemGroupSystemController.TAG})
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							AccGroupPermission.SYSTEM_GROUP_SYSTEM_CREATE,
 							AccGroupPermission.SYSTEM_GROUP_SYSTEM_UPDATE}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
@@ -238,7 +219,7 @@ public class SysSystemGroupSystemController extends AbstractEventableDtoControll
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_GROUP_SYSTEM_UPDATE + "')")
 	@Operation(
 			summary = "Update configured SystemGroupSystem relation",
-			/* nickname = "putSystemGroupSystem", */
+			operationId = "putSystemGroupSystem",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -251,10 +232,8 @@ public class SysSystemGroupSystemController extends AbstractEventableDtoControll
                     }
             ),
 			tags = {SysSystemGroupSystemController.TAG})
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							AccGroupPermission.SYSTEM_GROUP_SYSTEM_UPDATE}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							AccGroupPermission.SYSTEM_GROUP_SYSTEM_UPDATE})
@@ -273,12 +252,10 @@ public class SysSystemGroupSystemController extends AbstractEventableDtoControll
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_GROUP_SYSTEM_DELETE + "')")
 	@Operation(
 			summary = "Delete configured SystemGroupSystem relation",
-			/* nickname = "deleteSystemGroupSystem", */
+			operationId = "deleteSystemGroupSystem",
 			tags = {SysSystemGroupSystemController.TAG})
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							AccGroupPermission.SYSTEM_GROUP_SYSTEM_DELETE}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							AccGroupPermission.SYSTEM_GROUP_SYSTEM_DELETE})
@@ -297,12 +274,10 @@ public class SysSystemGroupSystemController extends AbstractEventableDtoControll
 			+ " or hasAuthority('" + AccGroupPermission.SYSTEM_GROUP_SYSTEM_AUTOCOMPLETE + "')")
 	@Operation(
 			summary = "What logged identity can do with given record",
-			/* nickname = "getPermissionsOnSystemGroupSystem", */
+			operationId = "getPermissionsOnSystemGroupSystem",
 			tags = {SysSystemGroupSystemController.TAG})
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							AccGroupPermission.SYSTEM_GROUP_SYSTEM_READ,
 							AccGroupPermission.SYSTEM_GROUP_SYSTEM_AUTOCOMPLETE}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
@@ -322,12 +297,10 @@ public class SysSystemGroupSystemController extends AbstractEventableDtoControll
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_GROUP_SYSTEM_READ + "')")
 	@Operation(
 			summary = "Get available bulk actions",
-			/* nickname = "availableBulkAction", */
+			operationId = "availableBulkAction",
 			tags = {SysSystemGroupSystemController.TAG})
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							AccGroupPermission.SYSTEM_GROUP_SYSTEM_READ}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							AccGroupPermission.SYSTEM_GROUP_SYSTEM_READ})
@@ -343,7 +316,7 @@ public class SysSystemGroupSystemController extends AbstractEventableDtoControll
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_GROUP_SYSTEM_READ + "')")
 	@Operation(
 			summary = "Process bulk action",
-			/* nickname = "bulkAction", */
+			operationId = "bulkAction",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -356,10 +329,8 @@ public class SysSystemGroupSystemController extends AbstractEventableDtoControll
                     }
             ),
 			tags = {SysSystemGroupSystemController.TAG})
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							AccGroupPermission.SYSTEM_GROUP_SYSTEM_READ}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							AccGroupPermission.SYSTEM_GROUP_SYSTEM_READ})
@@ -375,7 +346,7 @@ public class SysSystemGroupSystemController extends AbstractEventableDtoControll
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_GROUP_SYSTEM_READ + "')")
 	@Operation(
 			summary = "Prevalidate bulk action",
-			/* nickname = "prevalidateBulkAction", */
+			operationId = "prevalidateBulkAction",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -388,10 +359,8 @@ public class SysSystemGroupSystemController extends AbstractEventableDtoControll
                     }
             ),
 			tags = {SysSystemGroupSystemController.TAG})
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							AccGroupPermission.SYSTEM_GROUP_SYSTEM_READ}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							AccGroupPermission.SYSTEM_GROUP_SYSTEM_READ})

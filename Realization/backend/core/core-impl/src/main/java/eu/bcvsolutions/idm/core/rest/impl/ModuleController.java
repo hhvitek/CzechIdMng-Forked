@@ -51,14 +51,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseController.BASE_PATH + "/modules")
-@Tag(
-		name = ModuleController.TAG,
-		description = "Application modules configuration"//,
-
-		
-		
-
-)
+@Tag(name = ModuleController.TAG, description = "Application modules configuration")
 public class ModuleController {
 
 	protected static final String TAG = "Modules";
@@ -81,17 +74,12 @@ public class ModuleController {
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.MODULE_READ + "')")
 	@Operation(
 			summary = "Get all installed modules",
-			/* nickname = "getInstalledModules", */
+			operationId = "getInstalledModules",
 			tags = { ModuleController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.MODULE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.MODULE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.MODULE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.MODULE_READ })
+    })
 	public List<ModuleDescriptorDto> getInstalledModules() {
 		return moduleService.getInstalledModules() //
 				.stream() //
@@ -112,17 +100,12 @@ public class ModuleController {
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.MODULE_READ + "')")
 	@Operation(
 			summary = "Module detail",
-			/* nickname = "getModule", */
+			operationId = "getModule",
 			tags = { ModuleController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.MODULE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.MODULE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.MODULE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.MODULE_READ })
+    })
 	public ModuleDescriptorDto get(
 			 @Parameter(description = "Module's identifier.", required = true)
 			@PathVariable @NotNull String moduleId) {
@@ -146,18 +129,13 @@ public class ModuleController {
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.MODULE_UPDATE + "')")
 	@Operation(
 			summary = "Update module properties",
-			/* nickname = "putModule", */
+			operationId = "putModule",
 			tags = { ModuleController.TAG },
 						description = "Supports enable / disable only")
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.MODULE_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.MODULE_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.MODULE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.MODULE_UPDATE })
+    })
 	public ModuleDescriptorDto put(
 			 @Parameter(description = "Module's identifier.", required = true)
 			@PathVariable @NotNull String moduleId,
@@ -183,18 +161,13 @@ public class ModuleController {
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.MODULE_UPDATE + "')")
 	@Operation(
 			summary = "Update module properties",
-			/* nickname = "patchModule", */
+			operationId = "patchModule",
 			tags = { ModuleController.TAG },
 						description = "Supports enable / disable only")
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.MODULE_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.MODULE_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.MODULE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.MODULE_UPDATE })
+    })
 	public ModuleDescriptorDto patch(
 			 @Parameter(description = "Module's identifier.", required = true)
 			@PathVariable @NotNull String moduleId,
@@ -225,17 +198,12 @@ public class ModuleController {
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.MODULE_UPDATE + "')")
 	@Operation(
 			summary = "Enable module",
-			/* nickname = "enableModule", */
+			operationId = "enableModule",
 			tags = { ModuleController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.MODULE_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.MODULE_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.MODULE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.MODULE_UPDATE })
+    })
 	public void enable(
 			 @Parameter(description = "Module's identifier.", required = true)
 			@PathVariable @NotNull String moduleId) {
@@ -252,17 +220,12 @@ public class ModuleController {
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.MODULE_UPDATE + "')")
 	@Operation(
 			summary = "Disable module",
-			/* nickname = "disableModule", */
+			operationId = "disableModule",
 			tags = { ModuleController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.MODULE_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.MODULE_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.MODULE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.MODULE_UPDATE })
+    })
 	public void disable(
 			 @Parameter(description = "Module's identifier.", required = true)
 			@PathVariable @NotNull String moduleId) {
@@ -274,17 +237,12 @@ public class ModuleController {
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.MODULE_READ + "')")
 	@Operation(
 			summary = "Get result codes",
-			/* nickname = "resultCodes", */
+			operationId = "resultCodes",
 			tags = { ModuleController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.MODULE_READ }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.MODULE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.MODULE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.MODULE_READ })
+    })
 	public List<DefaultResultModel> resultCodes(
 			 @Parameter(description = "Module's identifier", required = true)
 			@PathVariable @NotNull String moduleId,

@@ -57,7 +57,7 @@ public class UpcomingTasksController implements BaseController {
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_READ + "')")
 	@Operation(
 			summary = "Search upcoming scheduled tasks",
-			/* nickname = "searchUpcomingSchedulerTasks", */
+			operationId = "searchUpcomingSchedulerTasks",
 			tags={ UpcomingTasksController.TAG })
     @SecurityRequirements({
         @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_READ }),

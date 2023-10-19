@@ -51,13 +51,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/passwords")
-@Tag(
-		name = IdmPasswordController.TAG,
-		description = "Get password"//,
-		
-		
-
-)
+@Tag(name = IdmPasswordController.TAG, description = "Get password")
 public class IdmPasswordController extends AbstractReadWriteDtoController<IdmPasswordDto, IdmPasswordFilter> {
 
 	protected static final String TAG = "Passwords";
@@ -72,18 +66,24 @@ public class IdmPasswordController extends AbstractReadWriteDtoController<IdmPas
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.PASSWORD_READ + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@Operation(
-			summary = "Password detail (only metadata)"
-			/* nickname = "getPassword", */ 
-			/*response = IdmPasswordDto.class*/)
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.PASSWORD_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.PASSWORD_READ })
-        }
+			summary = "Password detail (only metadata)",
+			operationId = "getPassword",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmPasswordDto.class
+                                    )
+                            )
+                    }
+            )
     )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.PASSWORD_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.PASSWORD_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Passsword uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -96,17 +96,12 @@ public class IdmPasswordController extends AbstractReadWriteDtoController<IdmPas
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.PASSWORD_READ + "')")
 	@Operation(
 			summary = "Search passwords (/search/quick alias)", 
-			/* nickname = "searchPasswords", */
+			operationId = "searchPasswords",
 			tags = { IdmPasswordController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.PASSWORD_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.PASSWORD_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.PASSWORD_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.PASSWORD_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -120,17 +115,12 @@ public class IdmPasswordController extends AbstractReadWriteDtoController<IdmPas
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@Operation(
 			summary = "Search passwords", 
-			/* nickname = "searchQuickPasswords", */
+			operationId = "searchQuickPasswords",
 			tags = { IdmPasswordController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.PASSWORD_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.PASSWORD_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.PASSWORD_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.PASSWORD_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -145,7 +135,7 @@ public class IdmPasswordController extends AbstractReadWriteDtoController<IdmPas
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.PASSWORD_UPDATE + "')")
 	@Operation(
 			summary = "Update only password", 
-			/* nickname = "postPassword", */ 
+			operationId = "postPassword",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -158,10 +148,8 @@ public class IdmPasswordController extends AbstractReadWriteDtoController<IdmPas
                     }
             ),
 			tags = { IdmPasswordController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						CoreGroupPermission.PASSWORD_UPDATE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 						CoreGroupPermission.PASSWORD_UPDATE})
@@ -181,7 +169,7 @@ public class IdmPasswordController extends AbstractReadWriteDtoController<IdmPas
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.PASSWORD_UPDATE + "')")
 	@Operation(
 			summary = "Update policy",
-			/* nickname = "putPassword", */ 
+			operationId = "putPassword",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -194,15 +182,10 @@ public class IdmPasswordController extends AbstractReadWriteDtoController<IdmPas
                     }
             ),
 			tags = { IdmPasswordController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.PASSWORD_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.PASSWORD_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.PASSWORD_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.PASSWORD_UPDATE })
+    })
 	public ResponseEntity<?> put(
 			 @Parameter(description = "Password's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
@@ -216,7 +199,7 @@ public class IdmPasswordController extends AbstractReadWriteDtoController<IdmPas
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.PASSWORD_UPDATE + "')")
 	@Operation(
 			summary = "Update password", 
-			/* nickname = "patchPassword", */ 
+			operationId = "patchPassword",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -229,15 +212,10 @@ public class IdmPasswordController extends AbstractReadWriteDtoController<IdmPas
                     }
             ),
 			tags = { IdmPasswordController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.PASSWORD_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.PASSWORD_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.PASSWORD_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.PASSWORD_UPDATE })
+    })
 	public ResponseEntity<?> patch(
 			 @Parameter(description = "Password's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
@@ -252,12 +230,10 @@ public class IdmPasswordController extends AbstractReadWriteDtoController<IdmPas
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.PASSWORD_READ + "')")
 	@Operation(
 			summary = "What logged identity can do with given record", 
-			/* nickname = "getPermissionsOnPassword", */ 
+			operationId = "getPermissionsOnPassword",
 			tags = { IdmPasswordController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						CoreGroupPermission.PASSWORD_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 						CoreGroupPermission.PASSWORD_READ})

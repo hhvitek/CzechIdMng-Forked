@@ -71,9 +71,8 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
 	 * @return
 	 */
 	@Operation(summary = "Create / update record")
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )
@@ -97,9 +96,8 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
 	 * @return
 	 */
 	@Operation(summary = "Update record")
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )
@@ -129,9 +127,8 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
 	 * @return
 	 */
 	@Operation(summary = "Delete record")
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )
@@ -158,9 +155,8 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
 	 * @return
 	 */
 	@Operation(summary = "Read record")
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )
@@ -182,9 +178,8 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
 	}
 
 	@Operation(summary = "Create request for DTO")
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )
@@ -204,9 +199,8 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
 	 * @see #toFilter(MultiValueMap)
 	 */
 	@Operation(summary = "Search records (/search/quick alias)")
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )
@@ -231,9 +225,8 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
 	 * @see #toFilter(MultiValueMap)
 	 */
 	@Operation(summary = "Search records")
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )
@@ -255,9 +248,8 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
 	 * @see #toFilter(MultiValueMap)
 	 */
 	@Operation(summary = "Autocomplete records (selectbox usage)")
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )
@@ -279,9 +271,8 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
 	 * @return
 	 */
 	@Operation(summary = "What logged identity can do with given record")
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )
@@ -306,9 +297,8 @@ public abstract class AbstractRequestDtoController<DTO extends Requestable, F ex
 	 * @see #toFilter(MultiValueMap)
 	 */
 	@Operation(summary = "The number of entities that match the filter")
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )

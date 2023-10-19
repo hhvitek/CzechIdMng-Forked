@@ -47,13 +47,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @Enabled(AccModuleDescriptor.MODULE_ID)
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/system-synchronization-action-logs")
-@Tag(
-		name = SysSyncActionLogController.TAG,
-		description = "Actions contains log items"//,
-		
-		
-
-)
+@Tag(name = SysSyncActionLogController.TAG, description = "Actions contains log items")
 public class SysSyncActionLogController
 		extends AbstractReadWriteDtoController<SysSyncActionLogDto, SysSyncActionLogFilter> {
 	
@@ -69,19 +63,13 @@ public class SysSyncActionLogController
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
 	@Operation(
-			summary = "Search synchronization action logs (/search/quick alias)"
-			/* nickname = "searchSyncActionLogs", */
-			 
-			)
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.SYSTEM_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.SYSTEM_READ })
-        }
+        summary = "Search synchronization action logs (/search/quick alias)",
+        operationId = "searchSyncActionLogs"
     )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -95,17 +83,12 @@ public class SysSyncActionLogController
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@Operation(
 			summary = "Search synchronization action logs", 
-			/* nickname = "searchQuickSyncActionLogs", */
+			operationId = "searchQuickSyncActionLogs",
 			tags = { SysSyncActionLogController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.SYSTEM_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.SYSTEM_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -120,7 +103,7 @@ public class SysSyncActionLogController
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@Operation(
 			summary = "Synchronization action log detail", 
-			/* nickname = "getSyncActionLog", */
+			operationId = "getSyncActionLog",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -133,15 +116,10 @@ public class SysSyncActionLogController
                     }
             ), 
 			tags = { SysSyncActionLogController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.SYSTEM_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.SYSTEM_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Action log's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -155,12 +133,10 @@ public class SysSyncActionLogController
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@Operation(
 			summary = "Delete synchronization action log", 
-			/* nickname = "deleteSyncActionLog", */
+			operationId = "deleteSyncActionLog",
 			tags = { SysSyncActionLogController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
 						AccGroupPermission.SYNCHRONIZATION_UPDATE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						AccGroupPermission.SYNCHRONIZATION_UPDATE})

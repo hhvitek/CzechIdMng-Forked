@@ -57,11 +57,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/form-attributes")
-@Tag(
-		name = IdmFormAttributeController.TAG,
-		description = "Operations with form attributes (eav)"
-		 
-		/*produces = BaseController.APPLICATION_HAL_JSON_VALUE*/)
+@Tag(name = IdmFormAttributeController.TAG, description = "Operations with form attributes (eav)")
 public class IdmFormAttributeController extends AbstractReadWriteDtoController<IdmFormAttributeDto, IdmFormAttributeFilter>  {
 
 	protected static final String TAG = "Form attributes";
@@ -79,17 +75,12 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_ATTRIBUTE_READ + "')")
 	@Operation(
 			summary = "Search form attributes (/search/quick alias)",
-			/* nickname = "searchFormAttributes", */
+			operationId = "searchFormAttributes",
 			tags = { IdmFormAttributeController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.FORM_ATTRIBUTE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.FORM_ATTRIBUTE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.FORM_ATTRIBUTE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.FORM_ATTRIBUTE_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -103,17 +94,12 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_ATTRIBUTE_READ + "')")
 	@Operation(
 			summary = "Search form attributes",
-			/* nickname = "searchQuickFormAttributes", */ 
+			operationId = "searchQuickFormAttributes", 
 			tags = { IdmFormAttributeController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.FORM_ATTRIBUTE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.FORM_ATTRIBUTE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.FORM_ATTRIBUTE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.FORM_ATTRIBUTE_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -128,17 +114,12 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_ATTRIBUTE_AUTOCOMPLETE + "')")
 	@Operation(
 			summary = "Autocomplete form attributes (selectbox usage)",
-			/* nickname = "autocompleteFormAttributes", */ 
+			operationId = "autocompleteFormAttributes", 
 			tags = { IdmFormAttributeController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.FORM_ATTRIBUTE_AUTOCOMPLETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.FORM_ATTRIBUTE_AUTOCOMPLETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.FORM_ATTRIBUTE_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.FORM_ATTRIBUTE_AUTOCOMPLETE })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -153,17 +134,12 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_ATTRIBUTE_COUNT + "')")
 	@Operation(
 			summary = "The number of entities that match the filter",
-			/* nickname = "countFormAttributes", */ 
+			operationId = "countFormAttributes", 
 			tags = { IdmFormAttributeController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.FORM_ATTRIBUTE_COUNT }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.FORM_ATTRIBUTE_COUNT })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.FORM_ATTRIBUTE_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.FORM_ATTRIBUTE_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -174,7 +150,7 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_ATTRIBUTE_READ + "')")
 	@Operation(
 			summary = "Form attribute detail",
-			/* nickname = "getFormAttribute", */ 
+			operationId = "getFormAttribute", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -187,15 +163,10 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
                     }
             ),
 			tags = { IdmFormAttributeController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.FORM_ATTRIBUTE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.FORM_ATTRIBUTE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.FORM_ATTRIBUTE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.FORM_ATTRIBUTE_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Attribute's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -209,7 +180,7 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
 			+ " or hasAuthority('" + CoreGroupPermission.FORM_ATTRIBUTE_UPDATE + "')")
 	@Operation(
 			summary = "Create / update form attribute",
-			/* nickname = "postFormAttribute", */ 
+			operationId = "postFormAttribute", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -222,10 +193,8 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
                     }
             ),
 			tags = { IdmFormAttributeController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
 						CoreGroupPermission.FORM_ATTRIBUTE_CREATE,
 						CoreGroupPermission.FORM_ATTRIBUTE_UPDATE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
@@ -243,7 +212,7 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_ATTRIBUTE_UPDATE + "')")
 	@Operation(
 			summary = "Update form attribute",
-			/* nickname = "putFormAttribute", */ 
+			operationId = "putFormAttribute", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -256,15 +225,10 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
                     }
             ),
 			tags = { IdmFormAttributeController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.FORM_ATTRIBUTE_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.FORM_ATTRIBUTE_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.FORM_ATTRIBUTE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.FORM_ATTRIBUTE_UPDATE })
+    })
 	public ResponseEntity<?> put(
 			 @Parameter(description = "Form attribute's uuid identifier", required = true)
 			@PathVariable @NotNull String backendId, 
@@ -278,7 +242,7 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_ATTRIBUTE_UPDATE + "')")
 	@Operation(
 			summary = "Patch form attribute",
-			/* nickname = "patchFormAttribute", */ 
+			operationId = "patchFormAttribute", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -291,15 +255,10 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
                     }
             ),
 			tags = { IdmFormAttributeController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.FORM_ATTRIBUTE_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.FORM_ATTRIBUTE_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.FORM_ATTRIBUTE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.FORM_ATTRIBUTE_UPDATE })
+    })
 	public ResponseEntity<?> patch(
 			 @Parameter(description = "Form attribute's uuid identifier", required = true)
 			@PathVariable @NotNull String backendId,
@@ -314,17 +273,12 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_ATTRIBUTE_DELETE + "')")
 	@Operation(
 			summary = "Delete form attribute",
-			/* nickname = "deleteFormAttribute", */
+			operationId = "deleteFormAttribute",
 			tags = { IdmFormAttributeController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.FORM_ATTRIBUTE_DELETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.FORM_ATTRIBUTE_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.FORM_ATTRIBUTE_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.FORM_ATTRIBUTE_DELETE })
+    })
 	public ResponseEntity<?> delete(
 			 @Parameter(description = "Form attribute's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -337,17 +291,12 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_ATTRIBUTE_READ + "')")
 	@Operation(
 			summary = "What logged identity can do with given record",
-			/* nickname = "getPermissionsOnFormAttribute", */ 
+			operationId = "getPermissionsOnFormAttribute", 
 			tags = { IdmFormAttributeController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.FORM_ATTRIBUTE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.FORM_ATTRIBUTE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.FORM_ATTRIBUTE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.FORM_ATTRIBUTE_READ })
+    })
 	public Set<String> getPermissions(
 			 @Parameter(description = "Attribute's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -365,17 +314,12 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_ATTRIBUTE_READ + "')")
 	@Operation(
 			summary = "Get all supported form attribute renderers",
-			/* nickname = "getSupportedAttributeRenderers", */ 
+			operationId = "getSupportedAttributeRenderers", 
 			tags = { IdmFormProjectionController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.FORM_ATTRIBUTE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.FORM_ATTRIBUTE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.FORM_ATTRIBUTE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.FORM_ATTRIBUTE_READ })
+    })
 	public CollectionModel<FormAttributeRendererDto> getSupportedAttributeRenderers() {
 		return new CollectionModel<>(formService.getSupportedAttributeRenderers());
 	}
@@ -386,17 +330,12 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_ATTRIBUTE_READ + "')")
 	@Operation(
 			summary = "Get available bulk actions for form attributes",
-			/* nickname = "availableBulkAction", */ 
+			operationId = "availableBulkAction", 
 			tags = { IdmFormAttributeController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.FORM_ATTRIBUTE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.FORM_ATTRIBUTE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.FORM_ATTRIBUTE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.FORM_ATTRIBUTE_READ })
+    })
 	public List<IdmBulkActionDto> getAvailableBulkActions() {
 		return super.getAvailableBulkActions();
 	}
@@ -407,7 +346,7 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_ATTRIBUTE_READ + "')")
 	@Operation(
 			summary = "Process bulk action for form attribute",
-			/* nickname = "bulkAction", */ 
+			operationId = "bulkAction", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -420,10 +359,8 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
                     }
             ),
 			tags = { IdmFormAttributeController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						CoreGroupPermission.FORM_ATTRIBUTE_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 						CoreGroupPermission.FORM_ATTRIBUTE_READ})
@@ -439,7 +376,7 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_ATTRIBUTE_READ + "')")
 	@Operation(
 			summary = "Prevalidate bulk action for form attribute",
-			/* nickname = "prevalidateBulkAction", */ 
+			operationId = "prevalidateBulkAction", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -452,10 +389,8 @@ public class IdmFormAttributeController extends AbstractReadWriteDtoController<I
                     }
             ),
 			tags = { IdmFormAttributeController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						CoreGroupPermission.FORM_ATTRIBUTE_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 						CoreGroupPermission.FORM_ATTRIBUTE_READ})

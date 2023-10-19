@@ -47,14 +47,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/workflow-history-processes")
-@Tag(
-		name = WorkflowHistoricProcessInstanceController.TAG,  
-
-		description = "Read WF audit"//,
-
-
-
-)
+@Tag(name = WorkflowHistoricProcessInstanceController.TAG, description = "Read WF audit")
 public class WorkflowHistoricProcessInstanceController extends AbstractReadDtoController<WorkflowHistoricProcessInstanceDto, WorkflowFilterDto> {
 
 	protected static final String TAG = "Workflow - process instances history";
@@ -72,7 +65,7 @@ public class WorkflowHistoricProcessInstanceController extends AbstractReadDtoCo
 	@RequestMapping(method = RequestMethod.GET, value = "/search/quick")
 	@Operation(
 			summary = "Search historic process instances",
-			/* nickname = "searchQuickHistoricProcessInstances", */ 
+			operationId = "searchQuickHistoricProcessInstances", 
 			tags = { WorkflowHistoricProcessInstanceController.TAG })
 	@PageableAsQueryParam
     //PagedModel<?>
@@ -86,7 +79,7 @@ public class WorkflowHistoricProcessInstanceController extends AbstractReadDtoCo
 	@RequestMapping(method = RequestMethod.GET, value = "/{backendId}")
 	@Operation(
 			summary = "Historic process instance detail",
-			/* nickname = "getHistoricProcessInstance", */ 
+			operationId = "getHistoricProcessInstance", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -115,7 +108,7 @@ public class WorkflowHistoricProcessInstanceController extends AbstractReadDtoCo
 	@RequestMapping(value = "/{backendId}/diagram", method = RequestMethod.GET, produces = MediaType.IMAGE_PNG_VALUE)
 	@Operation(
 			summary = "Historic process instance diagram",
-			/* nickname = "getHistoricProcessInstanceDiagram", */ 
+			operationId = "getHistoricProcessInstanceDiagram", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {

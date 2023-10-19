@@ -61,14 +61,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/scripts")
-@Tag(
-		name = IdmScriptController.TAG,
-
-		description = "Groovy scripts administration"//,
-		
-
-
-)
+@Tag(name = IdmScriptController.TAG, description = "Groovy scripts administration")
 public class IdmScriptController extends AbstractReadWriteDtoController<IdmScriptDto, IdmScriptFilter> {
 	
 	protected static final String TAG = "Scripts";
@@ -89,17 +82,12 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_READ + "')")
 	@Operation(
 			summary = "Search scripts (/search/quick alias)", 
-			/* nickname = "searchScripts", */ 
+			operationId = "searchScripts",
 			tags = { IdmScriptController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.SCRIPT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.SCRIPT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCRIPT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCRIPT_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -114,17 +102,12 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_READ + "')")
 	@Operation(
 			summary = "Search scripts", 
-			/* nickname = "searchQuickScripts", */ 
+			operationId = "searchQuickScripts",
 			tags = { IdmScriptController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.SCRIPT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.SCRIPT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCRIPT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCRIPT_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -139,17 +122,12 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_AUTOCOMPLETE + "')")
 	@Operation(
 			summary = "Autocomplete scripts (selectbox usage)", 
-			/* nickname = "autocompleteScripts", */ 
+			operationId = "autocompleteScripts",
 			tags = { IdmScriptController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.SCRIPT_AUTOCOMPLETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.SCRIPT_AUTOCOMPLETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCRIPT_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCRIPT_AUTOCOMPLETE })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -164,7 +142,7 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_READ + "')")
 	@Operation(
 			summary = "Script detail", 
-			/* nickname = "getScript", */ 
+			operationId = "getScript",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -177,15 +155,10 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
                     }
             ), 
 			tags = { IdmScriptController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.SCRIPT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.SCRIPT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCRIPT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCRIPT_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Script's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -199,7 +172,7 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@RequestMapping(method = RequestMethod.POST)
 	@Operation(
 			summary = "Create / update script", 
-			/* nickname = "postScript", */ 
+			operationId = "postScript",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -212,10 +185,8 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
                     }
             ), 
 			tags = { IdmScriptController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
 						CoreGroupPermission.SCRIPT_CREATE,
 						CoreGroupPermission.SCRIPT_UPDATE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
@@ -233,7 +204,7 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_UPDATE + "')")
 	@Operation(
 			summary = "Update script", 
-			/* nickname = "putScript", */ 
+			operationId = "putScript",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -246,15 +217,10 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
                     }
             ), 
 			tags = { IdmScriptController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.SCRIPT_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.SCRIPT_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCRIPT_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCRIPT_UPDATE })
+    })
 	public ResponseEntity<?> put(
 			 @Parameter(description = "Script's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId,
@@ -268,17 +234,12 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@Operation(
 			summary = "Delete script", 
-			/* nickname = "deleteScript", */ 
+			operationId = "deleteScript",
 			tags = { IdmScriptController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.SCRIPT_DELETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.SCRIPT_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCRIPT_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCRIPT_DELETE })
+    })
 	public ResponseEntity<?> delete(
 			 @Parameter(description = "Script's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -290,7 +251,7 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_UPDATE + "')")
 	@Operation(
 			summary = "Redeploy script", 
-			/* nickname = "redeployScript", */ 
+			operationId = "redeployScript",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -305,14 +266,10 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 			tags = { IdmScriptController.TAG },
 			description = "Redeploy script. Redeployed will be only scripts, that has pattern in resource."
 					+ " Before save newly loaded DO will be backup the old script into backup directory.")
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-                            CoreGroupPermission.SCRIPT_UPDATE }),
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-                            CoreGroupPermission.SCRIPT_UPDATE })
-            }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCRIPT_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCRIPT_UPDATE })
+    })
 	public ResponseEntity<?> redeploy(
 			 @Parameter(description = "Script's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -329,7 +286,7 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_READ + "')")
 	@Operation(
 			summary = "Backup script", 
-			/* nickname = "backupScript", */ 
+			operationId = "backupScript",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -343,15 +300,10 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
             ), 
 			tags = { IdmScriptController.TAG }, 
 						description = "Backup template to directory given in application properties.")
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.SCRIPT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.SCRIPT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCRIPT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCRIPT_READ })
+    })
 	public ResponseEntity<?> backup(
 			 @Parameter(description = "Script's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -369,17 +321,12 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_COUNT + "')")
 	@Operation(
 			summary = "The number of entities that match the filter", 
-			/* nickname = "countScripts", */ 
+			operationId = "countScripts",
 			tags = { IdmScriptController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							CoreGroupPermission.SCRIPT_COUNT }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							CoreGroupPermission.SCRIPT_COUNT })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCRIPT_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCRIPT_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -390,7 +337,7 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_UPDATE + "')")
 	@Operation(
 			summary = "Update script",
-			/* nickname = "patchScript", */ 
+			operationId = "patchScript",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -403,15 +350,10 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
                     }
             ), 
 			tags = { IdmScriptController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							CoreGroupPermission.SCRIPT_UPDATE }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							CoreGroupPermission.SCRIPT_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCRIPT_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCRIPT_UPDATE })
+    })
 	public ResponseEntity<?> patch(
 			 @Parameter(description = "Script's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
@@ -426,17 +368,12 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_READ + "')")
 	@Operation(
 			summary = "What logged identity can do with given record", 
-			/* nickname = "getPermissionsOnScript", */ 
+			operationId = "getPermissionsOnScript",
 			tags = { IdmScriptController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.SCRIPT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.SCRIPT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCRIPT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCRIPT_READ })
+    })
 	public Set<String> getPermissions(
 			 @Parameter(description = "Script's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -459,12 +396,11 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 			+ " or hasAuthority('" + CoreGroupPermission.SCRIPT_UPDATE + "')")
 	@Operation(
 			summary = "Upload scripts.", 
-			/* nickname = "uploadScripts", */ 
+			operationId = "uploadScripts",
 			tags = { IdmScriptController.TAG }, 
 						description="Scripts in archive (ZIP) or single scripts (XML) can be uploaded.")
-    @SecurityRequirements(
-        value = {
-            @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
                     CoreGroupPermission.SCRIPT_CREATE,
                     CoreGroupPermission.SCRIPT_UPDATE}),
             @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
@@ -492,17 +428,12 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_READ + "')")
 	@Operation(
 			summary = "Get available bulk actions", 
-			/* nickname = "availableBulkAction", */ 
+			operationId = "availableBulkAction",
 			tags = { IdmScriptController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.SCRIPT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.SCRIPT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCRIPT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCRIPT_READ })
+    })
 	public List<IdmBulkActionDto> getAvailableBulkActions() {
 		return super.getAvailableBulkActions();
 	}
@@ -513,7 +444,7 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_READ + "')")
 	@Operation(
 			summary = "Process bulk action for script definition", 
-			/* nickname = "bulkAction", */ 
+			operationId = "bulkAction",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -526,10 +457,8 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
                     }
             ), 
 			tags = { IdmScriptController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
 						CoreGroupPermission.SCRIPT_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						CoreGroupPermission.SCRIPT_READ})
@@ -545,7 +474,7 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_READ + "')")
 	@Operation(
 			summary = "Prevalidate bulk action for script definition", 
-			/* nickname = "prevalidateBulkAction", */ 
+			operationId = "prevalidateBulkAction",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -558,10 +487,8 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
                     }
             ), 
 			tags = { IdmScriptController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
 						CoreGroupPermission.SCRIPT_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						CoreGroupPermission.SCRIPT_READ})

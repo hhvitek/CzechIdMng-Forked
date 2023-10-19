@@ -44,14 +44,7 @@
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/notification-emails")
-@Tag(
-		name = IdmEmailLogController.TAG, 
-		description = "Emails history"//,
-
-		
-
-
-)
+@Tag(name = IdmEmailLogController.TAG, description = "Emails history")
 public class IdmEmailLogController extends AbstractReadWriteDtoController<IdmEmailLogDto, IdmNotificationFilter> {
 	
 	protected static final String TAG = "Notification logs - email";
@@ -67,17 +60,12 @@ public class IdmEmailLogController extends AbstractReadWriteDtoController<IdmEma
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATION_READ + "')")
 	@Operation(
 			summary = "Search email logs (/search/quick alias)", 
-			/* nickname = "searchEmailLogs", */
+			operationId = "searchEmailLogs",
 			tags = { IdmEmailLogController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						NotificationGroupPermission.NOTIFICATION_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						NotificationGroupPermission.NOTIFICATION_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { NotificationGroupPermission.NOTIFICATION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { NotificationGroupPermission.NOTIFICATION_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -91,17 +79,12 @@ public class IdmEmailLogController extends AbstractReadWriteDtoController<IdmEma
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@Operation(
 			summary = "Search email logs", 
-			/* nickname = "searchQuickEmailLogs", */
+			operationId = "searchQuickEmailLogs",
 			tags = { IdmEmailLogController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						NotificationGroupPermission.NOTIFICATION_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						NotificationGroupPermission.NOTIFICATION_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { NotificationGroupPermission.NOTIFICATION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { NotificationGroupPermission.NOTIFICATION_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -116,7 +99,7 @@ public class IdmEmailLogController extends AbstractReadWriteDtoController<IdmEma
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@Operation(
 			summary = "Email log detail", 
-			/* nickname = "getEmailLog", */
+			operationId = "getEmailLog",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -129,15 +112,10 @@ public class IdmEmailLogController extends AbstractReadWriteDtoController<IdmEma
                     }
             ),
 			tags = { IdmEmailLogController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						NotificationGroupPermission.NOTIFICATION_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						NotificationGroupPermission.NOTIFICATION_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { NotificationGroupPermission.NOTIFICATION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { NotificationGroupPermission.NOTIFICATION_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Email log's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -150,12 +128,10 @@ public class IdmEmailLogController extends AbstractReadWriteDtoController<IdmEma
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATION_READ + "')")
 	@Operation(
 			summary = "What logged identity can do with given record", 
-			/* nickname = "getPermissionsOnEmail", */
+			operationId = "getPermissionsOnEmail",
 			tags = { IdmEmailLogController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						NotificationGroupPermission.NOTIFICATION_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 						NotificationGroupPermission.NOTIFICATION_READ})

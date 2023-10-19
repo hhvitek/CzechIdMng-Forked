@@ -51,13 +51,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @Enabled(AccModuleDescriptor.MODULE_ID)
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/system-attribute-mappings")
-@Tag(
-		name = SysSystemAttributeMappingController.TAG,
-		description = "Attribute mapping configuration"//,
-		
-		
-
-)
+@Tag(name = SysSystemAttributeMappingController.TAG, description = "Attribute mapping configuration")
 public class SysSystemAttributeMappingController extends AbstractReadWriteDtoController<SysSystemAttributeMappingDto, SysSystemAttributeMappingFilter> {
 
 	protected static final String TAG = "System mapping - atributes";
@@ -75,14 +69,11 @@ public class SysSystemAttributeMappingController extends AbstractReadWriteDtoCon
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
 	@Operation(
-			summary = "Search system attribute mappings (/search/quick alias)"
-			/* nickname = "searchSystemAttributeMappings", */
-			 
-			)
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+        summary = "Search system attribute mappings (/search/quick alias)",
+        operationId = "searchSystemAttributeMappings"
+    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						AccGroupPermission.SYSTEM_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 						AccGroupPermission.SYSTEM_READ})
@@ -101,12 +92,10 @@ public class SysSystemAttributeMappingController extends AbstractReadWriteDtoCon
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@Operation(
 			summary = "Search system attribute mappings",
-			/* nickname = "searchQuickSystemAttributeMappings", */
+			operationId = "searchQuickSystemAttributeMappings",
 			tags = { SysSystemAttributeMappingController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						AccGroupPermission.SYSTEM_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 						AccGroupPermission.SYSTEM_READ})
@@ -126,7 +115,7 @@ public class SysSystemAttributeMappingController extends AbstractReadWriteDtoCon
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@Operation(
 			summary = "System attribute mapping detail",
-			/* nickname = "getSystemAttributeMapping", */ 
+			operationId = "getSystemAttributeMapping", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -139,10 +128,8 @@ public class SysSystemAttributeMappingController extends AbstractReadWriteDtoCon
                     }
             ), 
 			tags = { SysSystemAttributeMappingController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							AccGroupPermission.SYSTEM_READ}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							AccGroupPermission.SYSTEM_READ})
@@ -160,7 +147,7 @@ public class SysSystemAttributeMappingController extends AbstractReadWriteDtoCon
 	@RequestMapping(method = RequestMethod.POST)
 	@Operation(
 			summary = "Create / update system attribute mapping",
-			/* nickname = "postSystemAttributeMapping", */ 
+			operationId = "postSystemAttributeMapping", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -173,10 +160,8 @@ public class SysSystemAttributeMappingController extends AbstractReadWriteDtoCon
                     }
             ), 
 			tags = { SysSystemAttributeMappingController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						AccGroupPermission.SYSTEM_UPDATE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 						AccGroupPermission.SYSTEM_UPDATE})
@@ -192,7 +177,7 @@ public class SysSystemAttributeMappingController extends AbstractReadWriteDtoCon
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	@Operation(
 			summary = "Update system attribute mapping",
-			/* nickname = "putSystemAttributeMapping", */ 
+			operationId = "putSystemAttributeMapping", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -205,15 +190,10 @@ public class SysSystemAttributeMappingController extends AbstractReadWriteDtoCon
                     }
             ), 
 			tags = { SysSystemAttributeMappingController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						AccGroupPermission.SYSTEM_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						AccGroupPermission.SYSTEM_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_UPDATE })
+    })
 	public ResponseEntity<?> put(
 			 @Parameter(description = "Attribute mapping's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
@@ -227,17 +207,12 @@ public class SysSystemAttributeMappingController extends AbstractReadWriteDtoCon
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@Operation(
 			summary = "Delete system attribute mapping",
-			/* nickname = "deleteSystemAttributeMapping", */ 
+			operationId = "deleteSystemAttributeMapping", 
 			tags = { SysSystemAttributeMappingController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						AccGroupPermission.SYSTEM_DELETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						AccGroupPermission.SYSTEM_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_DELETE })
+    })
 	public ResponseEntity<?> delete(
 			 @Parameter(description = "Attribute mapping's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -249,17 +224,12 @@ public class SysSystemAttributeMappingController extends AbstractReadWriteDtoCon
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_READ + "')")
 	@Operation(
 			summary = "Script usage in mapping",
-			/* nickname = "getScriptUsage", */
+			operationId = "getScriptUsage",
 			tags = { SysSystemAttributeMappingController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.SCRIPT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.SCRIPT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCRIPT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCRIPT_READ })
+    })
 	public CollectionModel<?> getScriptUsageInMapping(
 			 @Parameter(description = "Script's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -271,7 +241,7 @@ public class SysSystemAttributeMappingController extends AbstractReadWriteDtoCon
 	@RequestMapping(value = "/{schemaAttrName}/value/{accountId}", method = RequestMethod.GET)
 	@Operation(
 			summary = "System attribute mapping value",
-			/* nickname = "getSystemAttributeMappingValue", */
+			operationId = "getSystemAttributeMappingValue",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -284,10 +254,8 @@ public class SysSystemAttributeMappingController extends AbstractReadWriteDtoCon
                     }
             ),
 			tags = { SysSystemAttributeMappingController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							AccGroupPermission.SYSTEM_READ}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							AccGroupPermission.SYSTEM_READ})

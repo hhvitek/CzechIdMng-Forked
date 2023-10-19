@@ -48,14 +48,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/universal-searches")
-@Tag(
-		name = IdmUniversalSearchController.TAG,
-		
-		description = "Universal search"//,
-
-		
-
-)
+@Tag(name = IdmUniversalSearchController.TAG, description = "Universal search")
 public class IdmUniversalSearchController extends AbstractReadDtoController<UniversalSearchDto, IdmUniversalSearchFilter> {
 
 	protected static final String TAG = "Universal search";
@@ -74,11 +67,10 @@ public class IdmUniversalSearchController extends AbstractReadDtoController<Univ
 	@RequestMapping(method = RequestMethod.GET)
 	@Operation(
 			summary = "Search universal searches (/search/quick alias)",
-			/* nickname = "searchUniversalSearches", */
+			operationId = "searchUniversalSearches",
 			tags = {IdmUniversalSearchController.TAG})
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )
@@ -95,11 +87,10 @@ public class IdmUniversalSearchController extends AbstractReadDtoController<Univ
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@Operation(
 			summary = "Search universal searches",
-			/* nickname = "searchQuickDefinitions", */
+			operationId = "searchQuickDefinitions",
 			tags = {IdmUniversalSearchController.TAG})
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )
@@ -116,11 +107,10 @@ public class IdmUniversalSearchController extends AbstractReadDtoController<Univ
 	@RequestMapping(value = "/search/autocomplete", method = RequestMethod.GET)
 	@Operation(
 			summary = "Autocomplete universal searches (selectbox usage)",
-			/* nickname = "autocompleteUniversalSearches", */
+			operationId = "autocompleteUniversalSearches",
 			tags = {IdmUniversalSearchController.TAG})
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )
@@ -137,7 +127,7 @@ public class IdmUniversalSearchController extends AbstractReadDtoController<Univ
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@Operation(
 			summary = "Universal searche detail",
-			/* nickname = "getDefinition", */
+			operationId = "getDefinition",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -150,9 +140,8 @@ public class IdmUniversalSearchController extends AbstractReadDtoController<Univ
                     }
             ),
 			tags = {IdmUniversalSearchController.TAG})
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )
@@ -168,11 +157,10 @@ public class IdmUniversalSearchController extends AbstractReadDtoController<Univ
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.DELEGATIONDEFINITION_COUNT + "')")
 	@Operation(
 			summary = "The number of entities that match the filter",
-			/* nickname = "countUniversalSearches", */
+			operationId = "countUniversalSearches",
 			tags = {IdmUniversalSearchController.TAG})
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )
@@ -189,11 +177,10 @@ public class IdmUniversalSearchController extends AbstractReadDtoController<Univ
 	@RequestMapping(method = RequestMethod.GET, value = "/search/supported")
 	@Operation(
 			summary = "Get all supported universal search types",
-			/* nickname = "getSupportedDelegationTypes", */
+			operationId = "getSupportedDelegationTypes",
 			tags = {IdmUniversalSearchController.TAG})
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )
@@ -211,11 +198,10 @@ public class IdmUniversalSearchController extends AbstractReadDtoController<Univ
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	@Operation(
 			summary = "What logged identity can do with given record",
-			/* nickname = "getPermissionsOnDefinition", */
+			operationId = "getPermissionsOnDefinition",
 			tags = {IdmUniversalSearchController.TAG})
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )

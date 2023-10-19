@@ -29,7 +29,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirements;
  */
 @RestController
 @RequestMapping(value = BaseController.BASE_PATH + "/authorities")
-@Tag(name = IdmAuthorityController.TAG, description = "Role authorities" )
+@Tag(name = IdmAuthorityController.TAG, description = "Role authorities")
 public class IdmAuthorityController implements BaseController {
 	
 	protected static final String TAG = "Authorities";	
@@ -45,11 +45,10 @@ public class IdmAuthorityController implements BaseController {
 	@Operation(
 			summary = "Provides available authorities for roles.", 
 			description = "Returns authorities from all enabled modules.",
-			/* nickname = "getAvailableAuthorities", */
+			operationId = "getAvailableAuthorities",
 			tags={ IdmAuthorityController.TAG })
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )
@@ -69,11 +68,10 @@ public class IdmAuthorityController implements BaseController {
 	@Operation(
 			summary = "Provides configurable authorities for roles",
 			description = "Returns authorities from all instaled modules. All authorities are needed in security cofiguration. Module can be disabled, but configured security has to remain.",
-			/* nickname = "getAllAuthorities", */
+			operationId = "getAllAuthorities",
 			tags={ IdmAuthorityController.TAG })
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )

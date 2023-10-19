@@ -42,10 +42,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/logging-event-exceptions")
-@Tag(name = IdmLoggingEventExceptionController.TAG, description = "Read / search log exception from LOG4J"
-//,
-
-)
+@Tag(name = IdmLoggingEventExceptionController.TAG, description = "Read / search log exception from LOG4J")
 public class IdmLoggingEventExceptionController
 		extends AbstractReadDtoController<IdmLoggingEventExceptionDto, IdmLoggingEventExceptionFilter> {
 
@@ -63,14 +60,10 @@ public class IdmLoggingEventExceptionController
 			summary = "Search logging event exceptions",
 			/*, nickname = "searchQuickLoggingEventExceptions", */
             tags = { IdmLoggingEventExceptionController.TAG })
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-                            CoreGroupPermission.AUDIT_READ }),
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-                            CoreGroupPermission.AUDIT_READ })
-            }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUDIT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUDIT_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -85,7 +78,7 @@ public class IdmLoggingEventExceptionController
 	@Override
 	@Operation(
 			summary = "Logging event exception detail", 
-			/* nickname = "getLoggingEventException", */
+			operationId = "getLoggingEventException",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -98,15 +91,10 @@ public class IdmLoggingEventExceptionController
                     }
             ),
 			tags = { IdmLoggingEventExceptionController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.AUDIT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.AUDIT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUDIT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUDIT_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Logging event exception's identifier.", required = true)
 			@PathVariable @NotNull String backendId) {

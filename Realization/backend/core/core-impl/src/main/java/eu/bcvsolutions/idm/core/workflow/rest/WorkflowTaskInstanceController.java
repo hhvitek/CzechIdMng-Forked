@@ -74,14 +74,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/workflow-tasks")
-@Tag(
-		name = WorkflowTaskInstanceController.TAG,
-		
-		description = "Running WF tasks"//,
-		
-		
-
-)
+@Tag(name = WorkflowTaskInstanceController.TAG, description = "Running WF tasks")
 public class WorkflowTaskInstanceController extends AbstractReadDtoController<WorkflowTaskInstanceDto, WorkflowFilterDto> {
 
 	protected static final String TAG = "Workflow - task instances";
@@ -111,12 +104,10 @@ public class WorkflowTaskInstanceController extends AbstractReadDtoController<Wo
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.WORKFLOW_TASK_READ + "')")
 	@Operation(
 			summary = "Search task instances",
-			/* nickname = "searchTaskInstances", */
+			operationId = "searchTaskInstances",
 			tags = {WorkflowTaskInstanceController.TAG})
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 			CoreGroupPermission.WORKFLOW_TASK_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 			CoreGroupPermission.WORKFLOW_TASK_READ})
@@ -133,7 +124,7 @@ public class WorkflowTaskInstanceController extends AbstractReadDtoController<Wo
     @RequestMapping(method = RequestMethod.GET, value = "/{backendId}")
     @Operation(
             summary = "Historic task instance detail",
-            /* nickname = "getHistoricTaskInstance", */
+            operationId = "getHistoricTaskInstance",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -155,7 +146,7 @@ public class WorkflowTaskInstanceController extends AbstractReadDtoController<Wo
 	@RequestMapping(method = RequestMethod.PUT, value = "/{backendId}/complete")
 	@Operation(
 			summary = "Complete task instance",
-			/* nickname = "completeTaskInstance", */
+			operationId = "completeTaskInstance",
 			tags = {WorkflowTaskInstanceController.TAG},
 			description = "Complete task with given decision.")
 	public void completeTask(
@@ -172,7 +163,7 @@ public class WorkflowTaskInstanceController extends AbstractReadDtoController<Wo
 	@RequestMapping(method = RequestMethod.GET, value = "/{backendId}/permissions")
 	@Operation(
 			summary = "Historic task instance detail",
-			/* nickname = "getHistoricTaskInstance", */
+			operationId = "getHistoricTaskInstance",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -249,12 +240,10 @@ public class WorkflowTaskInstanceController extends AbstractReadDtoController<Wo
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.WORKFLOW_TASK_READ + "')")
 	@Operation(
 			summary = "Get available bulk actions",
-			/* nickname = "availableBulkAction", */ 
+			operationId = "availableBulkAction",
 			tags = { WorkflowTaskInstanceController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 			CoreGroupPermission.WORKFLOW_TASK_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 			CoreGroupPermission.WORKFLOW_TASK_READ})
@@ -270,7 +259,7 @@ public class WorkflowTaskInstanceController extends AbstractReadDtoController<Wo
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.WORKFLOW_TASK_READ + "')")
 	@Operation(
 			summary = "Process bulk action",
-			/* nickname = "bulkAction", */ 
+			operationId = "bulkAction",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -283,10 +272,8 @@ public class WorkflowTaskInstanceController extends AbstractReadDtoController<Wo
                     }
             ),
 			tags = { WorkflowTaskInstanceController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 			CoreGroupPermission.WORKFLOW_TASK_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 			CoreGroupPermission.WORKFLOW_TASK_READ})
@@ -305,7 +292,7 @@ public class WorkflowTaskInstanceController extends AbstractReadDtoController<Wo
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.WORKFLOW_TASK_READ + "')")
 	@Operation(
 			summary = "Prevalidate bulk action",
-			/* nickname = "prevalidateBulkAction", */ 
+			operationId = "prevalidateBulkAction",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -318,10 +305,8 @@ public class WorkflowTaskInstanceController extends AbstractReadDtoController<Wo
                     }
             ),
 			tags = { WorkflowTaskInstanceController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 			CoreGroupPermission.WORKFLOW_TASK_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 			CoreGroupPermission.WORKFLOW_TASK_READ})

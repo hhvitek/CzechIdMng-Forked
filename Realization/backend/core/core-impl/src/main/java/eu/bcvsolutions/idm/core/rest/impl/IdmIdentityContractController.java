@@ -71,14 +71,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/identity-contracts")
-@Tag(
-		name = IdmIdentityContractController.TAG, 
-		description = "Operations with identity contracts"//, 
-		 
-		
-		
-
-)
+@Tag(name = IdmIdentityContractController.TAG, description = "Operations with identity contracts")
 public class IdmIdentityContractController extends AbstractFormableDtoController<IdmIdentityContractDto, IdmIdentityContractFilter> {
 	
 	protected static final String TAG = "Contracts";
@@ -106,17 +99,12 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITYCONTRACT_READ + "')")
 	@Operation(
 			summary = "Search identity contracts (/search/quick alias)",
-			/* nickname = "searchIdentityContracts", */
+			operationId = "searchIdentityContracts",
 			tags = { IdmIdentityContractController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.IDENTITYCONTRACT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.IDENTITYCONTRACT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITYCONTRACT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITYCONTRACT_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -130,17 +118,12 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITYCONTRACT_READ + "')")
 	@Operation(
 			summary = "Search identity contracts",
-			/* nickname = "searchQuickIdentityContracts", */
+			operationId = "searchQuickIdentityContracts",
 			tags = { IdmIdentityContractController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.IDENTITYCONTRACT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.IDENTITYCONTRACT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITYCONTRACT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITYCONTRACT_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -154,17 +137,12 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITYCONTRACT_AUTOCOMPLETE + "')")
 	@Operation(
 			summary = "Autocomplete identity contracts (selectbox usage)",
-			/* nickname = "autocompleteIdentityContracts", */
+			operationId = "autocompleteIdentityContracts",
 			tags = { IdmIdentityContractController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.IDENTITYCONTRACT_AUTOCOMPLETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.IDENTITYCONTRACT_AUTOCOMPLETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITYCONTRACT_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITYCONTRACT_AUTOCOMPLETE })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -201,17 +179,12 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITYCONTRACT_COUNT + "')")
 	@Operation(
 			summary = "The number of entities that match the filter",
-			/* nickname = "countIdentityContracts", */
+			operationId = "countIdentityContracts",
 			tags = { IdmIdentityContractController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.IDENTITYCONTRACT_COUNT }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.IDENTITYCONTRACT_COUNT })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITYCONTRACT_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITYCONTRACT_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -222,7 +195,7 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITYCONTRACT_READ + "')")
 	@Operation(
 			summary = "Identity contract detail",
-			/* nickname = "getIdentityContract", */
+			operationId = "getIdentityContract",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -235,15 +208,10 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
                     }
             ), 
 			tags = { IdmIdentityContractController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.IDENTITYCONTRACT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.IDENTITYCONTRACT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITYCONTRACT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITYCONTRACT_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Contract's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -257,7 +225,7 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
 			+ " or hasAuthority('" + CoreGroupPermission.IDENTITYCONTRACT_UPDATE + "')")
 	@Operation(
 			summary = "Create / update identity contract",
-			/* nickname = "postIdentityContract", */
+			operationId = "postIdentityContract",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -270,10 +238,8 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
                     }
             ), 
 			tags = { IdmIdentityContractController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
 						CoreGroupPermission.IDENTITYCONTRACT_CREATE,
 						CoreGroupPermission.IDENTITYCONTRACT_UPDATE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
@@ -291,7 +257,7 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITYCONTRACT_UPDATE + "')")
 	@Operation(
 			summary = "Update identity contract",
-			/* nickname = "putIdentityContract", */
+			operationId = "putIdentityContract",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -304,15 +270,10 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
                     }
             ), 
 			tags = { IdmIdentityContractController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.IDENTITYCONTRACT_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.IDENTITYCONTRACT_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITYCONTRACT_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITYCONTRACT_UPDATE })
+    })
 	public ResponseEntity<?> put(
 			 @Parameter(description = "Contract's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
@@ -326,17 +287,12 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITYCONTRACT_DELETE + "')")
 	@Operation(
 			summary = "Delete identity contract",
-			/* nickname = "deleteIdentityContract", */
+			operationId = "deleteIdentityContract",
 			tags = { IdmIdentityContractController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.IDENTITYCONTRACT_DELETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.IDENTITYCONTRACT_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITYCONTRACT_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITYCONTRACT_DELETE })
+    })
 	public ResponseEntity<?> delete(
 			 @Parameter(description = "Contract's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -349,17 +305,12 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITYCONTRACT_READ + "')")
 	@Operation(
 			summary = "What logged identity can do with given record",
-			/* nickname = "getPermissionsOnIdentityContract", */
+			operationId = "getPermissionsOnIdentityContract",
 			tags = { IdmIdentityContractController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.IDENTITYCONTRACT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.IDENTITYCONTRACT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITYCONTRACT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITYCONTRACT_READ })
+    })
 	public Set<String> getPermissions(
 			 @Parameter(description = "Contract's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -371,17 +322,12 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITYCONTRACT_READ + "')")
 	@Operation(
 			summary = "Get available bulk actions",
-			/* nickname = "availableBulkAction", */
+			operationId = "availableBulkAction",
 			tags = { IdmProfileController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.IDENTITYCONTRACT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.IDENTITYCONTRACT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITYCONTRACT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITYCONTRACT_READ })
+    })
 	public List<IdmBulkActionDto> getAvailableBulkActions() {
 		return super.getAvailableBulkActions();
 	}
@@ -391,7 +337,7 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITYCONTRACT_READ + "')")
 	@Operation(
 			summary = "Process bulk action for contract",
-			/* nickname = "bulkAction", */
+			operationId = "bulkAction",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -404,10 +350,8 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
                     }
             ), 
 			tags = { IdmProfileController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						CoreGroupPermission.IDENTITYCONTRACT_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 						CoreGroupPermission.IDENTITYCONTRACT_READ})
@@ -422,7 +366,7 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITYCONTRACT_READ + "')")
 	@Operation(
 			summary = "Prevalidate bulk action for profiles",
-			/* nickname = "prevalidateBulkAction", */
+			operationId = "prevalidateBulkAction",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -435,10 +379,8 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
                     }
             ), 
 			tags = { IdmProfileController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						CoreGroupPermission.IDENTITYCONTRACT_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 						CoreGroupPermission.IDENTITYCONTRACT_READ})
@@ -454,17 +396,12 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITYCONTRACT_READ + "')")
 	@Operation(
 			summary = "Identity contract extended attributes form definitions",
-			/* nickname = "getIdentityContractFormDefinitions", */
+			operationId = "getIdentityContractFormDefinitions",
 			tags = { IdmIdentityContractController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.IDENTITYCONTRACT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.IDENTITYCONTRACT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITYCONTRACT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITYCONTRACT_READ })
+    })
 	public ResponseEntity<?> getFormDefinitions(
 			 @Parameter(description = "Contract's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -477,12 +414,10 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITYCONTRACT_READ + "')")
 	@Operation(
 			summary = "Identity contract form definition - prepare available values",
-			/* nickname = "prepareIdentityContractFormValues", */
+			operationId = "prepareIdentityContractFormValues",
 			tags = { IdmIdentityContractController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						CoreGroupPermission.IDENTITYCONTRACT_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 						CoreGroupPermission.IDENTITYCONTRACT_READ})
@@ -505,17 +440,12 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITYCONTRACT_READ + "')")
 	@Operation(
 			summary = "Identity contract form definition - read values",
-			/* nickname = "getIdentityContractFormValues", */
+			operationId = "getIdentityContractFormValues",
 			tags = { IdmIdentityContractController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.IDENTITYCONTRACT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.IDENTITYCONTRACT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITYCONTRACT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITYCONTRACT_READ })
+    })
 	public EntityModel<?> getFormValues(
 			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId, 
@@ -559,13 +489,11 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
 	@RequestMapping(value = "/{backendId}/form-values", method = { RequestMethod.POST, RequestMethod.PATCH })
 	@Operation(
 			summary = "Identity contract form definition - save values",
-			/* nickname = "postIdentityContractFormValues", */
+			operationId = "postIdentityContractFormValues",
 			tags = { IdmIdentityContractController.TAG }
 			)
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
 						CoreGroupPermission.IDENTITYCONTRACT_UPDATE,
 						CoreGroupPermission.FORM_VALUE_UPDATE }),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
@@ -607,13 +535,11 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
 	@RequestMapping(value = "/{backendId}/form-value", method = { RequestMethod.POST } )
 	@Operation(
 			summary = "Contract form definition - save value",
-			/* nickname = "postIdentityContractFormValue", */
+			operationId = "postIdentityContractFormValue",
 			tags = { IdmIdentityContractController.TAG }
 			)
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
 						CoreGroupPermission.IDENTITYCONTRACT_UPDATE,
 						CoreGroupPermission.FORM_VALUE_UPDATE }),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
@@ -646,18 +572,13 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITYCONTRACT_READ + "')")
 	@Operation(
 			summary = "Download form value attachment",
-			/* nickname = "downloadFormValue", */
+			operationId = "downloadFormValue",
 			tags = { IdmIdentityContractController.TAG },
 			description = "Returns input stream to attachment saved in given form value.")
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.IDENTITYCONTRACT_READ }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.IDENTITYCONTRACT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITYCONTRACT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITYCONTRACT_READ })
+    })
 	public ResponseEntity<InputStreamResource> downloadFormValue(
 			 @Parameter(description = "Contract's uuid identifier .", required = true)
 			@PathVariable String backendId,
@@ -687,18 +608,13 @@ public class IdmIdentityContractController extends AbstractFormableDtoController
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITYCONTRACT_READ + "')")
 	@Operation(
 			summary = "Download form value attachment preview",
-			/* nickname = "downloadFormValue", */
+			operationId = "downloadFormValue",
 			tags = { IdmIdentityContractController.TAG },
 			description = "Returns input stream to attachment preview saved in given form value. Preview is supported for the png, jpg and jpeg mime types only")
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.IDENTITYCONTRACT_READ }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.IDENTITYCONTRACT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITYCONTRACT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITYCONTRACT_READ })
+    })
 	public ResponseEntity<InputStreamResource> previewFormValue(
 			 @Parameter(description = "Contract's uuid identifier.", required = true)
 			@PathVariable String backendId,

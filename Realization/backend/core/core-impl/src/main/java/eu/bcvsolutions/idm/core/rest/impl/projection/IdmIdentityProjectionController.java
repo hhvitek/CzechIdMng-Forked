@@ -51,14 +51,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/identity-projection")
-@Tag(
-		name = IdmIdentityProjectionController.TAG,  
-		 
-		description = "Operations with identity projection"//,
-		
-		
-
-)
+@Tag(name = IdmIdentityProjectionController.TAG, description = "Operations with identity projection")
 public class IdmIdentityProjectionController implements BaseDtoController<IdmIdentityProjectionDto> {
 
 	protected static final String TAG = "Identity projection";
@@ -71,7 +64,7 @@ public class IdmIdentityProjectionController implements BaseDtoController<IdmIde
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_READ + "')")
 	@Operation(
 			summary = "Identity projection detail", 
-			/* nickname = "getIdentityProjection", */ 
+			operationId = "getIdentityProjection", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -84,15 +77,10 @@ public class IdmIdentityProjectionController implements BaseDtoController<IdmIde
                     }
             ), 
 			tags = { IdmIdentityProjectionController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.IDENTITY_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.IDENTITY_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITY_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITY_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -114,7 +102,7 @@ public class IdmIdentityProjectionController implements BaseDtoController<IdmIde
 			+ " or hasAuthority('" + CoreGroupPermission.IDENTITY_UPDATE + "')")
 	@Operation(
 			summary = "Create / update identity projection", 
-			/* nickname = "postIdentity", */ 
+			operationId = "postIdentity", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -127,10 +115,8 @@ public class IdmIdentityProjectionController implements BaseDtoController<IdmIde
                     }
             ), 
 			tags = { IdmIdentityProjectionController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						CoreGroupPermission.IDENTITY_CREATE,
 						CoreGroupPermission.IDENTITY_UPDATE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 

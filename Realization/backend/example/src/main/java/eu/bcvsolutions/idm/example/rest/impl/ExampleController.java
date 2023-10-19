@@ -62,9 +62,8 @@ public class ExampleController {
                             )
                     }
             ))
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )
@@ -80,11 +79,10 @@ public class ExampleController {
 	@Operation(
 			summary = "Read private summary", 
 			description= "Returns configuration property - private value.",
-			/* nickname = "getPrivateValue", */ 
+			operationId = "getPrivateValue",
 			tags={ ExampleController.TAG })
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )
@@ -98,11 +96,10 @@ public class ExampleController {
 	@Operation(
 			summary = "Send notification", 
 			description= "Sending given message to currently logged identity (example topic is used).",
-			/* nickname = "sendNotification", */ 
+			operationId = "sendNotification",
 			tags={ ExampleController.TAG })
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )
@@ -117,11 +114,10 @@ public class ExampleController {
 	@Operation(
 			summary = "Example client error", 
 			description= "Example client error with given parameter.",
-			/* nickname = "exampleClientError", */ 
+			operationId = "exampleClientError",
 			tags={ ExampleController.TAG })
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )
@@ -137,11 +133,10 @@ public class ExampleController {
 	@Operation(
 			summary = "Example server error", 
 			description= "Example server error with given parameter.",
-			/* nickname = "exampleServerError", */ 
+			operationId = "exampleServerError",
 			tags={ ExampleController.TAG })
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
             }
     )

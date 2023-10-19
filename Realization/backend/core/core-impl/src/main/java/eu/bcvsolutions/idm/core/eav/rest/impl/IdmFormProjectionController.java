@@ -53,11 +53,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/form-projections")
-@Tag(
-		name = IdmFormProjectionController.TAG, 
-		description = "Operations with form projections"
-
-		/*produces = BaseController.APPLICATION_HAL_JSON_VALUE*/)
+@Tag(name = IdmFormProjectionController.TAG, description = "Operations with form projections")
 public class IdmFormProjectionController extends AbstractReadWriteDtoController<IdmFormProjectionDto, IdmFormProjectionFilter>  {
 
 	protected static final String TAG = "Form projections";
@@ -75,17 +71,12 @@ public class IdmFormProjectionController extends AbstractReadWriteDtoController<
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_PROJECTION_READ + "')")
 	@Operation(
 			summary = "Search form projections (/search/quick alias)", 
-			/* nickname = "searchFormProjections", */
+			operationId = "searchFormProjections",
 			tags = { IdmFormProjectionController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.FORM_PROJECTION_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.FORM_PROJECTION_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.FORM_PROJECTION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.FORM_PROJECTION_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -99,17 +90,12 @@ public class IdmFormProjectionController extends AbstractReadWriteDtoController<
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_PROJECTION_READ + "')")
 	@Operation(
 			summary = "Search form projections", 
-			/* nickname = "searchQuickFormProjections", */ 
+			operationId = "searchQuickFormProjections", 
 			tags = { IdmFormProjectionController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.FORM_PROJECTION_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.FORM_PROJECTION_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.FORM_PROJECTION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.FORM_PROJECTION_READ })
+    })
 	@Override
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
@@ -125,17 +111,12 @@ public class IdmFormProjectionController extends AbstractReadWriteDtoController<
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_PROJECTION_AUTOCOMPLETE + "')")
 	@Operation(
 			summary = "Autocomplete form projections (selectbox usage)", 
-			/* nickname = "autocompleteFormProjections", */ 
+			operationId = "autocompleteFormProjections", 
 			tags = { IdmFormAttributeController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.FORM_PROJECTION_AUTOCOMPLETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.FORM_PROJECTION_AUTOCOMPLETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.FORM_PROJECTION_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.FORM_PROJECTION_AUTOCOMPLETE })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -150,17 +131,12 @@ public class IdmFormProjectionController extends AbstractReadWriteDtoController<
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_PROJECTION_COUNT + "')")
 	@Operation(
 			summary = "The number of entities that match the filter", 
-			/* nickname = "countFormProjections", */ 
+			operationId = "countFormProjections", 
 			tags = { IdmFormAttributeController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.FORM_PROJECTION_COUNT }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.FORM_PROJECTION_COUNT })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.FORM_PROJECTION_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.FORM_PROJECTION_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -171,7 +147,7 @@ public class IdmFormProjectionController extends AbstractReadWriteDtoController<
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_PROJECTION_READ + "')")
 	@Operation(
 			summary = "Form definition detail", 
-			/* nickname = "getFormDefiniton", */ 
+			operationId = "getFormDefiniton", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -184,15 +160,10 @@ public class IdmFormProjectionController extends AbstractReadWriteDtoController<
                     }
             ), 
 			tags = { IdmFormProjectionController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.FORM_PROJECTION_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.FORM_PROJECTION_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.FORM_PROJECTION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.FORM_PROJECTION_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Form projection's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -205,7 +176,7 @@ public class IdmFormProjectionController extends AbstractReadWriteDtoController<
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_PROJECTION_CREATE + "') or hasAuthority('" + CoreGroupPermission.FORM_PROJECTION_UPDATE + "')")
 	@Operation(
 			summary = "Create / update form projection", 
-			/* nickname = "postFormProjection", */ 
+			operationId = "postFormProjection", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -218,10 +189,8 @@ public class IdmFormProjectionController extends AbstractReadWriteDtoController<
                     }
             ), 
 			tags = { IdmFormProjectionController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						CoreGroupPermission.FORM_PROJECTION_CREATE,
 						CoreGroupPermission.FORM_PROJECTION_UPDATE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
@@ -239,7 +208,7 @@ public class IdmFormProjectionController extends AbstractReadWriteDtoController<
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_PROJECTION_UPDATE + "')")
 	@Operation(
 			summary = "Update form projection",
-			/* nickname = "putFormProjection", */ 
+			operationId = "putFormProjection", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -252,15 +221,10 @@ public class IdmFormProjectionController extends AbstractReadWriteDtoController<
                     }
             ), 
 			tags = { IdmFormProjectionController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.FORM_PROJECTION_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.FORM_PROJECTION_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.FORM_PROJECTION_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.FORM_PROJECTION_UPDATE })
+    })
 	public ResponseEntity<?> put(
 			 @Parameter(description = "Form projection's uuid identifier", required = true)
 			@PathVariable @NotNull String backendId, 
@@ -274,7 +238,7 @@ public class IdmFormProjectionController extends AbstractReadWriteDtoController<
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_PROJECTION_UPDATE + "')")
 	@Operation(
 			summary = "Patch form projection", 
-			/* nickname = "patchFormProjection", */ 
+			operationId = "patchFormProjection", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -287,15 +251,10 @@ public class IdmFormProjectionController extends AbstractReadWriteDtoController<
                     }
             ), 
 			tags = { IdmFormProjectionController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.FORM_PROJECTION_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.FORM_PROJECTION_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.FORM_PROJECTION_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.FORM_PROJECTION_UPDATE })
+    })
 	public ResponseEntity<?> patch(
 			 @Parameter(description = "Form projection's uuid identifier", required = true)
 			@PathVariable @NotNull String backendId,
@@ -310,17 +269,12 @@ public class IdmFormProjectionController extends AbstractReadWriteDtoController<
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_PROJECTION_DELETE + "')")
 	@Operation(
 			summary = "Delete form projection", 
-			/* nickname = "deleteFormProjection", */ 
+			operationId = "deleteFormProjection", 
 			tags = { IdmFormProjectionController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.FORM_PROJECTION_DELETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.FORM_PROJECTION_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.FORM_PROJECTION_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.FORM_PROJECTION_DELETE })
+    })
 	public ResponseEntity<?> delete(
 			 @Parameter(description = "Form projection's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -333,17 +287,12 @@ public class IdmFormProjectionController extends AbstractReadWriteDtoController<
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_PROJECTION_READ + "')")
 	@Operation(
 			summary = "What logged identity can do with given record", 
-			/* nickname = "getPermissionsOnFormProjection", */ 
+			operationId = "getPermissionsOnFormProjection", 
 			tags = { IdmFormProjectionController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.FORM_PROJECTION_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.FORM_PROJECTION_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.FORM_PROJECTION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.FORM_PROJECTION_READ })
+    })
 	public Set<String> getPermissions(
 			 @Parameter(description = "Form projection's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -361,17 +310,12 @@ public class IdmFormProjectionController extends AbstractReadWriteDtoController<
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_PROJECTION_READ + "')")
 	@Operation(
 			summary = "Get all supported routes", 
-			/* nickname = "getSupportedFormProjectionRoutes", */ 
+			operationId = "getSupportedFormProjectionRoutes", 
 			tags = { IdmFormProjectionController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.FORM_PROJECTION_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.FORM_PROJECTION_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.FORM_PROJECTION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.FORM_PROJECTION_READ })
+    })
 	public CollectionModel<FormProjectionRouteDto> getSupportedRoutes() {
 		return new CollectionModel<>(projectionManager.getSupportedRoutes());
 	}
@@ -381,17 +325,12 @@ public class IdmFormProjectionController extends AbstractReadWriteDtoController<
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_PROJECTION_READ + "')")
 	@Operation(
 			summary = "Get available bulk actions", 
-			/* nickname = "availableBulkAction", */ 
+			operationId = "availableBulkAction", 
 			tags = { IdmFormProjectionController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.FORM_PROJECTION_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.FORM_PROJECTION_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.FORM_PROJECTION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.FORM_PROJECTION_READ })
+    })
 	@Override
 	public List<IdmBulkActionDto> getAvailableBulkActions() {
 		return super.getAvailableBulkActions();
@@ -402,7 +341,7 @@ public class IdmFormProjectionController extends AbstractReadWriteDtoController<
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_PROJECTION_READ + "')")
 	@Operation(
 			summary = "Process bulk action for form projections", 
-			/* nickname = "bulkAction", */ 
+			operationId = "bulkAction", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -415,10 +354,8 @@ public class IdmFormProjectionController extends AbstractReadWriteDtoController<
                     }
             ), 
 			tags = { IdmFormProjectionController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						CoreGroupPermission.FORM_PROJECTION_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 						CoreGroupPermission.FORM_PROJECTION_READ})
@@ -434,7 +371,7 @@ public class IdmFormProjectionController extends AbstractReadWriteDtoController<
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_PROJECTION_READ + "')")
 	@Operation(
 			summary = "Prevalidate bulk action for form projections", 
-			/* nickname = "prevalidateBulkAction", */ 
+			operationId = "prevalidateBulkAction", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -447,10 +384,8 @@ public class IdmFormProjectionController extends AbstractReadWriteDtoController<
                     }
             ), 
 			tags = { IdmFormProjectionController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						CoreGroupPermission.FORM_PROJECTION_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 						CoreGroupPermission.FORM_PROJECTION_READ})

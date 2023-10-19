@@ -60,14 +60,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/profiles")
-@Tag(
-		name = IdmProfileController.TAG,  
-		 
-		description = "Operations with profiles"//,
-
-
-
-)
+@Tag(name = IdmProfileController.TAG, description = "Operations with profiles")
 public class IdmProfileController extends AbstractEventableDtoController<IdmProfileDto, IdmProfileFilter> {
 
 	protected static final String TAG = "Profiles";
@@ -85,17 +78,12 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.PROFILE_READ + "')")
 	@Operation(
 			summary = "Search profiles (/search/quick alias)",
-			/* nickname = "searchProfiles", */
+			operationId = "searchProfiles",
 			tags = { IdmProfileController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.PROFILE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.PROFILE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.PROFILE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.PROFILE_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -110,17 +98,12 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.PROFILE_READ + "')")
 	@Operation(
 			summary = "Search profiles",
-			/* nickname = "searchQuickProfiles", */
+			operationId = "searchQuickProfiles",
 			tags = { IdmProfileController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.PROFILE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.PROFILE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.PROFILE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.PROFILE_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -135,17 +118,12 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.PROFILE_AUTOCOMPLETE + "')")
 	@Operation(
 			summary = "Autocomplete profiles (selectbox usage)",
-			/* nickname = "autocompleteProfiles", */
+			operationId = "autocompleteProfiles",
 			tags = { IdmProfileController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.PROFILE_AUTOCOMPLETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.PROFILE_AUTOCOMPLETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.PROFILE_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.PROFILE_AUTOCOMPLETE })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -160,17 +138,12 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.PROFILE_COUNT + "')")
 	@Operation(
 			summary = "The number of entities that match the filter",
-			/* nickname = "countProfiles", */
+			operationId = "countProfiles",
 			tags = { IdmProfileController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.PROFILE_COUNT }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.PROFILE_COUNT })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.PROFILE_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.PROFILE_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -181,7 +154,7 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.PROFILE_READ + "')")
 	@Operation(
 			summary = "Profile detail",
-			/* nickname = "getProfile", */
+			operationId = "getProfile",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -194,15 +167,10 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
                     }
             ),
 			tags = { IdmProfileController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.PROFILE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.PROFILE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.PROFILE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.PROFILE_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Profile's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -216,7 +184,7 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
 			+ " or hasAuthority('" + CoreGroupPermission.PROFILE_UPDATE + "')")
 	@Operation(
 			summary = "Create / update profile",
-			/* nickname = "postProfile", */
+			operationId = "postProfile",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -229,10 +197,8 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
                     }
             ),
 			tags = { IdmProfileController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						CoreGroupPermission.PROFILE_CREATE,
 						CoreGroupPermission.PROFILE_UPDATE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
@@ -250,7 +216,7 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.PROFILE_UPDATE + "')")
 	@Operation(
 			summary = "Update profile",
-			/* nickname = "putProfile", */
+			operationId = "putProfile",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -263,15 +229,10 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
                     }
             ),
 			tags = { IdmProfileController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.PROFILE_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.PROFILE_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.PROFILE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.PROFILE_UPDATE })
+    })
 	public ResponseEntity<?> put(
 			 @Parameter(description = "Profile's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId, 
@@ -285,7 +246,7 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.PROFILE_UPDATE + "')")
 	@Operation(
 			summary = "Update profile",
-			/* nickname = "patchProfile", */
+			operationId = "patchProfile",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -298,15 +259,10 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
                     }
             ),
 			tags = { IdmProfileController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.PROFILE_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.PROFILE_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.PROFILE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.PROFILE_UPDATE })
+    })
 	public ResponseEntity<?> patch(
 			 @Parameter(description = "Profile's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId,
@@ -321,17 +277,12 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.PROFILE_DELETE + "')")
 	@Operation(
 			summary = "Delete profile",
-			/* nickname = "deleteProfile", */
+			operationId = "deleteProfile",
 			tags = { IdmProfileController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.PROFILE_DELETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.PROFILE_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.PROFILE_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.PROFILE_DELETE })
+    })
 	public ResponseEntity<?> delete(
 			 @Parameter(description = "Profile's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -345,12 +296,10 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
 			+ " or hasAuthority('" + CoreGroupPermission.PROFILE_AUTOCOMPLETE + "')")
 	@Operation(
 			summary = "What logged profile can do with given record",
-			/* nickname = "getPermissionsOnProfile", */
+			operationId = "getPermissionsOnProfile",
 			tags = { IdmProfileController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						CoreGroupPermission.PROFILE_READ,
 						CoreGroupPermission.PROFILE_AUTOCOMPLETE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
@@ -374,17 +323,12 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.PROFILE_READ + "')")
 	@Operation(
 			summary = "Get available bulk actions",
-			/* nickname = "availableBulkAction", */
+			operationId = "availableBulkAction",
 			tags = { IdmProfileController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.PROFILE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.PROFILE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.PROFILE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.PROFILE_READ })
+    })
 	public List<IdmBulkActionDto> getAvailableBulkActions() {
 		return super.getAvailableBulkActions();
 	}
@@ -400,7 +344,7 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.PROFILE_READ + "')")
 	@Operation(
 			summary = "Process bulk action for profile",
-			/* nickname = "bulkAction", */
+			operationId = "bulkAction",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -413,10 +357,8 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
                     }
             ),
 			tags = { IdmProfileController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						CoreGroupPermission.PROFILE_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 						CoreGroupPermission.PROFILE_READ})
@@ -437,7 +379,7 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.PROFILE_READ + "')")
 	@Operation(
 			summary = "Prevalidate bulk action for profiles",
-			/* nickname = "prevalidateBulkAction", */
+			operationId = "prevalidateBulkAction",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -450,10 +392,8 @@ public class IdmProfileController extends AbstractEventableDtoController<IdmProf
                     }
             ),
 			tags = { IdmProfileController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						CoreGroupPermission.PROFILE_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 						CoreGroupPermission.PROFILE_READ})

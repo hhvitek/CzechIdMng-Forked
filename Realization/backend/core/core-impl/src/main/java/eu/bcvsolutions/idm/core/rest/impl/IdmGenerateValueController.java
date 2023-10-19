@@ -54,14 +54,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/generate-values")
-@Tag(
-		name = IdmGenerateValueController.TAG, 
-		description = "Operations with generate values"//,
-
-		
-
-
-)
+@Tag(name = IdmGenerateValueController.TAG, description = "Operations with generate values")
 public class IdmGenerateValueController extends AbstractReadWriteDtoController<IdmGenerateValueDto, IdmGenerateValueFilter> {
 
 	protected static final String TAG = "Generate values";
@@ -83,17 +76,12 @@ public class IdmGenerateValueController extends AbstractReadWriteDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.GENERATE_VALUE_READ + "')")
 	@Operation(
 			summary = "Search generate values (/search/quick alias)", 
-			/* nickname = "searchGenerateValues", */ 
+			operationId = "searchGenerateValues", 
 			tags = { IdmGenerateValueController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.GENERATE_VALUE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.GENERATE_VALUE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.GENERATE_VALUE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.GENERATE_VALUE_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -107,17 +95,12 @@ public class IdmGenerateValueController extends AbstractReadWriteDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.GENERATE_VALUE_READ + "')")
 	@Operation(
 			summary = "Search generate values", 
-			/* nickname = "searchQuickGenerateValues", */ 
+			operationId = "searchQuickGenerateValues", 
 			tags = { IdmGenerateValueController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.GENERATE_VALUE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.GENERATE_VALUE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.GENERATE_VALUE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.GENERATE_VALUE_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -132,17 +115,12 @@ public class IdmGenerateValueController extends AbstractReadWriteDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.GENERATE_VALUE_COUNT + "')")
 	@Operation(
 			summary = "The number of entities that match the filter", 
-			/* nickname = "countGenerateValues", */ 
+			operationId = "countGenerateValues", 
 			tags = { IdmGenerateValueController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.GENERATE_VALUE_COUNT }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.GENERATE_VALUE_COUNT })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.GENERATE_VALUE_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.GENERATE_VALUE_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -153,7 +131,7 @@ public class IdmGenerateValueController extends AbstractReadWriteDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.GENERATE_VALUE_READ + "')")
 	@Operation(
 			summary = "Generate value detail", 
-			/* nickname = "getGenerateValues", */ 
+			operationId = "getGenerateValues", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -166,15 +144,10 @@ public class IdmGenerateValueController extends AbstractReadWriteDtoController<I
                     }
             ),
 			tags = { IdmGenerateValueController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.GENERATE_VALUE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.GENERATE_VALUE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.GENERATE_VALUE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.GENERATE_VALUE_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Generate value uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -188,7 +161,7 @@ public class IdmGenerateValueController extends AbstractReadWriteDtoController<I
 			+ " or hasAuthority('" + CoreGroupPermission.GENERATE_VALUE_UPDATE + "')")
 	@Operation(
 			summary = "Create / update generate value", 
-			/* nickname = "postGenerateValue", */ 
+			operationId = "postGenerateValue", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -201,10 +174,8 @@ public class IdmGenerateValueController extends AbstractReadWriteDtoController<I
                     }
             ),
 			tags = { IdmGenerateValueController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
 						CoreGroupPermission.GENERATE_VALUE_CREATE,
 						CoreGroupPermission.GENERATE_VALUE_UPDATE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
@@ -222,7 +193,7 @@ public class IdmGenerateValueController extends AbstractReadWriteDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.GENERATE_VALUE_UPDATE + "')")
 	@Operation(
 			summary = "Update generate value", 
-			/* nickname = "putGenerateValues", */ 
+			operationId = "putGenerateValues", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -235,15 +206,10 @@ public class IdmGenerateValueController extends AbstractReadWriteDtoController<I
                     }
             ),
 			tags = { IdmGenerateValueController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.GENERATE_VALUE_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.GENERATE_VALUE_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.GENERATE_VALUE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.GENERATE_VALUE_UPDATE })
+    })
 	public ResponseEntity<?> put(
 			 @Parameter(description = "Generate value uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
@@ -257,17 +223,12 @@ public class IdmGenerateValueController extends AbstractReadWriteDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.GENERATE_VALUE_DELETE + "')")
 	@Operation(
 			summary = "Delete generate value", 
-			/* nickname = "deleteGenerateValue", */ 
+			operationId = "deleteGenerateValue", 
 			tags = { IdmGenerateValueController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.GENERATE_VALUE_DELETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.GENERATE_VALUE_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.GENERATE_VALUE_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.GENERATE_VALUE_DELETE })
+    })
 	public ResponseEntity<?> delete(
 			 @Parameter(description = "Generate value uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -280,17 +241,12 @@ public class IdmGenerateValueController extends AbstractReadWriteDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.GENERATE_VALUE_READ + "')")
 	@Operation(
 			summary = "What logged identity can do with given record", 
-			/* nickname = "getPermissionsOnGenerateValue", */ 
+			operationId = "getPermissionsOnGenerateValue", 
 			tags = { IdmGenerateValueController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.GENERATE_VALUE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.GENERATE_VALUE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.GENERATE_VALUE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.GENERATE_VALUE_READ })
+    })
 	public Set<String> getPermissions(
 			 @Parameter(description = "Generate value uuid.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -307,17 +263,12 @@ public class IdmGenerateValueController extends AbstractReadWriteDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.GENERATE_VALUE_READ + "')")
 	@Operation(
 			summary = "Get all supported dto types", 
-			/* nickname = "getSupportedTypes", */ 
+			operationId = "getSupportedTypes", 
 			tags = { IdmGenerateValueController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.GENERATE_VALUE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.GENERATE_VALUE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.GENERATE_VALUE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.GENERATE_VALUE_READ })
+    })
 	public ResponseEntity<?> getSupportedTypes() {
 		return new ResponseEntity<>(toCollectionModel(valueGeneratorManager.getSupportedTypes(), null), HttpStatus.OK);
 	}
@@ -332,18 +283,13 @@ public class IdmGenerateValueController extends AbstractReadWriteDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.GENERATE_VALUE_READ + "')")
 	@Operation(
 			summary = "Get all supported generator", 
-			/* nickname = "getGenerators", */ 
+			operationId = "getGenerators", 
 			tags = { IdmAuthorizationPolicyController.TAG }, 
 						description = "Returns all registered and enabled generators.")
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.GENERATE_VALUE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.GENERATE_VALUE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.GENERATE_VALUE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.GENERATE_VALUE_READ })
+    })
 	public CollectionModel<ValueGeneratorDto> getAvailableGenerators() {
 		return new CollectionModel<>(valueGeneratorManager.getAvailableGenerators(null));
 	}

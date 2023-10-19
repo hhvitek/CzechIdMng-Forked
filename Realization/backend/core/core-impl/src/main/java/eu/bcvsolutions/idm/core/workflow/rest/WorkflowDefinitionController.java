@@ -58,14 +58,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/workflow-definitions")
-@Tag(
-		name = WorkflowDefinitionController.TAG,
-
-		description = "WF definition administration"//,
-		
-
-
-)
+@Tag(name = WorkflowDefinitionController.TAG, description = "WF definition administration")
 public class WorkflowDefinitionController extends AbstractReadDtoController<WorkflowProcessDefinitionDto, WorkflowFilterDto> {
 
 	protected static final String TAG = "Workflow - definitions";
@@ -93,17 +86,12 @@ public class WorkflowDefinitionController extends AbstractReadDtoController<Work
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.WORKFLOW_DEFINITION_READ + "')")
 	@Operation(
 			summary = "Get all definitions", 
-			/* nickname = "findAllWorkflowDefinitions", */
+			operationId = "findAllWorkflowDefinitions",
 			tags = { WorkflowDefinitionController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.IDENTITY_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.IDENTITY_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITY_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITY_READ })
+    })
 	public CollectionModel<?> findAllProcessDefinitions() {
 		return toCollectionModel(definitionService.findAllProcessDefinitions(), getDtoClass());
 	}
@@ -124,17 +112,12 @@ public class WorkflowDefinitionController extends AbstractReadDtoController<Work
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.WORKFLOW_DEFINITION_READ + "')")
 	@Operation(
 			summary = "Search definitions",
-			/* nickname = "searchQuickWorkflowDefinitions", */
+			operationId = "searchQuickWorkflowDefinitions",
 			tags = { WorkflowDefinitionController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.IDENTITY_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.IDENTITY_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITY_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITY_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -156,7 +139,7 @@ public class WorkflowDefinitionController extends AbstractReadDtoController<Work
     @PreAuthorize("hasAuthority('" + CoreGroupPermission.WORKFLOW_DEFINITION_READ + "')")
     @Operation(
             summary = "Workflow definition detail",
-            /* nickname = "getWorkflowDefinition", */
+            operationId = "getWorkflowDefinition",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -169,15 +152,10 @@ public class WorkflowDefinitionController extends AbstractReadDtoController<Work
                     }
             ),
             tags = { WorkflowDefinitionController.TAG })
-    @SecurityRequirements(
-            value = {
-
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-                            CoreGroupPermission.WORKFLOW_DEFINITION_READ }),
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-                            CoreGroupPermission.WORKFLOW_DEFINITION_READ })
-            }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.WORKFLOW_DEFINITION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.WORKFLOW_DEFINITION_READ })
+    })
     public ResponseEntity<WorkflowProcessDefinitionDto> get(
             @Parameter(description = "Workflow definition key.", required = true)
             @PathVariable String backendId) {
@@ -199,7 +177,7 @@ public class WorkflowDefinitionController extends AbstractReadDtoController<Work
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.WORKFLOW_DEFINITION_CREATE + "') or hasAuthority('" + CoreGroupPermission.WORKFLOW_DEFINITION_UPDATE + "')")
 	@Operation(
 			summary = "Create / update workflow definition",
-			/* nickname = "postWorkflowDefinition", */
+			operationId = "postWorkflowDefinition",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -216,9 +194,8 @@ public class WorkflowDefinitionController extends AbstractReadDtoController<Work
 					+ " If definition with iven key exists, new deployment version is added."
 					+ " All running task instances process with their deployment version."
 					+ " Newly added version will be used for new instances.")
-    @SecurityRequirements(
-        value = {
-            @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
                     CoreGroupPermission.WORKFLOW_DEFINITION_CREATE,
                     CoreGroupPermission.WORKFLOW_DEFINITION_UPDATE}),
             @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
@@ -243,13 +220,11 @@ public class WorkflowDefinitionController extends AbstractReadDtoController<Work
     @PreAuthorize("hasAuthority('" + CoreGroupPermission.WORKFLOW_DEFINITION_READ + "')")
 	@Operation(
 			summary = "Download workflow definition",
-			/* nickname = "getWorkflowDefinition", */
+			operationId = "getWorkflowDefinition",
 			tags = {WorkflowDefinitionController.TAG},
 						description = "Return XML file with definition.")
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							CoreGroupPermission.WORKFLOW_DEFINITION_READ}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							CoreGroupPermission.WORKFLOW_DEFINITION_READ})
@@ -285,18 +260,13 @@ public class WorkflowDefinitionController extends AbstractReadDtoController<Work
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.WORKFLOW_DEFINITION_READ + "')")
 	@Operation(
 			summary = "Workflow definition diagram",
-			/* nickname = "getWorkflowDefinitionDiagram", */
+			operationId = "getWorkflowDefinitionDiagram",
 			tags = { WorkflowDefinitionController.TAG },
 						description = "Returns input stream to definition's diagram.")
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.WORKFLOW_DEFINITION_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.WORKFLOW_DEFINITION_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.WORKFLOW_DEFINITION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.WORKFLOW_DEFINITION_READ })
+    })
 	public ResponseEntity<InputStreamResource> getDiagram(
 			 @Parameter(description = "Workflow definition key.", required = true)
 			@PathVariable String backendId) {

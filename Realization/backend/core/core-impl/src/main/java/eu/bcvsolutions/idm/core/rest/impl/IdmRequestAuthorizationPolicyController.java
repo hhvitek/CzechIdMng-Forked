@@ -51,14 +51,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/requests")
-@Tag(
-		name = IdmRequestAuthorizationPolicyController.TAG, 
-		description = "Requests for -Operations with authorization policies"//,
-
-		
-
-
-)
+@Tag(name = IdmRequestAuthorizationPolicyController.TAG, description = "Requests for -Operations with authorization policies")
 public class IdmRequestAuthorizationPolicyController extends AbstractRequestDtoController<IdmAuthorizationPolicyDto, IdmAuthorizationPolicyFilter> {
 	
 	protected static final String TAG = "Authorization policies";
@@ -88,17 +81,12 @@ public class IdmRequestAuthorizationPolicyController extends AbstractRequestDtoC
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUTHORIZATIONPOLICY_READ + "')")
 	@Operation(
 			summary = "Search authorization policies (/search/quick alias)", 
-			/* nickname = "searchAuthorizationPolicies", */
+			operationId = "searchAuthorizationPolicies",
 			tags = { IdmRequestAuthorizationPolicyController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.AUTHORIZATIONPOLICY_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.AUTHORIZATIONPOLICY_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUTHORIZATIONPOLICY_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUTHORIZATIONPOLICY_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@PathVariable @NotNull String requestId,
@@ -113,17 +101,12 @@ public class IdmRequestAuthorizationPolicyController extends AbstractRequestDtoC
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUTHORIZATIONPOLICY_READ + "')")
 	@Operation(
 			summary = "Search authorization policies", 
-			/* nickname = "searchQuickAuthorizationPolicies", */
+			operationId = "searchQuickAuthorizationPolicies",
 			tags = { IdmRequestAuthorizationPolicyController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.AUTHORIZATIONPOLICY_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.AUTHORIZATIONPOLICY_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUTHORIZATIONPOLICY_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUTHORIZATIONPOLICY_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@PathVariable @NotNull String requestId,
@@ -139,17 +122,12 @@ public class IdmRequestAuthorizationPolicyController extends AbstractRequestDtoC
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUTHORIZATIONPOLICY_COUNT + "')")
 	@Operation(
 			summary = "The number of entities that match the filter", 
-			/* nickname = "countAuthorizationPolicies", */
+			operationId = "countAuthorizationPolicies",
 			tags = { IdmRequestAuthorizationPolicyController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.AUTHORIZATIONPOLICY_COUNT }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.AUTHORIZATIONPOLICY_COUNT })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUTHORIZATIONPOLICY_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUTHORIZATIONPOLICY_COUNT })
+    })
 	public long count(@PathVariable @NotNull String requestId, @RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(requestId, parameters);
 	}
@@ -160,7 +138,7 @@ public class IdmRequestAuthorizationPolicyController extends AbstractRequestDtoC
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUTHORIZATIONPOLICY_READ + "')")
 	@Operation(
 			summary = "Authorization policy detail", 
-			/* nickname = "getAuthorizationPolicy", */
+			operationId = "getAuthorizationPolicy",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -173,15 +151,10 @@ public class IdmRequestAuthorizationPolicyController extends AbstractRequestDtoC
                     }
             ),
 			tags = { IdmRequestAuthorizationPolicyController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.AUTHORIZATIONPOLICY_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.AUTHORIZATIONPOLICY_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUTHORIZATIONPOLICY_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUTHORIZATIONPOLICY_READ })
+    })
 	public ResponseEntity<?> get(
 			@PathVariable @NotNull String requestId,
 			 @Parameter(description = "Policy's uuid identifier.", required = true)
@@ -196,7 +169,7 @@ public class IdmRequestAuthorizationPolicyController extends AbstractRequestDtoC
 			+ " or hasAuthority('" + CoreGroupPermission.AUTHORIZATIONPOLICY_UPDATE + "')")
 	@Operation(
 			summary = "Create / update authorization policy", 
-			/* nickname = "postAuthorizationPolicy", */
+			operationId = "postAuthorizationPolicy",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -209,10 +182,8 @@ public class IdmRequestAuthorizationPolicyController extends AbstractRequestDtoC
                     }
             ),
 			tags = { IdmRequestAuthorizationPolicyController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						CoreGroupPermission.AUTHORIZATIONPOLICY_CREATE,
 						CoreGroupPermission.AUTHORIZATIONPOLICY_UPDATE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
@@ -230,7 +201,7 @@ public class IdmRequestAuthorizationPolicyController extends AbstractRequestDtoC
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUTHORIZATIONPOLICY_UPDATE + "')")
 	@Operation(
 			summary = "Update authorization policy", 
-			/* nickname = "putAuthorizationPolicy", */
+			operationId = "putAuthorizationPolicy",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -243,15 +214,10 @@ public class IdmRequestAuthorizationPolicyController extends AbstractRequestDtoC
                     }
             ),
 			tags = { IdmRequestAuthorizationPolicyController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.AUTHORIZATIONPOLICY_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.AUTHORIZATIONPOLICY_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUTHORIZATIONPOLICY_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUTHORIZATIONPOLICY_UPDATE })
+    })
 	public ResponseEntity<?> put(
 			@PathVariable @NotNull String requestId,
 			 @Parameter(description = "Policy's uuid identifier.", required = true)
@@ -266,17 +232,12 @@ public class IdmRequestAuthorizationPolicyController extends AbstractRequestDtoC
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUTHORIZATIONPOLICY_DELETE + "')")
 	@Operation(
 			summary = "Delete authorization policy", 
-			/* nickname = "deleteAuthorizationPolicy", */
+			operationId = "deleteAuthorizationPolicy",
 			tags = { IdmRequestAuthorizationPolicyController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.AUTHORIZATIONPOLICY_DELETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.AUTHORIZATIONPOLICY_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUTHORIZATIONPOLICY_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUTHORIZATIONPOLICY_DELETE })
+    })
 	public ResponseEntity<?> delete(
 			@PathVariable @NotNull String requestId,
 			 @Parameter(description = "Policy's uuid identifier.", required = true)
@@ -290,17 +251,12 @@ public class IdmRequestAuthorizationPolicyController extends AbstractRequestDtoC
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUTHORIZATIONPOLICY_READ + "')")
 	@Operation(
 			summary = "What logged identity can do with given record", 
-			/* nickname = "getPermissionsOnAuthorizationPolicy", */
+			operationId = "getPermissionsOnAuthorizationPolicy",
 			tags = { IdmRequestAuthorizationPolicyController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.AUTHORIZATIONPOLICY_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.AUTHORIZATIONPOLICY_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUTHORIZATIONPOLICY_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUTHORIZATIONPOLICY_READ })
+    })
 	public Set<String> getPermissions(
 			@PathVariable @NotNull String requestId,
 			 @Parameter(description = "Policy's uuid identifier.", required = true)
@@ -318,17 +274,12 @@ public class IdmRequestAuthorizationPolicyController extends AbstractRequestDtoC
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUTHORIZATIONPOLICY_READ + "')")
 	@Operation(
 			summary = "Get all supported evaluators", 
-			/* nickname = "getSupportedAuthorizationEvaluators", */
+			operationId = "getSupportedAuthorizationEvaluators",
 			tags = { IdmRequestAuthorizationPolicyController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.AUTHORIZATIONPOLICY_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.AUTHORIZATIONPOLICY_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUTHORIZATIONPOLICY_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUTHORIZATIONPOLICY_READ })
+    })
 	public CollectionModel<AuthorizationEvaluatorDto> getSupportedEvaluators() {
 		return new CollectionModel<>(authorizationManager.getSupportedEvaluators());
 	}
@@ -343,17 +294,13 @@ public class IdmRequestAuthorizationPolicyController extends AbstractRequestDtoC
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUTHORIZATIONPOLICY_READ + "')")
 	@Operation(
 			summary = "Get all supported authorizable types", 
-			/* nickname = "getAuthorizableTypes", */
+			operationId = "getAuthorizableTypes",
 			tags = { IdmRequestAuthorizationPolicyController.TAG },
 			description = "Returns all types, with securing data support (by authorization policies).")
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-                            CoreGroupPermission.AUTHORIZATIONPOLICY_READ }),
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-                            CoreGroupPermission.AUTHORIZATIONPOLICY_READ })
-            }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUTHORIZATIONPOLICY_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUTHORIZATIONPOLICY_READ })
+    })
 	public CollectionModel<AuthorizableType> getAuthorizableTypes() {
 		return new CollectionModel<>(authorizationManager.getAuthorizableTypes());
 	}

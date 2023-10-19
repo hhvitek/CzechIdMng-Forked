@@ -40,14 +40,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseController.BASE_PATH + "/filter-builders")
-@Tag(
-		name = FilterBuilderController.TAG,
-		description = "Configure filter builders"//,
-		
-		
-		
-
-)
+@Tag(name = FilterBuilderController.TAG, description = "Configure filter builders")
 public class FilterBuilderController  {
 
 	protected static final String TAG = "filter builders filters";
@@ -60,18 +53,13 @@ public class FilterBuilderController  {
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.MODULE_READ + "')")
 	@Operation(
 			summary = "Find all filter builders",
-			/* nickname = "findAllFilterBuilders", */
+			operationId = "findAllFilterBuilders",
 			tags = { FilterBuilderController.TAG },
 						description = "Returns all registered filter builders.")
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.MODULE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.MODULE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.MODULE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.MODULE_READ })
+    })
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
@@ -93,17 +81,12 @@ public class FilterBuilderController  {
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.MODULE_UPDATE + "')")
 	@Operation(
 			summary = "Activate filter builder",
-			/* nickname = "activateFilterBuilder", */
+			operationId = "activateFilterBuilder",
 			tags = { FilterBuilderController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.MODULE_UPDATE }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.MODULE_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.MODULE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.MODULE_UPDATE })
+    })
 	public void enable(
 			 @Parameter(description = "Filter builder's identifier.", required = true)
 			@PathVariable @NotNull String filterId) {

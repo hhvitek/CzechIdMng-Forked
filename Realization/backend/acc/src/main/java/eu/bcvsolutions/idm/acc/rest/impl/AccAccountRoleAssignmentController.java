@@ -63,14 +63,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/" + AccModuleDescriptor.MODULE_ID + "/account-role-assignments")
-@Tag(
-		name = AccAccountRoleAssignmentController.TAG,
-		description = "Operations with account role assignments"//,
-		
-		
-		
-
-)
+@Tag(name = AccAccountRoleAssignmentController.TAG, description = "Operations with account role assignments")
 public class AccAccountRoleAssignmentController extends AbstractReadWriteDtoController<AccAccountRoleAssignmentDto, AccAccountRoleAssignmentFilter> {
 
 	protected static final String TAG = "Account role assignments";
@@ -90,17 +83,12 @@ public class AccAccountRoleAssignmentController extends AbstractReadWriteDtoCont
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ + "')")
 	@Operation(
 			summary = "Search account role assignments (/search/quick alias)",
-			/* nickname = "searchAccountRoleAssignments", */
+			operationId = "searchAccountRoleAssignments",
 			tags = { AccAccountRoleAssignmentController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -114,17 +102,12 @@ public class AccAccountRoleAssignmentController extends AbstractReadWriteDtoCont
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ + "')")
 	@Operation(
 			summary = "Search account role assignment",
-			/* nickname = "searchQuickAccountRoleAssignments", */
+			operationId = "searchQuickAccountRoleAssignments",
 			tags = { AccAccountRoleAssignmentController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -138,16 +121,12 @@ public class AccAccountRoleAssignmentController extends AbstractReadWriteDtoCont
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ACCOUNTROLEASSIGNMENT_AUTOCOMPLETE + "')")
 	@Operation(
 			summary = "Autocomplete account role assignments (selectbox usage)",
-			/* nickname = "autocompleteAccountRoleAssignments", */
+			operationId = "autocompleteAccountRoleAssignments",
 			tags = { AccAccountRoleAssignmentController.TAG })
-    @SecurityRequirements(
-        value = {
-            @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-                    AccGroupPermission.ACCOUNTROLEASSIGNMENT_AUTOCOMPLETE }),
-            @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-                    AccGroupPermission.ACCOUNTROLEASSIGNMENT_AUTOCOMPLETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.ACCOUNTROLEASSIGNMENT_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.ACCOUNTROLEASSIGNMENT_AUTOCOMPLETE })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -161,17 +140,12 @@ public class AccAccountRoleAssignmentController extends AbstractReadWriteDtoCont
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ACCOUNTROLEASSIGNMENT_CANBEREQUESTED + "')")
 	@Operation(
 			summary = "Find assigned roles, which can be requested",
-			/* nickname = "findCanBeRequestedAccountRoleAssignments", */
+			operationId = "findCanBeRequestedAccountRoleAssignments",
 			tags = { AccAccountRoleAssignmentController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.ACCOUNTROLEASSIGNMENT_CANBEREQUESTED }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.ACCOUNTROLEASSIGNMENT_CANBEREQUESTED })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.ACCOUNTROLEASSIGNMENT_CANBEREQUESTED }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.ACCOUNTROLEASSIGNMENT_CANBEREQUESTED })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findCanBeRequested(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -186,17 +160,12 @@ public class AccAccountRoleAssignmentController extends AbstractReadWriteDtoCont
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ACCOUNTROLEASSIGNMENT_COUNT + "')")
 	@Operation(
 			summary = "The number of entities that match the filter",
-			/* nickname = "countAccountRoleAssignments", */
+			operationId = "countAccountRoleAssignments",
 			tags = { AccAccountRoleAssignmentController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.ACCOUNTROLEASSIGNMENT_COUNT }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.ACCOUNTROLEASSIGNMENT_COUNT })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.ACCOUNTROLEASSIGNMENT_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.ACCOUNTROLEASSIGNMENT_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -208,7 +177,7 @@ public class AccAccountRoleAssignmentController extends AbstractReadWriteDtoCont
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ + "')")
 	@Operation(
 			summary = "Account role assignment detail",
-			/* nickname = "getAccountRoleAssignment", */
+			operationId = "getAccountRoleAssignment",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -237,10 +206,9 @@ public class AccAccountRoleAssignmentController extends AbstractReadWriteDtoCont
 
             tags = { AccAccountRoleAssignmentController.TAG })
     @SecurityRequirements({
-            @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ }),
-            @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ })
-        }
-    )
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ })
+    })
 	public ResponseEntity<?> get(
 			@Parameter(description = "Account role assignment's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -253,17 +221,12 @@ public class AccAccountRoleAssignmentController extends AbstractReadWriteDtoCont
 	//@PreAuthorize("hasAuthority('" + AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ + "')")
 	@Operation(
 			summary = "What logged identity can do with given record",
-			/* nickname = "getPermissionsOnAccountRoleAssignment", */
+			operationId = "getPermissionsOnAccountRoleAssignment",
 			tags = { AccAccountRoleAssignmentController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ })
+    })
 	public Set<String> getPermissions(
 			 @Parameter(description = "Account role assignment's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -282,17 +245,12 @@ public class AccAccountRoleAssignmentController extends AbstractReadWriteDtoCont
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ + "')")
 	@Operation(
 			summary = "Account role assignment extended attributes form definitions",
-			/* nickname = "getAccountRoleAssignmentFormDefinitions", */
+			operationId = "getAccountRoleAssignmentFormDefinitions",
 			tags = { AccAccountRoleAssignmentController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ })
+    })
 	public ResponseEntity<?> getFormDefinitions(
 			 @Parameter(description = "Role's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -324,17 +282,12 @@ public class AccAccountRoleAssignmentController extends AbstractReadWriteDtoCont
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ + "')")
 	@Operation(
 			summary = "Account role assignment form definition - read values",
-			/* nickname = "getAccountRoleFormValues", */
+			operationId = "getAccountRoleFormValues",
 			tags = { AccAccountRoleAssignmentController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.ACCOUNTROLEASSIGNMENT_READ })
+    })
 	public EntityModel<?> getFormValues(
 			 @Parameter(description = "Account role assignment's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId, 

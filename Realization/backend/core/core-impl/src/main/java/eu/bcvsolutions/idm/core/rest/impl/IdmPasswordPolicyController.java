@@ -50,13 +50,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/password-policies")
-@Tag(
-		name = IdmPasswordPolicyController.TAG,
-		description = "Operations with password policies"//,
-
-		
-
-)
+@Tag(name = IdmPasswordPolicyController.TAG, description = "Operations with password policies")
 public class IdmPasswordPolicyController extends DefaultReadWriteDtoController<IdmPasswordPolicyDto, IdmPasswordPolicyFilter> {
 	
 	protected static final String TAG = "Password policies";
@@ -73,13 +67,22 @@ public class IdmPasswordPolicyController extends DefaultReadWriteDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.PASSWORDPOLICY_CREATE + "')"
 			+ " or hasAuthority('" + CoreGroupPermission.PASSWORDPOLICY_UPDATE + "')")
 	@Operation(
-			summary = "Create / update password policy"
-			/* nickname = "postPasswordPolicy", */ 
-			/*response = IdmPasswordPolicy.class*/)
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+        summary = "Create / update password policy",
+        operationId = "postPasswordPolicy",
+        responses = @ApiResponse(
+            responseCode = "200",
+            content = {
+                @Content(
+                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                    schema = @Schema(
+                        implementation = IdmPasswordPolicy.class
+                    )
+                )
+            }
+        )
+	)
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						CoreGroupPermission.PASSWORDPOLICY_CREATE,
 						CoreGroupPermission.PASSWORDPOLICY_UPDATE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
@@ -97,7 +100,7 @@ public class IdmPasswordPolicyController extends DefaultReadWriteDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.PASSWORDPOLICY_UPDATE + "')")
 	@Operation(
 			summary = "Update password policy",
-			/* nickname = "putPasswordPolicy", */ 
+			operationId = "putPasswordPolicy", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -110,15 +113,10 @@ public class IdmPasswordPolicyController extends DefaultReadWriteDtoController<I
                     }
             ), 
 			tags = { IdmPasswordPolicyController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.PASSWORDPOLICY_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.PASSWORDPOLICY_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.PASSWORDPOLICY_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.PASSWORDPOLICY_UPDATE })
+    })
 	public ResponseEntity<?> put(
 			 @Parameter(description = "Policy's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
@@ -132,7 +130,7 @@ public class IdmPasswordPolicyController extends DefaultReadWriteDtoController<I
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.PASSWORDPOLICY_UPDATE + "')")
 	@Operation(
 			summary = "Update password policy",
-			/* nickname = "patchIdentity", */ 
+			operationId = "patchIdentity", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -145,15 +143,10 @@ public class IdmPasswordPolicyController extends DefaultReadWriteDtoController<I
                     }
             ), 
 			tags = { IdmPasswordPolicyController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.PASSWORDPOLICY_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.PASSWORDPOLICY_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.PASSWORDPOLICY_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.PASSWORDPOLICY_UPDATE })
+    })
 	public ResponseEntity<?> patch(
 			 @Parameter(description = "Policy's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
@@ -168,17 +161,12 @@ public class IdmPasswordPolicyController extends DefaultReadWriteDtoController<I
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@Operation(
 			summary = "Delete password policy",
-			/* nickname = "deletePasswordPolicy", */ 
+			operationId = "deletePasswordPolicy", 
 			tags = { IdmPasswordPolicyController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.PASSWORDPOLICY_DELETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.PASSWORDPOLICY_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.PASSWORDPOLICY_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.PASSWORDPOLICY_DELETE })
+    })
 	public ResponseEntity<?> delete(
 			 @Parameter(description = "Policy's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -196,7 +184,7 @@ public class IdmPasswordPolicyController extends DefaultReadWriteDtoController<I
 	@RequestMapping(value = "/{backendId}/generate", method = RequestMethod.GET)
 	@Operation(
 			summary = "Generate password",
-			/* nickname = "generatePassword", */ 
+			operationId = "generatePassword", 
 			tags = { IdmPasswordPolicyController.TAG },
 			description = "Returns generated password by password policy.")
 	public String generate(
@@ -216,7 +204,7 @@ public class IdmPasswordPolicyController extends DefaultReadWriteDtoController<I
 	@RequestMapping(value = "/{backendId}/validate", method = RequestMethod.POST)
 	@Operation(
 			summary = "Validate password",
-			/* nickname = "validatePassword", */ 
+			operationId = "validatePassword", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -251,7 +239,7 @@ public class IdmPasswordPolicyController extends DefaultReadWriteDtoController<I
 	@RequestMapping(value = "/validate/default", method = RequestMethod.POST)
 	@Operation(
 			summary = "Validate password (by default policy)",
-			/* nickname = "validatePasswordByDefault", */ 
+			operationId = "validatePasswordByDefault", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -284,7 +272,7 @@ public class IdmPasswordPolicyController extends DefaultReadWriteDtoController<I
 	@RequestMapping(value = "/generate/default", method = RequestMethod.GET)
 	@Operation(
 			summary = "Generate password (by default policy)",
-			/* nickname = "genaratePasswordByDefault", */ 
+			operationId = "genaratePasswordByDefault", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {

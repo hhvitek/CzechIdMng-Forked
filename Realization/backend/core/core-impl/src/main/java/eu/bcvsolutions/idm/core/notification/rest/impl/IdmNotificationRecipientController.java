@@ -45,14 +45,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/notification-recipients")
-@Tag(
-		name = IdmNotificationRecipientController.TAG, 
-		description = "Read notification recipients"//, 
-		 
-		
-		
-
-)
+@Tag(name = IdmNotificationRecipientController.TAG, description = "Read notification recipients")
 public class IdmNotificationRecipientController extends AbstractReadWriteDtoController<IdmNotificationRecipientDto, IdmNotificationRecipientFilter> {
 
 	protected static final String TAG = "Notification recipients";
@@ -68,17 +61,12 @@ public class IdmNotificationRecipientController extends AbstractReadWriteDtoCont
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATION_READ + "')")
 	@Operation(
 			summary = "Search notification recipients (/search/quick alias)", 
-			/* nickname = "searchNotificationRecipients", */ 
+			operationId = "searchNotificationRecipients",
 			tags = { IdmNotificationRecipientController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						NotificationGroupPermission.NOTIFICATION_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						NotificationGroupPermission.NOTIFICATION_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { NotificationGroupPermission.NOTIFICATION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { NotificationGroupPermission.NOTIFICATION_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -92,17 +80,12 @@ public class IdmNotificationRecipientController extends AbstractReadWriteDtoCont
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@Operation(
 			summary = "Search notification recipients", 
-			/* nickname = "searchQuickNotificationRecipients", */ 
+			operationId = "searchQuickNotificationRecipients",
 			tags = { IdmNotificationRecipientController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						NotificationGroupPermission.NOTIFICATION_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						NotificationGroupPermission.NOTIFICATION_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { NotificationGroupPermission.NOTIFICATION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { NotificationGroupPermission.NOTIFICATION_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -117,17 +100,12 @@ public class IdmNotificationRecipientController extends AbstractReadWriteDtoCont
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATION_COUNT + "')")
 	@Operation(
 			summary = "The number of entities that match the filter", 
-			/* nickname = "countNotificationRecipients", */ 
+			operationId = "countNotificationRecipients",
 			tags = { IdmNotificationRecipientController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						NotificationGroupPermission.NOTIFICATION_COUNT }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						NotificationGroupPermission.NOTIFICATION_COUNT })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { NotificationGroupPermission.NOTIFICATION_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { NotificationGroupPermission.NOTIFICATION_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -138,7 +116,7 @@ public class IdmNotificationRecipientController extends AbstractReadWriteDtoCont
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@Operation(
 			summary = "Notification recipient detail", 
-			/* nickname = "getNotificationRecipient", */ 
+			operationId = "getNotificationRecipient",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -151,15 +129,10 @@ public class IdmNotificationRecipientController extends AbstractReadWriteDtoCont
                     }
             ), 
 			tags = { IdmNotificationRecipientController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						NotificationGroupPermission.NOTIFICATION_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						NotificationGroupPermission.NOTIFICATION_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { NotificationGroupPermission.NOTIFICATION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { NotificationGroupPermission.NOTIFICATION_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Recipient's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -172,12 +145,10 @@ public class IdmNotificationRecipientController extends AbstractReadWriteDtoCont
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATION_READ + "')")
 	@Operation(
 			summary = "What logged identity can do with given record", 
-			/* nickname = "getPermissionsOnNotificationRecipient", */ 
+			operationId = "getPermissionsOnNotificationRecipient",
 			tags = { IdmNotificationRecipientController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
 						NotificationGroupPermission.NOTIFICATION_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						NotificationGroupPermission.NOTIFICATION_READ})

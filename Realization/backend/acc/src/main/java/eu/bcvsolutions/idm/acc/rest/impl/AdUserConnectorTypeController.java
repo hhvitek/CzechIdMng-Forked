@@ -43,14 +43,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/connector-types/ad-connector-type")
-@Tag(
-		name = AdUserConnectorTypeController.TAG,
-		
-		description = "Controller for AD connector wizard."//,
-		
-		
-
-)
+@Tag(name = AdUserConnectorTypeController.TAG, description = "Controller for AD connector wizard.")
 public class AdUserConnectorTypeController {
 	
 	protected static final String TAG = "AD Wizard";
@@ -63,12 +56,10 @@ public class AdUserConnectorTypeController {
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
 	@Operation(
 			summary = "Download public certificate",
-			/* nickname = "downloadCertificate", */
+			operationId = "downloadCertificate",
 			tags = {AdUserConnectorTypeController.TAG})
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							AccGroupPermission.SYSTEM_READ}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							AccGroupPermission.SYSTEM_READ})

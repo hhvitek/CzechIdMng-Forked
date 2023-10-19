@@ -52,13 +52,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @Enabled(AccModuleDescriptor.MODULE_ID)
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/provisioning-batches")
-@Tag(
-		name = SysProvisioningBatchController.TAG,
-		description = "Active provisioning operations in queue - grouped by system entity."//,
-		
-		
-
-)
+@Tag(name = SysProvisioningBatchController.TAG, description = "Active provisioning operations in queue - grouped by system entity.")
 public class SysProvisioningBatchController
 		extends AbstractReadDtoController<SysProvisioningBatchDto, EmptyFilter> {
 
@@ -81,19 +75,13 @@ public class SysProvisioningBatchController
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_ADMIN + "')")
 	@Operation(
-			summary = "Search provisioning batches (/search/quick alias)"
-			/* nickname = "searchProvisioningBatches", */
-			 
-			)
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.SYSTEM_ADMIN }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.SYSTEM_ADMIN })
-        }
+        summary = "Search provisioning batches (/search/quick alias)",
+        operationId = "searchProvisioningBatches"
     )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_ADMIN }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_ADMIN })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -107,17 +95,12 @@ public class SysProvisioningBatchController
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@Operation(
 			summary = "Search provisioning batches ", 
-			/* nickname = "searchQuickProvisioningBatches", */
+			operationId = "searchQuickProvisioningBatches",
 			tags = { SysProvisioningBatchController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						AccGroupPermission.SYSTEM_ADMIN }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						AccGroupPermission.SYSTEM_ADMIN })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_ADMIN }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_ADMIN })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -132,7 +115,7 @@ public class SysProvisioningBatchController
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@Operation(
 			summary = "Provisioning batch detail", 
-			/* nickname = "getProvisioningBatch", */
+			operationId = "getProvisioningBatch",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -145,15 +128,10 @@ public class SysProvisioningBatchController
                     }
             ), 
 			tags = { SysProvisioningBatchController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						AccGroupPermission.SYSTEM_ADMIN }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						AccGroupPermission.SYSTEM_ADMIN })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_ADMIN }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_ADMIN })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Provisioning batch's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -165,18 +143,13 @@ public class SysProvisioningBatchController
 	@RequestMapping(value = "/{backendId}/retry", method = RequestMethod.PUT)
 	@Operation(
 			summary = "Retry provisioning batch", 
-			/* nickname = "retryProvisioningBatch", */
+			operationId = "retryProvisioningBatch",
 			tags = { SysProvisioningBatchController.TAG }, 
 						description = "Retry all provisioning operations in given batch - retry all active operations in queue grouped by system entity ordered by incomming date.")
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.SYSTEM_ADMIN }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.SYSTEM_ADMIN })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_ADMIN }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_ADMIN })
+    })
 	public ResponseEntity<?> retry(
 			 @Parameter(description = "Provisioning batch's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -193,18 +166,13 @@ public class SysProvisioningBatchController
 	@RequestMapping(value = "/{backendId}/cancel", method = RequestMethod.PUT)
 	@Operation(
 			summary = "Cance provisioning batch", 
-			/* nickname = "cancelProvisioningBatch", */
+			operationId = "cancelProvisioningBatch",
 			tags = { SysProvisioningBatchController.TAG }, 
 						description = "Cancel all provisioning operations in given batch - cancel all active operations in queue grouped by system entity.")
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						AccGroupPermission.SYSTEM_ADMIN }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						AccGroupPermission.SYSTEM_ADMIN })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_ADMIN }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_ADMIN })
+    })
 	public ResponseEntity<Void> cancel(
 			 @Parameter(description = "Provisioning batch's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {

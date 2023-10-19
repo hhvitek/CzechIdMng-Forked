@@ -36,14 +36,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/vs/systems")
-@Tag(
-		name = VsSystemController.TAG, 
-		 
-		description = "Operations with virtual system (only for create now)"//, 
-		
-		
-
-) 
+@Tag(name = VsSystemController.TAG, description = "Operations with virtual system (only for create now)") 
 public class VsSystemController {
 
 	private final VsSystemService service;
@@ -58,7 +51,7 @@ public class VsSystemController {
 	@ResponseBody
 	@RequestMapping(value = "/", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_CREATE + "')")
-	@Operation(summary = "Create new virtual system", /* nickname = "createVsSystem", */
+	@Operation(summary = "Create new virtual system", operationId = "createVsSystem",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {

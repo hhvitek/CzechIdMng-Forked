@@ -48,14 +48,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @Enabled(AccModuleDescriptor.MODULE_ID)
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/role-catalogue-accounts")
-@Tag(
-		name = AccRoleCatalogueAccountController.TAG,
-		
-		description = "Assigned role catalogue accounts on target system"//,
-		
-		
-
-)
+@Tag(name = AccRoleCatalogueAccountController.TAG, description = "Assigned role catalogue accounts on target system")
 public class AccRoleCatalogueAccountController extends AbstractReadWriteDtoController<AccRoleCatalogueAccountDto, AccRoleCatalogueAccountFilter> {
 
 	protected static final String TAG = "Role catalogue accounts";
@@ -71,12 +64,10 @@ public class AccRoleCatalogueAccountController extends AbstractReadWriteDtoContr
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ROLE_CATALOGUE_ACCOUNT_READ + "')")
 	@Operation(
 			summary = "Search role catalogue accounts (/search/quick alias)",
-			/* nickname = "searchRoleCatalogueAccounts", */
+			operationId = "searchRoleCatalogueAccounts",
 			tags = { AccRoleCatalogueAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							AccGroupPermission.ROLE_CATALOGUE_ACCOUNT_READ}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							AccGroupPermission.ROLE_CATALOGUE_ACCOUNT_READ})
@@ -96,12 +87,10 @@ public class AccRoleCatalogueAccountController extends AbstractReadWriteDtoContr
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ROLE_CATALOGUE_ACCOUNT_READ + "')")
 	@Operation(
 			summary = "Search role catalogue accounts",
-			/* nickname = "searchQuickRoleCatalogueAccounts", */
+			operationId = "searchQuickRoleCatalogueAccounts",
 			tags = { AccRoleCatalogueAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							AccGroupPermission.ROLE_CATALOGUE_ACCOUNT_READ}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							AccGroupPermission.ROLE_CATALOGUE_ACCOUNT_READ})
@@ -120,7 +109,7 @@ public class AccRoleCatalogueAccountController extends AbstractReadWriteDtoContr
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ROLE_CATALOGUE_ACCOUNT_READ + "')")
 	@Operation(
 			summary = "Role catalogue account detail",
-			/* nickname = "getRoleCatalogueAccount", */
+			operationId = "getRoleCatalogueAccount",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -133,10 +122,8 @@ public class AccRoleCatalogueAccountController extends AbstractReadWriteDtoContr
                     }
             ),
 			tags = { AccRoleCatalogueAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							AccGroupPermission.ROLE_CATALOGUE_ACCOUNT_READ}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							AccGroupPermission.ROLE_CATALOGUE_ACCOUNT_READ})
@@ -154,7 +141,7 @@ public class AccRoleCatalogueAccountController extends AbstractReadWriteDtoContr
 			+ " or hasAuthority('" + AccGroupPermission.ROLE_CATALOGUE_ACCOUNT_UPDATE + "')")
 	@Operation(
 			summary = "Create / update role catalogue account",
-			/* nickname = "postRoleCatalogueAccount", */
+			operationId = "postRoleCatalogueAccount",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -167,10 +154,8 @@ public class AccRoleCatalogueAccountController extends AbstractReadWriteDtoContr
                     }
             ),
 			tags = { AccRoleCatalogueAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							AccGroupPermission.ROLE_CATALOGUE_ACCOUNT_CREATE,
 							AccGroupPermission.ROLE_CATALOGUE_ACCOUNT_UPDATE}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
@@ -189,7 +174,7 @@ public class AccRoleCatalogueAccountController extends AbstractReadWriteDtoContr
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	@Operation(
 			summary = "Update role catalogue account",
-			/* nickname = "putRoleCatalogueAccount", */
+			operationId = "putRoleCatalogueAccount",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -202,10 +187,8 @@ public class AccRoleCatalogueAccountController extends AbstractReadWriteDtoContr
                     }
             ),
 			tags = { AccRoleCatalogueAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							AccGroupPermission.ROLE_CATALOGUE_ACCOUNT_UPDATE}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							AccGroupPermission.ROLE_CATALOGUE_ACCOUNT_UPDATE})
@@ -224,12 +207,10 @@ public class AccRoleCatalogueAccountController extends AbstractReadWriteDtoContr
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@Operation(
 			summary = "Delete role catalogue account",
-			/* nickname = "deleteRoleCatalogueAccount", */
+			operationId = "deleteRoleCatalogueAccount",
 			tags = { AccRoleCatalogueAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							AccGroupPermission.ROLE_CATALOGUE_ACCOUNT_DELETE}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							AccGroupPermission.ROLE_CATALOGUE_ACCOUNT_DELETE})
@@ -247,17 +228,12 @@ public class AccRoleCatalogueAccountController extends AbstractReadWriteDtoContr
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ROLE_CATALOGUE_ACCOUNT_READ + "')")
 	@Operation(
 			summary = "What logged identity can do with given record",
-			/* nickname = "getPermissionsOnRoleCatalogueAccount", */
+			operationId = "getPermissionsOnRoleCatalogueAccount",
 			tags = { AccRoleCatalogueAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							AccGroupPermission.ROLE_CATALOGUE_ACCOUNT_READ }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							AccGroupPermission.ROLE_CATALOGUE_ACCOUNT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.ROLE_CATALOGUE_ACCOUNT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.ROLE_CATALOGUE_ACCOUNT_READ })
+    })
 	public Set<String> getPermissions(
 			 @Parameter(description = "Role catalogue account's uuid identifier.", required = true)
 					@PathVariable @NotNull String backendId) {

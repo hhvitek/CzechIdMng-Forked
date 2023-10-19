@@ -37,13 +37,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseController.BASE_PATH + "/caches")
-@Tag(
-		name = CacheController.TAG//,
-		
-
-		
-
-)
+@Tag(name = CacheController.TAG)
 public class CacheController {
 
 	protected static final String TAG = "Cache";
@@ -64,17 +58,12 @@ public class CacheController {
 	@PreAuthorize("hasAuthority('" + APP_ADMIN + "')")
 	@Operation(
 			summary = "Get all available caches",
-			/* nickname = "getAvailableCaches", */
+			operationId = "getAvailableCaches",
 			tags = { CacheController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						APP_ADMIN }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						APP_ADMIN })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { APP_ADMIN }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { APP_ADMIN })
+    })
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public CollectionModel<?> getAvailableCaches() {
 		List<IdmCacheDto> records = cacheManager.getAllAvailableCaches();
@@ -99,17 +88,12 @@ public class CacheController {
 	@PreAuthorize("hasAuthority('" + APP_ADMIN + "')")
 	@Operation(
 			summary = "Evict cache",
-			/* nickname = "evictCache", */
+			operationId = "evictCache",
 			tags = { CacheController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						APP_ADMIN }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						APP_ADMIN })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { APP_ADMIN }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { APP_ADMIN })
+    })
 	public void evictCache(
 			 @Parameter(description = "Cache identifier.", required = true)
 			@PathVariable @NotNull String cacheId) {
@@ -125,17 +109,12 @@ public class CacheController {
 	@PreAuthorize("hasAuthority('" + APP_ADMIN + "')")
 	@Operation(
 			summary = "Evict all caches",
-			/* nickname = "evictAllCaches", */
+			operationId = "evictAllCaches",
 			tags = { CacheController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							APP_ADMIN }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							APP_ADMIN })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { APP_ADMIN }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { APP_ADMIN })
+    })
 	public void evictAllCaches() {
 		cacheManager.evictAllCaches();
 	}

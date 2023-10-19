@@ -37,14 +37,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/workflow-processes")
-@Tag(
-		name = WorkflowProcessInstanceController.TAG,
-
-		description = "Running WF processes"//,
-		
-		
-
-)
+@Tag(name = WorkflowProcessInstanceController.TAG, description = "Running WF processes")
 public class WorkflowProcessInstanceController extends AbstractReadWriteDtoController<WorkflowProcessInstanceDto, WorkflowFilterDto> {
 
 	protected static final String TAG = "Workflow - process instances";
@@ -77,7 +70,7 @@ public class WorkflowProcessInstanceController extends AbstractReadWriteDtoContr
 	@RequestMapping(method = RequestMethod.GET, value = "/search/quick")
 	@Operation(
 			summary = "Search process instances",
-			/* nickname = "searchQuickProcessInstances", */
+			operationId = "searchQuickProcessInstances",
 			tags = { WorkflowProcessInstanceController.TAG })
 	@PageableAsQueryParam
 	public CollectionModel<?> searchQuick(
@@ -90,7 +83,7 @@ public class WorkflowProcessInstanceController extends AbstractReadWriteDtoContr
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{backendId}")
 	@Operation(
 			summary = "Delete process instances",
-			/* nickname = "deleteProcessInstances", */
+			operationId = "deleteProcessInstances",
 			tags = { WorkflowProcessInstanceController.TAG })
 	public ResponseEntity<WorkflowProcessInstanceDto> delete(
 			 @Parameter(description = "Process instance id.", required = true)

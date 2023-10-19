@@ -48,14 +48,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @Enabled(AccModuleDescriptor.MODULE_ID)
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/contract-slice-accounts")
-@Tag(
-		name = AccContractSliceAccountController.TAG,  
-
-		description = "Assigned accounts on target system"//,
-		
-
-
-)
+@Tag(name = AccContractSliceAccountController.TAG, description = "Assigned accounts on target system")
 public class AccContractSliceAccountController extends AbstractReadWriteDtoController<AccContractSliceAccountDto, AccContractSliceAccountFilter> {
 	
 	protected static final String TAG = "Contract slice accounts";
@@ -71,17 +64,12 @@ public class AccContractSliceAccountController extends AbstractReadWriteDtoContr
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.CONTRACT_ACCOUNT_READ + "')")
 	@Operation(
 			summary = "Search contract slice accounts (/search/quick alias)", 
-			/* nickname = "searchContractSliceAccounts", */ 
+			operationId = "searchContractSliceAccounts", 
 			tags = { AccContractSliceAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						AccGroupPermission.CONTRACT_ACCOUNT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						AccGroupPermission.CONTRACT_ACCOUNT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.CONTRACT_ACCOUNT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.CONTRACT_ACCOUNT_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -96,17 +84,12 @@ public class AccContractSliceAccountController extends AbstractReadWriteDtoContr
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.CONTRACT_ACCOUNT_READ + "')")
 	@Operation(
 			summary = "Search contract slice accounts", 
-			/* nickname = "searchQuickContractSliceAccounts", */ 
+			operationId = "searchQuickContractSliceAccounts", 
 			tags = { AccContractSliceAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						AccGroupPermission.CONTRACT_ACCOUNT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						AccGroupPermission.CONTRACT_ACCOUNT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.CONTRACT_ACCOUNT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.CONTRACT_ACCOUNT_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -120,7 +103,7 @@ public class AccContractSliceAccountController extends AbstractReadWriteDtoContr
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.CONTRACT_ACCOUNT_READ + "')")
 	@Operation(
 			summary = "ContractSlice account detail", 
-			/* nickname = "getContractSliceAccount", */ 
+			operationId = "getContractSliceAccount", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -133,15 +116,10 @@ public class AccContractSliceAccountController extends AbstractReadWriteDtoContr
                     }
             ), 
 			tags = { AccContractSliceAccountController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							AccGroupPermission.CONTRACT_ACCOUNT_READ }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							AccGroupPermission.CONTRACT_ACCOUNT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.CONTRACT_ACCOUNT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.CONTRACT_ACCOUNT_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "ContractSlice account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -154,7 +132,7 @@ public class AccContractSliceAccountController extends AbstractReadWriteDtoContr
 			+ " or hasAuthority('" + AccGroupPermission.CONTRACT_ACCOUNT_UPDATE + "')")
 	@Operation(
 			summary = "Create / update contract slice account", 
-			/* nickname = "postContractSlice", */ 
+			operationId = "postContractSlice", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -167,10 +145,8 @@ public class AccContractSliceAccountController extends AbstractReadWriteDtoContr
                     }
             ), 
 			tags = { AccContractSliceAccountController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						AccGroupPermission.CONTRACT_ACCOUNT_CREATE,
 						AccGroupPermission.CONTRACT_ACCOUNT_UPDATE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
@@ -189,7 +165,7 @@ public class AccContractSliceAccountController extends AbstractReadWriteDtoContr
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	@Operation(
 			summary = "Update contract slice account", 
-			/* nickname = "putContractSliceAccount", */ 
+			operationId = "putContractSliceAccount", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -202,15 +178,10 @@ public class AccContractSliceAccountController extends AbstractReadWriteDtoContr
                     }
             ), 
 			tags = { AccContractSliceAccountController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						AccGroupPermission.CONTRACT_ACCOUNT_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						AccGroupPermission.CONTRACT_ACCOUNT_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.CONTRACT_ACCOUNT_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.CONTRACT_ACCOUNT_UPDATE })
+    })
 	public ResponseEntity<?> put(
 			 @Parameter(description = "ContractSlice account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
@@ -224,17 +195,12 @@ public class AccContractSliceAccountController extends AbstractReadWriteDtoContr
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@Operation(
 			summary = "Delete contract slice account", 
-			/* nickname = "deleteContractSliceAccount", */ 
+			operationId = "deleteContractSliceAccount", 
 			tags = { AccContractSliceAccountController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						AccGroupPermission.CONTRACT_ACCOUNT_DELETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						AccGroupPermission.CONTRACT_ACCOUNT_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.CONTRACT_ACCOUNT_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.CONTRACT_ACCOUNT_DELETE })
+    })
 	public ResponseEntity<?> delete(
 			 @Parameter(description = "ContractSlice account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -247,17 +213,12 @@ public class AccContractSliceAccountController extends AbstractReadWriteDtoContr
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.CONTRACT_ACCOUNT_READ + "')")
 	@Operation(
 			summary = "What logged contract slice can do with given record", 
-			/* nickname = "getPermissionsOnContractSliceAccount", */ 
+			operationId = "getPermissionsOnContractSliceAccount", 
 			tags = { AccContractSliceAccountController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						AccGroupPermission.CONTRACT_ACCOUNT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						AccGroupPermission.CONTRACT_ACCOUNT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.CONTRACT_ACCOUNT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.CONTRACT_ACCOUNT_READ })
+    })
 	public Set<String> getPermissions(
 			 @Parameter(description = "ContractSlice account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {

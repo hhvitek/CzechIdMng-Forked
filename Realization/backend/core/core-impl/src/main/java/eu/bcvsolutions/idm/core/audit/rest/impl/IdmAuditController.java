@@ -74,14 +74,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/audits")
-@Tag(
-		name = IdmAuditController.TAG,
-		description = "Read / search audit log"//, 
-
-		
-		
-
-)
+@Tag(name = IdmAuditController.TAG, description = "Read / search audit log")
 @Transactional(readOnly = true)
 public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditDto, IdmAuditFilter> {
 
@@ -104,17 +97,12 @@ public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditD
 	@RequestMapping(value= "/search/quick", method = RequestMethod.GET)
 	@Operation(
 			summary = "Search audit logs",
-			/* nickname = "searchQuickAudits", */ 
+			operationId = "searchQuickAudits", 
 			tags = { IdmAuditController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.AUDIT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.AUDIT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUDIT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUDIT_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -139,14 +127,12 @@ public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditD
 	@RequestMapping(value= "/search/entity", method = RequestMethod.GET)
 	@Operation(
 			summary = "Search audit logs related to entity",
-			/* nickname = "searchEntity", */ 
+			operationId = "searchEntity", 
 			tags = { IdmAuditController.TAG })
-    @SecurityRequirements(
-        value = {
-            @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUDIT_READ }),
-            @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUDIT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUDIT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUDIT_READ })
+    })
     @Parameters({
          @Parameter(name = "entity", schema = @Schema( implementation=String.class, type = "query"), description = "Entity class - find related audit log to this class"),
     })
@@ -185,17 +171,12 @@ public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditD
 	@RequestMapping(value= "/search/login", method = RequestMethod.GET)
 	@Operation(
 			summary = "Search audit logs for login identities",
-			/* nickname = "searchLoginAudits", */ 
+			operationId = "searchLoginAudits", 
 			tags = { IdmAuditController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.AUDIT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.AUDIT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUDIT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUDIT_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findLogin(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -210,18 +191,14 @@ public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditD
 	@RequestMapping(value= "/search/entities", method = RequestMethod.GET)
 	@Operation(
 			summary = "Search audited entity classes",
-			/* nickname = "findAllAuditedEntities", */ 
+			operationId = "findAllAuditedEntities", 
 			tags = { IdmAuditController.TAG },
 			description = "Method return list of class simple name for which is audited."
 					+ " Must at least one attribute withannotation {@value Audited}")
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-                            CoreGroupPermission.AUDIT_READ }),
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-                            CoreGroupPermission.AUDIT_READ })
-            }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUDIT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUDIT_READ })
+    })
 	public ResponseEntity<?> findAuditedEntity() {
 		List<String> entities = auditService.getAllAuditedEntitiesNames();
 		return new ResponseEntity<>(toCollectionModel(entities, null), HttpStatus.OK);
@@ -233,7 +210,7 @@ public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditD
 	@Override
 	@Operation(
 			summary = "Audit log detail",
-			/* nickname = "getAuditLog", */ 
+			operationId = "getAuditLog", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -246,15 +223,10 @@ public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditD
                     }
             ), 
 			tags = { IdmAuditController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.AUDIT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.AUDIT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUDIT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUDIT_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Audit log's identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -285,7 +257,7 @@ public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditD
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUDIT_READ + "')")
 	@Operation(
 			summary = "Audit log detail",
-			/* nickname = "getAuditLogPreviousVersion", */ 
+			operationId = "getAuditLogPreviousVersion", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -299,15 +271,10 @@ public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditD
             ), 
 			tags = { IdmAuditController.TAG }, 
 						description = "Returns previous version for given audit log")
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.AUDIT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.AUDIT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUDIT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUDIT_READ })
+    })
 	public ResponseEntity<?> previousVersion(
 			 @Parameter(description = "Audit log's identifier.", required = true)
 			@PathVariable @NotNull String revId) {
@@ -346,7 +313,7 @@ public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditD
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUDIT_READ + "')")
 	@Operation(
 			summary = "Audit log diff",
-			/* nickname = "getAuditLogDiff", */ 
+			operationId = "getAuditLogDiff", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -360,15 +327,10 @@ public class IdmAuditController extends AbstractReadWriteDtoController<IdmAuditD
             ), 
 			tags = { IdmAuditController.TAG }, 
 						description = "Returns diff between given audit logs versions")
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.AUDIT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.AUDIT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUDIT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUDIT_READ })
+    })
 	public ResponseEntity<?> diff(
 			 @Parameter(description = "Audit log's identifier.", required = true)
 			@PathVariable @NotNull String firstRevId, 

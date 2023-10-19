@@ -52,13 +52,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/form-values")
-@Tag(
-		name = IdmFormValueController.TAG,
-		description = "Operations with form values"
-
-		
-		
-)
+@Tag(name = IdmFormValueController.TAG, description = "Operations with form values")
 public class IdmFormValueController extends AbstractReadWriteDtoController<IdmFormValueDto, IdmFormValueFilter<?>> {
 
 	protected static final String TAG = "Form values";
@@ -78,17 +72,12 @@ public class IdmFormValueController extends AbstractReadWriteDtoController<IdmFo
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_VALUE_READ + "')")
 	@Operation(
 			summary = "Search form values (/search/quick alias)",
-			/* nickname = "searchFormValues", */
+			operationId = "searchFormValues",
 			tags = { IdmFormValueController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.FORM_VALUE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.FORM_VALUE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.FORM_VALUE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.FORM_VALUE_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -103,17 +92,12 @@ public class IdmFormValueController extends AbstractReadWriteDtoController<IdmFo
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_VALUE_READ + "')")
 	@Operation(
 			summary = "Search form values",
-			/* nickname = "searchQuickFormValues", */ 
+			operationId = "searchQuickFormValues",
 			tags = { IdmFormValueController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.FORM_VALUE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.FORM_VALUE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.FORM_VALUE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.FORM_VALUE_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -128,17 +112,12 @@ public class IdmFormValueController extends AbstractReadWriteDtoController<IdmFo
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_VALUE_AUTOCOMPLETE + "')")
 	@Operation(
 			summary = "Autocomplete form values (selectbox usage)",
-			/* nickname = "autocompleteFormValues", */ 
+			operationId = "autocompleteFormValues",
 			tags = { IdmFormValueController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.FORM_VALUE_AUTOCOMPLETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.FORM_VALUE_AUTOCOMPLETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.FORM_VALUE_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.FORM_VALUE_AUTOCOMPLETE })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -158,17 +137,12 @@ public class IdmFormValueController extends AbstractReadWriteDtoController<IdmFo
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_VALUE_COUNT + "')")
 	@Operation(
 			summary = "The number of entities that match the filter",
-			/* nickname = "countFormValues", */ 
+			operationId = "countFormValues",
 			tags = { IdmFormValueController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.FORM_VALUE_COUNT }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.FORM_VALUE_COUNT })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.FORM_VALUE_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.FORM_VALUE_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -184,17 +158,12 @@ public class IdmFormValueController extends AbstractReadWriteDtoController<IdmFo
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_VALUE_READ + "')")
 	@Operation(
 			summary = "Get available bulk actions",
-			/* nickname = "availableBulkAction", */
+			operationId = "availableBulkAction",
 			tags = { IdmFormValueController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							CoreGroupPermission.FORM_VALUE_READ }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							CoreGroupPermission.FORM_VALUE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.FORM_VALUE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.FORM_VALUE_READ })
+    })
 	public List<IdmBulkActionDto> getAvailableBulkActions() {
 		return super.getAvailableBulkActions();
 	}
@@ -205,7 +174,7 @@ public class IdmFormValueController extends AbstractReadWriteDtoController<IdmFo
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_VALUE_UPDATE + "')")
 	@Operation(
 			summary = "Process bulk action for form values",
-			/* nickname = "bulkAction", */
+			operationId = "bulkAction",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -218,10 +187,8 @@ public class IdmFormValueController extends AbstractReadWriteDtoController<IdmFo
                     }
             ),
 			tags = { IdmFormValueController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							CoreGroupPermission.FORM_VALUE_READ}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							CoreGroupPermission.FORM_VALUE_READ})
@@ -237,7 +204,7 @@ public class IdmFormValueController extends AbstractReadWriteDtoController<IdmFo
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_VALUE_READ + "')")
 	@Operation(
 			summary = "Prevalidate bulk action for form values",
-			/* nickname = "prevalidateBulkAction", */
+			operationId = "prevalidateBulkAction",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -250,10 +217,8 @@ public class IdmFormValueController extends AbstractReadWriteDtoController<IdmFo
                     }
             ),
 			tags = { IdmFormValueController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							CoreGroupPermission.FORM_VALUE_READ}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							CoreGroupPermission.FORM_VALUE_READ})

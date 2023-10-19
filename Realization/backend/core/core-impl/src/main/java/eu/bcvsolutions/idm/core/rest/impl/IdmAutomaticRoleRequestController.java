@@ -57,14 +57,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/automatic-role-requests")
-@Tag(
-		name = IdmAutomaticRoleRequestController.TAG,
-		description = "Operations with role requests"//, 
-		 
-		
-		
-
-)
+@Tag(name = IdmAutomaticRoleRequestController.TAG, description = "Operations with role requests")
 public class IdmAutomaticRoleRequestController extends AbstractReadWriteDtoController<IdmAutomaticRoleRequestDto, IdmAutomaticRoleRequestFilter>{
 
 	protected static final String TAG = "Automatic role request - requests";
@@ -81,17 +74,12 @@ public class IdmAutomaticRoleRequestController extends AbstractReadWriteDtoContr
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ + "')")
 	@Operation(
 			summary = "Search role requests (/search/quick alias)", 
-			/* nickname = "searchRoleRequests", */
+			operationId = "searchRoleRequests",
 			tags = { IdmAutomaticRoleRequestController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -106,17 +94,12 @@ public class IdmAutomaticRoleRequestController extends AbstractReadWriteDtoContr
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ + "')")
 	@Operation(
 			summary = "Search role requests", 
-			/* nickname = "searchQuickRoleRequests", */
+			operationId = "searchQuickRoleRequests",
 			tags = { IdmAutomaticRoleRequestController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -130,17 +113,12 @@ public class IdmAutomaticRoleRequestController extends AbstractReadWriteDtoContr
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_AUTOCOMPLETE + "')")
 	@Operation(
 			summary = "Autocomplete role requests (selectbox usage)", 
-			/* nickname = "autocompleteRoleRequests", */
+			operationId = "autocompleteRoleRequests",
 			tags = { IdmAutomaticRoleRequestController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_AUTOCOMPLETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_AUTOCOMPLETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_AUTOCOMPLETE })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -155,7 +133,7 @@ public class IdmAutomaticRoleRequestController extends AbstractReadWriteDtoContr
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ + "')")
 	@Operation(
 			summary = "Role request detail", 
-			/* nickname = "getRoleRequest", */
+			operationId = "getRoleRequest",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -168,15 +146,10 @@ public class IdmAutomaticRoleRequestController extends AbstractReadWriteDtoContr
                     }
             ), 
 			tags = { IdmAutomaticRoleRequestController.TAG })
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Role request's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -190,7 +163,7 @@ public class IdmAutomaticRoleRequestController extends AbstractReadWriteDtoContr
 			+ " or hasAuthority('" + CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_UPDATE + "')")
 	@Operation(
 			summary = "Create / update role request", 
-			/* nickname = "postRoleRequest", */
+			operationId = "postRoleRequest",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -203,10 +176,8 @@ public class IdmAutomaticRoleRequestController extends AbstractReadWriteDtoContr
                     }
             ), 
 			tags = { IdmAutomaticRoleRequestController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
 							CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_CREATE,
 							CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_UPDATE}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
@@ -231,7 +202,7 @@ public class IdmAutomaticRoleRequestController extends AbstractReadWriteDtoContr
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_UPDATE + "')")
 	@Operation(
 			summary = "Update role request", 
-			/* nickname = "putRoleRequest", */
+			operationId = "putRoleRequest",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -244,15 +215,10 @@ public class IdmAutomaticRoleRequestController extends AbstractReadWriteDtoContr
                     }
             ), 
 			tags = { IdmAutomaticRoleRequestController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_UPDATE }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_UPDATE })
+    })
 	public ResponseEntity<?> put(
 			 @Parameter(description = "Role request's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
@@ -267,17 +233,12 @@ public class IdmAutomaticRoleRequestController extends AbstractReadWriteDtoContr
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_DELETE + "')")
 	@Operation(
 			summary = "Delete role request", 
-			/* nickname = "deleteRoleRequest", */
+			operationId = "deleteRoleRequest",
 			tags = { IdmAutomaticRoleRequestController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_DELETE }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_DELETE })
+    })
 	public ResponseEntity<?> delete(
 			 @Parameter(description = "Role request's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -308,17 +269,12 @@ public class IdmAutomaticRoleRequestController extends AbstractReadWriteDtoContr
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ + "')")
 	@Operation(
 			summary = "What logged identity can do with given record", 
-			/* nickname = "getPermissionsOnRoleRequest", */
+			operationId = "getPermissionsOnRoleRequest",
 			tags = { IdmAutomaticRoleRequestController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_READ })
+    })
 	public Set<String> getPermissions(
 			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -330,7 +286,7 @@ public class IdmAutomaticRoleRequestController extends AbstractReadWriteDtoContr
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_UPDATE + "')")
 	@Operation(
 			summary = "Start role request", 
-			/* nickname = "startRoleRequest", */
+			operationId = "startRoleRequest",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -343,15 +299,10 @@ public class IdmAutomaticRoleRequestController extends AbstractReadWriteDtoContr
                     }
             ), 
 			tags = { IdmAutomaticRoleRequestController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_UPDATE }),
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUTOMATIC_ROLE_REQUEST_UPDATE })
+    })
 	public ResponseEntity<?> startRequest(
 			 @Parameter(description = "Role request's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {

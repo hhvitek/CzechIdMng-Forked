@@ -59,14 +59,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/notification-templates")
-@Tag(
-		name = IdmNotificationTemplateController.TAG, 
-		description = "Configure notification templates"//,
-		 
-		
-		
-
-)
+@Tag(name = IdmNotificationTemplateController.TAG, description = "Configure notification templates")
 public class IdmNotificationTemplateController extends AbstractEventableDtoController<IdmNotificationTemplateDto, IdmNotificationTemplateFilter> {
 	
 	protected static final String TAG = "Notification templates";
@@ -86,17 +79,12 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ + "')")
 	@Operation(
 			summary = "Search notification templates (/search/quick alias)", 
-			/* nickname = "searchNotificationTemplates", */ 
+			operationId = "searchNotificationTemplates", 
 			tags = { IdmNotificationTemplateController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -111,17 +99,12 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@Operation(
 			summary = "Search notification templates", 
-			/* nickname = "searchQuickNotificationTemplates", */ 
+			operationId = "searchQuickNotificationTemplates", 
 			tags = { IdmNotificationTemplateController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -136,17 +119,12 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATIONTEMPLATE_AUTOCOMPLETE + "')")
 	@Operation(
 			summary = "Autocomplete notification templates (selectbox usage)", 
-			/* nickname = "autocompleteNotificationTemplates", */ 
+			operationId = "autocompleteNotificationTemplates", 
 			tags = { IdmNotificationTemplateController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						NotificationGroupPermission.NOTIFICATIONTEMPLATE_AUTOCOMPLETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						NotificationGroupPermission.NOTIFICATIONTEMPLATE_AUTOCOMPLETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { NotificationGroupPermission.NOTIFICATIONTEMPLATE_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { NotificationGroupPermission.NOTIFICATIONTEMPLATE_AUTOCOMPLETE })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -161,17 +139,12 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATIONTEMPLATE_COUNT + "')")
 	@Operation(
 			summary = "The number of entities that match the filter", 
-			/* nickname = "countNotificationTemplates", */ 
+			operationId = "countNotificationTemplates", 
 			tags = { IdmNotificationTemplateController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						NotificationGroupPermission.NOTIFICATIONTEMPLATE_COUNT }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						NotificationGroupPermission.NOTIFICATIONTEMPLATE_COUNT })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { NotificationGroupPermission.NOTIFICATIONTEMPLATE_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { NotificationGroupPermission.NOTIFICATIONTEMPLATE_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -182,7 +155,7 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@Operation(
 			summary = "Notification template detail", 
-			/* nickname = "getNotificationTemplate", */ 
+			operationId = "getNotificationTemplate", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -195,15 +168,10 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
                     }
             ),
 			tags = { IdmNotificationTemplateController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Template's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -217,7 +185,7 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
 	@RequestMapping(method = RequestMethod.POST)
 	@Operation(
 			summary = "Create / update notification template", 
-			/* nickname = "postNotificationTemplate", */ 
+			operationId = "postNotificationTemplate", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -230,10 +198,8 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
                     }
             ),
 			tags = { IdmNotificationTemplateController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						NotificationGroupPermission.NOTIFICATIONTEMPLATE_CREATE,
 						NotificationGroupPermission.NOTIFICATIONTEMPLATE_UPDATE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
@@ -251,7 +217,7 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	@Operation(
 			summary = "Update notification template", 
-			/* nickname = "putNotificationTemplate", */ 
+			operationId = "putNotificationTemplate", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -264,15 +230,10 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
                     }
             ),
 			tags = { IdmNotificationTemplateController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						NotificationGroupPermission.NOTIFICATIONTEMPLATE_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						NotificationGroupPermission.NOTIFICATIONTEMPLATE_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { NotificationGroupPermission.NOTIFICATIONTEMPLATE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { NotificationGroupPermission.NOTIFICATIONTEMPLATE_UPDATE })
+    })
 	public ResponseEntity<?> put(
 			 @Parameter(description = "Template's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId,
@@ -286,17 +247,12 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATIONTEMPLATE_DELETE + "')")
 	@Operation(
 			summary = "Delete notification template", 
-			/* nickname = "deleteNotificationTemplate", */ 
+			operationId = "deleteNotificationTemplate", 
 			tags = { IdmNotificationTemplateController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						NotificationGroupPermission.NOTIFICATIONTEMPLATE_DELETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						NotificationGroupPermission.NOTIFICATIONTEMPLATE_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { NotificationGroupPermission.NOTIFICATIONTEMPLATE_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { NotificationGroupPermission.NOTIFICATIONTEMPLATE_DELETE })
+    })
 	public ResponseEntity<?> delete(
 			 @Parameter(description = "Template's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -319,12 +275,11 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
 			+ " or hasAuthority('" + NotificationGroupPermission.NOTIFICATIONTEMPLATE_UPDATE + "')")
 	@Operation(
 			summary = "Upload templates.", 
-			/* nickname = "uploadNotificationTemplates", */ 
+			operationId = "uploadNotificationTemplates", 
 			tags = { IdmNotificationTemplateController.TAG },
 			description="Templates in archive (ZIP) or single templates (XML) can be uploaded.")
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
                             NotificationGroupPermission.NOTIFICATIONTEMPLATE_CREATE,
                             NotificationGroupPermission.NOTIFICATIONTEMPLATE_UPDATE}),
                     @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
@@ -351,7 +306,7 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATIONTEMPLATE_UPDATE + "')")
 	@Operation(
 			summary = "Redeploy notification template", 
-			/* nickname = "redeployNotificationTemplate", */ 
+			operationId = "redeployNotificationTemplate", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -366,14 +321,10 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
 			tags = { IdmNotificationTemplateController.TAG },
 			description = "Redeploy template. Redeployed will be only templates, that has pattern in resource."
 					+ " Before save newly loaded DO will be backup the old template into backup directory.")
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-                            NotificationGroupPermission.NOTIFICATIONTEMPLATE_UPDATE }),
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-                            NotificationGroupPermission.NOTIFICATIONTEMPLATE_UPDATE })
-            }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { NotificationGroupPermission.NOTIFICATIONTEMPLATE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { NotificationGroupPermission.NOTIFICATIONTEMPLATE_UPDATE })
+    })
 	public ResponseEntity<?> redeploy(
 			 @Parameter(description = "Template's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -391,7 +342,7 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ + "')")
 	@Operation(
 			summary = "Backup notification template", 
-			/* nickname = "backupNotificationTemplate", */ 
+			operationId = "backupNotificationTemplate", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -405,14 +356,10 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
             ),
 			tags = { IdmNotificationTemplateController.TAG },
 			description = "Backup template to directory given in application properties.")
-    @SecurityRequirements(
-            value = {
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-                            NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ }),
-                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-                            NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ })
-            }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ })
+    })
 	public ResponseEntity<?> backup(
 			 @Parameter(description = "Template's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -434,17 +381,12 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ + "')")
 	@Operation(
 			summary = "Get available bulk actions", 
-			/* nickname = "availableBulkAction", */ 
+			operationId = "availableBulkAction", 
 			tags = { IdmNotificationTemplateController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ })
+    })
 	public List<IdmBulkActionDto> getAvailableBulkActions() {
 		return super.getAvailableBulkActions();
 	}
@@ -460,7 +402,7 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ + "')")
 	@Operation(
 			summary = "Process bulk action for notification templates", 
-			/* nickname = "bulkAction", */ 
+			operationId = "bulkAction", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -473,10 +415,8 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
                     }
             ),
 			tags = { IdmNotificationTemplateController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ})
@@ -497,7 +437,7 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ + "')")
 	@Operation(
 			summary = "Prevalidate bulk action for notification templates", 
-			/* nickname = "prevalidateBulkAction", */ 
+			operationId = "prevalidateBulkAction", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -510,10 +450,8 @@ public class IdmNotificationTemplateController extends AbstractEventableDtoContr
                     }
             ),
 			tags = { IdmNotificationTemplateController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
 						NotificationGroupPermission.NOTIFICATIONTEMPLATE_READ})

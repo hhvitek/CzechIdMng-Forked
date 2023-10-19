@@ -49,14 +49,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/delegations") 
-@Tag(
-		name = IdmDelegationController.TAG,  
-
-		description = "Delegations"//,
-		
-		
-
-)
+@Tag(name = IdmDelegationController.TAG, description = "Delegations")
 public class IdmDelegationController extends AbstractReadWriteDtoController<IdmDelegationDto, IdmDelegationFilter>  {
 
 	protected static final String TAG = "Delegations";
@@ -73,17 +66,12 @@ public class IdmDelegationController extends AbstractReadWriteDtoController<IdmD
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.DELEGATIONDEFINITION_READ + "')")
 	@Operation(
 			summary = "Search delegations (/search/quick alias)", 
-			/* nickname = "searchDelegations", */
+			operationId = "searchDelegations",
 			tags = { IdmDelegationController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.DELEGATIONDEFINITION_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.DELEGATIONDEFINITION_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.DELEGATIONDEFINITION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.DELEGATIONDEFINITION_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -98,17 +86,12 @@ public class IdmDelegationController extends AbstractReadWriteDtoController<IdmD
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.DELEGATIONDEFINITION_READ + "')")
 	@Operation(
 			summary = "Search delegations", 
-			/* nickname = "searchQuickDelegations", */
+			operationId = "searchQuickDelegations",
 			tags = { IdmDelegationController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.DELEGATIONDEFINITION_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.DELEGATIONDEFINITION_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.DELEGATIONDEFINITION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.DELEGATIONDEFINITION_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -123,17 +106,12 @@ public class IdmDelegationController extends AbstractReadWriteDtoController<IdmD
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.DELEGATIONDEFINITION_AUTOCOMPLETE + "')")
 	@Operation(
 			summary = "Autocomplete delegations (selectbox usage)", 
-			/* nickname = "autocompleteDelegations", */
+			operationId = "autocompleteDelegations",
 			tags = { IdmDelegationController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.DELEGATIONDEFINITION_AUTOCOMPLETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.DELEGATIONDEFINITION_AUTOCOMPLETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.DELEGATIONDEFINITION_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.DELEGATIONDEFINITION_AUTOCOMPLETE })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -148,17 +126,12 @@ public class IdmDelegationController extends AbstractReadWriteDtoController<IdmD
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.DELEGATIONDEFINITION_COUNT + "')")
 	@Operation(
 			summary = "The number of entities that match the filter", 
-			/* nickname = "countDelegations", */
+			operationId = "countDelegations",
 			tags = { IdmDelegationController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.DELEGATIONDEFINITION_COUNT }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.DELEGATIONDEFINITION_COUNT })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.DELEGATIONDEFINITION_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.DELEGATIONDEFINITION_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -169,7 +142,7 @@ public class IdmDelegationController extends AbstractReadWriteDtoController<IdmD
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.DELEGATIONDEFINITION_READ + "')")
 	@Operation(
 			summary = "Delegation detail", 
-			/* nickname = "getDelegation", */
+			operationId = "getDelegation",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -182,15 +155,10 @@ public class IdmDelegationController extends AbstractReadWriteDtoController<IdmD
                     }
             ),
 			tags = { IdmDelegationController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.DELEGATIONDEFINITION_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.DELEGATIONDEFINITION_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.DELEGATIONDEFINITION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.DELEGATIONDEFINITION_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Delegation's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -203,17 +171,12 @@ public class IdmDelegationController extends AbstractReadWriteDtoController<IdmD
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.DELEGATIONDEFINITION_DELETE + "')")
 	@Operation(
 			summary = "Delete definition", 
-			/* nickname = "deleteDelegation", */
+			operationId = "deleteDelegation",
 			tags = { IdmDelegationController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.DELEGATIONDEFINITION_DELETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.DELEGATIONDEFINITION_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.DELEGATIONDEFINITION_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.DELEGATIONDEFINITION_DELETE })
+    })
 	public ResponseEntity<?> delete(
 			 @Parameter(description = "Delegation's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -225,17 +188,12 @@ public class IdmDelegationController extends AbstractReadWriteDtoController<IdmD
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.DELEGATIONDEFINITION_READ + "')")
 	@Operation(
 			summary = "Get available bulk actions", 
-			/* nickname = "availableBulkAction", */
+			operationId = "availableBulkAction",
 			tags = { IdmDelegationController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.DELEGATIONDEFINITION_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.DELEGATIONDEFINITION_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.DELEGATIONDEFINITION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.DELEGATIONDEFINITION_READ })
+    })
 	@Override
 	public List<IdmBulkActionDto> getAvailableBulkActions() {
 		return super.getAvailableBulkActions();
@@ -246,7 +204,7 @@ public class IdmDelegationController extends AbstractReadWriteDtoController<IdmD
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.DELEGATIONDEFINITION_READ + "')")
 	@Operation(
 			summary = "Process bulk action for delegations", 
-			/* nickname = "bulkAction", */
+			operationId = "bulkAction",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -259,10 +217,8 @@ public class IdmDelegationController extends AbstractReadWriteDtoController<IdmD
                     }
             ),
 			tags = { IdmDelegationController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						CoreGroupPermission.DELEGATIONDEFINITION_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 						CoreGroupPermission.DELEGATIONDEFINITION_READ})
@@ -278,7 +234,7 @@ public class IdmDelegationController extends AbstractReadWriteDtoController<IdmD
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.DELEGATIONDEFINITION_READ + "')")
 	@Operation(
 			summary = "Prevalidate bulk action for delegations", 
-			/* nickname = "prevalidateBulkAction", */
+			operationId = "prevalidateBulkAction",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -291,10 +247,8 @@ public class IdmDelegationController extends AbstractReadWriteDtoController<IdmD
                     }
             ),
 			tags = { IdmDelegationController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						CoreGroupPermission.DELEGATIONDEFINITION_READ}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 						CoreGroupPermission.DELEGATIONDEFINITION_READ})
@@ -312,12 +266,10 @@ public class IdmDelegationController extends AbstractReadWriteDtoController<IdmD
 			+ " or hasAuthority('" + CoreGroupPermission.DELEGATIONDEFINITION_AUTOCOMPLETE + "')")
 	@Operation(
 			summary = "What logged identity can do with given record", 
-			/* nickname = "getPermissionsOnDelegation", */
+			operationId = "getPermissionsOnDelegation",
 			tags = { IdmDelegationController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						CoreGroupPermission.DELEGATIONDEFINITION_READ,
 						CoreGroupPermission.DELEGATIONDEFINITION_AUTOCOMPLETE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {

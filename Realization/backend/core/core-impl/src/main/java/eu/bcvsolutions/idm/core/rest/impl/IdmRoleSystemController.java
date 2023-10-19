@@ -46,14 +46,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/core/role-systems")
-@Tag(
-		name = IdmRoleSystemController.TAG,
-		description = "IdM role-system controller - (we need to work with role-system also in the core module)"//,
-
-
-
-
-)
+@Tag(name = IdmRoleSystemController.TAG, description = "IdM role-system controller - (we need to work with role-system also in the core module)")
 public class IdmRoleSystemController extends AbstractReadDtoController<IdmRoleSystemDto, IdmRoleSystemFilter> {
 
 	protected static final String TAG = "IdM role-system controller - (we need to work with role-system also in the core module).";
@@ -70,12 +63,10 @@ public class IdmRoleSystemController extends AbstractReadDtoController<IdmRoleSy
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_READ + "')")
 	@Operation(
 			summary = "Search system roles (/search/quick alias)",
-			/* nickname = "searchSystemRoles", */
+			operationId = "searchSystemRoles",
 			tags = {IdmRoleSystemController.TAG})
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							CoreGroupPermission.ROLE_READ}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							CoreGroupPermission.ROLE_READ})
@@ -94,12 +85,10 @@ public class IdmRoleSystemController extends AbstractReadDtoController<IdmRoleSy
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_READ + "')")
 	@Operation(
 			summary = "Search system roles",
-			/* nickname = "searchQuickSystemRoles", */
+			operationId = "searchQuickSystemRoles",
 			tags = {IdmRoleSystemController.TAG})
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							CoreGroupPermission.ROLE_READ}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							CoreGroupPermission.ROLE_READ})
@@ -118,12 +107,10 @@ public class IdmRoleSystemController extends AbstractReadDtoController<IdmRoleSy
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_AUTOCOMPLETE + "')")
 	@Operation(
 			summary = "Autocomplete system roles (selectbox usage)",
-			/* nickname = "autocompleteSystemRoles", */
+			operationId = "autocompleteSystemRoles",
 			tags = {IdmRoleSystemController.TAG})
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							CoreGroupPermission.ROLE_AUTOCOMPLETE}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							CoreGroupPermission.ROLE_AUTOCOMPLETE})
@@ -142,14 +129,12 @@ public class IdmRoleSystemController extends AbstractReadDtoController<IdmRoleSy
 //	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_CANBEREQUESTED + "')")
 //	@Operation(
 //			summary = "Find assigned roles, which can be requested",
-//			/* nickname = "findCanBeRequestedSystemRoles", */ 
+//			operationId = "findCanBeRequestedSystemRoles",
 //			tags = { IdmRoleSystemController.TAG }, 
 //			authorizations = { 
 //				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 //						CoreGroupPermission.ROLE_CANBEREQUESTED }),
-//				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-//						CoreGroupPermission.ROLE_CANBEREQUESTED })
-//				})
+//        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { //						CoreGroupPermission.ROLE_CANBEREQUESTED })})
 //	@PageableAsQueryParam
 //	public CollectionModel<?> findCanBeRequested(
 //			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -164,7 +149,7 @@ public class IdmRoleSystemController extends AbstractReadDtoController<IdmRoleSy
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_COUNT + "')")
 	@Operation(
 			summary = "The number of entities that match the filter",
-			/* nickname = "countSystemRoles", */
+			operationId = "countSystemRoles",
 			tags = {IdmRoleSystemController.TAG})
     @SecurityRequirements({
         @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLE_COUNT}),
@@ -180,7 +165,7 @@ public class IdmRoleSystemController extends AbstractReadDtoController<IdmRoleSy
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_READ + "')")
 	@Operation(
 			summary = "System role detail",
-			/* nickname = "getSystemRole", */
+			operationId = "getSystemRole",
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -193,10 +178,8 @@ public class IdmRoleSystemController extends AbstractReadDtoController<IdmRoleSy
                     }
             ),
 			tags = {IdmRoleSystemController.TAG})
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							CoreGroupPermission.ROLE_READ}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							CoreGroupPermission.ROLE_READ})
@@ -214,12 +197,10 @@ public class IdmRoleSystemController extends AbstractReadDtoController<IdmRoleSy
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_READ + "')")
 	@Operation(
 			summary = "What logged identity can do with given record",
-			/* nickname = "getPermissionsOnRoleSystem", */
+			operationId = "getPermissionsOnRoleSystem",
 			tags = {IdmRoleSystemController.TAG})
-    @SecurityRequirements(
-        value = {
-
-					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 							CoreGroupPermission.ROLE_READ}),
 					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
 							CoreGroupPermission.ROLE_READ})

@@ -44,14 +44,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/import-logs") 
-@Tag(
-		name = IdmImportLogController.TAG,  
-		 
-		description = "Import logs"//,
-		
-		
-
-)
+@Tag(name = IdmImportLogController.TAG, description = "Import logs")
 public class IdmImportLogController extends AbstractReadWriteDtoController<IdmImportLogDto, IdmImportLogFilter>  {
 
 	protected static final String TAG = "Import logs";
@@ -68,17 +61,12 @@ public class IdmImportLogController extends AbstractReadWriteDtoController<IdmIm
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.EXPORTIMPORT_READ + "')")
 	@Operation(
 			summary = "Search batches (/search/quick alias)",
-			/* nickname = "searchBatchs", */ 
+			operationId = "searchBatchs", 
 			tags = { IdmImportLogController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.EXPORTIMPORT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.EXPORTIMPORT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.EXPORTIMPORT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.EXPORTIMPORT_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -93,17 +81,12 @@ public class IdmImportLogController extends AbstractReadWriteDtoController<IdmIm
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.EXPORTIMPORT_READ + "')")
 	@Operation(
 			summary = "Search batches",
-			/* nickname = "searchQuickBatchs", */ 
+			operationId = "searchQuickBatchs", 
 			tags = { IdmImportLogController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.EXPORTIMPORT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.EXPORTIMPORT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.EXPORTIMPORT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.EXPORTIMPORT_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -118,17 +101,12 @@ public class IdmImportLogController extends AbstractReadWriteDtoController<IdmIm
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.EXPORTIMPORT_AUTOCOMPLETE + "')")
 	@Operation(
 			summary = "Autocomplete batches (selectbox usage)",
-			/* nickname = "autocompleteBatchs", */ 
+			operationId = "autocompleteBatchs", 
 			tags = { IdmImportLogController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.EXPORTIMPORT_AUTOCOMPLETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.EXPORTIMPORT_AUTOCOMPLETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.EXPORTIMPORT_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.EXPORTIMPORT_AUTOCOMPLETE })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
@@ -143,7 +121,7 @@ public class IdmImportLogController extends AbstractReadWriteDtoController<IdmIm
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.EXPORTIMPORT_READ + "')")
 	@Operation(
 			summary = "Batch detail",
-			/* nickname = "getBatch", */ 
+			operationId = "getBatch", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -156,15 +134,10 @@ public class IdmImportLogController extends AbstractReadWriteDtoController<IdmIm
                     }
             ),
 			tags = { IdmImportLogController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.EXPORTIMPORT_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.EXPORTIMPORT_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.EXPORTIMPORT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.EXPORTIMPORT_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Batch's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -177,17 +150,12 @@ public class IdmImportLogController extends AbstractReadWriteDtoController<IdmIm
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.EXPORTIMPORT_DELETE + "')")
 	@Operation(
 			summary = "Delete batch",
-			/* nickname = "deleteBatch", */ 
+			operationId = "deleteBatch", 
 			tags = { IdmImportLogController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						CoreGroupPermission.EXPORTIMPORT_DELETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						CoreGroupPermission.EXPORTIMPORT_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.EXPORTIMPORT_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.EXPORTIMPORT_DELETE })
+    })
 	public ResponseEntity<?> delete(
 			 @Parameter(description = "Batch's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -201,12 +169,10 @@ public class IdmImportLogController extends AbstractReadWriteDtoController<IdmIm
 			+ " or hasAuthority('" + CoreGroupPermission.EXPORTIMPORT_AUTOCOMPLETE + "')")
 	@Operation(
 			summary = "What logged identity can do with given record",
-			/* nickname = "getPermissionsOnBatch", */ 
+			operationId = "getPermissionsOnBatch", 
 			tags = { IdmImportLogController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						CoreGroupPermission.EXPORTIMPORT_READ,
 						CoreGroupPermission.EXPORTIMPORT_AUTOCOMPLETE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 

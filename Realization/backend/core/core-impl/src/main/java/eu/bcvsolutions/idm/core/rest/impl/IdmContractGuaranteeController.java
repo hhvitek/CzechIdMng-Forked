@@ -49,14 +49,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/contract-guarantees")
-@Tag(
-		name = IdmContractGuaranteeController.TAG,
-		description = "Operations with identity contract guarantees"//, 
-		 
-
-		
-
-)
+@Tag(name = IdmContractGuaranteeController.TAG, description = "Operations with identity contract guarantees")
 public class IdmContractGuaranteeController extends AbstractEventableDtoController<IdmContractGuaranteeDto, IdmContractGuaranteeFilter> {
 	
 	protected static final String TAG = "Contract guarantees";
@@ -72,17 +65,12 @@ public class IdmContractGuaranteeController extends AbstractEventableDtoControll
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTGUARANTEE_READ + "')")
 	@Operation(
 			summary = "Search contract guarantees (/search/quick alias)", 
-			/* nickname = "searchContractGuarantees", */ 
+			operationId = "searchContractGuarantees", 
 			tags = { IdmContractGuaranteeController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.CONTRACTGUARANTEE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.CONTRACTGUARANTEE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONTRACTGUARANTEE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONTRACTGUARANTEE_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -96,17 +84,12 @@ public class IdmContractGuaranteeController extends AbstractEventableDtoControll
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTGUARANTEE_READ + "')")
 	@Operation(
 			summary = "Search contract guarantees", 
-			/* nickname = "searchQuickContractGuarantees", */ 
+			operationId = "searchQuickContractGuarantees", 
 			tags = { IdmContractGuaranteeController.TAG })
-    @SecurityRequirements(
-        value = {
-
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.CONTRACTGUARANTEE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.CONTRACTGUARANTEE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONTRACTGUARANTEE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONTRACTGUARANTEE_READ })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -120,17 +103,12 @@ public class IdmContractGuaranteeController extends AbstractEventableDtoControll
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTGUARANTEE_AUTOCOMPLETE + "')")
 	@Operation(
 			summary = "Autocomplete contract guarantees (selectbox usage)", 
-			/* nickname = "autocompleteContractGuarantees", */ 
+			operationId = "autocompleteContractGuarantees", 
 			tags = { IdmContractGuaranteeController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.CONTRACTGUARANTEE_AUTOCOMPLETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.CONTRACTGUARANTEE_AUTOCOMPLETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONTRACTGUARANTEE_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONTRACTGUARANTEE_AUTOCOMPLETE })
+    })
 	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
@@ -145,17 +123,12 @@ public class IdmContractGuaranteeController extends AbstractEventableDtoControll
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTGUARANTEE_COUNT + "')")
 	@Operation(
 			summary = "The number of entities that match the filter", 
-			/* nickname = "countContractGuarantees", */ 
+			operationId = "countContractGuarantees", 
 			tags = { IdmContractGuaranteeController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.CONTRACTGUARANTEE_COUNT }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.CONTRACTGUARANTEE_COUNT })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONTRACTGUARANTEE_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONTRACTGUARANTEE_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -166,7 +139,7 @@ public class IdmContractGuaranteeController extends AbstractEventableDtoControll
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTGUARANTEE_READ + "')")
 	@Operation(
 			summary = "Contract guarantee detail", 
-			/* nickname = "getContractGuarantee", */ 
+			operationId = "getContractGuarantee", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -179,15 +152,10 @@ public class IdmContractGuaranteeController extends AbstractEventableDtoControll
                     }
             ), 
 			tags = { IdmContractGuaranteeController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.CONTRACTGUARANTEE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.CONTRACTGUARANTEE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONTRACTGUARANTEE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONTRACTGUARANTEE_READ })
+    })
 	public ResponseEntity<?> get(
 			 @Parameter(description = "Contract guarantee's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -201,7 +169,7 @@ public class IdmContractGuaranteeController extends AbstractEventableDtoControll
 			+ " or hasAuthority('" + CoreGroupPermission.CONTRACTGUARANTEE_UPDATE + "')")
 	@Operation(
 			summary = "Create / update contract guarantee", 
-			/* nickname = "postContractGuarantee", */ 
+			operationId = "postContractGuarantee", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -214,10 +182,8 @@ public class IdmContractGuaranteeController extends AbstractEventableDtoControll
                     }
             ), 
 			tags = { IdmContractGuaranteeController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
 						CoreGroupPermission.CONTRACTGUARANTEE_CREATE,
 						CoreGroupPermission.CONTRACTGUARANTEE_UPDATE}),
 				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
@@ -235,7 +201,7 @@ public class IdmContractGuaranteeController extends AbstractEventableDtoControll
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTGUARANTEE_UPDATE + "')")
 	@Operation(
 			summary = "Update contract guarantee", 
-			/* nickname = "putContractGuarantee", */ 
+			operationId = "putContractGuarantee", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -248,15 +214,10 @@ public class IdmContractGuaranteeController extends AbstractEventableDtoControll
                     }
             ), 
 			tags = { IdmContractGuaranteeController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.CONTRACTGUARANTEE_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.CONTRACTGUARANTEE_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONTRACTGUARANTEE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONTRACTGUARANTEE_UPDATE })
+    })
 	public ResponseEntity<?> put(
 			 @Parameter(description = "Contract guarantee's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
@@ -270,7 +231,7 @@ public class IdmContractGuaranteeController extends AbstractEventableDtoControll
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTGUARANTEE_UPDATE + "')")
 	@Operation(
 			summary = "Update contract guarantee", 
-			/* nickname = "patchContractGuarantee", */ 
+			operationId = "patchContractGuarantee", 
             responses = @ApiResponse(
                     responseCode = "200",
                     content = {
@@ -283,15 +244,10 @@ public class IdmContractGuaranteeController extends AbstractEventableDtoControll
                     }
             ), 
 			tags = { IdmContractGuaranteeController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.CONTRACTGUARANTEE_UPDATE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.CONTRACTGUARANTEE_UPDATE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONTRACTGUARANTEE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONTRACTGUARANTEE_UPDATE })
+    })
 	public ResponseEntity<?> patch(
 			 @Parameter(description = "Contract guarantee's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
@@ -306,17 +262,12 @@ public class IdmContractGuaranteeController extends AbstractEventableDtoControll
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTGUARANTEE_DELETE + "')")
 	@Operation(
 			summary = "Delete contract guarantee", 
-			/* nickname = "deleteContractGuarantee", */ 
+			operationId = "deleteContractGuarantee", 
 			tags = { IdmContractGuaranteeController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.CONTRACTGUARANTEE_DELETE }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.CONTRACTGUARANTEE_DELETE })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONTRACTGUARANTEE_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONTRACTGUARANTEE_DELETE })
+    })
 	public ResponseEntity<?> delete(
 			 @Parameter(description = "Contract guarantee's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
@@ -329,17 +280,12 @@ public class IdmContractGuaranteeController extends AbstractEventableDtoControll
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTGUARANTEE_READ + "')")
 	@Operation(
 			summary = "What logged identity can do with given record", 
-			/* nickname = "getPermissionsOnContractGuarantee", */ 
+			operationId = "getPermissionsOnContractGuarantee", 
 			tags = { IdmContractGuaranteeController.TAG })
-    @SecurityRequirements(
-        value = {
- 
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						CoreGroupPermission.CONTRACTGUARANTEE_READ }),
-				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						CoreGroupPermission.CONTRACTGUARANTEE_READ })
-        }
-    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONTRACTGUARANTEE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONTRACTGUARANTEE_READ })
+    })
 	public Set<String> getPermissions(
 			 @Parameter(description = "Contract guarantee's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
