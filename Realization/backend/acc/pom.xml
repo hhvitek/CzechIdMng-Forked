@@ -133,39 +133,76 @@
 			<build>
 				<plugins>
 					<!-- First, use the swagger2markup plugin to generate asciidoc -->
-					<plugin>
-						<groupId>io.github.swagger2markup</groupId>
-						<artifactId>swagger2markup-maven-plugin</artifactId>
-						<version>${swagger2markup.version}</version>
-
-						<configuration>
-							<swaggerInput>${swagger.input}</swaggerInput>
-							<outputDir>${generated.asciidoc.directory}</outputDir>
-							<config>
-								<swagger2markup.markupLanguage>ASCIIDOC</swagger2markup.markupLanguage>
-								<swagger2markup.outputLanguage>EN</swagger2markup.outputLanguage>
-								<swagger2markup.pathsGroupedBy>TAGS</swagger2markup.pathsGroupedBy>
-								<swagger2markup.generatedExamplesEnabled>false</swagger2markup.generatedExamplesEnabled>
-
-								<swagger2markup.extensions.dynamicOverview.contentPath>${asciidoctor.input.extensions.directory}/overview</swagger2markup.extensions.dynamicOverview.contentPath>
-								<swagger2markup.extensions.dynamicDefinitions.contentPath>${asciidoctor.input.extensions.directory}/definitions</swagger2markup.extensions.dynamicDefinitions.contentPath>
-								<swagger2markup.extensions.dynamicPaths.contentPath>${asciidoctor.input.extensions.directory}/paths</swagger2markup.extensions.dynamicPaths.contentPath>
-								<swagger2markup.extensions.dynamicSecurity.contentPath>${asciidoctor.input.extensions.directory}/security/</swagger2markup.extensions.dynamicSecurity.contentPath>
-
-								<swagger2markup.extensions.springRestDocs.snippetBaseUri>${swagger.snippetOutput.dir}</swagger2markup.extensions.springRestDocs.snippetBaseUri>
-								<swagger2markup.extensions.springRestDocs.defaultSnippets>true</swagger2markup.extensions.springRestDocs.defaultSnippets>
-							</config>
-						</configuration>
-						<executions>
-							<execution>
-								<phase>test</phase>
-								<goals>
-									<goal>convertSwagger2markup</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-
+					<!--<plugin>-->
+					<!--	<groupId>io.github.swagger2markup</groupId>-->
+					<!--	<artifactId>swagger2markup-maven-plugin</artifactId>-->
+					<!--	<version>${swagger2markup.version}</version>-->
+<!---->
+					<!--	<configuration>-->
+					<!--		<swaggerInput>${swagger.input}</swaggerInput>-->
+					<!--		<outputDir>${generated.asciidoc.directory}</outputDir>-->
+					<!--		<config>-->
+					<!--			<swagger2markup.markupLanguage>ASCIIDOC</swagger2markup.markupLanguage>-->
+					<!--			<swagger2markup.outputLanguage>EN</swagger2markup.outputLanguage>-->
+					<!--			<swagger2markup.pathsGroupedBy>TAGS</swagger2markup.pathsGroupedBy>-->
+					<!--			<swagger2markup.generatedExamplesEnabled>false</swagger2markup.generatedExamplesEnabled>-->
+<!---->
+					<!--			<swagger2markup.extensions.dynamicOverview.contentPath>${asciidoctor.input.extensions.directory}/overview</swagger2markup.extensions.dynamicOverview.contentPath>-->
+					<!--			<swagger2markup.extensions.dynamicDefinitions.contentPath>${asciidoctor.input.extensions.directory}/definitions</swagger2markup.extensions.dynamicDefinitions.contentPath>-->
+					<!--			<swagger2markup.extensions.dynamicPaths.contentPath>${asciidoctor.input.extensions.directory}/paths</swagger2markup.extensions.dynamicPaths.contentPath>-->
+					<!--			<swagger2markup.extensions.dynamicSecurity.contentPath>${asciidoctor.input.extensions.directory}/security/</swagger2markup.extensions.dynamicSecurity.contentPath>-->
+<!---->
+					<!--			<swagger2markup.extensions.springRestDocs.snippetBaseUri>${swagger.snippetOutput.dir}</swagger2markup.extensions.springRestDocs.snippetBaseUri>-->
+					<!--			<swagger2markup.extensions.springRestDocs.defaultSnippets>true</swagger2markup.extensions.springRestDocs.defaultSnippets>-->
+					<!--		</config>-->
+					<!--	</configuration>-->
+					<!--	<executions>-->
+					<!--		<execution>-->
+					<!--			<phase>test</phase>-->
+					<!--			<goals>-->
+					<!--				<goal>convertSwagger2markup</goal>-->
+					<!--			</goals>-->
+					<!--		</execution>-->
+					<!--	</executions>-->
+					<!--</plugin>-->
+                    <plugin>
+                        <groupId>org.openapitools</groupId>
+                        <artifactId>openapi-generator-maven-plugin</artifactId>
+                        <!-- RELEASE_VERSION -->
+                        <version>6.3.0</version>
+                        <!-- /RELEASE_VERSION -->
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                                <configuration>
+                                    <globalProperties>
+                                        <apiDocs>true</apiDocs>
+                                        <apiModels>true</apiModels>
+                                        <apiTests>false</apiTests>
+                                        <modelTests>false</modelTests>
+                                        <verbose>false</verbose>
+                                    </globalProperties>
+                                    <inputSpec>${swagger.input}</inputSpec>
+                                    <output>${generated.asciidoc.directory}</output>
+                                    <generatorName>asciidoc</generatorName>
+                                    <generateApiDocumentation>true</generateApiDocumentation>
+                                    <generateModels>true</generateModels>
+                                    <generateModelDocumentation>true</generateModelDocumentation>
+                                    <generateSupportingFiles>true</generateSupportingFiles>
+                                    <skipValidateSpec>true</skipValidateSpec>
+                                    <configOptions>
+                                        <useIntroduction>true</useIntroduction>
+                                        <delegatePattern>false</delegatePattern>
+                                        <useMethodAndPath>false</useMethodAndPath>
+                                        <prependFormOrBodyParameters>false</prependFormOrBodyParameters>
+                                        <skipExamples>false</skipExamples>
+                                    </configOptions>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
 					<!--
 						Run the generated asciidoc through Asciidoctor to generate other
 						documentation types, such as PDFs or HTML5
