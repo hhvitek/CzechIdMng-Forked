@@ -635,6 +635,7 @@ public class DefaultAccAccountService extends AbstractFormableService<AccAccount
 				if (result.getModel() != null) {
 					boolean success = result.getModel().getStatusEnum().equals(CoreResultCode.PASSWORD_CHANGE_ACCOUNT_SUCCESS.name());
 					boolean failure = result.getModel().getStatusEnum().equals(CoreResultCode.PASSWORD_CHANGE_ACCOUNT_FAILED.name());
+					// TODO this condition seems to be superfluous, password change returns only these two statuses
 					if (success || failure) {
 						IdmAccountDto resultAccount = (IdmAccountDto) result.getModel().getParameters().get(IdmAccountDto.PARAMETER_NAME);
 						if (!passwordChangeResults.containsKey(resultAccount.getId())) {
