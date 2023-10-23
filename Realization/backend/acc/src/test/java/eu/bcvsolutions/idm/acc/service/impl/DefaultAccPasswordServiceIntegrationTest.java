@@ -1,8 +1,10 @@
 package eu.bcvsolutions.idm.acc.service.impl;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +24,14 @@ import eu.bcvsolutions.idm.acc.domain.AccountType;
 import eu.bcvsolutions.idm.acc.dto.AccAccountDto;
 import eu.bcvsolutions.idm.acc.dto.AccPasswordDto;
 import eu.bcvsolutions.idm.acc.dto.SysSystemDto;
+import eu.bcvsolutions.idm.acc.dto.filter.AccPasswordFilter;
 import eu.bcvsolutions.idm.acc.entity.TestResource;
 import eu.bcvsolutions.idm.acc.service.api.AccAccountService;
+import eu.bcvsolutions.idm.acc.service.api.AccPasswordService;
 import eu.bcvsolutions.idm.acc.service.api.SysSystemService;
 import eu.bcvsolutions.idm.core.api.dto.IdmIdentityDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmPasswordPolicyDto;
+import eu.bcvsolutions.idm.core.api.dto.IdmSystemDto;
 import eu.bcvsolutions.idm.core.api.dto.PasswordChangeDto;
 import eu.bcvsolutions.idm.core.api.entity.OperationResult;
 import eu.bcvsolutions.idm.core.api.service.IdmIdentityService;
@@ -61,18 +66,6 @@ public class DefaultAccPasswordServiceIntegrationTest extends AbstractIntegratio
 		super.logout();
 	}
 
-	@Test
-	public void checkPasswordByPersisIdentity() {
-		GuardedString password = new GuardedString("password-" + System.currentTimeMillis());
-
-		IdmIdentityDto identity = new IdmIdentityDto();
-		identity.setUsername(helper.createName());
-		identity.setPassword(password);
-
-		IdmIdentityDto saveIdentity = identityService.save(identity);
-		assertNull(saveIdentity.getPassword());
-	}
-	
 	@Test
 	public void checkNullValueNewPassword() {
 		GuardedString passwordForCheck = new GuardedString("password");
@@ -113,37 +106,20 @@ public class DefaultAccPasswordServiceIntegrationTest extends AbstractIntegratio
 		assertFalse(passwordService.checkPassword(passwordForCheck, newPassword));
 	}
 
-	/*
 	@Test
-	public void testFilterIdentityUsername() {
-		IdmIdentityDto identity = helper.createIdentity(new GuardedString("test" + System.currentTimeMillis()));
-
+	public void testFilterAccountId() {
+		SysSystemDto system = helper.createTestResourceSystem(false);
+		AccAccountDto account = helper.createAccountWithPassword(system, "test" + System.currentTimeMillis());
 		AccPasswordFilter filter = new AccPasswordFilter();
-		filter.setIdentityUsername(identity.getUsername());
+		filter.setAccountId(account.getId());
 		List<AccPasswordDto> passwords = passwordService.find(filter, null).getContent();
-
 		assertEquals(1, passwords.size());
 		AccPasswordDto passwordDto = passwords.get(0);
-		assertEquals(identity.getId(), passwordDto.getIdentity());
-	}
-
-	@Test
-	public void testFilterIdentityId() {
-		IdmIdentityDto identity = helper.createIdentity(new GuardedString("test" + System.currentTimeMillis()));
-
-		AccPasswordFilter filter = new AccPasswordFilter();
-		filter.setIdentityId(identity.getId());
-		List<AccPasswordDto> passwords = passwordService.find(filter, null).getContent();
-
-		assertEquals(1, passwords.size());
-		AccPasswordDto passwordDto = passwords.get(0);
-		assertEquals(identity.getId(), passwordDto.getIdentity());
+		assertEquals(account.getId(), passwordDto.getAccount());
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
 	public void testFilterText() {
-		helper.createIdentity(new GuardedString("test" + System.currentTimeMillis()));
-
 		AccPasswordFilter filter = new AccPasswordFilter();
 		filter.setText("text-" + System.currentTimeMillis());
 		passwordService.find(filter, null).getContent();
@@ -152,15 +128,16 @@ public class DefaultAccPasswordServiceIntegrationTest extends AbstractIntegratio
 
 	@Test
 	public void testFilterByPassword() {
-		IdmIdentityDto identity = helper.createIdentity(new GuardedString("test" + System.currentTimeMillis()));
+		SysSystemDto system = helper.createTestResourceSystem(false);
+		AccAccountDto account = helper.createAccountWithPassword(system, "test" + System.currentTimeMillis());
 
 		AccPasswordFilter filter = new AccPasswordFilter();
-		filter.setIdentityId(identity.getId());
+		filter.setAccountId(account.getId());
 		List<AccPasswordDto> passwords = passwordService.find(filter, null).getContent();
 
 		assertEquals(1, passwords.size());
 		AccPasswordDto passwordDto = passwords.get(0);
-		assertEquals(identity.getId(), passwordDto.getIdentity());
+		assertEquals(account.getId(), passwordDto.getAccount());
 		
 		filter = new AccPasswordFilter();
 		filter.setPassword(passwordDto.getPassword());
@@ -169,11 +146,10 @@ public class DefaultAccPasswordServiceIntegrationTest extends AbstractIntegratio
 
 		assertEquals(1, passwords.size());
 		AccPasswordDto passwordDtoTwo = passwords.get(0);
-		assertEquals(identity.getId(), passwordDtoTwo.getIdentity());
+		assertEquals(account.getId(), passwordDtoTwo.getAccount());
 		assertEquals(passwordDto.getId(), passwordDtoTwo.getId());
 		assertEquals(passwordDto.getPassword(), passwordDtoTwo.getPassword());
 	}
-    */
 
 	private String generateHash(String password) {
 		return passwordService.generateHash(new GuardedString(password), passwordService.getSalt());
