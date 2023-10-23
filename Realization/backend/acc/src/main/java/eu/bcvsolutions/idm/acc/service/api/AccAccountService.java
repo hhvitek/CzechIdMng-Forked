@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import eu.bcvsolutions.idm.acc.dto.AccAccountDto;
 import eu.bcvsolutions.idm.acc.dto.filter.AccAccountFilter;
 import eu.bcvsolutions.idm.core.api.script.ScriptEnabled;
+import eu.bcvsolutions.idm.core.eav.api.dto.IdmFormValueDto;
 import eu.bcvsolutions.idm.core.eav.api.service.FormableDtoService;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
 import eu.bcvsolutions.idm.core.security.api.service.AuthorizableService;
@@ -21,6 +22,7 @@ import eu.bcvsolutions.idm.ic.api.IcConnectorObject;
  * 
  * @author Radek Tomiška
  * @author Tomáš Doischer
+ * @author Jirka Koula
  *
  */
 public interface AccAccountService extends//
@@ -85,4 +87,11 @@ public interface AccAccountService extends//
 	 * @return
 	 */
 	SynchronizationEntityExecutor getSyncExecutor(String entityType);
+
+	/**
+	 * Find password form value in account DTO.
+	 * @param account DTO maybe containing password
+	 * @return password form value object in case it is present, otherwise null
+	 */
+	IdmFormValueDto getPasswordFormValue(AccAccountDto account);
 }
