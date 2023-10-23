@@ -389,7 +389,6 @@ export default class AbstractService {
    * @return {Promise}
    */
   getPermissions(id) {
-    console.log('getPermissions', id, this.getApiPath);
     return RestApiService
       .get(`${ this.getApiPath() }/${ encodeURIComponent(id) }/permissions`)
       .then(response => {

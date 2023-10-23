@@ -7,13 +7,12 @@ import java.util.UUID;
  * Filter for password history
  *
  * @author Jirka Koula
- *
  */
 public abstract class AbstractPasswordHistoryFilter implements BaseFilter {
-	
+
 	private ZonedDateTime from;
-    private ZonedDateTime till;
-    private String creator;
+	private ZonedDateTime till;
+	private String creator;
 
 	public ZonedDateTime getFrom() {
 		return from;
