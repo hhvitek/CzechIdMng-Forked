@@ -34,7 +34,7 @@ import eu.bcvsolutions.idm.core.api.exception.ResultCodeException;
 import eu.bcvsolutions.idm.core.api.service.IdmPasswordPolicyService;
 import eu.bcvsolutions.idm.core.api.service.IdmPasswordService;
 import eu.bcvsolutions.idm.core.model.entity.IdmPasswordPolicy;
-import eu.bcvsolutions.idm.core.model.event.IdentityEvent.IdentityEventType;
+import eu.bcvsolutions.idm.core.model.event.EntityPasswordEvent.EntityPasswordEventType;
 import eu.bcvsolutions.idm.core.model.event.processor.identity.IdentityPasswordProcessor;
 import eu.bcvsolutions.idm.core.security.api.domain.Enabled;
 import eu.bcvsolutions.idm.core.security.api.service.SecurityService;
@@ -71,7 +71,7 @@ public class IdentityPasswordValidateProcessor
 			IdmPasswordService passwordService, 
 			SecurityService securityService,
 			IdentityConfiguration identityConfiguration) {
-		super(IdentityEventType.PASSWORD);
+		super(EntityPasswordEventType.PASSWORD);
 		//
 		Assert.notNull(identityAccountService, "Service is required.");
 		Assert.notNull(identityAccountRepository, "Repository is required.");

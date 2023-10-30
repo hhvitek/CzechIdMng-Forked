@@ -27,7 +27,7 @@ import eu.bcvsolutions.idm.core.api.event.DefaultEventResult;
 import eu.bcvsolutions.idm.core.api.event.EntityEvent;
 import eu.bcvsolutions.idm.core.api.event.EventResult;
 import eu.bcvsolutions.idm.core.api.event.processor.IdentityProcessor;
-import eu.bcvsolutions.idm.core.model.event.IdentityEvent.IdentityEventType;
+import eu.bcvsolutions.idm.core.model.event.EntityPasswordEvent.EntityPasswordEventType;
 import eu.bcvsolutions.idm.core.model.event.processor.identity.IdentityPasswordProcessor;
 import eu.bcvsolutions.idm.core.security.api.domain.Enabled;
 import eu.bcvsolutions.idm.core.security.api.domain.GuardedString;
@@ -56,7 +56,7 @@ public class IdentityPasswordProvisioningProcessor
 	
 	@Autowired
 	public IdentityPasswordProvisioningProcessor(ProvisioningService provisioningService) {
-		super(IdentityEventType.PASSWORD);
+		super(EntityPasswordEventType.PASSWORD);
 		//
 		Assert.notNull(provisioningService, "Service is required.");
 		//

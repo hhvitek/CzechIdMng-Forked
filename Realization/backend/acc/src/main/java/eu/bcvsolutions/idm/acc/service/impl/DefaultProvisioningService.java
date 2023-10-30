@@ -66,7 +66,7 @@ public class DefaultProvisioningService implements ProvisioningService {
 	@Override
 	public void doProvisioning(AbstractDto entity) {
 		Assert.notNull(entity, "Entity is required.");
-		this.getExecutor(systemEntityManager.getSystemEntityByClass(entity.getClass()).getSystemEntityCode()).doProvisioning(entity);		
+		this.getExecutor(systemEntityManager.getSystemEntityByClass(entity.getClass()).getSystemEntityCode()).doProvisioning(entity);
 	}
 
 	@Override
@@ -114,7 +114,11 @@ public class DefaultProvisioningService implements ProvisioningService {
 	public List<OperationResult> changePassword(AbstractDto entity, PasswordChangeDto passwordChange) {
 		Assert.notNull(entity, "Entity is required.");
 		//
-		return this.getExecutor(systemEntityManager.getSystemEntityByClass(entity.getClass()).getSystemEntityCode()).changePassword(entity, passwordChange);
+		Class<? extends AbstractDto> clazz = entity.getClass();
+		SystemEntityTypeRegistrable entityType = systemEntityManager.getSystemEntityByClass(clazz);
+		String entityCode = entityType.getSystemEntityCode();
+		ProvisioningEntityExecutor<AbstractDto> executor = this.getExecutor(entityCode);
+		return executor.changePassword(entity, passwordChange);
 	}
 
 	@Override

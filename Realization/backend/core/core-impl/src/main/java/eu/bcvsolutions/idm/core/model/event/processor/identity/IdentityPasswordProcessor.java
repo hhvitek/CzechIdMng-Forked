@@ -12,7 +12,7 @@ import eu.bcvsolutions.idm.core.api.dto.IdmPasswordPolicyDto;
 import eu.bcvsolutions.idm.core.api.dto.PasswordChangeDto;
 import eu.bcvsolutions.idm.core.api.service.IdmPasswordPolicyService;
 import eu.bcvsolutions.idm.core.api.service.IdmPasswordService;
-import eu.bcvsolutions.idm.core.model.event.IdentityEvent.IdentityEventType;
+import eu.bcvsolutions.idm.core.model.event.EntityPasswordEvent.EntityPasswordEventType;
 
 /**
  * Save identity's password
@@ -26,7 +26,7 @@ import eu.bcvsolutions.idm.core.model.event.IdentityEvent.IdentityEventType;
 public class IdentityPasswordProcessor extends AbstractIdentityPasswordProcessor {
 
 	public static final String PROCESSOR_NAME = "identity-password-processor";
-	public static final String PROPERTY_PASSWORD_CHANGE_DTO = "idm:password-change-dto";
+	public static final String PROPERTY_PASSWORD_CHANGE_DTO = "password-change-dto";
 	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(IdentityPasswordProcessor.class);
 	private final IdmPasswordService passwordService;
 	private final IdmPasswordPolicyService passwordPolicyService;
@@ -35,7 +35,7 @@ public class IdentityPasswordProcessor extends AbstractIdentityPasswordProcessor
 	public IdentityPasswordProcessor(
 			IdmPasswordService passwordService,
 			IdmPasswordPolicyService passwordPolicyService) {
-		super(passwordService, IdentityEventType.PASSWORD);
+		super(passwordService, EntityPasswordEventType.PASSWORD);
 		//
 		Assert.notNull(passwordService, "Password service is required for password processor.");
 		Assert.notNull(passwordPolicyService, "Password policy service is required for password processor.");
@@ -52,11 +52,11 @@ public class IdentityPasswordProcessor extends AbstractIdentityPasswordProcessor
 	/**
 	 * Saves identity's password and fill valid till from password policy.
 	 * 
-	 * @param identity
+	 * @param entity
 	 * @param newPassword
 	 */
-	protected void savePassword(IdmIdentityDto identity, PasswordChangeDto passwordChangeDto) {
-		LOG.debug("Saving password for identity [{}].", identity.getUsername());
+	protected void savePassword(IdmIdentityDto entity, PasswordChangeDto passwordChangeDto) {
+		LOG.debug("Saving password for identity [{}].", entity.getUsername());
 		// 
 		if (passwordChangeDto.getMaxPasswordAge() == null) {
 			IdmPasswordPolicyDto defaultValidatePolicy = passwordPolicyService
@@ -67,20 +67,20 @@ public class IdentityPasswordProcessor extends AbstractIdentityPasswordProcessor
 			} else {
 				passwordChangeDto.setMaxPasswordAge(null);
 				LOG.info("Default validate password policy not exists or max password age is not filled."
-						+ " For identity username [{}] will be valid till null.", identity.getUsername());
+						+ " For identity username [{}] will be valid till null.", entity.getUsername());
 			}
 		}
-		this.passwordService.save(identity, passwordChangeDto);
+		this.passwordService.save(entity, passwordChangeDto);
 	}
 
 	/**
 	 * Delete identity's password from confidential storage
 	 * 
-	 * @param identity
+	 * @param entity
 	 */
-	protected void deletePassword(IdmIdentityDto identity) {
-		LOG.debug("Deleting password for identity [{}]. ", identity.getUsername());
-		this.passwordService.delete(identity);
+	protected void deletePassword(IdmIdentityDto entity) {
+		LOG.debug("Deleting password for identity [{}]. ", entity.getUsername());
+		this.passwordService.delete(entity);
 	}
 
 	@Override

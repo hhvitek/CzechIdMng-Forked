@@ -10,10 +10,7 @@ import com.google.common.annotations.Beta;
 
 import eu.bcvsolutions.idm.core.api.domain.IdentityState;
 import eu.bcvsolutions.idm.core.api.dto.IdmIdentityDto;
-import eu.bcvsolutions.idm.core.api.dto.PasswordChangeDto;
 import eu.bcvsolutions.idm.core.api.dto.filter.IdmIdentityFilter;
-import eu.bcvsolutions.idm.core.api.entity.OperationResult;
-import eu.bcvsolutions.idm.core.api.event.CoreEvent;
 import eu.bcvsolutions.idm.core.api.exception.ForbiddenEntityException;
 import eu.bcvsolutions.idm.core.api.script.ScriptEnabled;
 import eu.bcvsolutions.idm.core.eav.api.service.FormableDtoService;
@@ -30,7 +27,8 @@ public interface IdmIdentityService extends
 		FormableDtoService<IdmIdentityDto, IdmIdentityFilter>,
 		AuthorizableService<IdmIdentityDto>,
 		CodeableService<IdmIdentityDto>,
-		ScriptEnabled, NiceLabelable<IdmIdentityDto> {
+		ScriptEnabled, NiceLabelable<IdmIdentityDto>,
+		PasswordManageableService<IdmIdentityDto> {
 
 	/**
 	 * Returns identity by given username
@@ -39,24 +37,6 @@ public interface IdmIdentityService extends
 	 */
 	IdmIdentityDto getByUsername(String username);
 
-	/**
-	 * Changes given identity's password by the event processing. New password property has to be set in event properties.
-	 * 
-	 * @param passwordChangeEvent
-	 * @return
-	 * @since 8.1.4 - use {@link #passwordChange(CoreEvent)}
-	 */
-	List<OperationResult> passwordChange(CoreEvent<IdmIdentityDto> passwordChangeEvent);
-	
-	/**
-	 * Changes given identity's password
-	 * 
-	 * @param identity
-	 * @param passwordChangeDto
-	 * @return - change on accounts
-	 */
-	List<OperationResult> passwordChange(IdmIdentityDto identity, PasswordChangeDto passwordChangeDto);
-	
 	/**
 	 * Find all identities by assigned role. Returns even identities with invalid roles (future valid and expired) and invalid identities.
 	 * 
@@ -148,13 +128,6 @@ public interface IdmIdentityService extends
 	 */
 	Page<IdmIdentityDto> findGuaranteesByRoleId(UUID roleId, Pageable pageable);
 	
-	/**
-	 * Method create new IdentityEvent for pre validate password
-	 * 
-	 * @param passwordChange
-	 */
-	void validatePassword(PasswordChangeDto passwordChange);
-
 	/**
 	 * Enable a given identity manually.
 	 * 

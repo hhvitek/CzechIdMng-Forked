@@ -15,8 +15,8 @@ import eu.bcvsolutions.idm.core.api.event.EntityEvent;
 import eu.bcvsolutions.idm.core.api.event.EventResult;
 import eu.bcvsolutions.idm.core.api.event.processor.IdentityProcessor;
 import eu.bcvsolutions.idm.core.api.service.EntityEventManager;
-import eu.bcvsolutions.idm.core.model.event.IdentityEvent;
-import eu.bcvsolutions.idm.core.model.event.IdentityEvent.IdentityEventType;
+import eu.bcvsolutions.idm.core.model.event.EntityPasswordEvent;
+import eu.bcvsolutions.idm.core.model.event.EntityPasswordEvent.EntityPasswordEventType;
 import eu.bcvsolutions.idm.core.model.event.processor.identity.IdentityPasswordProcessor;
 import eu.bcvsolutions.idm.core.security.api.domain.GuardedString;
 
@@ -57,8 +57,8 @@ public class IdentitySetUniformPasswordProcessor
 			passwordChangeDto.setAll(true);
 
 			// Publish event for changing password.
-			IdentityEvent identityEvent = new IdentityEvent(
-					IdentityEventType.PASSWORD,
+			EntityPasswordEvent identityEvent = new EntityPasswordEvent<IdmIdentityDto>(
+					EntityPasswordEventType.PASSWORD,
 					newIdentity,
 					ImmutableMap.of(
 							IdentityPasswordProcessor.PROPERTY_PASSWORD_CHANGE_DTO, passwordChangeDto,

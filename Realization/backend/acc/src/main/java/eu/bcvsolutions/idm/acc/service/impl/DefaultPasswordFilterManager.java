@@ -53,8 +53,8 @@ import eu.bcvsolutions.idm.core.api.service.IdmIdentityService;
 import eu.bcvsolutions.idm.core.api.service.IdmPasswordPolicyService;
 import eu.bcvsolutions.idm.core.api.service.LookupService;
 import eu.bcvsolutions.idm.core.api.utils.DtoUtils;
-import eu.bcvsolutions.idm.core.model.event.IdentityEvent;
-import eu.bcvsolutions.idm.core.model.event.IdentityEvent.IdentityEventType;
+import eu.bcvsolutions.idm.core.model.event.EntityPasswordEvent;
+import eu.bcvsolutions.idm.core.model.event.EntityPasswordEvent.EntityPasswordEventType;
 import eu.bcvsolutions.idm.core.model.event.processor.identity.IdentityPasswordProcessor;
 import eu.bcvsolutions.idm.core.script.evaluator.AbstractScriptEvaluator;
 import eu.bcvsolutions.idm.core.security.api.domain.GuardedString;
@@ -374,8 +374,8 @@ public class DefaultPasswordFilterManager implements PasswordFilterManager {
 		passwordChangeDto.setNewPassword(password);
 		passwordChangeDto.setSkipResetValidFrom(true);
 		//
-		IdentityEvent identityEvent = new IdentityEvent(
-				IdentityEventType.PASSWORD,
+		EntityPasswordEvent identityEvent = new EntityPasswordEvent(
+				EntityPasswordEventType.PASSWORD,
 				identity, 
 				ImmutableMap.of(
 						IdentityPasswordProcessor.PROPERTY_PASSWORD_CHANGE_DTO, passwordChangeDto,

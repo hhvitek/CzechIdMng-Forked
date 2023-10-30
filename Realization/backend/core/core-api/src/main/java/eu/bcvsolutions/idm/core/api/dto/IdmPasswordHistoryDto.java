@@ -6,8 +6,6 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.hateoas.server.core.Relation;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import eu.bcvsolutions.idm.core.api.domain.Embedded;
 
 /**
@@ -19,24 +17,13 @@ import eu.bcvsolutions.idm.core.api.domain.Embedded;
  */
 
 @Relation(collectionRelation = "passwordHistories")
-public class IdmPasswordHistoryDto extends AbstractDto {
+public class IdmPasswordHistoryDto extends AbstractPasswordHistoryDto {
 
 	private static final long serialVersionUID = 1L;
 
 	@NotNull
-	@JsonIgnore
-	private String password;
-	@NotNull
 	@Embedded(dtoClass = IdmIdentityDto.class)
 	private UUID identity;
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
 
 	public UUID getIdentity() {
 		return identity;
