@@ -1,5 +1,7 @@
 package eu.bcvsolutions.idm.core.api.service;
 
+import java.util.UUID;
+
 import eu.bcvsolutions.idm.core.api.domain.PasswordManageable;
 import eu.bcvsolutions.idm.core.api.dto.AbstractDto;
 import eu.bcvsolutions.idm.core.api.dto.AbstractPasswordDto;
@@ -59,4 +61,5 @@ public interface AbstractPasswordService<P extends AbstractPasswordDto, E extend
 	 */
 	String getSalt();
 
+	abstract P findOneByEntity(UUID entityId);
 }

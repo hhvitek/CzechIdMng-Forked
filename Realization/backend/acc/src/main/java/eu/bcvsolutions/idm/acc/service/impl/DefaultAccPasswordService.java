@@ -144,6 +144,11 @@ public class DefaultAccPasswordService
 	}
 
 	@Override
+	public AccPasswordDto findOneByEntity(UUID entityId) {
+		return findOneByAccount(entityId);
+	}
+
+	@Override
 	@Transactional
 	public AccPasswordDto findOrCreateByAccount(Serializable codeable) {
 		AccAccountDto accountDto = lookupService.lookupDto(AccAccountDto.class, codeable);

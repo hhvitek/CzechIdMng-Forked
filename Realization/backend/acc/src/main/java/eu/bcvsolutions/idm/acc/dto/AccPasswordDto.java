@@ -30,4 +30,6 @@ public class AccPasswordDto extends AbstractPasswordDto {
 		this.account = account;
 	}
 
+	@Override
+	public UUID getEntity() { return account; }
 }
