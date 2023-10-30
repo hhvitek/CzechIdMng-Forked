@@ -993,4 +993,72 @@ and then in your implementation of ``AbstractSwaggerConfig`` change this:
 - 🟠 and ``api()`` now returns ``GroupedOpenApi`` instead of  ``Docket``
 - 🟠 ``import springfox.documentation.spring.web.plugins.Docket;`` ⇒ ``import org.springdoc.core.GroupedOpenApi;``
 
+also is nesesery to change swagger2markup to openapi-generator:
 
+from
+```xml
+<plugin>
+    <groupId>io.github.swagger2markup</groupId>
+    <artifactId>swagger2markup-maven-plugin</artifactId>
+    <version>${swagger2markup.version}</version>
+
+    <configuration>
+        <swaggerInput>${swagger.input}</swaggerInput>
+        <outputDir>${generated.asciidoc.directory}</outputDir>
+        <config>
+            <swagger2markup.markupLanguage>ASCIIDOC</swagger2markup.markupLanguage>
+            <swagger2markup.outputLanguage>EN</swagger2markup.outputLanguage>
+            <swagger2markup.pathsGroupedBy>TAGS</swagger2markup.pathsGroupedBy>
+            <swagger2markup.generatedExamplesEnabled>false</swagger2markup.generatedExamplesEnabled>
+
+            <swagger2markup.extensions.dynamicOverview.contentPath>${asciidoctor.input.extensions.directory}/overview</swagger2markup.extensions.dynamicOverview.contentPath>
+            <swagger2markup.extensions.dynamicDefinitions.contentPath>${asciidoctor.input.extensions.directory}/definitions</swagger2markup.extensions.dynamicDefinitions.contentPath>
+            <swagger2markup.extensions.dynamicPaths.contentPath>${asciidoctor.input.extensions.directory}/paths</swagger2markup.extensions.dynamicPaths.contentPath>
+            <swagger2markup.extensions.dynamicSecurity.contentPath>${asciidoctor.input.extensions.directory}/security/</swagger2markup.extensions.dynamicSecurity.contentPath>
+
+            <swagger2markup.extensions.springRestDocs.snippetBaseUri>${swagger.snippetOutput.dir}</swagger2markup.extensions.springRestDocs.snippetBaseUri>
+            <swagger2markup.extensions.springRestDocs.defaultSnippets>true</swagger2markup.extensions.springRestDocs.defaultSnippets>
+        </config>
+    </configuration>
+    <executions>
+        <execution>
+            <phase>test</phase>
+            <goals>
+                <goal>convertSwagger2markup</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+```
+to
+```xml
+<plugin>
+    <groupId>org.openapitools</groupId>
+    <artifactId>openapi-generator-maven-plugin</artifactId>
+    <version>${openapi-generator.version}</version>
+    <executions>
+        <execution>
+            <phase>test</phase>
+            <goals>
+                <goal>generate</goal>
+            </goals>
+            <configuration>
+                <inputSpec>${swagger.input}</inputSpec>
+                <output>${generated.asciidoc.directory}</output>
+                <generatorName>asciidoc</generatorName>
+                <skipValidateSpec>true</skipValidateSpec>
+                <generateAliasAsModel>true</generateAliasAsModel>
+                <configOptions>
+                    <useIntroduction>true</useIntroduction>
+                    <skipExamples>false</skipExamples>
+                </configOptions>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+```
+then update src/docs/asciidoc/index.adoc to incude
+```adoc
+include::{generated}/index.adoc[]
+```
+overview, security, paths and definitions can by removed

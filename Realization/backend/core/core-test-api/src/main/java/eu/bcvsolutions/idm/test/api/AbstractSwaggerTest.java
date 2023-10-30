@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import eu.bcvsolutions.idm.core.api.domain.ModuleDescriptor;
 
 /**
- * Static swagger generation for given module - generated output will be used as input for swagger2Markup build.
+ * Static swagger generation for given module - generated output will be used as input for openapi-generator build.
  * 
  * @author Radek Tomiška
  *
