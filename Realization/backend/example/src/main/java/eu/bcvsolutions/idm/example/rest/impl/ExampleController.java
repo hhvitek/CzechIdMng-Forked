@@ -20,10 +20,14 @@ import eu.bcvsolutions.idm.example.ExampleModuleDescriptor;
 import eu.bcvsolutions.idm.example.domain.ExampleResultCode;
 import eu.bcvsolutions.idm.example.dto.Pong;
 import eu.bcvsolutions.idm.example.service.api.ExampleService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Example controller
@@ -34,7 +38,8 @@ import io.swagger.annotations.Authorization;
 @RestController
 @Enabled(ExampleModuleDescriptor.MODULE_ID)
 @RequestMapping(value = BaseController.BASE_PATH + "/examples")
-@Api(value = ExampleController.TAG, description = "Example operations", tags = { "Examples" })
+@Tag(name = ExampleController.TAG, description = "Example operations")
+
 public class ExampleController {
 	
 	protected static final String TAG = "Examples";
@@ -42,34 +47,45 @@ public class ExampleController {
 
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET, path = "/ping")
-	@ApiOperation(
-			value = "Ping - Pong operation", 
-			notes= "Returns message with additional informations",
-			nickname = "ping", 
-			tags={ ExampleController.TAG }, 
-			response = Pong.class, 
-			authorizations = {
-				@Authorization(SwaggerConfig.AUTHENTICATION_BASIC),
-				@Authorization(SwaggerConfig.AUTHENTICATION_CIDMST)
-			})
+	@Operation(
+			summary = "Ping - Pong operation", 
+			description= "Returns message with additional informations",
+			/*, nickname = "ping", */
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = Pong.class
+                                    )
+                            )
+                    }
+            ))
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
+            }
+    )
 	public ResponseEntity<Pong> ping(
-			@ApiParam(value = "In / out message", example = "hello", defaultValue = "hello") 
+			 @Parameter(description = "In / out message", example = "hello")
 			@RequestParam(required = false, defaultValue = "hello") String message
 			) {
 		return new ResponseEntity<>(service.ping(message), HttpStatus.OK); 
 	}
 	
 	@ResponseBody
-	@RequestMapping(method = RequestMethod.GET, path = "/private-value")
-	@ApiOperation(
-			value = "Read private value", 
-			notes= "Returns configuration property - private value.",
-			nickname = "getPrivateValue", 
-			tags={ ExampleController.TAG }, 
-			authorizations = {
-				@Authorization(SwaggerConfig.AUTHENTICATION_BASIC),
-				@Authorization(SwaggerConfig.AUTHENTICATION_CIDMST)
-			})
+	@RequestMapping(method = RequestMethod.GET, path = "/private-name")
+	@Operation(
+			summary = "Read private summary", 
+			description= "Returns configuration property - private value.",
+			operationId = "getPrivateValue",
+			tags={ ExampleController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
+            }
+    )
 	public String getPrivateValue() {
 		return service.getPrivateValue();
 	}
@@ -77,34 +93,36 @@ public class ExampleController {
 	@ResponseBody
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	@RequestMapping(method = RequestMethod.GET, path = "/notification")
-	@ApiOperation(
-			value = "Send notification", 
-			notes= "Sending given message to currently logged identity (example topic is used).",
-			nickname = "sendNotification", 
-			tags={ ExampleController.TAG }, 
-			authorizations = {
-				@Authorization(SwaggerConfig.AUTHENTICATION_BASIC),
-				@Authorization(SwaggerConfig.AUTHENTICATION_CIDMST)
-			})
+	@Operation(
+			summary = "Send notification", 
+			description= "Sending given message to currently logged identity (example topic is used).",
+			operationId = "sendNotification",
+			tags={ ExampleController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
+            }
+    )
 	public void sendNotification(
-			@ApiParam(value = "Notification message", example = "hello", defaultValue = "hello") 
+			 @Parameter(description = "Notification message", example = "hello")
 			@RequestParam(required = false, defaultValue = "hello") String message) {
 		service.sendNotification(message);
 	}
 	
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET, path = "/client-error")
-	@ApiOperation(
-			value = "Example client error", 
-			notes= "Example client error with given parameter.",
-			nickname = "exampleClientError", 
-			tags={ ExampleController.TAG }, 
-			authorizations = {
-				@Authorization(SwaggerConfig.AUTHENTICATION_BASIC),
-				@Authorization(SwaggerConfig.AUTHENTICATION_CIDMST)
-			})
+	@Operation(
+			summary = "Example client error", 
+			description= "Example client error with given parameter.",
+			operationId = "exampleClientError",
+			tags={ ExampleController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
+            }
+    )
 	public void clientError(
-			@ApiParam(value = "Error parameter", example = "parameter", defaultValue = "value") 
+			 @Parameter(description = "Error parameter", example = "parameter")
 			@RequestParam(required = false, defaultValue = "parameter") String parameter) {
 		// lookout - ImmutableMap parameter values cannot be {@code null}
 		throw new ResultCodeException(ExampleResultCode.EXAMPLE_CLIENT_ERROR, ImmutableMap.of("parameter", String.valueOf(parameter)));
@@ -112,17 +130,18 @@ public class ExampleController {
 	
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET, path = "/server-error")
-	@ApiOperation(
-			value = "Example server error", 
-			notes= "Example server error with given parameter.",
-			nickname = "exampleServerError", 
-			tags={ ExampleController.TAG }, 
-			authorizations = {
-				@Authorization(SwaggerConfig.AUTHENTICATION_BASIC),
-				@Authorization(SwaggerConfig.AUTHENTICATION_CIDMST)
-			})
+	@Operation(
+			summary = "Example server error", 
+			description= "Example server error with given parameter.",
+			operationId = "exampleServerError",
+			tags={ ExampleController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
+            }
+    )
 	public void serverError(
-			@ApiParam(value = "Error parameter", example = "parameter", defaultValue = "value") 
+            @Parameter(description = "Error parameter", example = "parameter")
 			@RequestParam(required = false, defaultValue = "parameter") String parameter) {
 		// lookout - ImmutableMap parameter values cannot be {@code null}
 		throw new ResultCodeException(ExampleResultCode.EXAMPLE_SERVER_ERROR, ImmutableMap.of("parameter", String.valueOf(parameter)));

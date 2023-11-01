@@ -9,7 +9,7 @@ import org.springframework.hateoas.server.core.Relation;
 import eu.bcvsolutions.idm.core.api.domain.DefaultFieldLengths;
 import eu.bcvsolutions.idm.core.api.domain.Embedded;
 import eu.bcvsolutions.idm.core.api.domain.ExternalIdentifiable;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Identity contract's guarantee
@@ -23,7 +23,7 @@ public class IdmContractGuaranteeDto extends AbstractDto implements ExternalIden
 	private static final long serialVersionUID = 1127070160913630052L;
 
 	@Size(max = DefaultFieldLengths.NAME)
-	@ApiModelProperty(notes = "Unique external identifier.")
+	@Schema(description = "Unique external identifier.")
 	private String externalId;
 	@Embedded(dtoClass = IdmIdentityContractDto.class)
 	private UUID identityContract;

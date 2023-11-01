@@ -167,7 +167,7 @@ public class DefaultSecurityService implements SecurityService {
 		Set<String> requiredAuthorities = new HashSet<>(Arrays.asList(authorities));
 		Set<String> allAuthorities = getAllAuthorities();
 		//
-		boolean result = CollectionUtils.containsAny(requiredAuthorities, allAuthorities);
+		boolean result = org.springframework.util.CollectionUtils.containsAny(requiredAuthorities, allAuthorities);
 		LOG.trace("Logged identity hasAnyAuthotity [{}] evaluated to [{}]", authorities, result);
 		//
 		return result;
@@ -180,11 +180,11 @@ public class DefaultSecurityService implements SecurityService {
 		}
 		Set<String> requiredAuthorities = new HashSet<>(Arrays.asList(authorities));
 		Set<String> allAuthorities = getAllAuthorities();
-		//
-		boolean result = CollectionUtils.containsAll(allAuthorities, requiredAuthorities);
-		LOG.trace("Logged identity hasAllAuthorities [{}] evaluated to [{}]", authorities, result);
-		//
-		return result;
+
+        boolean result = CollectionUtils.containsAll(allAuthorities, requiredAuthorities);
+        LOG.trace("Logged identity hasAllAuthorities [{}] evaluated to [{}]", authorities, result);
+
+        return result;
 	}
 
 	@Override

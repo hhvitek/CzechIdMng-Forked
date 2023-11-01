@@ -5,12 +5,12 @@ import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.Assert;
@@ -36,11 +36,14 @@ import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.api.service.IdmAutomaticRoleRequestService;
 import eu.bcvsolutions.idm.core.api.service.IdmRoleTreeNodeService;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Automatic role controller
@@ -50,12 +53,7 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/role-tree-nodes")
-@Api(
-		value = IdmRoleTreeNodeController.TAG,  
-		tags = { IdmRoleTreeNodeController.TAG }, 
-		description = "Automatic roles",
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = IdmRoleTreeNodeController.TAG, description = "Automatic roles")
 public class IdmRoleTreeNodeController extends AbstractReadWriteDtoController<IdmRoleTreeNodeDto, IdmRoleTreeNodeFilter> {
 	
 	protected static final String TAG = "Roles - by tree structures";
@@ -72,18 +70,18 @@ public class IdmRoleTreeNodeController extends AbstractReadWriteDtoController<Id
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLETREENODE_READ + "')")
-	@ApiOperation(
-			value = "Search automatic roles (/search/quick alias)", 
-			nickname = "searchRoleTreeNodes", 
-			tags = { IdmRoleTreeNodeController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLETREENODE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLETREENODE_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search automatic roles (/search/quick alias)",
+			operationId = "searchRoleTreeNodes", 
+			tags = { IdmRoleTreeNodeController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLETREENODE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ROLETREENODE_READ })
+    })
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -91,18 +89,18 @@ public class IdmRoleTreeNodeController extends AbstractReadWriteDtoController<Id
 	@ResponseBody
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLETREENODE_READ + "')")
-	@ApiOperation(
-			value = "Search automatic roles", 
-			nickname = "searchQuickRoleTreeNodes", 
-			tags = { IdmRoleTreeNodeController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLETREENODE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLETREENODE_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search automatic roles",
+			operationId = "searchQuickRoleTreeNodes", 
+			tags = { IdmRoleTreeNodeController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLETREENODE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ROLETREENODE_READ })
+    })
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -110,18 +108,18 @@ public class IdmRoleTreeNodeController extends AbstractReadWriteDtoController<Id
 	@ResponseBody
 	@RequestMapping(value= "/search/autocomplete", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLETREENODE_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "Autocomplete automatic roles (selectbox usage)", 
-			nickname = "autocompleteRoleTreeNodes", 
-			tags = { IdmRoleTreeNodeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLETREENODE_AUTOCOMPLETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLETREENODE_AUTOCOMPLETE, description = "") })
-				})
+	@Operation(
+			summary = "Autocomplete automatic roles (selectbox usage)",
+			operationId = "autocompleteRoleTreeNodes", 
+			tags = { IdmRoleTreeNodeController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLETREENODE_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ROLETREENODE_AUTOCOMPLETE })
+    })
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -130,16 +128,14 @@ public class IdmRoleTreeNodeController extends AbstractReadWriteDtoController<Id
 	@ResponseBody
 	@RequestMapping(value = "/search/count", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLETREENODE_COUNT + "')")
-	@ApiOperation(
-			value = "The number of entities that match the filter", 
-			nickname = "countRoleTreeNodes", 
-			tags = { IdmRoleTreeNodeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLETREENODE_COUNT, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLETREENODE_COUNT, description = "") })
-				})
+	@Operation(
+			summary = "The number of entities that match the filter",
+			operationId = "countRoleTreeNodes", 
+			tags = { IdmRoleTreeNodeController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLETREENODE_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ROLETREENODE_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -148,19 +144,27 @@ public class IdmRoleTreeNodeController extends AbstractReadWriteDtoController<Id
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLETREENODE_READ + "')")
-	@ApiOperation(
-			value = "Automatic role detail", 
-			nickname = "getRoleTreeNode", 
-			response = IdmRoleTreeNodeDto.class, 
-			tags = { IdmRoleTreeNodeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLETREENODE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLETREENODE_READ, description = "") })
-				})
+	@Operation(
+			summary = "Automatic role detail",
+			operationId = "getRoleTreeNode", 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRoleTreeNodeDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmRoleTreeNodeController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLETREENODE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ROLETREENODE_READ })
+    })
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Automatic role's uuid identifier.", required = true)
+			 @Parameter(description = "Automatic role's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -171,20 +175,31 @@ public class IdmRoleTreeNodeController extends AbstractReadWriteDtoController<Id
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLETREENODE_CREATE + "')"
 			+ " or hasAuthority('" + CoreGroupPermission.ROLETREENODE_UPDATE + "')")
-	@ApiOperation(
-			value = "Create / update automatic role", 
-			nickname = "postRoleTreeNode", 
-			response = IdmRoleTreeNodeDto.class, 
-			tags = { IdmRoleTreeNodeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLETREENODE_CREATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.ROLETREENODE_UPDATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLETREENODE_CREATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.ROLETREENODE_UPDATE, description = "")})
-				},
-			notes = "If role has guarantee assigned, then automatic role has to be approved by him at first (configurable by entity event processor).")
+	@Operation(
+			summary = "Create / update automatic role",
+			operationId = "postRoleTreeNode", 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRoleTreeNodeDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmRoleTreeNodeController.TAG },
+			description = "If role has guarantee assigned, then automatic role has to be approved by him at first (configurable by entity event processor).")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+                            CoreGroupPermission.ROLETREENODE_CREATE,
+                            CoreGroupPermission.ROLETREENODE_UPDATE}),
+                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+                            CoreGroupPermission.ROLETREENODE_CREATE,
+                            CoreGroupPermission.ROLETREENODE_UPDATE})
+            }
+    )
 	public ResponseEntity<?> post(@Valid @RequestBody IdmRoleTreeNodeDto dto) {
 		Assert.notNull(dto, "DTO is required.");
 		IdmRoleTreeNodeDto result = requestService.createTreeAutomaticRole(dto);
@@ -198,18 +213,16 @@ public class IdmRoleTreeNodeController extends AbstractReadWriteDtoController<Id
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLETREENODE_DELETE + "')")
-	@ApiOperation(
-			value = "Delete automatic role. Uses request!", 
-			nickname = "deleteRoleTreeNode", 
-			tags = { IdmRoleTreeNodeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLETREENODE_DELETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLETREENODE_DELETE, description = "") })
-				})
+	@Operation(
+			summary = "Delete automatic role. Uses request!",
+			operationId = "deleteRoleTreeNode", 
+			tags = { IdmRoleTreeNodeController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLETREENODE_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ROLETREENODE_DELETE })
+    })
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "Automatic role's uuid identifier.", required = true)
+			 @Parameter(description = "Automatic role's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		IdmRoleTreeNodeDto automaticRole = this.getDto(backendId);
 		Assert.notNull(automaticRole, "Automatic role is required.");
@@ -222,18 +235,16 @@ public class IdmRoleTreeNodeController extends AbstractReadWriteDtoController<Id
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLETREENODE_READ + "')")
-	@ApiOperation(
-			value = "What logged identity can do with given record", 
-			nickname = "getPermissionsOnRoleTreeNode", 
-			tags = { IdmRoleTreeNodeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLETREENODE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLETREENODE_READ, description = "") })
-				})
+	@Operation(
+			summary = "What logged identity can do with given record",
+			operationId = "getPermissionsOnRoleTreeNode", 
+			tags = { IdmRoleTreeNodeController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLETREENODE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ROLETREENODE_READ })
+    })
 	public Set<String> getPermissions(
-			@ApiParam(value = "Automatic role's uuid identifier.", required = true)
+			 @Parameter(description = "Automatic role's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}

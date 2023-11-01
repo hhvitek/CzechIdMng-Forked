@@ -9,8 +9,8 @@ import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import eu.bcvsolutions.idm.core.api.dto.IdmIdentityDto;
 import eu.bcvsolutions.idm.core.security.api.domain.GuardedString;
-import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.ApiModelProperty.AccessMode;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 
 /**
  * Identity authentication information.
@@ -22,18 +22,18 @@ import io.swagger.annotations.ApiModelProperty.AccessMode;
 public class LoginDto extends LoginRequestDto {
 	
 	@JsonProperty(access = Access.READ_ONLY)
-	@ApiModelProperty(accessMode = AccessMode.READ_ONLY, notes = "Logged identity's authentication token.")
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY, description = "Logged identity's authentication token.")
 	private String token;
 	@JsonProperty(access = Access.READ_ONLY)
-	@ApiModelProperty(accessMode = AccessMode.READ_ONLY, notes = "Logged identity's authentication metadata.")
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY, description = "Logged identity's authentication metadata.")
 	private IdmJwtAuthenticationDto authentication;
 	@JsonProperty(access = Access.READ_ONLY)
-	@ApiModelProperty(accessMode = AccessMode.READ_ONLY, notes = "Logged identity's granted authorities.")
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY, description = "Logged identity's granted authorities.")
 	private List<DefaultGrantedAuthorityDto> authorities;
 	@JsonIgnore
 	private boolean skipMustChange = false;
 	@JsonProperty(access = Access.READ_ONLY)
-	@ApiModelProperty(accessMode = AccessMode.READ_ONLY, notes = "Which module authenticated identity.")
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY, description = "Which module authenticated identity.")
 	private String authenticationModule; // identifier - which module authenticated identity
 	
 	public LoginDto() {

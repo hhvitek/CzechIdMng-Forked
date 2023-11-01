@@ -7,6 +7,7 @@ import java.util.UUID;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +35,7 @@ import eu.bcvsolutions.idm.core.api.dto.BaseDto;
 import eu.bcvsolutions.idm.core.api.entity.BaseEntity;
 import eu.bcvsolutions.idm.core.api.entity.OperationResult;
 import eu.bcvsolutions.idm.core.api.rest.AbstractReadWriteDtoController;
+import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.scheduler.api.dto.IdmProcessedTaskItemDto;
@@ -41,11 +43,14 @@ import eu.bcvsolutions.idm.core.scheduler.api.dto.filter.IdmProcessedTaskItemFil
 import eu.bcvsolutions.idm.core.scheduler.api.service.IdmProcessedTaskItemService;
 import eu.bcvsolutions.idm.core.scheduler.entity.IdmProcessedTaskItem_;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Default controller for Processed Task Item
@@ -55,10 +60,7 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/long-running-task-items")
-@Api(
-		value = IdmLongRunningTaskItemController.TAG,
-		description = "Operations with processed task items",
-		tags = { IdmLongRunningTaskItemController.TAG })
+@Tag(name = IdmLongRunningTaskItemController.TAG, description = "Operations with processed task items")
 public class IdmLongRunningTaskItemController extends AbstractReadWriteDtoController<IdmProcessedTaskItemDto, IdmProcessedTaskItemFilter> {
 
 	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(IdmLongRunningTaskItemController.class);
@@ -81,19 +83,27 @@ public class IdmLongRunningTaskItemController extends AbstractReadWriteDtoContro
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_READ + "')")
-	@ApiOperation(
-			value = "Processed task items",
-			nickname = "getProcessedTaskItems",
-			response = IdmProcessedTaskItemDto.class,
-			tags={ IdmLongRunningTaskItemController.TAG},
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_READ, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_READ, description = "") })
-			})
+	@Operation(
+			summary = "Processed task items",
+			operationId = "getProcessedTaskItems",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmProcessedTaskItemDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags={ IdmLongRunningTaskItemController.TAG})
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_READ })
+    })
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Processed task's uuid identifier.", required = true)
+			 @Parameter(description = "Processed task's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -102,14 +112,15 @@ public class IdmLongRunningTaskItemController extends AbstractReadWriteDtoContro
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_READ + "')")
-	@ApiOperation(value = "Search processed task's items (/search/quick alias)", nickname = "searchProcessedTaskItems", tags={ IdmLongRunningTaskItemController.TAG }, authorizations = {
-			@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-					@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_READ, description = "") }),
-			@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-					@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_READ, description = "") })
-	})
+	@Operation(summary = "Search processed task's items (/search/quick alias)", operationId = "searchProcessedTaskItems", tags={ IdmLongRunningTaskItemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_READ })
+    })
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -125,14 +136,15 @@ public class IdmLongRunningTaskItemController extends AbstractReadWriteDtoContro
 	@ResponseBody
 	@RequestMapping(value= "/search/quick", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_READ + "')")
-	@ApiOperation(value = "Search processed task's items", nickname = "searchQuickProcessedTaskItems", tags={ IdmLongRunningTaskItemController.TAG }, authorizations = {
-			@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-					@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_READ, description = "") }),
-			@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-					@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_READ, description = "") })
-	})
+	@Operation(summary = "Search processed task's items", operationId = "searchQuickProcessedTaskItems", tags={ IdmLongRunningTaskItemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_READ })
+    })
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -153,18 +165,16 @@ public class IdmLongRunningTaskItemController extends AbstractReadWriteDtoContro
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_DELETE + "')")
-	@ApiOperation(
-			value = "Delete record",
-			nickname = "deleteRecord",
-			tags = { IdmLongRunningTaskItemController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_DELETE, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_DELETE, description = "") })
-			})
+	@Operation(
+			summary = "Delete record",
+			operationId = "deleteRecord",
+			tags = { IdmLongRunningTaskItemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_DELETE })
+    })
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "Records's uuid identifier", required = true)
+			 @Parameter(description = "Records's uuid identifier", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -172,18 +182,16 @@ public class IdmLongRunningTaskItemController extends AbstractReadWriteDtoContro
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/queue-item", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_CREATE + "')")
-	@ApiOperation(
-			value = "Create record",
-			nickname = "createRecord",
-			tags = { IdmLongRunningTaskItemController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_CREATE, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_CREATE, description = "") })
-			})
+	@Operation(
+			summary = "Create record",
+			operationId = "createRecord",
+			tags = { IdmLongRunningTaskItemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_CREATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_CREATE })
+    })
 	public ResponseEntity<?> addToQueue(
-			@ApiParam(value = "Records's uuid identifier", required = true)
+			 @Parameter(description = "Records's uuid identifier", required = true)
 			@PathVariable @NotNull String backendId, @Valid @RequestBody UUID scheduledTask) {
 		IdmProcessedTaskItemDto itemDto = itemService.get(backendId);
 		itemService.createQueueItem(itemDto, new OperationResult(OperationState.EXECUTED), scheduledTask);

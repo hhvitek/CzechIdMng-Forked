@@ -11,13 +11,13 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -53,11 +53,14 @@ import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmGroupPermission;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Entity events.
@@ -67,12 +70,7 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/entity-events")
-@Api(
-		value = IdmEntityEventController.TAG, 
-		description = "Operations with entity events", 
-		tags = { IdmEntityEventController.TAG }, 
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = IdmEntityEventController.TAG, description = "Operations with entity events")
 public class IdmEntityEventController extends AbstractEventableDtoController<IdmEntityEventDto, IdmEntityEventFilter> {
 	
 	protected static final String TAG = "Entity events";
@@ -89,18 +87,18 @@ public class IdmEntityEventController extends AbstractEventableDtoController<Idm
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ENTITYEVENT_READ + "')")
-	@ApiOperation(
-			value = "Search entity events (/search/quick alias)", 
-			nickname = "searchEntityEvents", 
-			tags = { IdmEntityEventController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ENTITYEVENT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ENTITYEVENT_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search entity events (/search/quick alias)", 
+			operationId = "searchEntityEvents",
+			tags = { IdmEntityEventController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ENTITYEVENT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ENTITYEVENT_READ })
+    })
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -109,18 +107,18 @@ public class IdmEntityEventController extends AbstractEventableDtoController<Idm
 	@ResponseBody
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ENTITYEVENT_READ + "')")
-	@ApiOperation(
-			value = "Search entity events", 
-			nickname = "searchQuickEntityEvents", 
-			tags = { IdmEntityEventController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ENTITYEVENT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ENTITYEVENT_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search entity events", 
+			operationId = "searchQuickEntityEvents",
+			tags = { IdmEntityEventController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ENTITYEVENT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ENTITYEVENT_READ })
+    })
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -129,18 +127,18 @@ public class IdmEntityEventController extends AbstractEventableDtoController<Idm
 	@ResponseBody
 	@RequestMapping(value = "/search/autocomplete", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ENTITYEVENT_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "Autocomplete entity events (selectbox usage)", 
-			nickname = "autocompleteEntityEvents", 
-			tags = { IdmEntityEventController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ENTITYEVENT_AUTOCOMPLETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ENTITYEVENT_AUTOCOMPLETE, description = "") })
-				})
+	@Operation(
+			summary = "Autocomplete entity events (selectbox usage)", 
+			operationId = "autocompleteEntityEvents",
+			tags = { IdmEntityEventController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ENTITYEVENT_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ENTITYEVENT_AUTOCOMPLETE })
+    })
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -149,16 +147,14 @@ public class IdmEntityEventController extends AbstractEventableDtoController<Idm
 	@ResponseBody
 	@RequestMapping(value = "/search/count", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ENTITYEVENT_COUNT + "')")
-	@ApiOperation(
-			value = "The number of entities that match the filter", 
-			nickname = "countEntityEvents", 
-			tags = { IdmEntityEventController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ENTITYEVENT_COUNT, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ENTITYEVENT_COUNT, description = "") })
-				})
+	@Operation(
+			summary = "The number of entities that match the filter", 
+			operationId = "countEntityEvents",
+			tags = { IdmEntityEventController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ENTITYEVENT_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ENTITYEVENT_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -167,19 +163,27 @@ public class IdmEntityEventController extends AbstractEventableDtoController<Idm
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ENTITYEVENT_READ + "')")
-	@ApiOperation(
-			value = "EntityEvent detail", 
-			nickname = "getEntityEvent", 
-			response = IdmEntityEventDto.class, 
-			tags = { IdmEntityEventController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ENTITYEVENT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ENTITYEVENT_READ, description = "") })
-				})
+	@Operation(
+			summary = "EntityEvent detail", 
+			operationId = "getEntityEvent",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmEntityEventDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmEntityEventController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ENTITYEVENT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ENTITYEVENT_READ })
+    })
 	public ResponseEntity<?> get(
-			@ApiParam(value = "EntityEvent's uuid identifier or username.", required = true)
+			 @Parameter(description = "EntityEvent's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -189,19 +193,30 @@ public class IdmEntityEventController extends AbstractEventableDtoController<Idm
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ENTITYEVENT_CREATE + "')"
 			+ " or hasAuthority('" + CoreGroupPermission.ENTITYEVENT_UPDATE + "')")
-	@ApiOperation(
-			value = "Create / update entity event", 
-			nickname = "postEntityEvent", 
-			response = IdmEntityEventDto.class, 
-			tags = { IdmEntityEventController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ENTITYEVENT_CREATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.ENTITYEVENT_UPDATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ENTITYEVENT_CREATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.ENTITYEVENT_UPDATE, description = "")})
-				})
+	@Operation(
+			summary = "Create / update entity event", 
+			operationId = "postEntityEvent",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmEntityEventDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmEntityEventController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.ENTITYEVENT_CREATE,
+						CoreGroupPermission.ENTITYEVENT_UPDATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.ENTITYEVENT_CREATE,
+						CoreGroupPermission.ENTITYEVENT_UPDATE})
+        }
+    )
 	public ResponseEntity<?> post(@Valid @RequestBody IdmEntityEventDto dto) {
 		return super.post(dto);
 	}
@@ -210,19 +225,27 @@ public class IdmEntityEventController extends AbstractEventableDtoController<Idm
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ENTITYEVENT_UPDATE + "')")
-	@ApiOperation(
-			value = "Update entity event", 
-			nickname = "putEntityEvent", 
-			response = IdmEntityEventDto.class, 
-			tags = { IdmEntityEventController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ENTITYEVENT_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ENTITYEVENT_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update entity event", 
+			operationId = "putEntityEvent",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmEntityEventDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmEntityEventController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ENTITYEVENT_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ENTITYEVENT_UPDATE })
+    })
 	public ResponseEntity<?> put(
-			@ApiParam(value = "EntityEvent's uuid identifier or username.", required = true)
+			 @Parameter(description = "EntityEvent's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmEntityEventDto dto) {
 		return super.put(backendId, dto);
@@ -232,19 +255,27 @@ public class IdmEntityEventController extends AbstractEventableDtoController<Idm
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PATCH)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ENTITYEVENT_UPDATE + "')")
-	@ApiOperation(
-			value = "Update entity event", 
-			nickname = "patchEntityEvent", 
-			response = IdmEntityEventDto.class, 
-			tags = { IdmEntityEventController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ENTITYEVENT_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ENTITYEVENT_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update entity event", 
+			operationId = "patchEntityEvent",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmEntityEventDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmEntityEventController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ENTITYEVENT_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ENTITYEVENT_UPDATE })
+    })
 	public ResponseEntity<?> patch(
-			@ApiParam(value = "EntityEvent's uuid identifier or username.", required = true)
+			 @Parameter(description = "EntityEvent's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -255,18 +286,16 @@ public class IdmEntityEventController extends AbstractEventableDtoController<Idm
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ENTITYEVENT_DELETE + "')")
-	@ApiOperation(
-			value = "Delete entity event", 
-			nickname = "deleteEntityEvent", 
-			tags = { IdmEntityEventController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ENTITYEVENT_DELETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ENTITYEVENT_DELETE, description = "") })
-				})
+	@Operation(
+			summary = "Delete entity event", 
+			operationId = "deleteEntityEvent",
+			tags = { IdmEntityEventController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ENTITYEVENT_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ENTITYEVENT_DELETE })
+    })
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "EntityEvent's uuid identifier or username.", required = true)
+			 @Parameter(description = "EntityEvent's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -276,20 +305,21 @@ public class IdmEntityEventController extends AbstractEventableDtoController<Idm
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ENTITYEVENT_READ + "')"
 			+ " or hasAuthority('" + CoreGroupPermission.ENTITYEVENT_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "What logged identity can do with given record", 
-			nickname = "getPermissionsOnEntityEvent", 
-			tags = { IdmEntityEventController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ENTITYEVENT_READ, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.ENTITYEVENT_AUTOCOMPLETE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ENTITYEVENT_READ, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.ENTITYEVENT_AUTOCOMPLETE, description = "")})
-				})
+	@Operation(
+			summary = "What logged identity can do with given record", 
+			operationId = "getPermissionsOnEntityEvent",
+			tags = { IdmEntityEventController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.ENTITYEVENT_READ,
+						CoreGroupPermission.ENTITYEVENT_AUTOCOMPLETE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.ENTITYEVENT_READ,
+						CoreGroupPermission.ENTITYEVENT_AUTOCOMPLETE})
+        }
+    )
 	public Set<String> getPermissions(
-			@ApiParam(value = "EntityEvent's uuid identifier.", required = true)
+			 @Parameter(description = "EntityEvent's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -298,16 +328,14 @@ public class IdmEntityEventController extends AbstractEventableDtoController<Idm
 	@ResponseBody
 	@RequestMapping(value = "/bulk/actions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ENTITYEVENT_READ + "')")
-	@ApiOperation(
-			value = "Get available bulk actions", 
-			nickname = "availableBulkAction", 
-			tags = { IdmEntityEventController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ENTITYEVENT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ENTITYEVENT_READ, description = "") })
-				})
+	@Operation(
+			summary = "Get available bulk actions", 
+			operationId = "availableBulkAction",
+			tags = { IdmEntityEventController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ENTITYEVENT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ENTITYEVENT_READ })
+    })
 	public List<IdmBulkActionDto> getAvailableBulkActions() {
 		return super.getAvailableBulkActions();
 	}
@@ -316,17 +344,28 @@ public class IdmEntityEventController extends AbstractEventableDtoController<Idm
 	@ResponseBody
 	@RequestMapping(path = "/bulk/action", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ENTITYEVENT_READ + "')")
-	@ApiOperation(
-			value = "Process bulk action", 
-			nickname = "bulkAction", 
-			response = IdmBulkActionDto.class, 
-			tags = { IdmEntityEventController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ENTITYEVENT_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ENTITYEVENT_READ, description = "")})
-				})
+	@Operation(
+			summary = "Process bulk action", 
+			operationId = "bulkAction",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmEntityEventController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.ENTITYEVENT_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.ENTITYEVENT_READ})
+        }
+    )
 	public ResponseEntity<IdmBulkActionDto> bulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.bulkAction(bulkAction);
 	}
@@ -335,17 +374,28 @@ public class IdmEntityEventController extends AbstractEventableDtoController<Idm
 	@ResponseBody
 	@RequestMapping(path = "/bulk/prevalidate", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ENTITYEVENT_READ + "')")
-	@ApiOperation(
-			value = "Prevalidate bulk action", 
-			nickname = "prevalidateBulkAction", 
-			response = IdmBulkActionDto.class, 
-			tags = { IdmEntityEventController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ENTITYEVENT_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ENTITYEVENT_READ, description = "")})
-				})
+	@Operation(
+			summary = "Prevalidate bulk action", 
+			operationId = "prevalidateBulkAction",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmEntityEventController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.ENTITYEVENT_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.ENTITYEVENT_READ})
+        }
+    )
 	public ResponseEntity<ResultModels> prevalidateBulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.prevalidateBulkAction(bulkAction);
 	}
@@ -353,17 +403,15 @@ public class IdmEntityEventController extends AbstractEventableDtoController<Idm
 	@ResponseBody
 	@RequestMapping(value = "/action/bulk/delete", method = RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('" + IdmGroupPermission.APP_ADMIN + "')")
-	@ApiOperation(
-			value = "Delete entity events", 
-			nickname = "deleteAllEntityEvents",
+	@Operation(
+			summary = "Delete entity events", 
+			operationId = "deleteAllEntityEvents",
 			tags = { IdmEntityEventController.TAG },
-			notes = "Delete all persisted events and their states.",
-			authorizations = { 
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							@AuthorizationScope(scope = IdmGroupPermission.APP_ADMIN, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							@AuthorizationScope(scope = IdmGroupPermission.APP_ADMIN, description = "") })
-					})
+			description = "Delete all persisted events and their states.")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { IdmGroupPermission.APP_ADMIN }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { IdmGroupPermission.APP_ADMIN })
+    })
 	public ResponseEntity<?> deleteAll() {
 		manager.deleteAllEvents();
 		//

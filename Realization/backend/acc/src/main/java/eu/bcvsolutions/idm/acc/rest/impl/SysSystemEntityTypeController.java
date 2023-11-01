@@ -5,14 +5,13 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.PagedModel.PageMetadata;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,19 +25,17 @@ import eu.bcvsolutions.idm.acc.service.api.SysSystemEntityTypeManager;
 import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.security.api.domain.Enabled;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @Enabled(AccModuleDescriptor.MODULE_ID)
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/system-entity-types")
-@Api(
-		value = SysSystemEntityTypeController.TAG, 
-		tags = SysSystemEntityTypeController.TAG, 
-		description = "System entity types",
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = SysSystemEntityTypeController.TAG, description = "System entity types")
 public class SysSystemEntityTypeController implements BaseController {
 
 	protected static final String TAG = "System entity types";
@@ -48,11 +45,21 @@ public class SysSystemEntityTypeController implements BaseController {
 	
 	@ResponseBody
 	@GetMapping(value = "/search/supported")
-	@ApiOperation(
-			value = "Get supported system entity types", 
-			nickname = "getSupportedSystemEntityTypes", 
-			response = SystemEntityTypeRegistrableDto.class, 
-			tags = { SysSystemEntityTypeController.TAG })
+	@Operation(
+        summary = "Get supported system entity types",
+        operationId = "getSupportedSystemEntityTypes",
+        responses = @ApiResponse(
+                responseCode = "200",
+                content = {
+                        @Content(
+                                mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                schema = @Schema(
+                                        implementation = SystemEntityTypeRegistrableDto.class
+                                )
+                        )
+                }
+        )
+    )
 	public PagedModel<SystemEntityTypeRegistrableDto> getSupportedEntityTypes() {
 		List<SystemEntityTypeRegistrableDto> systemEntityTypes = systemEntityTypeManager.getSupportedEntityTypes();
 		return new PagedModel<>(systemEntityTypes,
@@ -61,13 +68,23 @@ public class SysSystemEntityTypeController implements BaseController {
 
 	@ResponseBody
 	@GetMapping(value = "/{backendId}")
-	@ApiOperation(
-			value = "System entity type detail",
-			nickname = "getSupportedSystemEntityType",
-			response = SystemEntityTypeRegistrableDto.class,
+	@Operation(
+			summary = "System entity type detail",
+			operationId = "getSupportedSystemEntityType",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SystemEntityTypeRegistrableDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { SysSystemEntityTypeController.TAG })
 	public ResponseEntity<?> get(
-			@ApiParam(value = "System entity type code.", required = true)
+			 @Parameter(description = "System entity type code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SystemEntityTypeRegistrableDto systemEntityType = systemEntityTypeManager.getSystemEntityDtoByCode(backendId);
 		return new ResponseEntity<>(toModel(systemEntityType), HttpStatus.OK);
@@ -75,15 +92,25 @@ public class SysSystemEntityTypeController implements BaseController {
 
 	@ResponseBody
 	@GetMapping(value = "/{backendId}/{systemMappingId}")
-	@ApiOperation(
-			value = "System entity type detail by mapping",
-			nickname = "getSupportedSystemEntityTypeByMapping",
-			response = SystemEntityTypeRegistrableDto.class, 
+	@Operation(
+			summary = "System entity type detail by mapping",
+			operationId = "getSupportedSystemEntityTypeByMapping",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SystemEntityTypeRegistrableDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { SysSystemEntityTypeController.TAG })
 	public ResponseEntity<?> get(
-			@ApiParam(value = "System entity type code.", required = true)
+			 @Parameter(description = "System entity type code.", required = true)
 			@PathVariable @NotNull String backendId,
-			@ApiParam(value = "System mapping id", required = true)
+			 @Parameter(description = "System mapping id", required = true)
 			@PathVariable @NotNull String systemMappingId) {
 		SystemEntityTypeRegistrableDto systemEntityType = systemEntityTypeManager.getSystemEntityDtoByCode(backendId, systemMappingId);
 		return new ResponseEntity<>(toModel(systemEntityType), HttpStatus.OK);

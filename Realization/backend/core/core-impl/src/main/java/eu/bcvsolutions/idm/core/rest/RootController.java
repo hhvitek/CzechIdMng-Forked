@@ -21,6 +21,6 @@ public class RootController implements BaseController {
 	}
 	
 	private String redirectUrl() {
-		return "redirect:/swagger-ui/index.html";
+		return "redirect:swagger-ui/index.html";
 	}
 }

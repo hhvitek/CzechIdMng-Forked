@@ -11,13 +11,13 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.LinkedMultiValueMap;
@@ -57,11 +57,14 @@ import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
 import eu.bcvsolutions.idm.core.security.api.domain.Enabled;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Active provisioning operations
@@ -72,12 +75,7 @@ import io.swagger.annotations.AuthorizationScope;
 @RestController
 @Enabled(AccModuleDescriptor.MODULE_ID)
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/provisioning-operations")
-@Api(
-		value = SysProvisioningOperationController.TAG, 
-		tags = SysProvisioningOperationController.TAG, 
-		description = "Active provisioning operations in queue",
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = SysProvisioningOperationController.TAG, description = "Active provisioning operations in queue")
 public class SysProvisioningOperationController
 		extends AbstractReadWriteDtoController<SysProvisioningOperationDto, SysProvisioningOperationFilter> {
 
@@ -101,18 +99,18 @@ public class SysProvisioningOperationController
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.PROVISIONING_OPERATION_READ + "')")
-	@ApiOperation(
-			value = "Search provisioning operations (/search/quick alias)", 
-			nickname = "searchProvisioningOperations",
-			tags = { SysProvisioningOperationController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.PROVISIONING_OPERATION_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.PROVISIONING_OPERATION_READ, description = "") })
-				})
+	@Operation(
+        summary = "Search provisioning operations (/search/quick alias)",
+        operationId = "searchProvisioningOperations"
+    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.PROVISIONING_OPERATION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.PROVISIONING_OPERATION_READ })
+    })
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -144,18 +142,18 @@ public class SysProvisioningOperationController
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.PROVISIONING_OPERATION_READ + "')")
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Search provisioning operations", 
-			nickname = "searchQuickProvisioningOperations",
-			tags = { SysProvisioningOperationController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.PROVISIONING_OPERATION_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.PROVISIONING_OPERATION_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search provisioning operations", 
+			operationId = "searchQuickProvisioningOperations",
+			tags = { SysProvisioningOperationController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.PROVISIONING_OPERATION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.PROVISIONING_OPERATION_READ })
+    })
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -164,16 +162,14 @@ public class SysProvisioningOperationController
 	@ResponseBody
 	@RequestMapping(value = "/search/count", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.PROVISIONING_OPERATION_COUNT + "')")
-	@ApiOperation(
-			value = "The number of entities that match the filter", 
-			nickname = "countProvisioningOperations", 
-			tags = { SysProvisioningOperationController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.PROVISIONING_OPERATION_COUNT, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.PROVISIONING_OPERATION_COUNT, description = "") })
-				})
+	@Operation(
+			summary = "The number of entities that match the filter", 
+			operationId = "countProvisioningOperations", 
+			tags = { SysProvisioningOperationController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.PROVISIONING_OPERATION_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.PROVISIONING_OPERATION_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -182,19 +178,27 @@ public class SysProvisioningOperationController
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.PROVISIONING_OPERATION_READ + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Provisioning operation detail", 
-			nickname = "getProvisioningOperation", 
-			response = SysProvisioningOperation.class, 
-			tags = { SysProvisioningOperationController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.PROVISIONING_OPERATION_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.PROVISIONING_OPERATION_READ, description = "") })
-				})
+	@Operation(
+			summary = "Provisioning operation detail", 
+			operationId = "getProvisioningOperation", 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysProvisioningOperation.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { SysProvisioningOperationController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.PROVISIONING_OPERATION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.PROVISIONING_OPERATION_READ })
+    })
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Provisioning operation's uuid identifier.", required = true)
+			 @Parameter(description = "Provisioning operation's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -203,18 +207,19 @@ public class SysProvisioningOperationController
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.PROVISIONING_OPERATION_READ + "')")
-	@ApiOperation(
-			value = "What logged identity can do with given record", 
-			nickname = "getPermissionsOnProvisioningOperation", 
-			tags = { SysProvisioningArchiveController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.PROVISIONING_OPERATION_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.PROVISIONING_OPERATION_READ, description = "")})
-				})
+	@Operation(
+			summary = "What logged identity can do with given record", 
+			operationId = "getPermissionsOnProvisioningOperation", 
+			tags = { SysProvisioningArchiveController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.PROVISIONING_OPERATION_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.PROVISIONING_OPERATION_READ})
+        }
+    )
 	public Set<String> getPermissions(
-			@ApiParam(value = "Operation's uuid identifier.", required = true)
+			 @Parameter(description = "Operation's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -222,19 +227,27 @@ public class SysProvisioningOperationController
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.PROVISIONING_OPERATION_UPDATE + "')")
 	@RequestMapping(value = "/{backendId}/retry", method = RequestMethod.PUT)
-	@ApiOperation(
-			value = "Retry provisioning operation", 
-			nickname = "retryProvisioningOperation", 
-			response = SysProvisioningOperation.class, 
-			tags = { SysProvisioningOperationController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.PROVISIONING_OPERATION_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.PROVISIONING_OPERATION_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Retry provisioning operation", 
+			operationId = "retryProvisioningOperation", 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysProvisioningOperation.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { SysProvisioningOperationController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.PROVISIONING_OPERATION_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.PROVISIONING_OPERATION_UPDATE })
+    })
 	public ResponseEntity<?> retry(
-			@ApiParam(value = "Provisioning operation's uuid identifier.", required = true)
+			 @Parameter(description = "Provisioning operation's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysProvisioningOperationDto provisioningOperation = getDto(backendId);
 		if (provisioningOperation == null) {
@@ -247,19 +260,27 @@ public class SysProvisioningOperationController
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.PROVISIONING_OPERATION_UPDATE + "')")
 	@RequestMapping(value = "/{backendId}/cancel", method = RequestMethod.PUT)
-	@ApiOperation(
-			value = "Cancel provisioning operation", 
-			nickname = "cancelProvisioningOperation", 
-			response = SysProvisioningOperation.class, 
-			tags = { SysProvisioningOperationController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.PROVISIONING_OPERATION_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.PROVISIONING_OPERATION_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Cancel provisioning operation", 
+			operationId = "cancelProvisioningOperation", 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysProvisioningOperation.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { SysProvisioningOperationController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.PROVISIONING_OPERATION_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.PROVISIONING_OPERATION_UPDATE })
+    })
 	public ResponseEntity<?> cancel(
-			@ApiParam(value = "Provisioning operation's uuid identifier.", required = true)
+			 @Parameter(description = "Provisioning operation's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysProvisioningOperationDto provisioningOperation = getDto(backendId);
 		if (provisioningOperation == null) {
@@ -272,17 +293,15 @@ public class SysProvisioningOperationController
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.PROVISIONING_OPERATION_DELETE + "')")
 	@RequestMapping(value = "/action/bulk/delete", method = RequestMethod.DELETE)
-	@ApiOperation(
-			value = "Delete provisioning queue", 
-			nickname = "deleteAllProvisioningQueue",
+	@Operation(
+			summary = "Delete provisioning queue", 
+			operationId = "deleteAllProvisioningQueue",
 			tags = { SysProvisioningOperationController.TAG },
-			authorizations = { 
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							@AuthorizationScope(scope = AccGroupPermission.PROVISIONING_OPERATION_DELETE, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							@AuthorizationScope(scope = AccGroupPermission.PROVISIONING_OPERATION_DELETE, description = "") })
-					},
-			notes = "Delete all operations from provisioning queue. When is given systemId delete operation will be process only for this system.")
+						description = "Delete all operations from provisioning queue. When is given systemId delete operation will be process only for this system.")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.PROVISIONING_OPERATION_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.PROVISIONING_OPERATION_DELETE })
+    })
 	public ResponseEntity<?> deleteAll(@RequestParam(value = "system", required=false) String system) {
 		//
 		if (StringUtils.isEmpty(system)) {
@@ -298,18 +317,19 @@ public class SysProvisioningOperationController
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/difference-object", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.PROVISIONING_OPERATION_READ + "')")
-	@ApiOperation(
-			value = "Detail of the provisioning changes", 
-			nickname = "getProvisioningDetail", 
-			tags = { SysProvisioningOperationController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.PROVISIONING_OPERATION_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.PROVISIONING_OPERATION_READ, description = "")})
-				})
+	@Operation(
+			summary = "Detail of the provisioning changes", 
+			operationId = "getProvisioningDetail", 
+			tags = { SysProvisioningOperationController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.PROVISIONING_OPERATION_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.PROVISIONING_OPERATION_READ})
+        }
+    )
 	public ResponseEntity<?> getDifferenceObject(
-			@ApiParam(value = "Provisioning detail uuid identifier.", required = true)
+			 @Parameter(description = "Provisioning detail uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysProvisioningOperationDto archive = getDto(backendId);
 		if (archive == null) {
@@ -332,17 +352,28 @@ public class SysProvisioningOperationController
 	@ResponseBody
 	@RequestMapping(path = "/bulk/action", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.PROVISIONING_OPERATION_READ + "')")
-	@ApiOperation(
-			value = "Process bulk action for provisioning operation", 
-			nickname = "bulkAction", 
-			response = IdmBulkActionDto.class, 
-			tags = { SysProvisioningOperationController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.PROVISIONING_OPERATION_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.PROVISIONING_OPERATION_READ, description = "")})
-				})
+	@Operation(
+			summary = "Process bulk action for provisioning operation", 
+			operationId = "bulkAction", 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { SysProvisioningOperationController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.PROVISIONING_OPERATION_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.PROVISIONING_OPERATION_READ})
+        }
+    )
 	public ResponseEntity<IdmBulkActionDto> bulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		initBulkAction(bulkAction);
 		return new ResponseEntity<IdmBulkActionDto>(bulkActionManager.processAction(bulkAction), HttpStatus.CREATED);
@@ -356,16 +387,14 @@ public class SysProvisioningOperationController
 	@ResponseBody
 	@RequestMapping(value = "/bulk/actions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.PROVISIONING_OPERATION_READ + "')")
-	@ApiOperation(
-			value = "Get available bulk actions", 
-			nickname = "availableBulkAction", 
-			tags = { SysProvisioningOperationController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.PROVISIONING_OPERATION_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.PROVISIONING_OPERATION_READ, description = "") })
-				})
+	@Operation(
+			summary = "Get available bulk actions", 
+			operationId = "availableBulkAction", 
+			tags = { SysProvisioningOperationController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.PROVISIONING_OPERATION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.PROVISIONING_OPERATION_READ })
+    })
 	@Override
 	public List<IdmBulkActionDto> getAvailableBulkActions() {
 		// Provisioning operation controller isn't read write,
@@ -382,17 +411,28 @@ public class SysProvisioningOperationController
 	@ResponseBody
 	@RequestMapping(path = "/bulk/prevalidate", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.PROVISIONING_OPERATION_READ + "')")
-	@ApiOperation(
-			value = "Prevalidate bulk action for provisioning operation", 
-			nickname = "prevalidateBulkAction", 
-			response = IdmBulkActionDto.class, 
-			tags = { SysProvisioningOperationController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.PROVISIONING_OPERATION_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.PROVISIONING_OPERATION_READ, description = "")})
-				})
+	@Operation(
+			summary = "Prevalidate bulk action for provisioning operation", 
+			operationId = "prevalidateBulkAction", 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { SysProvisioningOperationController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.PROVISIONING_OPERATION_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.PROVISIONING_OPERATION_READ})
+        }
+    )
 	public ResponseEntity<ResultModels> prevalidateBulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		initBulkAction(bulkAction);
 		ResultModels result = bulkActionManager.prevalidate(bulkAction);

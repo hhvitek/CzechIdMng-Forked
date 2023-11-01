@@ -14,7 +14,7 @@ import eu.bcvsolutions.idm.core.api.domain.Requestable;
 import eu.bcvsolutions.idm.core.api.dto.AbstractDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmRequestItemDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmRoleDto;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Dto for system owner - role
@@ -28,7 +28,7 @@ public class SysSystemOwnerRoleDto extends AbstractDto implements ExternalIdenti
 	private static final long serialVersionUID = 1L;
 
 	@Size(max = DefaultFieldLengths.NAME)
-	@ApiModelProperty(notes = "Unique external identifier.")
+	@Schema(description = "Unique external identifier.")
 	private String externalId;
 	@NotNull
 	@Embedded(dtoClass = SysSystemDto.class)

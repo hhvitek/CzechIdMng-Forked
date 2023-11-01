@@ -20,7 +20,7 @@ import eu.bcvsolutions.idm.core.api.domain.Embedded;
 import eu.bcvsolutions.idm.core.api.domain.Inheritable;
 import eu.bcvsolutions.idm.core.api.dto.AbstractDto;
 import eu.bcvsolutions.idm.ic.domain.IcFilterOperationType;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * DTO for {@link SysSyncConfig}.
@@ -70,7 +70,7 @@ public abstract class AbstractSysSyncConfigDto extends AbstractDto {
 	private String missingEntityActionWfKey;
 	private String missingAccountActionWfKey;
 	@JsonProperty(access = Access.READ_ONLY)
-	@ApiModelProperty(notes = "Synchronization is running.")
+	@Schema(description = "Synchronization is running.")
 	private Boolean running;
 	/**
 	 * Contains last log of this sync. Is filled only if filter.includeLastLog = true.

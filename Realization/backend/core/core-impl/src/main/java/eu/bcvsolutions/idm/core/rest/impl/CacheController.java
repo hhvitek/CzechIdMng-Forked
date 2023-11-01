@@ -1,5 +1,7 @@
 package eu.bcvsolutions.idm.core.rest.impl;
 
+import static eu.bcvsolutions.idm.core.security.api.domain.IdmGroupPermission.APP_ADMIN;
+
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
@@ -10,7 +12,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,12 +24,11 @@ import eu.bcvsolutions.idm.core.api.config.swagger.SwaggerConfig;
 import eu.bcvsolutions.idm.core.api.dto.IdmCacheDto;
 import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.service.IdmCacheManager;
-import static eu.bcvsolutions.idm.core.security.api.domain.IdmGroupPermission.APP_ADMIN;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Cache controller - provides clear cache and search all functionality
@@ -37,11 +37,7 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseController.BASE_PATH + "/caches")
-@Api(
-		value = CacheController.TAG,
-		tags = { CacheController.TAG },
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = CacheController.TAG)
 public class CacheController {
 
 	protected static final String TAG = "Cache";
@@ -60,16 +56,14 @@ public class CacheController {
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + APP_ADMIN + "')")
-	@ApiOperation(
-			value = "Get all available caches",
-			nickname = "getAvailableCaches",
-			tags = { CacheController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = APP_ADMIN, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = APP_ADMIN, description = "") })
-				})
+	@Operation(
+			summary = "Get all available caches",
+			operationId = "getAvailableCaches",
+			tags = { CacheController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { APP_ADMIN }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { APP_ADMIN })
+    })
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public CollectionModel<?> getAvailableCaches() {
 		List<IdmCacheDto> records = cacheManager.getAllAvailableCaches();
@@ -92,18 +86,16 @@ public class CacheController {
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	@RequestMapping(value = "/{cacheId}/evict", method = { RequestMethod.PATCH, RequestMethod.PUT })
 	@PreAuthorize("hasAuthority('" + APP_ADMIN + "')")
-	@ApiOperation(
-			value = "Evict cache",
-			nickname = "evictCache",
-			tags = { CacheController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = APP_ADMIN, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = APP_ADMIN, description = "") })
-				})
+	@Operation(
+			summary = "Evict cache",
+			operationId = "evictCache",
+			tags = { CacheController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { APP_ADMIN }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { APP_ADMIN })
+    })
 	public void evictCache(
-			@ApiParam(value = "Cache identifier.", required = true)
+			 @Parameter(description = "Cache identifier.", required = true)
 			@PathVariable @NotNull String cacheId) {
 		cacheManager.evictCache(cacheId);
 	}
@@ -115,16 +107,14 @@ public class CacheController {
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	@RequestMapping(value = "/evict", method = { RequestMethod.PATCH, RequestMethod.PUT })
 	@PreAuthorize("hasAuthority('" + APP_ADMIN + "')")
-	@ApiOperation(
-			value = "Evict all caches",
-			nickname = "evictAllCaches",
-			tags = { CacheController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = APP_ADMIN, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = APP_ADMIN, description = "") })
-			})
+	@Operation(
+			summary = "Evict all caches",
+			operationId = "evictAllCaches",
+			tags = { CacheController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { APP_ADMIN }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { APP_ADMIN })
+    })
 	public void evictAllCaches() {
 		cacheManager.evictAllCaches();
 	}

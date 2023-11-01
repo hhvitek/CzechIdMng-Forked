@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import eu.bcvsolutions.idm.core.security.api.domain.GuardedString;
 import eu.bcvsolutions.idm.core.security.api.domain.GuardedStringDeserializer;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Two factor login request.
@@ -19,12 +19,12 @@ import io.swagger.annotations.ApiModelProperty;
 public class TwoFactorRequestDto {
 
 	@NotNull
-	@ApiModelProperty(required = true, notes = "Logged identity's authentication token.")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Logged identity's authentication token.")
 	@JsonProperty(access = Access.WRITE_ONLY)
 	@JsonDeserialize(using = GuardedStringDeserializer.class)
 	private GuardedString token;
 	@NotNull
-	@ApiModelProperty(required = true, notes = "Two factor authentication verify 6-digit code.", example = "123456")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Two factor authentication verify 6-digit code.", example = "123456")
 	@JsonProperty(access = Access.WRITE_ONLY)
 	@JsonDeserialize(using = GuardedStringDeserializer.class)
 	private GuardedString verificationCode;

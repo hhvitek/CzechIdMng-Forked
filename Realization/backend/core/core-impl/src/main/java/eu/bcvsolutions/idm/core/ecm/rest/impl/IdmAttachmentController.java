@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -35,11 +36,14 @@ import eu.bcvsolutions.idm.core.ecm.api.dto.filter.IdmAttachmentFilter;
 import eu.bcvsolutions.idm.core.ecm.api.entity.AttachableEntity;
 import eu.bcvsolutions.idm.core.ecm.api.service.AttachmentManager;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmGroupPermission;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * ECM attachments
@@ -49,11 +53,7 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/attachments")
-@Api(
-		value = IdmAttachmentController.TAG, 
-		description = "Operations with attachments (metadata, upload)", 
-		tags = { IdmAttachmentController.TAG }, 
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE)
+@Tag(name = IdmAttachmentController.TAG, description = "Operations with attachments (metadata, upload)")
 public class IdmAttachmentController extends AbstractReadWriteDtoController<IdmAttachmentDto, IdmAttachmentFilter>  {
 
 	protected static final String TAG = "Form attributes";
@@ -71,18 +71,18 @@ public class IdmAttachmentController extends AbstractReadWriteDtoController<IdmA
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + IdmGroupPermission.APP_ADMIN + "')")
-	@ApiOperation(
-			value = "Search form attributes (/search/quick alias)", 
-			nickname = "searchAttachments",
-			tags = { IdmAttachmentController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = IdmGroupPermission.APP_ADMIN, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = IdmGroupPermission.APP_ADMIN, description = "") })
-				})
+	@Operation(
+			summary = "Search form attributes (/search/quick alias)", 
+			operationId = "searchAttachments",
+			tags = { IdmAttachmentController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { IdmGroupPermission.APP_ADMIN }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { IdmGroupPermission.APP_ADMIN })
+    })
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -90,18 +90,18 @@ public class IdmAttachmentController extends AbstractReadWriteDtoController<IdmA
 	@ResponseBody
 	@RequestMapping(value= "/search/quick", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + IdmGroupPermission.APP_ADMIN + "')")
-	@ApiOperation(
-			value = "Search form attributes", 
-			nickname = "searchQuickAttachments", 
-			tags = { IdmAttachmentController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = IdmGroupPermission.APP_ADMIN, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = IdmGroupPermission.APP_ADMIN, description = "") })
-				})
+	@Operation(
+			summary = "Search form attributes", 
+			operationId = "searchQuickAttachments",
+			tags = { IdmAttachmentController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { IdmGroupPermission.APP_ADMIN }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { IdmGroupPermission.APP_ADMIN })
+    })
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -110,18 +110,18 @@ public class IdmAttachmentController extends AbstractReadWriteDtoController<IdmA
 	@ResponseBody
 	@RequestMapping(value = "/search/autocomplete", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + IdmGroupPermission.APP_ADMIN + "')")
-	@ApiOperation(
-			value = "Autocomplete form attributes (selectbox usage)", 
-			nickname = "autocompleteAttachments", 
-			tags = { IdmAttachmentController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = IdmGroupPermission.APP_ADMIN, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = IdmGroupPermission.APP_ADMIN, description = "") })
-				})
+	@Operation(
+			summary = "Autocomplete form attributes (selectbox usage)", 
+			operationId = "autocompleteAttachments",
+			tags = { IdmAttachmentController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { IdmGroupPermission.APP_ADMIN }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { IdmGroupPermission.APP_ADMIN })
+    })
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -130,16 +130,14 @@ public class IdmAttachmentController extends AbstractReadWriteDtoController<IdmA
 	@ResponseBody
 	@RequestMapping(value = "/search/count", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + IdmGroupPermission.APP_ADMIN + "')")
-	@ApiOperation(
-			value = "The number of entities that match the filter", 
-			nickname = "countAttachments", 
-			tags = { IdmAttachmentController.TAG },
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = IdmGroupPermission.APP_ADMIN, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = IdmGroupPermission.APP_ADMIN, description = "") })
-				})
+	@Operation(
+			summary = "The number of entities that match the filter", 
+			operationId = "countAttachments",
+			tags = { IdmAttachmentController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { IdmGroupPermission.APP_ADMIN }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { IdmGroupPermission.APP_ADMIN })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -148,19 +146,27 @@ public class IdmAttachmentController extends AbstractReadWriteDtoController<IdmA
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + IdmGroupPermission.APP_ADMIN + "')")
-	@ApiOperation(
-			value = "Form attribute detail", 
-			nickname = "getAttachment", 
-			response = IdmAttachmentDto.class, 
-			tags = { IdmAttachmentController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = IdmGroupPermission.APP_ADMIN, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = IdmGroupPermission.APP_ADMIN, description = "") })
-				})
+	@Operation(
+			summary = "Form attribute detail", 
+			operationId = "getAttachment",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmAttachmentDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { IdmAttachmentController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { IdmGroupPermission.APP_ADMIN }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { IdmGroupPermission.APP_ADMIN })
+    })
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Attribute's uuid identifier.", required = true)
+			 @Parameter(description = "Attribute's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -170,19 +176,30 @@ public class IdmAttachmentController extends AbstractReadWriteDtoController<IdmA
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + IdmGroupPermission.APP_ADMIN + "')"
 			+ " or hasAuthority('" + IdmGroupPermission.APP_ADMIN + "')")
-	@ApiOperation(
-			value = "Create / update form attribute", 
-			nickname = "postAttachment", 
-			response = IdmAttachmentDto.class, 
-			tags = { IdmAttachmentController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = IdmGroupPermission.APP_ADMIN, description = ""),
-						@AuthorizationScope(scope = IdmGroupPermission.APP_ADMIN, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = IdmGroupPermission.APP_ADMIN, description = ""),
-						@AuthorizationScope(scope = IdmGroupPermission.APP_ADMIN, description = "")})
-				})
+	@Operation(
+			summary = "Create / update form attribute", 
+			operationId = "postAttachment",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmAttachmentDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { IdmAttachmentController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						IdmGroupPermission.APP_ADMIN,
+						IdmGroupPermission.APP_ADMIN}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						IdmGroupPermission.APP_ADMIN,
+						IdmGroupPermission.APP_ADMIN})
+        }
+    )
 	public ResponseEntity<?> post(@Valid @RequestBody IdmAttachmentDto dto) {
 		return super.post(dto);
 	}
@@ -191,19 +208,27 @@ public class IdmAttachmentController extends AbstractReadWriteDtoController<IdmA
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + IdmGroupPermission.APP_ADMIN + "')")
-	@ApiOperation(
-			value = "Update form attribute",
-			nickname = "putAttachment", 
-			response = IdmAttachmentDto.class, 
-			tags = { IdmAttachmentController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = IdmGroupPermission.APP_ADMIN, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = IdmGroupPermission.APP_ADMIN, description = "") })
-				})
+	@Operation(
+			summary = "Update form attribute",
+			operationId = "putAttachment",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmAttachmentDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { IdmAttachmentController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { IdmGroupPermission.APP_ADMIN }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { IdmGroupPermission.APP_ADMIN })
+    })
 	public ResponseEntity<?> put(
-			@ApiParam(value = "Form attribute's uuid identifier", required = true)
+			 @Parameter(description = "Form attribute's uuid identifier", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmAttachmentDto dto) {
 		return super.put(backendId, dto);
@@ -213,19 +238,27 @@ public class IdmAttachmentController extends AbstractReadWriteDtoController<IdmA
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PATCH)
 	@PreAuthorize("hasAuthority('" + IdmGroupPermission.APP_ADMIN + "')")
-	@ApiOperation(
-			value = "Patch form attribute", 
-			nickname = "patchAttachment", 
-			response = IdmAttachmentDto.class, 
-			tags = { IdmAttachmentController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = IdmGroupPermission.APP_ADMIN, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = IdmGroupPermission.APP_ADMIN, description = "") })
-				})
+	@Operation(
+			summary = "Patch form attribute", 
+			operationId = "patchAttachment",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmAttachmentDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { IdmAttachmentController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { IdmGroupPermission.APP_ADMIN }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { IdmGroupPermission.APP_ADMIN })
+    })
 	public ResponseEntity<?> patch(
-			@ApiParam(value = "Form attribute's uuid identifier", required = true)
+			 @Parameter(description = "Form attribute's uuid identifier", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -236,18 +269,16 @@ public class IdmAttachmentController extends AbstractReadWriteDtoController<IdmA
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('" + IdmGroupPermission.APP_ADMIN + "')")
-	@ApiOperation(
-			value = "Delete form attribute", 
-			nickname = "deleteAttachment",
-			tags = { IdmAttachmentController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = IdmGroupPermission.APP_ADMIN, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = IdmGroupPermission.APP_ADMIN, description = "") })
-				})
+	@Operation(
+			summary = "Delete form attribute", 
+			operationId = "deleteAttachment",
+			tags = { IdmAttachmentController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { IdmGroupPermission.APP_ADMIN }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { IdmGroupPermission.APP_ADMIN })
+    })
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "Form attribute's uuid identifier.", required = true)
+			 @Parameter(description = "Form attribute's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -256,30 +287,38 @@ public class IdmAttachmentController extends AbstractReadWriteDtoController<IdmA
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + IdmGroupPermission.APP_ADMIN + "')")
-	@ApiOperation(
-			value = "What logged identity can do with given record", 
-			nickname = "getPermissionsOnAttachment", 
-			tags = { IdmAttachmentController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = IdmGroupPermission.APP_ADMIN, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = IdmGroupPermission.APP_ADMIN, description = "") })
-				})
+	@Operation(
+			summary = "What logged identity can do with given record", 
+			operationId = "getPermissionsOnAttachment",
+			tags = { IdmAttachmentController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { IdmGroupPermission.APP_ADMIN }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { IdmGroupPermission.APP_ADMIN })
+    })
 	public Set<String> getPermissions(
-			@ApiParam(value = "Attribute's uuid identifier.", required = true)
+			 @Parameter(description = "Attribute's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
 	
 	@ResponseBody
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
-	@ApiOperation(
-			value = "Upload file", 
-			nickname = "uploadFile", 
-			response = IdmAttachmentDto.class, 
+	@Operation(
+			summary = "Upload file", 
+			operationId = "uploadFile",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmAttachmentDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmAttachmentController.TAG }, 
-			notes=  "Upload file and save them as attachment.")
+			description=  "Upload file and save them as attachment.")
 	public ResponseEntity<?> upload(
 			@NotNull 
 			@RequestParam(required = true, name = "fileName")

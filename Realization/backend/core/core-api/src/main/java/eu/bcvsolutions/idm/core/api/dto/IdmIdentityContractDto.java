@@ -15,7 +15,7 @@ import eu.bcvsolutions.idm.core.api.domain.Embedded;
 import eu.bcvsolutions.idm.core.api.domain.ExternalIdentifiable;
 import eu.bcvsolutions.idm.core.api.entity.ValidableEntity;
 import eu.bcvsolutions.idm.core.api.utils.DtoUtils;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Identity contract - working position
@@ -32,7 +32,7 @@ public class IdmIdentityContractDto extends FormableDto implements ValidableEnti
 	public static final String PROPERTY_WORK_POSITION = "workPosition";
 	//
 	@Size(max = DefaultFieldLengths.NAME)
-	@ApiModelProperty(notes = "Unique external identifier.")
+	@Schema(description = "Unique external identifier.")
 	private String externalId;
 	@Embedded(dtoClass = IdmIdentityDto.class)
 	private UUID identity;

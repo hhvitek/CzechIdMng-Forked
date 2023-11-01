@@ -854,3 +854,211 @@ Due to breaking changes above, custom module requires some refactoring, before i
   org.quartz.dataSource.quartzDataSource.validationQuery=SELECT 1
   org.quartz.dataSource.quartzDataSource.maxConnections =20
   ```
+
+### Migrate from springfox to springdoc
+Change annotations
+
+- 🟠 ``@Api`` ⇒ ``@Tag``
+- 🟠 ``@Api.value`` ⇒ ``@Tag.name``
+- 🟠 ``@Api.tags``, ``@Api.produces``, ``@Api.consumes`` ⇒ can be removed
+- 🟠 ``import io.swagger.annotations.Api;`` ⇒ ``import io.swagger.v3.oas.annotations.tags.Tag;``
+
+    - Example:
+  ```java
+  @Api( value = IdmAuthorizationPolicyController.TAG, 
+        description = "Operations with authorization policies", 
+        tags = { IdmAuthorizationPolicyController.TAG }, 
+        produces = BaseController.APPLICATION_HAL_JSON_VALUE,
+        consumes = MediaType.APPLICATION_JSON_VALUE)
+  ```
+    - to
+  ```java
+  @Tag( name = IdmAuthorizationPolicyController.TAG, 
+        description = "Operations with authorization policies" )
+  ```
+- 🟠 ``@ApiOperation`` ⇒ ``@Operation``
+- 🟠 ``@ApiOperation.value`` ⇒ ``@Operation.summary``
+- 🟠 ``@ApiOperation.nickname`` ⇒ ``@Operation.operationId``
+- 🟠 ``@ApiOperation.authorizations`` ⇒ ``@SecurityRequirements``
+- 🟠 ``@ApiOperation.response`` ⇒ ``@Operation.responses = @ApiResponse``
+- 🟠 
+        ```
+        import io.swagger.annotations.ApiOperation;
+        import io.swagger.annotations.Authorization;
+        import io.swagger.annotations.AuthorizationScope;
+        ``` 
+        ⇒
+        ```
+        import io.swagger.v3.oas.annotations.Operation;
+        import io.swagger.v3.oas.annotations.media.Content;
+        import io.swagger.v3.oas.annotations.media.Schema;
+        import io.swagger.v3.oas.annotations.responses.ApiResponse;
+        import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+        import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+        ```
+
+    - Example:
+  ```java
+  @ApiOperation(
+      value = "Authorization policy detail",
+      nickname = "getAuthorizationPolicy",
+      response = IdmAuthorizationPolicyDto.class,
+      tags = { IdmAuthorizationPolicyController.TAG },
+      authorizations = {
+          @Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+              @AuthorizationScope(scope = CoreGroupPermission.AUTHORIZATIONPOLICY_READ, description = "") }),
+          @Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+              @AuthorizationScope(scope = CoreGroupPermission.AUTHORIZATIONPOLICY_READ, description = "") })
+      }
+  )
+  ```
+    - to
+  ```java
+  @Operation(
+      summary = "Authorization policy detail",
+      operationId = "getAuthorizationPolicy",
+      responses = @ApiResponse(
+          responseCode = "200",
+          content = {
+              @Content(
+                  mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                  schema = @Schema(
+                      implementation = IdmAuthorizationPolicyDto.class
+                  )
+              )
+          }
+      ),
+      tags = { IdmAuthorizationPolicyController.TAG }
+  )
+  @SecurityRequirements({
+      @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {CoreGroupPermission.AUTHORIZATIONPOLICY_READ }),
+      @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {CoreGroupPermission.AUTHORIZATIONPOLICY_READ })
+  })
+  ```
+- 🟠 ``@ApiParam`` ⇒ ``@Parameter``
+- 🟠 ``@ApiParam.value`` ⇒ ``@Parameter.description``
+- 🟠 ``import io.swagger.annotations.ApiParam;`` ⇒ ``import io.swagger.v3.oas.annotations.Parameter;``
+
+    - Example:
+  ```java
+  @ApiParam(value = "Policy's uuid identifier.", required = true)
+  ```
+    - to
+  ```java
+  @Parameter(description = "Policy's uuid identifier.", required = true)
+  ```
+- 🟠 ``@ApiModel`` ⇒ ``@Schema``
+- 🟠 ``@ApiModelProperty`` ⇒ ``@Schema``
+- 🟠 ``@ApiModelProperty.notes`` ⇒ ``@Schema.description``
+- 🟠 ``@ApiModelProperty.required = true`` ⇒ ``@Parameter.requiredMode = Schema.RequiredMode.REQUIRED``
+- 🟠 ``@ApiModelProperty.required = false`` ⇒ ``@Parameter.requiredMode = Schema.RequiredMode.NOT_REQUIRED``
+- 🟠
+      ```
+      import io.swagger.annotations.ApiModel;
+      import io.swagger.annotations.ApiModelProperty;
+      ```
+      ⇒
+      ```
+      import io.swagger.v3.oas.annotations.media.Schema;
+      ```
+
+  - Example:
+  ```java
+  @Relation(collectionRelation = "attributes")
+  @ApiModel(description = "Attribute of request item")
+  public class IdmRequestItemAttributeDto implements Serializable {
+  
+      @NotEmpty
+      @Size(min = 1, max = DefaultFieldLengths.NAME)
+      @ApiModelProperty(required = true, notes = "Name of attribute")
+      private String name;
+      ...
+  ```
+    - to
+  ```java
+  @Relation(collectionRelation = "attributes")
+  @Schema(description = "Attribute of request item")
+  public class IdmRequestItemAttributeDto implements Serializable {
+  
+      @NotEmpty
+      @Size(min = 1, max = DefaultFieldLengths.NAME)
+      @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Name of attribute")
+      private String name;
+      ...
+  ```
+
+and then in your implementation of ``AbstractSwaggerConfig`` change this:
+
+- 🟠 ``@ConditionalOnProperty(prefix = "springfox.documentation.swagger", name = "enabled", matchIfMissing = true)`` ⇒ ``@ConditionalOnProperty(prefix = "springdoc.swagger-ui", name = "enabled", matchIfMissing = true)``
+- 🟠 and ``api()`` now returns ``GroupedOpenApi`` instead of  ``Docket``
+- 🟠 ``import springfox.documentation.spring.web.plugins.Docket;`` ⇒ ``import org.springdoc.core.GroupedOpenApi;``
+
+also is nesesery to change swagger2markup to openapi-generator:
+
+from
+```xml
+<plugin>
+    <groupId>io.github.swagger2markup</groupId>
+    <artifactId>swagger2markup-maven-plugin</artifactId>
+    <version>${swagger2markup.version}</version>
+
+    <configuration>
+        <swaggerInput>${swagger.input}</swaggerInput>
+        <outputDir>${generated.asciidoc.directory}</outputDir>
+        <config>
+            <swagger2markup.markupLanguage>ASCIIDOC</swagger2markup.markupLanguage>
+            <swagger2markup.outputLanguage>EN</swagger2markup.outputLanguage>
+            <swagger2markup.pathsGroupedBy>TAGS</swagger2markup.pathsGroupedBy>
+            <swagger2markup.generatedExamplesEnabled>false</swagger2markup.generatedExamplesEnabled>
+
+            <swagger2markup.extensions.dynamicOverview.contentPath>${asciidoctor.input.extensions.directory}/overview</swagger2markup.extensions.dynamicOverview.contentPath>
+            <swagger2markup.extensions.dynamicDefinitions.contentPath>${asciidoctor.input.extensions.directory}/definitions</swagger2markup.extensions.dynamicDefinitions.contentPath>
+            <swagger2markup.extensions.dynamicPaths.contentPath>${asciidoctor.input.extensions.directory}/paths</swagger2markup.extensions.dynamicPaths.contentPath>
+            <swagger2markup.extensions.dynamicSecurity.contentPath>${asciidoctor.input.extensions.directory}/security/</swagger2markup.extensions.dynamicSecurity.contentPath>
+
+            <swagger2markup.extensions.springRestDocs.snippetBaseUri>${swagger.snippetOutput.dir}</swagger2markup.extensions.springRestDocs.snippetBaseUri>
+            <swagger2markup.extensions.springRestDocs.defaultSnippets>true</swagger2markup.extensions.springRestDocs.defaultSnippets>
+        </config>
+    </configuration>
+    <executions>
+        <execution>
+            <phase>test</phase>
+            <goals>
+                <goal>convertSwagger2markup</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+```
+to
+```xml
+<plugin>
+    <groupId>org.openapitools</groupId>
+    <artifactId>openapi-generator-maven-plugin</artifactId>
+    <version>${openapi-generator.version}</version>
+    <executions>
+        <execution>
+            <phase>test</phase>
+            <goals>
+                <goal>generate</goal>
+            </goals>
+            <configuration>
+                <inputSpec>${swagger.input}</inputSpec>
+                <output>${generated.asciidoc.directory}</output>
+                <generatorName>asciidoc</generatorName>
+                <skipValidateSpec>true</skipValidateSpec>
+                <generateAliasAsModel>true</generateAliasAsModel>
+                <configOptions>
+                    <useIntroduction>true</useIntroduction>
+                    <skipExamples>false</skipExamples>
+                </configOptions>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+```
+then update src/docs/asciidoc/index.adoc to incude
+```adoc
+include::{generated}/index.adoc[]
+```
+overview, security, paths and definitions can by removed

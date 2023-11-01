@@ -1,25 +1,11 @@
 package eu.bcvsolutions.idm.acc.rest.impl;
 
-import com.google.common.collect.ImmutableMap;
-import eu.bcvsolutions.idm.acc.domain.AccGroupPermission;
-import eu.bcvsolutions.idm.core.api.config.swagger.SwaggerConfig;
-import eu.bcvsolutions.idm.core.api.domain.CoreResultCode;
-import eu.bcvsolutions.idm.core.api.exception.ResultCodeException;
-import eu.bcvsolutions.idm.core.api.rest.BaseController;
-import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
-import eu.bcvsolutions.idm.core.api.utils.CertificateUtils;
-import eu.bcvsolutions.idm.core.ecm.api.dto.IdmAttachmentDto;
-import eu.bcvsolutions.idm.core.ecm.api.service.AttachmentManager;
-import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
 import java.io.InputStream;
 import java.security.cert.X509Certificate;
 import java.util.UUID;
+
 import javax.validation.constraints.NotNull;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -32,6 +18,23 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.common.collect.ImmutableMap;
+
+import eu.bcvsolutions.idm.acc.domain.AccGroupPermission;
+import eu.bcvsolutions.idm.core.api.config.swagger.SwaggerConfig;
+import eu.bcvsolutions.idm.core.api.domain.CoreResultCode;
+import eu.bcvsolutions.idm.core.api.exception.ResultCodeException;
+import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
+import eu.bcvsolutions.idm.core.api.utils.CertificateUtils;
+import eu.bcvsolutions.idm.core.ecm.api.dto.IdmAttachmentDto;
+import eu.bcvsolutions.idm.core.ecm.api.service.AttachmentManager;
+import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 /**
  * Controller for AD Group connector wizard.
  *
@@ -40,12 +43,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/connector-types/ad-group-connector-type")
-@Api(
-		value = AdGroupConnectorTypeController.TAG,
-		tags = {AdGroupConnectorTypeController.TAG},
-		description = "Controller for AD connector wizard.",
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = AdGroupConnectorTypeController.TAG, description = "Controller for AD connector wizard.")
 public class AdGroupConnectorTypeController {
 	
 	protected static final String TAG = "AD Group wizard";
@@ -56,18 +54,19 @@ public class AdGroupConnectorTypeController {
 	@ResponseBody
 	@RequestMapping(value = "/{attachmentId}/download", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
-	@ApiOperation(
-			value = "Download public certificate",
-			nickname = "downloadCertificate",
-			tags = {AdGroupConnectorTypeController.TAG},
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")})
-			})
+	@Operation(
+			summary = "Download public certificate",
+			operationId = "downloadCertificate",
+			tags = {AdGroupConnectorTypeController.TAG})
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							AccGroupPermission.SYSTEM_READ}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							AccGroupPermission.SYSTEM_READ})
+        }
+    )
 	public ResponseEntity<InputStreamResource> downloadCertificate(
-			@ApiParam(value = "Attachment uuid identifier.", required = true)
+			 @Parameter(description = "Attachment uuid identifier.", required = true)
 			@PathVariable @NotNull String attachmentId) {
 
 		IdmAttachmentDto attachmentDto = attachmentManager.get(UUID.fromString(attachmentId), IdmBasePermission.READ);

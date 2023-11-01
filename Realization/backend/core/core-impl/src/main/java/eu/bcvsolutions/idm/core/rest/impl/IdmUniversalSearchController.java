@@ -1,27 +1,15 @@
 package eu.bcvsolutions.idm.core.rest.impl;
 
-import eu.bcvsolutions.idm.core.api.config.swagger.SwaggerConfig;
-import eu.bcvsolutions.idm.core.api.dto.DelegationTypeDto;
-import eu.bcvsolutions.idm.core.api.dto.UniversalSearchDto;
-import eu.bcvsolutions.idm.core.api.dto.filter.IdmUniversalSearchFilter;
-import eu.bcvsolutions.idm.core.api.rest.AbstractReadDtoController;
-import eu.bcvsolutions.idm.core.api.rest.BaseController;
-import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
-import eu.bcvsolutions.idm.core.api.service.DelegationManager;
-import eu.bcvsolutions.idm.core.api.service.IdmUniversalSearchService;
-import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import javax.validation.constraints.NotNull;
+
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -32,6 +20,25 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import eu.bcvsolutions.idm.core.api.config.swagger.SwaggerConfig;
+import eu.bcvsolutions.idm.core.api.dto.DelegationTypeDto;
+import eu.bcvsolutions.idm.core.api.dto.UniversalSearchDto;
+import eu.bcvsolutions.idm.core.api.dto.filter.IdmUniversalSearchFilter;
+import eu.bcvsolutions.idm.core.api.rest.AbstractReadDtoController;
+import eu.bcvsolutions.idm.core.api.rest.BaseController;
+import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
+import eu.bcvsolutions.idm.core.api.service.DelegationManager;
+import eu.bcvsolutions.idm.core.api.service.IdmUniversalSearchService;
+import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 /**
  * Controller for a universal search.
  *
@@ -41,12 +48,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/universal-searches")
-@Api(
-		value = IdmUniversalSearchController.TAG,
-		tags = {IdmUniversalSearchController.TAG},
-		description = "Universal search",
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = IdmUniversalSearchController.TAG, description = "Universal search")
 public class IdmUniversalSearchController extends AbstractReadDtoController<UniversalSearchDto, IdmUniversalSearchFilter> {
 
 	protected static final String TAG = "Universal search";
@@ -63,16 +65,19 @@ public class IdmUniversalSearchController extends AbstractReadDtoController<Univ
 	@Override
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Search universal searches (/search/quick alias)",
-			nickname = "searchUniversalSearches",
-			tags = {IdmUniversalSearchController.TAG},
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST)
-			})
+	@Operation(
+			summary = "Search universal searches (/search/quick alias)",
+			operationId = "searchUniversalSearches",
+			tags = {IdmUniversalSearchController.TAG})
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
+            }
+    )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -80,16 +85,19 @@ public class IdmUniversalSearchController extends AbstractReadDtoController<Univ
 	@Override
 	@ResponseBody
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Search universal searches",
-			nickname = "searchQuickDefinitions",
-			tags = {IdmUniversalSearchController.TAG},
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST)
-			})
+	@Operation(
+			summary = "Search universal searches",
+			operationId = "searchQuickDefinitions",
+			tags = {IdmUniversalSearchController.TAG})
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
+            }
+    )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -97,16 +105,19 @@ public class IdmUniversalSearchController extends AbstractReadDtoController<Univ
 	@Override
 	@ResponseBody
 	@RequestMapping(value = "/search/autocomplete", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Autocomplete universal searches (selectbox usage)",
-			nickname = "autocompleteUniversalSearches",
-			tags = {IdmUniversalSearchController.TAG},
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST)
-			})
+	@Operation(
+			summary = "Autocomplete universal searches (selectbox usage)",
+			operationId = "autocompleteUniversalSearches",
+			tags = {IdmUniversalSearchController.TAG})
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
+            }
+    )
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -114,17 +125,28 @@ public class IdmUniversalSearchController extends AbstractReadDtoController<Univ
 	@Override
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Universal searche detail",
-			nickname = "getDefinition",
-			response = UniversalSearchDto.class,
-			tags = {IdmUniversalSearchController.TAG},
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST)
-			})
+	@Operation(
+			summary = "Universal searche detail",
+			operationId = "getDefinition",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = UniversalSearchDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = {IdmUniversalSearchController.TAG})
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
+            }
+    )
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Universal searche's uuid identifier.", required = true)
+			 @Parameter(description = "Universal searche's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -133,14 +155,15 @@ public class IdmUniversalSearchController extends AbstractReadDtoController<Univ
 	@ResponseBody
 	@RequestMapping(value = "/search/count", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.DELEGATIONDEFINITION_COUNT + "')")
-	@ApiOperation(
-			value = "The number of entities that match the filter",
-			nickname = "countUniversalSearches",
-			tags = {IdmUniversalSearchController.TAG},
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST)
-			})
+	@Operation(
+			summary = "The number of entities that match the filter",
+			operationId = "countUniversalSearches",
+			tags = {IdmUniversalSearchController.TAG})
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
+            }
+    )
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -152,14 +175,15 @@ public class IdmUniversalSearchController extends AbstractReadDtoController<Univ
 	 */
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET, value = "/search/supported")
-	@ApiOperation(
-			value = "Get all supported universal search types",
-			nickname = "getSupportedDelegationTypes",
-			tags = {IdmUniversalSearchController.TAG},
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST)
-			})
+	@Operation(
+			summary = "Get all supported universal search types",
+			operationId = "getSupportedDelegationTypes",
+			tags = {IdmUniversalSearchController.TAG})
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
+            }
+    )
 	public CollectionModel<DelegationTypeDto> getSupportedTypes() {
 		return new CollectionModel<>(universalSearchManager.getSupportedTypes()
 				.stream()
@@ -172,16 +196,17 @@ public class IdmUniversalSearchController extends AbstractReadDtoController<Univ
 	@Override
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "What logged identity can do with given record",
-			nickname = "getPermissionsOnDefinition",
-			tags = {IdmUniversalSearchController.TAG},
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST)
-			})
+	@Operation(
+			summary = "What logged identity can do with given record",
+			operationId = "getPermissionsOnDefinition",
+			tags = {IdmUniversalSearchController.TAG})
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
+            }
+    )
 	public Set<String> getPermissions(
-			@ApiParam(value = "Universal searche's uuid identifier.", required = true)
+			 @Parameter(description = "Universal searche's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}

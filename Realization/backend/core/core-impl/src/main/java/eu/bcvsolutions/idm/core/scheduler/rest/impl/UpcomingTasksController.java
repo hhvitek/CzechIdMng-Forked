@@ -1,10 +1,11 @@
 package eu.bcvsolutions.idm.core.scheduler.rest.impl;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,16 +22,17 @@ import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.scheduler.api.dto.Task;
 import eu.bcvsolutions.idm.core.scheduler.api.dto.filter.TaskFilter;
 import eu.bcvsolutions.idm.core.scheduler.api.service.SchedulerManager;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping(UpcomingTasksController.BASE_PATH + "/upcoming-tasks")
-@Api(value = UpcomingTasksController.TAG, description = "Upcoming tasks for task dashboard", tags = { UpcomingTasksController.TAG })
+@Tag(name = UpcomingTasksController.TAG, description = "Upcoming tasks for task dashboard")
 public class UpcomingTasksController implements BaseController {
 
 	protected static final String TAG = "Upcoming tasks";
@@ -53,35 +55,29 @@ public class UpcomingTasksController implements BaseController {
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_READ + "')")
-	@ApiOperation(
-			value = "Search upcoming scheduled tasks",
-			nickname = "searchUpcomingSchedulerTasks",
-			tags={ UpcomingTasksController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_READ, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_READ, description = "") })
-			})
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = "page", dataTypeClass = String.class, paramType = "query",
-					value = "Results page you want to retrieve (0..N)"),
-			@ApiImplicitParam(name = "size", dataTypeClass = String.class, paramType = "query",
-					value = "Number of records per page."),
-			@ApiImplicitParam(name = "nextFireTimesLimitSeconds", dataTypeClass = String.class, paramType = "query",
-					value = "Limit number of seconds in the future for cron trigger"),
-			@ApiImplicitParam(name = "nextFireTimesLimitCount", dataTypeClass = String.class, paramType = "query",
-					value = "Limit size of nextFireTimes list"),
-	})
-	public CollectionModel<?> findUpcomingTasks(
+	@Operation(
+			summary = "Search upcoming scheduled tasks",
+			operationId = "searchUpcomingSchedulerTasks",
+			tags={ UpcomingTasksController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_READ })
+    })
+    @Parameters({
+        @Parameter(name = "nextFireTimesLimitSeconds", schema = @Schema( implementation=String.class, type = "query"), description = "Limit number of seconds in the future for cron trigger"),
+        @Parameter(name = "nextFireTimesLimitCount", schema = @Schema( implementation=String.class, type = "query"), description = "Limit size of nextFireTimes list"),
+    })
+	@PageableAsQueryParam
+	public PagedModel<?> findUpcomingTasks(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		Page tasks = schedulerService.findUpcomingTasks(toFilter(parameters), pageable);
 		//
 		return pageToResources(tasks, Task.class);
 	}
 
-	protected CollectionModel<?> pageToResources(Page<Object> page, Class<?> domainType) {
+	protected PagedModel<?> pageToResources(Page<Object> page, Class<?> domainType) {
 		if (page.getContent().isEmpty()) {
 			return pagedResourcesAssembler.toEmptyModel(page, domainType);
 		}

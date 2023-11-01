@@ -10,7 +10,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.Assert;
 import org.springframework.util.MultiValueMap;
@@ -32,11 +31,11 @@ import eu.bcvsolutions.idm.core.api.service.EntityEventManager;
 import eu.bcvsolutions.idm.core.api.service.LookupService;
 import eu.bcvsolutions.idm.core.api.utils.FilterConverter;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Entity event procesor's administration.
@@ -50,12 +49,7 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseController.BASE_PATH + "/entity-event-processors")
-@Api(
-		value = EntityEventProcessorController.TAG, 
-		description = "Configure event processing", 
-		tags = { EntityEventProcessorController.TAG }, 
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = EntityEventProcessorController.TAG, description = "Configure event processing")
 public class EntityEventProcessorController {
 
 	protected static final String TAG = "Entity event processors";
@@ -77,17 +71,15 @@ public class EntityEventProcessorController {
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.MODULE_READ + "')")
-	@ApiOperation(
-			value = "Find all processors", 
-			nickname = "findAllEntityEventProcessors", 
+	@Operation(
+			summary = "Find all processors", 
+			operationId = "findAllEntityEventProcessors", 
 			tags = { EntityEventProcessorController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.MODULE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.MODULE_READ, description = "") })
-				},
-			notes = "Returns all registered entity event processors with state properties (disabled, order).")
+						description = "Returns all registered entity event processors with state properties (disabled, order).")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.MODULE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.MODULE_READ })
+    })
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
@@ -106,18 +98,16 @@ public class EntityEventProcessorController {
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	@RequestMapping(value = "/{processorId}/enable", method = { RequestMethod.PATCH, RequestMethod.PUT })
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.MODULE_UPDATE + "')")
-	@ApiOperation(
-			value = "Enable processor",
-			nickname = "enableProcessor",
-			tags = { EntityEventProcessorController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.MODULE_UPDATE, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.MODULE_UPDATE, description = "") })
-			})
+	@Operation(
+			summary = "Enable processor",
+			operationId = "enableProcessor",
+			tags = { EntityEventProcessorController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.MODULE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.MODULE_UPDATE })
+    })
 	public void enable(
-			@ApiParam(value = "Processor's identifier.", required = true)
+			 @Parameter(description = "Processor's identifier.", required = true)
 			@PathVariable @NotNull String processorId) {
 		entityEventManager.enable(processorId);
 	}
@@ -129,18 +119,16 @@ public class EntityEventProcessorController {
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	@RequestMapping(value = "/{processorId}/disable", method = { RequestMethod.PATCH, RequestMethod.PUT })
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.MODULE_UPDATE + "')")
-	@ApiOperation(
-			value = "Disable processor",
-			nickname = "disableProcessor",
-			tags = { EntityEventProcessorController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.MODULE_UPDATE, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.MODULE_UPDATE, description = "") })
-			})
+	@Operation(
+			summary = "Disable processor",
+			operationId = "disableProcessor",
+			tags = { EntityEventProcessorController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.MODULE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.MODULE_UPDATE })
+    })
 	public void disable(
-			@ApiParam(value = "Processor's identifier.", required = true)
+			 @Parameter(description = "Processor's identifier.", required = true)
 			@PathVariable @NotNull String processorId) {
 		entityEventManager.disable(processorId);
 	}

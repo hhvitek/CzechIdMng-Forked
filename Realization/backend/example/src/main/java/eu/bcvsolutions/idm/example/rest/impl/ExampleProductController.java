@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -31,11 +32,14 @@ import eu.bcvsolutions.idm.example.domain.ExampleGroupPermission;
 import eu.bcvsolutions.idm.example.dto.ExampleProductDto;
 import eu.bcvsolutions.idm.example.dto.filter.ExampleProductFilter;
 import eu.bcvsolutions.idm.example.service.api.ExampleProductService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * RESTful example product endpoint
@@ -46,10 +50,7 @@ import io.swagger.annotations.AuthorizationScope;
 @RestController
 @Enabled(ExampleModuleDescriptor.MODULE_ID)
 @RequestMapping(value = BaseController.BASE_PATH + "/example-products")
-@Api(
-		value = ExampleProductController.TAG, 
-		description = "Example products", 
-		tags = { ExampleProductController.TAG })
+@Tag(name = ExampleProductController.TAG, description = "Example products")
 public class ExampleProductController extends AbstractReadWriteDtoController<ExampleProductDto, ExampleProductFilter> {
 
 	protected static final String TAG = "Example products";
@@ -63,18 +64,18 @@ public class ExampleProductController extends AbstractReadWriteDtoController<Exa
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + ExampleGroupPermission.EXAMPLE_PRODUCT_READ + "')")
-	@ApiOperation(
-			value = "Search example products (/search/quick alias)", 
-			nickname = "searchExampleProducts", 
-			tags = { ExampleProductController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = ExampleGroupPermission.EXAMPLE_PRODUCT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = ExampleGroupPermission.EXAMPLE_PRODUCT_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search example products (/search/quick alias)", 
+			operationId = "searchExampleProducts",
+			tags = { ExampleProductController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { ExampleGroupPermission.EXAMPLE_PRODUCT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { ExampleGroupPermission.EXAMPLE_PRODUCT_READ })
+    })
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -83,18 +84,18 @@ public class ExampleProductController extends AbstractReadWriteDtoController<Exa
 	@ResponseBody
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + ExampleGroupPermission.EXAMPLE_PRODUCT_READ + "')")
-	@ApiOperation(
-			value = "Search example products", 
-			nickname = "searchQuickExampleProducts", 
-			tags = { ExampleProductController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = ExampleGroupPermission.EXAMPLE_PRODUCT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = ExampleGroupPermission.EXAMPLE_PRODUCT_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search example products", 
+			operationId = "searchQuickExampleProducts",
+			tags = { ExampleProductController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { ExampleGroupPermission.EXAMPLE_PRODUCT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { ExampleGroupPermission.EXAMPLE_PRODUCT_READ })
+    })
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -103,18 +104,18 @@ public class ExampleProductController extends AbstractReadWriteDtoController<Exa
 	@ResponseBody
 	@RequestMapping(value = "/search/autocomplete", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + ExampleGroupPermission.EXAMPLE_PRODUCT_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "Autocomplete example products (selectbox usage)", 
-			nickname = "autocompleteExampleProducts", 
-			tags = { ExampleProductController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = ExampleGroupPermission.EXAMPLE_PRODUCT_AUTOCOMPLETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = ExampleGroupPermission.EXAMPLE_PRODUCT_AUTOCOMPLETE, description = "") })
-				})
+	@Operation(
+			summary = "Autocomplete example products (selectbox usage)", 
+			operationId = "autocompleteExampleProducts",
+			tags = { ExampleProductController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { ExampleGroupPermission.EXAMPLE_PRODUCT_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { ExampleGroupPermission.EXAMPLE_PRODUCT_AUTOCOMPLETE })
+    })
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -123,16 +124,14 @@ public class ExampleProductController extends AbstractReadWriteDtoController<Exa
 	@ResponseBody
 	@RequestMapping(value = "/search/count", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + ExampleGroupPermission.EXAMPLE_PRODUCT_COUNT + "')")
-	@ApiOperation(
-			value = "The number of entities that match the filter", 
-			nickname = "countExampleProducts", 
-			tags = { ExampleProductController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = ExampleGroupPermission.EXAMPLE_PRODUCT_COUNT, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = ExampleGroupPermission.EXAMPLE_PRODUCT_COUNT, description = "") })
-				})
+	@Operation(
+			summary = "The number of entities that match the filter", 
+			operationId = "countExampleProducts",
+			tags = { ExampleProductController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { ExampleGroupPermission.EXAMPLE_PRODUCT_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { ExampleGroupPermission.EXAMPLE_PRODUCT_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -141,19 +140,27 @@ public class ExampleProductController extends AbstractReadWriteDtoController<Exa
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + ExampleGroupPermission.EXAMPLE_PRODUCT_READ + "')")
-	@ApiOperation(
-			value = "Example product detail", 
-			nickname = "getExampleProduct", 
-			response = ExampleProductDto.class, 
-			tags = { ExampleProductController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = ExampleGroupPermission.EXAMPLE_PRODUCT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = ExampleGroupPermission.EXAMPLE_PRODUCT_READ, description = "") })
-				})
+	@Operation(
+			summary = "Example product detail", 
+			operationId = "getExampleProduct",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ExampleProductDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { ExampleProductController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { ExampleGroupPermission.EXAMPLE_PRODUCT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { ExampleGroupPermission.EXAMPLE_PRODUCT_READ })
+    })
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Example product's uuid identifier or code.", required = true)
+			 @Parameter(description = "Example product's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -162,19 +169,30 @@ public class ExampleProductController extends AbstractReadWriteDtoController<Exa
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + ExampleGroupPermission.EXAMPLE_PRODUCT_CREATE + "') or hasAuthority('" + ExampleGroupPermission.EXAMPLE_PRODUCT_UPDATE + "')")
-	@ApiOperation(
-			value = "Create / update example product", 
-			nickname = "postExampleProduct", 
-			response = ExampleProductDto.class, 
-			tags = { ExampleProductController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = ExampleGroupPermission.EXAMPLE_PRODUCT_CREATE, description = ""),
-						@AuthorizationScope(scope = ExampleGroupPermission.EXAMPLE_PRODUCT_UPDATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = ExampleGroupPermission.EXAMPLE_PRODUCT_CREATE, description = ""),
-						@AuthorizationScope(scope = ExampleGroupPermission.EXAMPLE_PRODUCT_UPDATE, description = "")})
-				})
+	@Operation(
+			summary = "Create / update example product", 
+			operationId = "postExampleProduct",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ExampleProductDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { ExampleProductController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						ExampleGroupPermission.EXAMPLE_PRODUCT_CREATE,
+						ExampleGroupPermission.EXAMPLE_PRODUCT_UPDATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						ExampleGroupPermission.EXAMPLE_PRODUCT_CREATE,
+						ExampleGroupPermission.EXAMPLE_PRODUCT_UPDATE})
+        }
+    )
 	public ResponseEntity<?> post(@Valid @RequestBody ExampleProductDto dto) {
 		return super.post(dto);
 	}
@@ -183,19 +201,27 @@ public class ExampleProductController extends AbstractReadWriteDtoController<Exa
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + ExampleGroupPermission.EXAMPLE_PRODUCT_UPDATE + "')")
-	@ApiOperation(
-			value = "Update example product", 
-			nickname = "putExampleProduct", 
-			response = ExampleProductDto.class, 
-			tags = { ExampleProductController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = ExampleGroupPermission.EXAMPLE_PRODUCT_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = ExampleGroupPermission.EXAMPLE_PRODUCT_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update example product", 
+			operationId = "putExampleProduct",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ExampleProductDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { ExampleProductController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { ExampleGroupPermission.EXAMPLE_PRODUCT_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { ExampleGroupPermission.EXAMPLE_PRODUCT_UPDATE })
+    })
 	public ResponseEntity<?> put(
-			@ApiParam(value = "Example product's uuid identifier or code.", required = true)
+			 @Parameter(description = "Example product's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody ExampleProductDto dto) {
 		return super.put(backendId, dto);
@@ -205,19 +231,27 @@ public class ExampleProductController extends AbstractReadWriteDtoController<Exa
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PATCH)
 	@PreAuthorize("hasAuthority('" + ExampleGroupPermission.EXAMPLE_PRODUCT_UPDATE + "')")
-	@ApiOperation(
-			value = "Update example product", 
-			nickname = "patchExampleProduct", 
-			response = ExampleProductDto.class, 
-			tags = { ExampleProductController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = ExampleGroupPermission.EXAMPLE_PRODUCT_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = ExampleGroupPermission.EXAMPLE_PRODUCT_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update example product", 
+			operationId = "patchExampleProduct",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ExampleProductDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { ExampleProductController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { ExampleGroupPermission.EXAMPLE_PRODUCT_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { ExampleGroupPermission.EXAMPLE_PRODUCT_UPDATE })
+    })
 	public ResponseEntity<?> patch(
-			@ApiParam(value = "Example product's uuid identifier or code.", required = true)
+			 @Parameter(description = "Example product's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -228,18 +262,16 @@ public class ExampleProductController extends AbstractReadWriteDtoController<Exa
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('" + ExampleGroupPermission.EXAMPLE_PRODUCT_DELETE + "')")
-	@ApiOperation(
-			value = "Delete example product", 
-			nickname = "deleteExampleProduct", 
-			tags = { ExampleProductController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = ExampleGroupPermission.EXAMPLE_PRODUCT_DELETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = ExampleGroupPermission.EXAMPLE_PRODUCT_DELETE, description = "") })
-				})
+	@Operation(
+			summary = "Delete example product", 
+			operationId = "deleteExampleProduct",
+			tags = { ExampleProductController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { ExampleGroupPermission.EXAMPLE_PRODUCT_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { ExampleGroupPermission.EXAMPLE_PRODUCT_DELETE })
+    })
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "Example product's uuid identifier or code.", required = true)
+			 @Parameter(description = "Example product's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -249,20 +281,21 @@ public class ExampleProductController extends AbstractReadWriteDtoController<Exa
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + ExampleGroupPermission.EXAMPLE_PRODUCT_READ + "')"
 			+ " or hasAuthority('" + ExampleGroupPermission.EXAMPLE_PRODUCT_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "What logged identity can do with given record", 
-			nickname = "getPermissionsOnExampleProduct", 
-			tags = { ExampleProductController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = ExampleGroupPermission.EXAMPLE_PRODUCT_READ, description = ""),
-						@AuthorizationScope(scope = ExampleGroupPermission.EXAMPLE_PRODUCT_AUTOCOMPLETE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = ExampleGroupPermission.EXAMPLE_PRODUCT_READ, description = ""),
-						@AuthorizationScope(scope = ExampleGroupPermission.EXAMPLE_PRODUCT_AUTOCOMPLETE, description = "")})
-				})
+	@Operation(
+			summary = "What logged identity can do with given record", 
+			operationId = "getPermissionsOnExampleProduct",
+			tags = { ExampleProductController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						ExampleGroupPermission.EXAMPLE_PRODUCT_READ,
+						ExampleGroupPermission.EXAMPLE_PRODUCT_AUTOCOMPLETE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						ExampleGroupPermission.EXAMPLE_PRODUCT_READ,
+						ExampleGroupPermission.EXAMPLE_PRODUCT_AUTOCOMPLETE})
+        }
+    )
 	public Set<String> getPermissions(
-			@ApiParam(value = "Example product's uuid identifier or code.", required = true)
+			 @Parameter(description = "Example product's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}

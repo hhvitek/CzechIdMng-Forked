@@ -6,11 +6,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,11 +31,14 @@ import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.api.service.IdmRoleCatalogueRoleService;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Role catalogue controller - by role
@@ -45,12 +48,7 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/role-catalogue-roles")
-@Api(
-		value = IdmRoleCatalogueRoleController.TAG, 
-		description = "Operations with role catalogues by role", 
-		tags = { IdmRoleCatalogueRoleController.TAG }, 
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = IdmRoleCatalogueRoleController.TAG, description = "Operations with role catalogues by role")
 public class IdmRoleCatalogueRoleController extends AbstractReadWriteDtoController<IdmRoleCatalogueRoleDto, IdmRoleCatalogueRoleFilter> {
 	
 	protected static final String TAG = "Role catalogues - role relations";
@@ -64,18 +62,18 @@ public class IdmRoleCatalogueRoleController extends AbstractReadWriteDtoControll
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUEROLE_READ + "')")
-	@ApiOperation(
-			value = "Search role catalogue roles (/search/quick alias)", 
-			nickname = "searchRoleCatalogueRoles", 
-			tags = { IdmRoleCatalogueRoleController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUEROLE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUEROLE_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search role catalogue roles (/search/quick alias)", 
+			operationId = "searchRoleCatalogueRoles",
+			tags = { IdmRoleCatalogueRoleController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_READ })
+    })
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -83,18 +81,18 @@ public class IdmRoleCatalogueRoleController extends AbstractReadWriteDtoControll
 	@ResponseBody
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUEROLE_READ + "')")
-	@ApiOperation(
-			value = "Search role catalogue roles", 
-			nickname = "searchQuickRoleCatalogueRoles", 
-			tags = { IdmRoleCatalogueRoleController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUEROLE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUEROLE_READ, description = "") })
-				})
+	@Operation(
+			summary = "Search role catalogue roles", 
+			operationId = "searchQuickRoleCatalogueRoles",
+			tags = { IdmRoleCatalogueRoleController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_READ })
+    })
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -102,18 +100,18 @@ public class IdmRoleCatalogueRoleController extends AbstractReadWriteDtoControll
 	@ResponseBody
 	@RequestMapping(value = "/search/autocomplete", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUEROLE_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "Autocomplete role catalogue roles (selectbox usage)", 
-			nickname = "autocompleteRoleCatalogueRoles", 
-			tags = { IdmRoleCatalogueRoleController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUEROLE_AUTOCOMPLETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUEROLE_AUTOCOMPLETE, description = "") })
-				})
+	@Operation(
+			summary = "Autocomplete role catalogue roles (selectbox usage)", 
+			operationId = "autocompleteRoleCatalogueRoles",
+			tags = { IdmRoleCatalogueRoleController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_AUTOCOMPLETE })
+    })
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -122,16 +120,14 @@ public class IdmRoleCatalogueRoleController extends AbstractReadWriteDtoControll
 	@ResponseBody
 	@RequestMapping(value = "/search/count", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUEROLE_COUNT + "')")
-	@ApiOperation(
-			value = "The number of entities that match the filter", 
-			nickname = "countRoleCatalogueRoles", 
-			tags = { IdmRoleCatalogueRoleController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUEROLE_COUNT, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUEROLE_COUNT, description = "") })
-				})
+	@Operation(
+			summary = "The number of entities that match the filter", 
+			operationId = "countRoleCatalogueRoles",
+			tags = { IdmRoleCatalogueRoleController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -140,19 +136,27 @@ public class IdmRoleCatalogueRoleController extends AbstractReadWriteDtoControll
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUEROLE_READ + "')")
-	@ApiOperation(
-			value = "Role catalogue role detail", 
-			nickname = "getRoleCatalogueRole", 
-			response = IdmRoleCatalogueRoleDto.class, 
-			tags = { IdmRoleCatalogueRoleController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUEROLE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUEROLE_READ, description = "") })
-				})
+	@Operation(
+			summary = "Role catalogue role detail", 
+			operationId = "getRoleCatalogueRole",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRoleCatalogueRoleDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmRoleCatalogueRoleController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_READ })
+    })
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Role catalogue's uuid identifier.", required = true)
+			 @Parameter(description = "Role catalogue's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -162,19 +166,30 @@ public class IdmRoleCatalogueRoleController extends AbstractReadWriteDtoControll
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUEROLE_CREATE + "')"
 			+ " or hasAuthority('" + CoreGroupPermission.ROLECATALOGUEROLE_UPDATE + "')")
-	@ApiOperation(
-			value = "Create / update role catalogue role", 
-			nickname = "postRoleCatalogueRole", 
-			response = IdmRoleCatalogueRoleDto.class, 
-			tags = { IdmRoleCatalogueRoleController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUEROLE_CREATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUEROLE_UPDATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUEROLE_CREATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUEROLE_UPDATE, description = "")})
-				})
+	@Operation(
+			summary = "Create / update role catalogue role", 
+			operationId = "postRoleCatalogueRole",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRoleCatalogueRoleDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmRoleCatalogueRoleController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.ROLECATALOGUEROLE_CREATE,
+						CoreGroupPermission.ROLECATALOGUEROLE_UPDATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.ROLECATALOGUEROLE_CREATE,
+						CoreGroupPermission.ROLECATALOGUEROLE_UPDATE})
+        }
+    )
 	public ResponseEntity<?> post(@Valid @RequestBody IdmRoleCatalogueRoleDto dto) {
 		return super.post(dto);
 	}
@@ -183,19 +198,27 @@ public class IdmRoleCatalogueRoleController extends AbstractReadWriteDtoControll
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUEROLE_UPDATE + "')")
-	@ApiOperation(
-			value = "Update role catalogue role", 
-			nickname = "putRoleCatalogueRole", 
-			response = IdmRoleCatalogueRoleDto.class, 
-			tags = { IdmRoleCatalogueRoleController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUEROLE_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUEROLE_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update role catalogue role", 
+			operationId = "putRoleCatalogueRole",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRoleCatalogueRoleDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmRoleCatalogueRoleController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_UPDATE })
+    })
 	public ResponseEntity<?> put(
-			@ApiParam(value = "Role catalogue's uuid identifier.", required = true)
+			 @Parameter(description = "Role catalogue's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmRoleCatalogueRoleDto dto) {
 		return super.put(backendId, dto);
@@ -205,19 +228,27 @@ public class IdmRoleCatalogueRoleController extends AbstractReadWriteDtoControll
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PATCH)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUEROLE_UPDATE + "')")
-	@ApiOperation(
-			value = "Update role catalogue role", 
-			nickname = "patchRoleCatalogueRole", 
-			response = IdmRoleCatalogueRoleDto.class, 
-			tags = { IdmRoleCatalogueRoleController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUEROLE_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUEROLE_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update role catalogue role", 
+			operationId = "patchRoleCatalogueRole",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRoleCatalogueRoleDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmRoleCatalogueRoleController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_UPDATE })
+    })
 	public ResponseEntity<?> patch(
-			@ApiParam(value = "Role catalogue's uuid identifier.", required = true)
+			 @Parameter(description = "Role catalogue's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -228,18 +259,16 @@ public class IdmRoleCatalogueRoleController extends AbstractReadWriteDtoControll
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUEROLE_DELETE + "')")
-	@ApiOperation(
-			value = "Delete role catalogue role", 
-			nickname = "deleteRoleCatalogueRole", 
-			tags = { IdmRoleCatalogueRoleController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUEROLE_DELETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUEROLE_DELETE, description = "") })
-				})
+	@Operation(
+			summary = "Delete role catalogue role", 
+			operationId = "deleteRoleCatalogueRole",
+			tags = { IdmRoleCatalogueRoleController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_DELETE })
+    })
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "Role catalogue's uuid identifier.", required = true)
+			 @Parameter(description = "Role catalogue's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -249,18 +278,16 @@ public class IdmRoleCatalogueRoleController extends AbstractReadWriteDtoControll
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLECATALOGUEROLE_READ + "')")
-	@ApiOperation(
-			value = "What logged identity can do with given record", 
-			nickname = "getPermissionsOnRoleCatalogueRole", 
-			tags = { IdmRoleCatalogueRoleController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUEROLE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLECATALOGUEROLE_READ, description = "") })
-				})
+	@Operation(
+			summary = "What logged identity can do with given record", 
+			operationId = "getPermissionsOnRoleCatalogueRole",
+			tags = { IdmRoleCatalogueRoleController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.ROLECATALOGUEROLE_READ })
+    })
 	public Set<String> getPermissions(
-			@ApiParam(value = "Role catalogue's uuid identifier.", required = true)
+			 @Parameter(description = "Role catalogue's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}

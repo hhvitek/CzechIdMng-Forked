@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import eu.bcvsolutions.idm.core.security.api.domain.GuardedString;
 import eu.bcvsolutions.idm.core.security.api.domain.GuardedStringDeserializer;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Identity login request.
@@ -16,11 +16,11 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class LoginRequestDto {
 
-	@ApiModelProperty(required = true, notes = "Identity username.", example = "admin")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Identity username.", example = "admin")
 	private String username;
 	@JsonProperty(access = Access.WRITE_ONLY)
 	@JsonDeserialize(using = GuardedStringDeserializer.class)
-	@ApiModelProperty(required = true, notes = "Identity password.", dataType = "java.lang.String", example = "admin")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Identity password.", type = "java.lang.String", example = "admin")
 	private GuardedString password;
 	
 	public LoginRequestDto() {

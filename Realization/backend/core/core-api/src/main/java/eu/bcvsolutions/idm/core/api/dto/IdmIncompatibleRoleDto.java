@@ -11,7 +11,7 @@ import eu.bcvsolutions.idm.core.api.domain.DefaultFieldLengths;
 import eu.bcvsolutions.idm.core.api.domain.Embedded;
 import eu.bcvsolutions.idm.core.api.domain.ExternalIdentifiable;
 import eu.bcvsolutions.idm.core.api.domain.Requestable;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Segregation of Duties
@@ -25,7 +25,7 @@ public class IdmIncompatibleRoleDto extends AbstractDto implements ExternalIdent
     private static final long serialVersionUID = 1L;
     
     @Size(max = DefaultFieldLengths.NAME)
-	@ApiModelProperty(notes = "Unique external identifier.")
+	@Schema(description = "Unique external identifier.")
 	private String externalId;
     @NotNull
     @Embedded(dtoClass = IdmRoleDto.class)

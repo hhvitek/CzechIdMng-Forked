@@ -16,13 +16,13 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.logging.log4j.util.Strings;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -95,11 +95,15 @@ import eu.bcvsolutions.idm.ic.exception.IcRemoteServerException;
 import eu.bcvsolutions.idm.ic.exception.IcServerNotFoundException;
 import eu.bcvsolutions.idm.ic.service.api.IcConfigurationFacade;
 import eu.bcvsolutions.idm.ic.service.api.IcConfigurationService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 
 /**
  * Target system setting controller.
@@ -111,12 +115,7 @@ import io.swagger.annotations.AuthorizationScope;;
 @RestController
 @Enabled(AccModuleDescriptor.MODULE_ID)
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/systems")
-@Api(
-		value = SysSystemController.TAG,
-		tags = SysSystemController.TAG,
-		description = "Operations with target systems",
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = SysSystemController.TAG, description = "Operations with target systems")
 public class SysSystemController extends AbstractReadWriteDtoController<SysSystemDto, SysSystemFilter> implements WizardController<ConnectorTypeDto> {
 
 	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(SysSystemController.class);
@@ -160,18 +159,21 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
-	@ApiOperation(
-			value = "Search systems (/search/quick alias)",
-			nickname = "searchSystems",
-			tags = { SysSystemController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")})
-				})
+	@Operation(
+        summary = "Search systems (/search/quick alias)",
+        operationId = "searchSystems"
+    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.SYSTEM_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.SYSTEM_READ})
+        }
+    )
+	@PageableAsQueryParam
 	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -179,18 +181,21 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Search systems",
-			nickname = "searchQuickSystems",
-			tags = { SysSystemController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")})
-				})
+	@Operation(
+			summary = "Search systems",
+			operationId = "searchQuickSystems",
+			tags = { SysSystemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.SYSTEM_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.SYSTEM_READ})
+        }
+    )
+	@PageableAsQueryParam
 	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -199,18 +204,18 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@ResponseBody
 	@RequestMapping(value = "/search/autocomplete", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "Autocomplete systems (selectbox usage)",
-			nickname = "autocompleteSystems",
-			tags = { SysSystemController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_AUTOCOMPLETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_AUTOCOMPLETE, description = "") })
-				})
+	@Operation(
+			summary = "Autocomplete systems (selectbox usage)",
+			operationId = "autocompleteSystems",
+			tags = { SysSystemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_AUTOCOMPLETE })
+    })
+	@PageableAsQueryParam
 	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -219,16 +224,14 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@ResponseBody
 	@RequestMapping(value = "/search/count", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_COUNT + "')")
-	@ApiOperation(
-			value = "The number of entities that match the filter",
-			nickname = "countSystems",
-			tags = { SysSystemController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_COUNT, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_COUNT, description = "") })
-				})
+	@Operation(
+			summary = "The number of entities that match the filter",
+			operationId = "countSystems",
+			tags = { SysSystemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -237,19 +240,30 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "System detail",
-			nickname = "getSystem",
-			response = SysSystemDto.class,
-			tags = { SysSystemController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")})
-					})
+	@Operation(
+			summary = "System detail",
+			operationId = "getSystem",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysSystemDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { SysSystemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							AccGroupPermission.SYSTEM_READ}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							AccGroupPermission.SYSTEM_READ})
+        }
+    )
 	public ResponseEntity<?> get(
-			@ApiParam(value = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -259,19 +273,30 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_CREATE + "')"
 			+ " or hasAuthority('" + AccGroupPermission.SYSTEM_UPDATE + "')")
 	@RequestMapping(method = RequestMethod.POST)
-	@ApiOperation(
-			value = "Create / update system",
-			nickname = "postSystem",
-			response = SysSystemDto.class,
-			tags = { SysSystemController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_CREATE, description = ""),
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_CREATE, description = ""),
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "")})
-				})
+	@Operation(
+			summary = "Create / update system",
+			operationId = "postSystem",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysSystemDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { SysSystemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.SYSTEM_CREATE,
+						AccGroupPermission.SYSTEM_UPDATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.SYSTEM_CREATE,
+						AccGroupPermission.SYSTEM_UPDATE})
+        }
+    )
 	public ResponseEntity<?> post(@RequestBody @NotNull SysSystemDto dto) {
 		return super.post(dto);
 	}
@@ -280,19 +305,27 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_UPDATE + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
-	@ApiOperation(
-			value = "Update system",
-			nickname = "putSystem",
-			response = SysSystemDto.class,
-			tags = { SysSystemController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update system",
+			operationId = "putSystem",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysSystemDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { SysSystemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_UPDATE })
+    })
 	public ResponseEntity<?> put(
-			@ApiParam(value = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId, @RequestBody @NotNull SysSystemDto dto) {
 		return super.put(backendId, dto);
 	}
@@ -301,19 +334,27 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PATCH)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_UPDATE + "')")
-	@ApiOperation(
-			value = "Patch system",
-			nickname = "patchSystem",
-			response = SysSystemDto.class,
-			tags = { SysSystemController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Patch system",
+			operationId = "patchSystem",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysSystemDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { SysSystemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_UPDATE })
+    })
 	public ResponseEntity<?> patch(
-			@ApiParam(value = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -324,18 +365,16 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_DELETE + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
-	@ApiOperation(
-			value = "Delete system",
-			nickname = "deleteSystem",
-			tags = { SysSystemController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_DELETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_DELETE, description = "") })
-				})
+	@Operation(
+			summary = "Delete system",
+			operationId = "deleteSystem",
+			tags = { SysSystemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_DELETE })
+    })
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -345,20 +384,21 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')"
 			+ " or hasAuthority('" + AccGroupPermission.SYSTEM_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "What logged identity can do with given record",
-			nickname = "getPermissionsOnSystem",
-			tags = { SysSystemController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = ""),
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_AUTOCOMPLETE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = ""),
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_AUTOCOMPLETE, description = "")})
-				})
+	@Operation(
+			summary = "What logged identity can do with given record",
+			operationId = "getPermissionsOnSystem",
+			tags = { SysSystemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.SYSTEM_READ,
+						AccGroupPermission.SYSTEM_AUTOCOMPLETE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.SYSTEM_READ,
+						AccGroupPermission.SYSTEM_AUTOCOMPLETE})
+        }
+    )
 	public Set<String> getPermissions(
-			@ApiParam(value = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -366,19 +406,17 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_UPDATE + "')")
 	@RequestMapping(value = "/{backendId}/generate-schema", method = RequestMethod.POST)
-	@ApiOperation(
-			value = "Generate system schema",
-			nickname = "generateSystemSchema",
+	@Operation(
+			summary = "Generate system schema",
+			operationId = "generateSystemSchema",
 			tags = { SysSystemController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "") })
-				},
-			notes = "Genetares schema by system's connector configuration")
+						description = "Genetares schema by system's connector configuration")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_UPDATE })
+    })
 	public ResponseEntity<?> generateSchema(
-			@ApiParam(value = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysSystemDto system = getDto(backendId);
 		if (system == null) {
@@ -391,19 +429,17 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_UPDATE + "')")
 	@RequestMapping(value = "/{backendId}/duplicate", method = RequestMethod.POST)
-	@ApiOperation(
-			value = "Create system duplicate (copy)",
-			nickname = "duplicateSystem",
+	@Operation(
+			summary = "Create system duplicate (copy)",
+			operationId = "duplicateSystem",
 			tags = { SysSystemController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "") })
-				},
-			notes = "Creates system duplicate with all configurations - connector, schemas, mappings etc.. Duplicate is disabled by default.")
+						description = "Creates system duplicate with all configurations - connector, schemas, mappings etc.. Duplicate is disabled by default.")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_UPDATE })
+    })
 	public ResponseEntity<?> duplicate(
-			@ApiParam(value = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysSystemDto system = getDto(backendId);
 		if (system == null) {
@@ -423,17 +459,15 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_ADMIN + "')")
 	@RequestMapping(value = "/test/create-test-system", method = RequestMethod.POST)
-	@ApiOperation(
-			value = "Create test system",
-			nickname = "createTestSystem",
+	@Operation(
+			summary = "Create test system",
+			operationId = "createTestSystem",
 			tags = { SysSystemController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = IdmGroupPermission.APP_ADMIN, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = IdmGroupPermission.APP_ADMIN, description = "") })
-				},
-			notes = "Creates system with test connector configuration - usign local table \"system_users\".")
+						description = "Creates system with test connector configuration - usign local table \"system_users\".")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { IdmGroupPermission.APP_ADMIN }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { IdmGroupPermission.APP_ADMIN })
+    })
 	public ResponseEntity<?> createTestSystem() {
 		systemService.createTestSystem();
 		return new ResponseEntity<Object>(HttpStatus.NO_CONTENT);
@@ -449,18 +483,16 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
 	@RequestMapping(value = "/{backendId}/connector-form-definition", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Connector configuration - form definition",
-			nickname = "getConnectorFormDefinition",
-			tags = { SysSystemController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "") })
-				})
+	@Operation(
+			summary = "Connector configuration - form definition",
+			operationId = "getConnectorFormDefinition",
+			tags = { SysSystemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_READ })
+    })
 	public ResponseEntity<?> getConnectorFormDefinition(
-			@ApiParam(value = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysSystemDto system = getDto(backendId);
 		if (system == null) {
@@ -474,18 +506,16 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
 	@RequestMapping(value = "/{backendId}/pooling-connector-form-definition", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Pooling connector configuration - form definition",
-			nickname = "getPoolingConnectorFormDefinition",
-			tags = { SysSystemController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "") })
-				})
+	@Operation(
+			summary = "Pooling connector configuration - form definition",
+			operationId = "getPoolingConnectorFormDefinition",
+			tags = { SysSystemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_READ })
+    })
 	public ResponseEntity<?> getPoolingConnectorFormDefinition(
-			@ApiParam(value = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysSystemDto system = getDto(backendId);
 		if (system == null) {
@@ -499,18 +529,16 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
 	@RequestMapping(value = "/{backendId}/operation-options-connector-form-definition", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Operation options connector configuration - form definition",
-			nickname = "getOperationOptionsConnectorFormDefinition",
-			tags = { SysSystemController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "") })
-			})
+	@Operation(
+			summary = "Operation options connector configuration - form definition",
+			operationId = "getOperationOptionsConnectorFormDefinition",
+			tags = { SysSystemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_READ })
+    })
 	public ResponseEntity<?> getOperationOptionsConnectorFormDefinition(
-			@ApiParam(value = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysSystemDto system = getDto(backendId);
 		if (system == null) {
@@ -531,18 +559,16 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
 	@RequestMapping(value = "/{backendId}/connector-form-values", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Connector configuration - read values",
-			nickname = "getConnectorFormValues",
-			tags = { SysSystemController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "") })
-				})
+	@Operation(
+			summary = "Connector configuration - read values",
+			operationId = "getConnectorFormValues",
+			tags = { SysSystemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_READ })
+    })
 	public EntityModel<?> getConnectorFormValues(
-			@ApiParam(value = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysSystemDto entity = getDto(backendId);
 		if (entity == null) {
@@ -563,18 +589,16 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
 	@RequestMapping(value = "/{backendId}/pooling-connector-form-values", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Connector configuration - read values",
-			nickname = "getPoolingConnectorFormValues",
-			tags = { SysSystemController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "") })
-				})
+	@Operation(
+			summary = "Connector configuration - read values",
+			operationId = "getPoolingConnectorFormValues",
+			tags = { SysSystemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_READ })
+    })
 	public EntityModel<?> getPoolingConnectorFormValues(
-			@ApiParam(value = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysSystemDto entity = getDto(backendId);
 		if (entity == null) {
@@ -594,18 +618,16 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
 	@RequestMapping(value = "/{backendId}/operation-options-connector-form-values", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Connector configuration - read values",
-			nickname = "getOperationOptionsConnectorFormValues",
-			tags = { SysSystemController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "") })
-			})
+	@Operation(
+			summary = "Connector configuration - read values",
+			operationId = "getOperationOptionsConnectorFormValues",
+			tags = { SysSystemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_READ })
+    })
 	public EntityModel<?> getOperationOptionsConnectorFormValues(
-			@ApiParam(value = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysSystemDto entity = getDto(backendId);
 		if (entity == null) {
@@ -627,18 +649,16 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_UPDATE + "')")
 	@RequestMapping(value = "/{backendId}/connector-form-values", method = RequestMethod.POST)
-	@ApiOperation(
-			value = "Connector configuration - save values",
-			nickname = "postConnectorFormValues",
-			tags = { SysSystemController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Connector configuration - save values",
+			operationId = "postConnectorFormValues",
+			tags = { SysSystemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_UPDATE })
+    })
 	public EntityModel<?> saveConnectorFormValues(
-			@ApiParam(value = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @Valid List<IdmFormValueDto> formValues) {
 		SysSystemDto entity = getDto(backendId);
@@ -661,18 +681,16 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_UPDATE + "')")
 	@RequestMapping(value = "/{backendId}/pooling-connector-form-values", method = RequestMethod.POST)
-	@ApiOperation(
-			value = "Pooling connector configuration - save values",
-			nickname = "postPoolingConnectorFormValues",
-			tags = { SysSystemController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Pooling connector configuration - save values",
+			operationId = "postPoolingConnectorFormValues",
+			tags = { SysSystemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_UPDATE })
+    })
 	public EntityModel<?> savePoolingConnectorFormValues(
-			@ApiParam(value = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @Valid List<IdmFormValueDto> formValues) {
 		SysSystemDto entity = getDto(backendId);
@@ -694,18 +712,16 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_UPDATE + "')")
 	@RequestMapping(value = "/{backendId}/operation-options-connector-form-values", method = RequestMethod.POST)
-	@ApiOperation(
-			value = "Operation options connector configuration - save values",
-			nickname = "postOperationOptionsConnectorFormValues",
-			tags = { SysSystemController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "") })
-			})
+	@Operation(
+			summary = "Operation options connector configuration - save values",
+			operationId = "postOperationOptionsConnectorFormValues",
+			tags = { SysSystemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_UPDATE })
+    })
 	public EntityModel<?> saveOperationOptionsConnectorFormValues(
-			@ApiParam(value = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @Valid List<IdmFormValueDto> formValues) {
 		SysSystemDto entity = getDto(backendId);
@@ -718,19 +734,17 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
 	@RequestMapping(value = "/{backendId}/check", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Check system",
-			nickname = "checkSystem",
+	@Operation(
+			summary = "Check system",
+			operationId = "checkSystem",
 			tags = { SysSystemController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "") })
-				},
-			notes = "Check system connector configuration.")
+						description = "Check system connector configuration.")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_UPDATE })
+    })
 	public ResponseEntity<?> checkSystem(
-			@ApiParam(value = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		systemService.checkSystem(super.getDto(backendId));
 		return new ResponseEntity<>(Boolean.TRUE, HttpStatus.OK);
@@ -744,19 +758,17 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/search/local")
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
-	@ApiOperation(
-			value = "Get available local connectors",
-			nickname = "getAvailableLocalConnectors",
+	@Operation(
+			summary = "Get available local connectors",
+			operationId = "getAvailableLocalConnectors",
 			tags = { SysSystemController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "") })
-				},
-			notes = "Supported local conectors (on classpath).")
+						description = "Supported local conectors (on classpath).")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_READ })
+    })
 	public ResponseEntity<Map<String, Set<IcConnectorInfo>>> getAvailableLocalConnectors(
-			@ApiParam(value = "Connector framework.", example = "connId", defaultValue = "connId")
+			 @Parameter(description = "Connector framework.", example = "connId")
 			@RequestParam(required = false) String framework) {
 		Map<String, Set<IcConnectorInfo>> infos = new HashMap<>();
 		if (framework != null) {
@@ -782,19 +794,17 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "{backendId}/search/remote")
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
-	@ApiOperation(
-			value = "Get available remote connectors",
-			nickname = "getAvailableRemoteConnectors",
+	@Operation(
+			summary = "Get available remote connectors",
+			operationId = "getAvailableRemoteConnectors",
 			tags = { SysSystemController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "") })
-				},
-			notes = "Supported remote conectors (by remote server configuration).")
+						description = "Supported remote conectors (by remote server configuration).")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_READ })
+    })
 	public ResponseEntity<Map<String, Set<IcConnectorInfo>>> getAvailableRemoteConnectors(
-			@ApiParam(value = "System's uuid identifier or code.", required = true)
+			 @Parameter(description = "System's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		SysSystemDto dto = this.getDto(backendId);
 
@@ -834,16 +844,14 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@ResponseBody
 	@RequestMapping(value = "/bulk/actions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
-	@ApiOperation(
-			value = "Get available bulk actions",
-			nickname = "availableBulkAction",
-			tags = { SysSystemController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "") })
-				})
+	@Operation(
+			summary = "Get available bulk actions",
+			operationId = "availableBulkAction",
+			tags = { SysSystemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_READ })
+    })
 	public List<IdmBulkActionDto> getAvailableBulkActions() {
 		return super.getAvailableBulkActions();
 	}
@@ -852,17 +860,28 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@ResponseBody
 	@RequestMapping(path = "/bulk/action", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
-	@ApiOperation(
-			value = "Process bulk action for role",
-			nickname = "bulkAction",
-			response = IdmBulkActionDto.class,
-			tags = { SysSystemController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")})
-				})
+	@Operation(
+			summary = "Process bulk action for role",
+			operationId = "bulkAction",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { SysSystemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.SYSTEM_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.SYSTEM_READ})
+        }
+    )
 	public ResponseEntity<IdmBulkActionDto> bulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.bulkAction(bulkAction);
 	}
@@ -871,17 +890,28 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@ResponseBody
 	@RequestMapping(path = "/bulk/prevalidate", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
-	@ApiOperation(
-			value = "Prevalidate bulk action for role",
-			nickname = "prevalidateBulkAction",
-			response = IdmBulkActionDto.class,
-			tags = { SysSystemController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")})
-				})
+	@Operation(
+			summary = "Prevalidate bulk action for role",
+			operationId = "prevalidateBulkAction",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { SysSystemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.SYSTEM_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.SYSTEM_READ})
+        }
+    )
 	public ResponseEntity<ResultModels> prevalidateBulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.prevalidateBulkAction(bulkAction);
 	}
@@ -901,18 +931,19 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@ResponseBody
 	@RequestMapping(value = "{backendId}/check-running-sync", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
-	@ApiOperation(
-			value = "Check changes of unresloved sync for the system (Long-polling request).",
-			nickname = "checkRunningSyncs",
-			tags = { SysSystemController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")})
-				})
+	@Operation(
+			summary = "Check changes of unresloved sync for the system (Long-polling request).",
+			operationId = "checkRunningSyncs",
+			tags = { SysSystemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.SYSTEM_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.SYSTEM_READ})
+        }
+    )
 	public DeferredResult<OperationResultDto> checkRunningSyncs(
-			@ApiParam(value = "System's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
+			 @Parameter(description = "System's uuid identifier.", required = true) @PathVariable @NotNull String backendId) {
 		SysSystemDto dto = getDto(backendId);
 		if (dto == null) {
 			throw new ResultCodeException(CoreResultCode.NOT_FOUND, ImmutableMap.of("entity", backendId));
@@ -950,16 +981,17 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@ResponseStatus(code = HttpStatus.OK)
 	@RequestMapping(value = PASSWORD_FILTER_BASE_ENDPOINT + "/validate", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_PASSWORDFILTERVALIDATE + "')")
-	@ApiOperation(
-			value = "Validate password request from resources with password filters including check for unform password defintions",
-			nickname = "validate",
-			tags = { AccUniformPasswordController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_PASSWORDFILTERVALIDATE, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_PASSWORDFILTERVALIDATE, description = "")})
-					})
+	@Operation(
+			summary = "Validate password request from resources with password filters including check for unform password defintions",
+			operationId = "validate",
+			tags = { AccUniformPasswordController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							AccGroupPermission.SYSTEM_PASSWORDFILTERVALIDATE}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							AccGroupPermission.SYSTEM_PASSWORDFILTERVALIDATE})
+        }
+    )
 	public ResponseEntity<?> validate(
 			@RequestBody @Valid AccPasswordFilterRequestDto request) {
 		passwordFilterManager.validate(request);
@@ -970,16 +1002,17 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@ResponseStatus(code = HttpStatus.OK)
 	@RequestMapping(value = PASSWORD_FILTER_BASE_ENDPOINT + "/change", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_PASSWORDFILTERCHANGE + "')")
-	@ApiOperation(
-			value = "Change pasword given from resources with applied password filters including uniform password defintions",
-			nickname = "change",
-			tags = { AccUniformPasswordController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_PASSWORDFILTERCHANGE, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_PASSWORDFILTERCHANGE, description = "")})
-					})
+	@Operation(
+			summary = "Change pasword given from resources with applied password filters including uniform password defintions",
+			operationId = "change",
+			tags = { AccUniformPasswordController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							AccGroupPermission.SYSTEM_PASSWORDFILTERCHANGE}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							AccGroupPermission.SYSTEM_PASSWORDFILTERCHANGE})
+        }
+    )
 	public ResponseEntity<?> change(@RequestBody @Valid AccPasswordFilterRequestDto request) {
 		passwordFilterManager.change(request);
 		//
@@ -996,16 +1029,17 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET, value = "/search/supported")
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
-	@ApiOperation(
-			value = "Get all supported connector types",
-			nickname = "getSupportedConnectorTypes",
-			tags = {SysSystemController.TAG},
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")})
-			})
+	@Operation(
+			summary = "Get all supported connector types",
+			operationId = "getSupportedConnectorTypes",
+			tags = {SysSystemController.TAG})
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							AccGroupPermission.SYSTEM_READ}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							AccGroupPermission.SYSTEM_READ})
+        }
+    )
 	public CollectionModel<ConnectorTypeDto> getSupportedTypes() {
 		Map<SysConnectorServerDto, List<IcConnectorInfo>> allConnectorInfos = new LinkedHashMap<>();
 		// All remote connectors - optionally, but with higher priority.
@@ -1110,17 +1144,28 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@ResponseBody
 	@RequestMapping(path = "/wizards/execute", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_UPDATE + "')")
-	@ApiOperation(
-			value = "Execute specific connector type -> execute some wizard step.",
-			nickname = "executeConnectorType",
-			response = ConnectorTypeDto.class,
-			tags = { SysSystemController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "")})
-			})
+	@Operation(
+			summary = "Execute specific connector type -> execute some wizard step.",
+			operationId = "executeConnectorType",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ConnectorTypeDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { SysSystemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							AccGroupPermission.SYSTEM_UPDATE}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							AccGroupPermission.SYSTEM_UPDATE})
+        }
+    )
 	public ResponseEntity<ConnectorTypeDto> executeWizardType(@Valid @RequestBody ConnectorTypeDto wizardDto) {
 		ConnectorTypeDto result = connectorManager.execute(wizardDto);
 
@@ -1131,17 +1176,28 @@ public class SysSystemController extends AbstractReadWriteDtoController<SysSyste
 	@ResponseBody
 	@RequestMapping(path = "/wizards/load", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
-	@ApiOperation(
-			value = "Load data for specific connector type -> open existed system in the wizard step.",
-			nickname = "loadConnectorType",
-			response = ConnectorTypeDto.class,
-			tags = { SysSystemController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")})
-			})
+	@Operation(
+			summary = "Load data for specific connector type -> open existed system in the wizard step.",
+			operationId = "loadConnectorType",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ConnectorTypeDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { SysSystemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							AccGroupPermission.SYSTEM_READ}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							AccGroupPermission.SYSTEM_READ})
+        }
+    )
 	public ResponseEntity<ConnectorTypeDto> loadWizardType(@NotNull @Valid @RequestBody ConnectorTypeDto wizardDto) {
 		if (!wizardDto.isReopened()) {
 			// Load default values for new system.

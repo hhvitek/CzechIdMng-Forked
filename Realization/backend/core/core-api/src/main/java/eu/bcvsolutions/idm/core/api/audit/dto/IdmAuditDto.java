@@ -16,8 +16,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import eu.bcvsolutions.idm.core.api.dto.BaseDto;
 import eu.bcvsolutions.idm.core.api.dto.EmbeddedDto;
-import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.ApiModelProperty.AccessMode;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 
 /**
  * Default DTO for audit detail.
@@ -66,18 +66,18 @@ public class IdmAuditDto implements BaseDto {
 	private String subOwnerType;
 	
 	@JsonProperty(value = EmbeddedDto.PROPERTY_EMBEDDED, access = Access.READ_ONLY)
-	@ApiModelProperty(accessMode = AccessMode.READ_ONLY)
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
 	private Map<String, BaseDto> embedded;
 	
-	@ApiModelProperty(accessMode = AccessMode.READ_ONLY)
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
 	private UUID transactionId;
 	
 	@JsonProperty(access = Access.READ_ONLY)
-	@ApiModelProperty(accessMode = AccessMode.READ_ONLY)
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private Map<String, Object> revisionValues;
 	
 	@JsonProperty(access = Access.READ_ONLY)
-	@ApiModelProperty(accessMode = AccessMode.READ_ONLY, notes = "Related entity was already deleted.")
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY, description = "Related entity was already deleted.")
 	private transient boolean deleted;
 
     public IdmAuditDto() {

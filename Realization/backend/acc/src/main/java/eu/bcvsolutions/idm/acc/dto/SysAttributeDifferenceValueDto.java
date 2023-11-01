@@ -4,8 +4,7 @@ import org.springframework.hateoas.server.core.Relation;
 
 import eu.bcvsolutions.idm.acc.domain.SysValueChangeType;
 import eu.bcvsolutions.idm.core.api.dto.AbstractDto;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * DTO for attribute value with marked type of change
@@ -15,13 +14,13 @@ import io.swagger.annotations.ApiModelProperty;
  *
  */
 @Relation(collectionRelation = "accounts")
-@ApiModel(description = "Attribute value with marked type of change")
+@Schema(description = "Attribute value with marked type of change")
 public class SysAttributeDifferenceValueDto extends AbstractDto {
 	private static final long serialVersionUID = 1L;
 
 	private Object value;
 	private Object oldValue;
-	@ApiModelProperty(required = false, notes = "Type of value change")
+	@Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, description = "Type of value change")
 	private SysValueChangeType change;
 
 	public SysAttributeDifferenceValueDto() {

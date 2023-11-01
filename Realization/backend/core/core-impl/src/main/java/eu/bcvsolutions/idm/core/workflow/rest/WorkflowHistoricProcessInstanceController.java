@@ -5,11 +5,13 @@ import java.io.InputStream;
 
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
@@ -28,9 +30,12 @@ import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.workflow.model.dto.WorkflowFilterDto;
 import eu.bcvsolutions.idm.core.workflow.model.dto.WorkflowHistoricProcessInstanceDto;
 import eu.bcvsolutions.idm.core.workflow.service.WorkflowHistoricProcessInstanceService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Rest controller for workflow historic instance processes
@@ -42,12 +47,7 @@ import io.swagger.annotations.ApiParam;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/workflow-history-processes")
-@Api(
-		value = WorkflowHistoricProcessInstanceController.TAG,  
-		tags = { WorkflowHistoricProcessInstanceController.TAG }, 
-		description = "Read WF audit",
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = WorkflowHistoricProcessInstanceController.TAG, description = "Read WF audit")
 public class WorkflowHistoricProcessInstanceController extends AbstractReadDtoController<WorkflowHistoricProcessInstanceDto, WorkflowFilterDto> {
 
 	protected static final String TAG = "Workflow - process instances history";
@@ -63,24 +63,37 @@ public class WorkflowHistoricProcessInstanceController extends AbstractReadDtoCo
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/search/quick")
-	@ApiOperation(
-			value = "Search historic process instances", 
-			nickname = "searchQuickHistoricProcessInstances", 
+	@Operation(
+			summary = "Search historic process instances",
+			operationId = "searchQuickHistoricProcessInstances", 
 			tags = { WorkflowHistoricProcessInstanceController.TAG })
+	@PageableAsQueryParam
+    //PagedModel<?>
 	public CollectionModel<?> searchQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return find(parameters, pageable);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/{backendId}")
-	@ApiOperation(
-			value = "Historic process instance detail", 
-			nickname = "getHistoricProcessInstance", 
-			response = WorkflowHistoricProcessInstanceDto.class, 
+	@Operation(
+			summary = "Historic process instance detail",
+			operationId = "getHistoricProcessInstance", 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = WorkflowHistoricProcessInstanceDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { WorkflowHistoricProcessInstanceController.TAG })
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Historic process instance id.", required = true)
+			 @Parameter(description = "Historic process instance id.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -93,13 +106,23 @@ public class WorkflowHistoricProcessInstanceController extends AbstractReadDtoCo
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/diagram", method = RequestMethod.GET, produces = MediaType.IMAGE_PNG_VALUE)
-	@ApiOperation(
-			value = "Historic process instance diagram", 
-			nickname = "getHistoricProcessInstanceDiagram", 
-			response = WorkflowHistoricProcessInstanceDto.class, 
+	@Operation(
+			summary = "Historic process instance diagram",
+			operationId = "getHistoricProcessInstanceDiagram", 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = WorkflowHistoricProcessInstanceDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { WorkflowHistoricProcessInstanceController.TAG })
 	public ResponseEntity<InputStreamResource> getDiagram(
-			@ApiParam(value = "Historic process instance id.", required = true)
+			 @Parameter(description = "Historic process instance id.", required = true)
 			@PathVariable @NotNull String backendId) {
 		// check rights
 		WorkflowHistoricProcessInstanceDto result = workflowHistoricProcessInstanceService.get(backendId);
