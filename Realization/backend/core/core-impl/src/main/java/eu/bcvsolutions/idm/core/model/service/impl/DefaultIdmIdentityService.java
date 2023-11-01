@@ -74,6 +74,8 @@ import eu.bcvsolutions.idm.core.model.event.IdentityEvent;
 import eu.bcvsolutions.idm.core.model.event.IdentityEvent.IdentityEventType;
 import eu.bcvsolutions.idm.core.model.event.PasswordChangeEvent;
 import eu.bcvsolutions.idm.core.model.event.PasswordChangeEvent.PasswordChangeEventType;
+import eu.bcvsolutions.idm.core.model.event.EntityPasswordEvent;
+import eu.bcvsolutions.idm.core.model.event.EntityPasswordEvent.EntityPasswordEventType;
 import eu.bcvsolutions.idm.core.model.event.processor.identity.IdentityPasswordProcessor;
 import eu.bcvsolutions.idm.core.model.repository.IdmIdentityRepository;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
@@ -307,9 +309,9 @@ public class DefaultIdmIdentityService
 	public List<OperationResult> passwordChange(IdmIdentityDto identity, PasswordChangeDto passwordChangeDto) {
 		Assert.notNull(identity, "Identity is required.");
 		//
-		return passwordChange(new IdentityEvent(
-				IdentityEventType.PASSWORD,
-				identity, 
+		return passwordChange(new EntityPasswordEvent<IdmIdentityDto>(
+				EntityPasswordEventType.PASSWORD,
+				identity,
 				ImmutableMap.of(IdentityPasswordProcessor.PROPERTY_PASSWORD_CHANGE_DTO, passwordChangeDto)));
 	}
 	
@@ -331,6 +333,7 @@ public class DefaultIdmIdentityService
 				if (result.getModel() != null) {
 					boolean success = result.getModel().getStatusEnum().equals(CoreResultCode.PASSWORD_CHANGE_ACCOUNT_SUCCESS.name());
 					boolean failure = result.getModel().getStatusEnum().equals(CoreResultCode.PASSWORD_CHANGE_ACCOUNT_FAILED.name());
+					// TODO this condition seems to be superfluous, password change returns only these two statuses
 					if (success || failure) {
 						IdmAccountDto resultAccount = (IdmAccountDto) result.getModel().getParameters().get(IdmAccountDto.PARAMETER_NAME);
 						if (!passwordChangeResults.containsKey(resultAccount.getId())) {

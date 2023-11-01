@@ -60,7 +60,7 @@ public class TransactionContextHolderIntegrationTest extends AbstractRestTest {
 	}
 	
 	@Test
-	@Ignore // FIXME: Why is transaction id changed from FE without change? 
+	@Ignore // FIXME: Why is transaction id changed from FE without change?
 	public void testUpdateTransactionIdByRestLayer() throws Exception {
 		IdmIdentityDto identity = new IdmIdentityDto(getHelper().createName());
 		// save identity without rest layer

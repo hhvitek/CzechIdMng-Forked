@@ -2,6 +2,8 @@ package eu.bcvsolutions.idm.acc.service.impl;
 
 import java.text.MessageFormat;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -61,6 +63,7 @@ import eu.bcvsolutions.idm.acc.entity.SysSystemMapping_;
 import eu.bcvsolutions.idm.acc.entity.SysSystem_;
 import eu.bcvsolutions.idm.acc.event.AccountEvent;
 import eu.bcvsolutions.idm.acc.event.AccountEvent.AccountEventType;
+import eu.bcvsolutions.idm.acc.event.processor.AccountPasswordProcessor;
 import eu.bcvsolutions.idm.acc.repository.AccAccountRepository;
 import eu.bcvsolutions.idm.acc.service.api.AccAccountService;
 import eu.bcvsolutions.idm.acc.service.api.AccIdentityAccountService;
@@ -74,12 +77,22 @@ import eu.bcvsolutions.idm.acc.service.api.SysSchemaObjectClassService;
 import eu.bcvsolutions.idm.acc.service.api.SysSystemEntityTypeManager;
 import eu.bcvsolutions.idm.acc.service.api.SysSystemService;
 import eu.bcvsolutions.idm.acc.system.entity.SystemEntityTypeRegistrable;
+import eu.bcvsolutions.idm.core.api.domain.CoreResultCode;
 import eu.bcvsolutions.idm.core.api.dto.BaseDto;
+import eu.bcvsolutions.idm.core.api.dto.IdmAccountDto;
+import eu.bcvsolutions.idm.core.api.dto.PasswordChangeDto;
 import eu.bcvsolutions.idm.core.api.entity.AbstractEntity_;
+import eu.bcvsolutions.idm.core.api.entity.OperationResult;
+import eu.bcvsolutions.idm.core.api.event.CoreEvent;
+import eu.bcvsolutions.idm.core.api.event.EventContext;
 import eu.bcvsolutions.idm.core.api.exception.ResultCodeException;
 import eu.bcvsolutions.idm.core.api.service.EntityEventManager;
 import eu.bcvsolutions.idm.core.api.service.LookupService;
 import eu.bcvsolutions.idm.core.api.utils.DtoUtils;
+import eu.bcvsolutions.idm.core.api.utils.ExceptionUtils;
+import eu.bcvsolutions.idm.core.eav.api.dto.IdmFormAttributeDto;
+import eu.bcvsolutions.idm.core.eav.api.dto.IdmFormInstanceDto;
+import eu.bcvsolutions.idm.core.eav.api.dto.IdmFormValueDto;
 import eu.bcvsolutions.idm.core.eav.api.service.AbstractFormableService;
 import eu.bcvsolutions.idm.core.eav.api.service.FormService;
 import eu.bcvsolutions.idm.core.eav.entity.IdmFormDefinition_;
@@ -87,6 +100,9 @@ import eu.bcvsolutions.idm.core.model.entity.IdmIdentityRole;
 import eu.bcvsolutions.idm.core.model.entity.IdmIdentityRole_;
 import eu.bcvsolutions.idm.core.model.entity.IdmIdentity_;
 import eu.bcvsolutions.idm.core.model.entity.IdmRole_;
+import eu.bcvsolutions.idm.core.model.event.EntityPasswordEvent;
+import eu.bcvsolutions.idm.core.model.event.EntityPasswordEvent.EntityPasswordEventType;
+import eu.bcvsolutions.idm.core.model.event.PasswordChangeEvent;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
 import eu.bcvsolutions.idm.core.security.api.dto.AuthorizableType;
 import eu.bcvsolutions.idm.ic.api.IcAttribute;
@@ -102,12 +118,12 @@ import eu.bcvsolutions.idm.ic.impl.IcConnectorObjectImpl;
  * @author svandav
  * @author Roman Kucera
  * @author Tomáš Doischer
- *
  */
 @Service("accAccountService")
 public class DefaultAccAccountService extends AbstractFormableService<AccAccountDto, AccAccount, AccAccountFilter>
 		implements AccAccountService {
 
+	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(DefaultAccAccountService.class);
 	private final AccAccountRepository accountRepository;
 	private final AccIdentityAccountService identityAccountService;
 	private final SysSystemService systemService;
@@ -125,12 +141,13 @@ public class DefaultAccAccountService extends AbstractFormableService<AccAccount
 	private ConnectorManager connectorManager;
 	@Autowired
 	private SysSystemEntityTypeManager systemEntityManager;
+	private final EntityEventManager entityEventManager;
 
 	@Autowired
 	public DefaultAccAccountService(AccAccountRepository accountRepository,
-			AccIdentityAccountService identityAccountService, @Lazy SysSystemService systemService,
-			SysSchemaObjectClassService schemaObjectClassService, SysSchemaAttributeService schemaAttributeService,
-			FormService formService, EntityEventManager entityEventManager) {
+									AccIdentityAccountService identityAccountService, @Lazy SysSystemService systemService,
+									SysSchemaObjectClassService schemaObjectClassService, SysSchemaAttributeService schemaAttributeService,
+									FormService formService, EntityEventManager entityEventManager) {
 		super(accountRepository, entityEventManager, formService);
 		//
 		Assert.notNull(identityAccountService, "Service is required.");
@@ -138,6 +155,7 @@ public class DefaultAccAccountService extends AbstractFormableService<AccAccount
 		Assert.notNull(systemService, "Service is required.");
 		Assert.notNull(schemaObjectClassService, "Service is required.");
 		Assert.notNull(schemaAttributeService, "Service is required.");
+		Assert.notNull(entityEventManager, "Manager is required.");
 
 		//
 		this.identityAccountService = identityAccountService;
@@ -145,6 +163,7 @@ public class DefaultAccAccountService extends AbstractFormableService<AccAccount
 		this.systemService = systemService;
 		this.schemaAttributeService = schemaAttributeService;
 		this.schemaObjectClassService = schemaObjectClassService;
+		this.entityEventManager = entityEventManager;
 	}
 
 	@Override
@@ -248,13 +267,13 @@ public class DefaultAccAccountService extends AbstractFormableService<AccAccount
 		if (schemaAttributes == null) {
 			return null;
 		}
-		try{
+		try {
 			// Find connector-type.
 			SysSystemDto systemDto = lookupService.lookupEmbeddedDto(account, AccAccount_.system);
 			ConnectorType connectorType = connectorManager.findConnectorTypeBySystem(systemDto);
 			// Find first mapping for entity type and system, from the account and return his object class.
 			IcObjectClass icObjectClass = schemaObjectClassService.findByAccount(account.getSystem(), account.getEntityType());
-			
+
 			IcConnectorObject fullObject = this.systemService.readConnectorObject(account.getSystem(),
 					account.getRealUid(), icObjectClass, connectorType);
 			return this.getConnectorObjectForSchema(fullObject, schemaAttributes);
@@ -273,7 +292,7 @@ public class DefaultAccAccountService extends AbstractFormableService<AccAccount
 	 * @return
 	 */
 	private IcConnectorObject getConnectorObjectForSchema(IcConnectorObject fullObject,
-			List<SysSchemaAttributeDto> schemaAttributes) {
+														  List<SysSchemaAttributeDto> schemaAttributes) {
 		if (fullObject == null || schemaAttributes == null) {
 			return null;
 		}
@@ -304,8 +323,7 @@ public class DefaultAccAccountService extends AbstractFormableService<AccAccount
 	 * Find schema's attributes for the system id and schema name.
 	 *
 	 * @param systemId
-	 * @param schema
-	 *            - If is schema name null, then will used default '__ACCOUNT__'.
+	 * @param schema   - If is schema name null, then will used default '__ACCOUNT__'.
 	 * @return
 	 */
 	private List<SysSchemaAttributeDto> getSchemaAttributes(UUID systemId, String schema) {
@@ -325,7 +343,7 @@ public class DefaultAccAccountService extends AbstractFormableService<AccAccount
 
 	@Override
 	protected List<Predicate> toPredicates(Root<AccAccount> root, CriteriaQuery<?> query, CriteriaBuilder builder,
-			AccAccountFilter filter) {
+										   AccAccountFilter filter) {
 		List<Predicate> predicates = super.toPredicates(root, query, builder, filter);
 		// full search
 		if (StringUtils.isNotEmpty(filter.getText())) {
@@ -389,24 +407,24 @@ public class DefaultAccAccountService extends AbstractFormableService<AccAccount
 		if (filter.getRoleIds() != null && !filter.getRoleIds().isEmpty()) {
 			Subquery<AccIdentityAccount> identityAccountSubquery = query.subquery(AccIdentityAccount.class);
 			Root<AccIdentityAccount> subRootIdentityAccount = identityAccountSubquery.from(AccIdentityAccount.class);
-			
+
 			Subquery<IdmIdentityRole> identityRoleSubquery = query.subquery(IdmIdentityRole.class);
 			Root<IdmIdentityRole> subRootIdentityRole = identityRoleSubquery.from(IdmIdentityRole.class);
-			
+
 			identityRoleSubquery.select(subRootIdentityRole);
-			
+
 			Join<AccIdentityAccount, IdmIdentityRole> identityRole = subRootIdentityAccount.join(AccIdentityAccount_.identityRole, JoinType.LEFT);
 			identityRoleSubquery.where(
 					builder.and(identityRole.get(IdmIdentityRole_.role).get(IdmRole_.id).in(filter.getRoleIds()),
 							builder.equal(subRootIdentityAccount.get(AccIdentityAccount_.identityRole), identityRole))
 			);
-			
+
 			identityAccountSubquery.select(subRootIdentityAccount);
 			identityAccountSubquery.where(
-                    builder.and(
-                    		builder.equal(subRootIdentityAccount.get(AccIdentityAccount_.account), root), // correlation attr
-                    		builder.exists(identityRoleSubquery))
-            );			
+					builder.and(
+							builder.equal(subRootIdentityAccount.get(AccIdentityAccount_.account), root), // correlation attr
+							builder.exists(identityRoleSubquery))
+			);
 			predicates.add(builder.exists(identityAccountSubquery));
 		}
 		if (filter.getIdentities() != null && !filter.getIdentities().isEmpty()) {
@@ -416,7 +434,7 @@ public class DefaultAccAccountService extends AbstractFormableService<AccAccount
 
 			Predicate predicate = builder
 					.and(builder.equal(subRootIdentityAccount.get(AccIdentityAccount_.account), root));
-			Predicate identityPredicate = 
+			Predicate identityPredicate =
 					subRootIdentityAccount.get(AccIdentityAccount_.identity).get(IdmIdentity_.id).in(filter.getIdentities());
 
 			predicate = builder.and(predicate, identityPredicate);
@@ -440,17 +458,17 @@ public class DefaultAccAccountService extends AbstractFormableService<AccAccount
 			Predicate predicate = builder.and(
 					builder.isFalse(systemPath.get(SysSystem_.disabledProvisioning)),
 					builder.equal(subRootSystemAttributeMapping//
-						.get(SysSystemAttributeMapping_.schemaAttribute)//
-						.get(SysSchemaAttribute_.objectClass)//
-						.get(SysSchemaObjectClass_.system), //
-						systemPath),
+									.get(SysSystemAttributeMapping_.schemaAttribute)//
+									.get(SysSchemaAttribute_.objectClass)//
+									.get(SysSchemaObjectClass_.system), //
+							systemPath),
 					builder.equal(subRootSystemAttributeMapping//
 							.get(SysSystemAttributeMapping_.systemMapping)//
 							.get(SysSystemMapping_.operationType), SystemOperationType.PROVISIONING),
 					builder.equal(subRootSystemAttributeMapping//
 							.get(SysSystemAttributeMapping_.schemaAttribute)//
 							.get(SysSchemaAttribute_.name), ProvisioningService.PASSWORD_SCHEMA_PROPERTY_NAME)
-					);
+			);
 
 			systemAttributeMappingSubquery.where(predicate);
 			predicates.add(builder.exists(systemAttributeMappingSubquery));
@@ -475,9 +493,9 @@ public class DefaultAccAccountService extends AbstractFormableService<AccAccount
 
 			predicates.add(builder.exists(subquerySystem.where(
 					builder.and(
-						builder.equal(root.get(AccAccount_.system), subRootSystem), // Correlation attribute - connection to system
-						builder.isFalse(root.get(AccAccount_.inProtection)), // Exclude in protection accounts
-						// Disabled, readonly or without provisioning system are NOT excluded, because from these systems may be still receive password change requests
+							builder.equal(root.get(AccAccount_.system), subRootSystem), // Correlation attribute - connection to system
+							builder.isFalse(root.get(AccAccount_.inProtection)), // Exclude in protection accounts
+							// Disabled, readonly or without provisioning system are NOT excluded, because from these systems may be still receive password change requests
 //						builder.isFalse(subRootSystem.get(SysSystem_.disabled)), // Exclude disabled system
 //						builder.isFalse(subRootSystem.get(SysSystem_.readonly)), // Exclude readonly system
 //						builder.isFalse(subRootSystem.get(SysSystem_.disabledProvisioning)), // Exclude system with disabled provisioning
@@ -486,22 +504,22 @@ public class DefaultAccAccountService extends AbstractFormableService<AccAccount
 											builder.and(
 													builder.equal(subRootUniformSystem.get(AccUniformPasswordSystem_.system), subRootSystem),
 													builder.equal(subRootUniformSystem.get(AccUniformPasswordSystem_.uniformPassword).get(AbstractEntity_.id), filter.getUniformPasswordId())
-													)
 											)
 									)
 							)
-					)));
+					)
+			)));
 		}
 
 		if (filter.getSupportPasswordFilter() != null) {
 			Subquery<SysSystem> subquerySystem = query.subquery(SysSystem.class);
 			Root<SysSystem> subRootSystem = subquerySystem.from(SysSystem.class);
 			subquerySystem.select(subRootSystem);
-			
+
 			Subquery<SysSchemaObjectClass> subquerySchema = query.subquery(SysSchemaObjectClass.class);
 			Root<SysSchemaObjectClass> subRootSchema = subquerySchema.from(SysSchemaObjectClass.class);
 			subquerySchema.select(subRootSchema);
-			
+
 			Subquery<SysSystemMapping> subqueryMapping = query.subquery(SysSystemMapping.class);
 			Root<SysSystemMapping> subRootMapping = subqueryMapping.from(SysSystemMapping.class);
 			subqueryMapping.select(subRootMapping);
@@ -509,48 +527,48 @@ public class DefaultAccAccountService extends AbstractFormableService<AccAccount
 			Subquery<SysSystemAttributeMapping> subqueryAttributeMapping = query.subquery(SysSystemAttributeMapping.class);
 			Root<SysSystemAttributeMapping> subRootAttributeMapping = subqueryAttributeMapping.from(SysSystemAttributeMapping.class);
 			subqueryAttributeMapping.select(subRootAttributeMapping);
-			
+
 			Subquery<SysSystemMapping> subquery = query.subquery(SysSystemMapping.class);
 			Root<SysSystemMapping> subRoot = subquery.from(SysSystemMapping.class);
 			subquery.select(subRoot);
 
 			predicates.add(builder.exists(subquerySystem.where(
-				builder.and(
-					builder.equal(root.get(AccAccount_.system), subRootSystem), // Correlation attribute - connection to system
-					builder.isFalse(root.get(AccAccount_.inProtection)), // Exclude in protection accounts
-					// Disabled, readonly or without provisioning system are NOT excluded, because from these systems may be still receive password change requests
-						builder.exists(
-							subquerySchema.where(
-								builder.and(
-									builder.equal(subRootSchema.get(SysSchemaObjectClass_.system), subRootSystem), // Correlation attribute - connection to schem object class
-									builder.exists(
-										subqueryMapping.where(
+					builder.and(
+							builder.equal(root.get(AccAccount_.system), subRootSystem), // Correlation attribute - connection to system
+							builder.isFalse(root.get(AccAccount_.inProtection)), // Exclude in protection accounts
+							// Disabled, readonly or without provisioning system are NOT excluded, because from these systems may be still receive password change requests
+							builder.exists(
+									subquerySchema.where(
 											builder.and(
-												builder.equal(subRootMapping.get(SysSystemMapping_.objectClass), subRootSchema), // Correlation attribute - connection to mapping
-												builder.equal(subRootMapping.get(SysSystemMapping_.operationType), SystemOperationType.PROVISIONING), // System mapping must be provisioning
-												builder.equal(subRootMapping.get(SysSystemMapping_.entityType), IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE), // Password change is now allowed only for identities
-												builder.exists(
-													subqueryAttributeMapping.where(
-														builder.and(
-															builder.equal(subRootAttributeMapping.get(SysSystemAttributeMapping_.systemMapping), subRootMapping), // Correlation attribute - connection to attribute mapping
-															builder.isTrue(subRootAttributeMapping.get(SysSystemAttributeMapping_.passwordAttribute)), // Only password attribute
-															builder.isFalse(subRootAttributeMapping.get(SysSystemAttributeMapping_.disabledAttribute)), // Exclude disabled attribute
-															BooleanUtils.isTrue(filter.getSupportPasswordFilter())
-															?
-																builder.isTrue(subRootAttributeMapping.get(SysSystemAttributeMapping_.passwordFilter))
-															:
-																builder.isFalse(subRootAttributeMapping.get(SysSystemAttributeMapping_.passwordFilter))
+													builder.equal(subRootSchema.get(SysSchemaObjectClass_.system), subRootSystem), // Correlation attribute - connection to schem object class
+													builder.exists(
+															subqueryMapping.where(
+																	builder.and(
+																			builder.equal(subRootMapping.get(SysSystemMapping_.objectClass), subRootSchema), // Correlation attribute - connection to mapping
+																			builder.equal(subRootMapping.get(SysSystemMapping_.operationType), SystemOperationType.PROVISIONING), // System mapping must be provisioning
+																			builder.equal(subRootMapping.get(SysSystemMapping_.entityType), IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE), // Password change is now allowed only for identities
+																			builder.exists(
+																					subqueryAttributeMapping.where(
+																							builder.and(
+																									builder.equal(subRootAttributeMapping.get(SysSystemAttributeMapping_.systemMapping), subRootMapping), // Correlation attribute - connection to attribute mapping
+																									builder.isTrue(subRootAttributeMapping.get(SysSystemAttributeMapping_.passwordAttribute)), // Only password attribute
+																									builder.isFalse(subRootAttributeMapping.get(SysSystemAttributeMapping_.disabledAttribute)), // Exclude disabled attribute
+																									BooleanUtils.isTrue(filter.getSupportPasswordFilter())
+																											?
+																											builder.isTrue(subRootAttributeMapping.get(SysSystemAttributeMapping_.passwordFilter))
+																											:
+																											builder.isFalse(subRootAttributeMapping.get(SysSystemAttributeMapping_.passwordFilter))
+																							)
+																					)
+																			)
+																	)
 															)
-														)
 													)
-												)
 											)
-										)
 									)
-								)
 							)
-						)
-					)));
+					)
+			)));
 		}
 		//
 		return predicates;
@@ -572,4 +590,83 @@ public class DefaultAccAccountService extends AbstractFormableService<AccAccount
 		return executor;
 	}
 
+	@Override
+	public IdmFormValueDto getPasswordFormValue(AccAccountDto account) {
+		for (IdmFormInstanceDto form : account.getEavs()) {
+			UUID passwordAttrId = null;
+			for (IdmFormAttributeDto attr : form.getFormDefinition().getFormAttributes()) {
+				if (ProvisioningService.PASSWORD_SCHEMA_PROPERTY_NAME.equals(attr.getCode())) {
+					passwordAttrId = attr.getId();
+				}
+			}
+			if (passwordAttrId != null) {
+				for (IdmFormValueDto value : form.getValues()) {
+					if (passwordAttrId.equals(value.getFormAttribute())) {
+						return value;
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional
+	public List<OperationResult> passwordChange(AccAccountDto account, PasswordChangeDto passwordChangeDto) {
+		Assert.notNull(account, "Account is required.");
+		//
+		return passwordChange(new EntityPasswordEvent<AccAccountDto>(
+				EntityPasswordEventType.PASSWORD,
+				account,
+				ImmutableMap.of(AccountPasswordProcessor.PROPERTY_PASSWORD_CHANGE_DTO, passwordChangeDto)));
+	}
+
+	@Override
+	public void validatePassword(PasswordChangeDto passwordChange) {
+		entityEventManager.process(
+				new PasswordChangeEvent(
+						PasswordChangeEvent.PasswordChangeEventType.PASSWORD_PREVALIDATION,
+						passwordChange));
+	}
+
+	@Override
+	@Transactional
+	public List<OperationResult> passwordChange(CoreEvent<AccAccountDto> passwordChangeEvent) {
+		Assert.notNull(passwordChangeEvent, "Password change event is required.");
+		Assert.notNull(passwordChangeEvent.getProperties().get(AccountPasswordProcessor.PROPERTY_PASSWORD_CHANGE_DTO),
+				"Password change DTO is required.");
+		//
+		LOG.debug("Changing password for account [{}]", passwordChangeEvent.getContent().getUid());
+		EventContext<AccAccountDto> context = publish(passwordChangeEvent);
+		//
+		// get all password change results
+		// more provisioning operation can be executed for one password change - we need to distinct them by account id
+		Map<UUID, OperationResult> passwordChangeResults = new HashMap<>(); // accountId / result
+		context.getResults().forEach(eventResult -> {
+			eventResult.getResults().forEach(result -> {
+				if (result.getModel() != null) {
+					boolean success = result.getModel().getStatusEnum().equals(CoreResultCode.PASSWORD_CHANGE_ACCOUNT_SUCCESS.name());
+					boolean failure = result.getModel().getStatusEnum().equals(CoreResultCode.PASSWORD_CHANGE_ACCOUNT_FAILED.name());
+					// TODO this condition seems to be superfluous, password change returns only these two statuses
+					if (success || failure) {
+						IdmAccountDto resultAccount = (IdmAccountDto) result.getModel().getParameters().get(IdmAccountDto.PARAMETER_NAME);
+						if (!passwordChangeResults.containsKey(resultAccount.getId())) {
+							passwordChangeResults.put(resultAccount.getId(), result);
+						} else if (failure) {
+							// failure has higher priority
+							passwordChangeResults.put(resultAccount.getId(), result);
+						}
+					}
+				}
+			});
+		});
+		// logging
+		passwordChangeResults
+				.values()
+				.stream()
+				.forEach(result -> {
+					ExceptionUtils.log(LOG, result.getModel(), result.getException());
+				});
+		return new ArrayList<>(passwordChangeResults.values());
+	}
 }

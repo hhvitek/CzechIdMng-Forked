@@ -8,7 +8,6 @@ import * as Utils from '../../../utils';
 import * as Basic from '../../basic';
 import PasswordField from '../PasswordField/PasswordField';
 import ValidationMessage from '../ValidationMessage/ValidationMessage';
-import { IdentityService } from '../../../services';
 import { IdentityManager, SecurityManager, ConfigurationManager } from '../../../redux';
 
 const IDM_NAME = Utils.Config.getConfig('app.name', 'CzechIdM');
@@ -18,7 +17,6 @@ const PASSWORD_DOES_NOT_MEET_POLICY = 'PASSWORD_DOES_NOT_MEET_POLICY';
 const PASSWORD_PREVALIDATION = 'PASSWORD_PREVALIDATION';
 
 const identityManager = new IdentityManager();
-const identityService = new IdentityService();
 const securityManager = new SecurityManager();
 
 /**
@@ -191,7 +189,7 @@ class PasswordChangeComponent extends Basic.AbstractFormComponent {
       });
     }
     //
-    identityService.passwordChange(entityId, requestData)
+    identityManager.passwordChange(entityId, requestData)
       .then(response => {
         this.setState({
           showLoading: false
@@ -401,6 +399,7 @@ PasswordChangeComponent.propTypes = {
   _permissions: PropTypes.arrayOf(PropTypes.string),
   prepareAccounts: PropTypes.func
 };
+
 PasswordChangeComponent.defaultProps = {
   requireOldPassword: true,
   userContext: null,

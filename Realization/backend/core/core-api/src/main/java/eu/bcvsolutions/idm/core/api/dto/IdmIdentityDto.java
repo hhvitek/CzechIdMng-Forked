@@ -23,6 +23,7 @@ import eu.bcvsolutions.idm.core.api.domain.Embedded;
 import eu.bcvsolutions.idm.core.api.domain.ExternalCodeable;
 import eu.bcvsolutions.idm.core.api.domain.ExternalIdentifiable;
 import eu.bcvsolutions.idm.core.api.domain.IdentityState;
+import eu.bcvsolutions.idm.core.api.domain.PasswordManageable;
 import eu.bcvsolutions.idm.core.eav.api.dto.IdmFormProjectionDto;
 import eu.bcvsolutions.idm.core.security.api.domain.GuardedString;
 import eu.bcvsolutions.idm.core.security.api.domain.GuardedStringDeserializer;
@@ -36,7 +37,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  */
 @Relation(collectionRelation = "identities")
 @Schema(description = "Identity domain object")
-public class IdmIdentityDto extends FormableDto implements Disableable, Codeable, ExternalCodeable, ExternalIdentifiable, Contextable {
+public class IdmIdentityDto extends FormableDto implements Disableable, Codeable, ExternalCodeable, ExternalIdentifiable, Contextable, PasswordManageable {
 
 	private static final long serialVersionUID = 1L;
 	//
@@ -301,5 +302,10 @@ public class IdmIdentityDto extends FormableDto implements Disableable, Codeable
 	@Override
 	public String toString() {
 		return "IdmIdentityDto [username=" + username + "]";
+	}
+
+	@Override
+	public String getName() {
+		return getUsername();
 	}
 }

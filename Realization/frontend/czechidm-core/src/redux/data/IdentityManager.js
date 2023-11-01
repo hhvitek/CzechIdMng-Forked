@@ -458,6 +458,18 @@ export default class IdentityManager extends FormableEntityManager {
     // default
     return `/identity/${ encodeURIComponent(identity.username) }/profile`;
   }
+
+  /**
+   * Change users pasword in given systems (by json)
+   *
+   * @param username {string}
+   * @param passwordChangeDto {object}
+   * @param token {string} - if token has to be used (from public page is not needed, then *false* could be given)
+   * @return {Promise}
+   */
+  passwordChange(username, passwordChangeDto, token = null) {
+    return this.getService().passwordChange(username, passwordChangeDto, token);
+  }
 }
 
 IdentityManager.PASSWORD_DISABLED = 'DISABLED';

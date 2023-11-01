@@ -1,5 +1,7 @@
 package eu.bcvsolutions.idm.acc;
 
+import static org.junit.Assert.assertEquals;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +64,7 @@ import eu.bcvsolutions.idm.acc.service.api.AccAccountConceptRoleRequestService;
 import eu.bcvsolutions.idm.acc.service.api.AccAccountRoleAssignmentService;
 import eu.bcvsolutions.idm.acc.service.api.AccAccountService;
 import eu.bcvsolutions.idm.acc.service.api.AccIdentityAccountService;
+import eu.bcvsolutions.idm.acc.service.api.AccPasswordService;
 import eu.bcvsolutions.idm.acc.service.api.AccUniformPasswordService;
 import eu.bcvsolutions.idm.acc.service.api.SynchronizationService;
 import eu.bcvsolutions.idm.acc.service.api.SysRoleSystemService;
@@ -87,6 +90,7 @@ import eu.bcvsolutions.idm.core.api.dto.ApplicantImplDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmIdentityDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmRoleDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmRoleRequestDto;
+import eu.bcvsolutions.idm.core.api.dto.PasswordChangeDto;
 import eu.bcvsolutions.idm.core.api.dto.filter.IdmRoleTreeNodeFilter;
 import eu.bcvsolutions.idm.core.api.exception.CoreException;
 import eu.bcvsolutions.idm.core.api.service.IdmAutomaticRoleAttributeService;
@@ -103,52 +107,80 @@ import eu.bcvsolutions.idm.core.eav.api.service.IdmFormAttributeService;
 import eu.bcvsolutions.idm.core.model.entity.IdmIdentity_;
 import eu.bcvsolutions.idm.core.security.api.domain.GuardedString;
 import static org.junit.Assert.assertEquals;
+import joptsimple.internal.Strings;
 
 /**
  * Acc / Provisioning test helper
- * 
+ *
  * @author Radek Tomiška
  * @author Vít Švanda
  */
 @Primary
 @Component("accTestHelper")
 public class DefaultAccTestHelper extends eu.bcvsolutions.idm.test.api.DefaultTestHelper implements TestHelper {
-	
+
 	@Autowired
 	@CoreEntityManager
 	private EntityManager entityManager;
-	@Autowired private SysSystemService systemService;
-	@Autowired private SysSystemMappingService systemMappingService;
-	@Autowired private SysSystemAttributeMappingService systemAttributeMappingService;
-	@Autowired private SysSchemaAttributeService schemaAttributeService;
-	@Autowired private SysRoleSystemService roleSystemService;
-	@Autowired private FormService formService;
-	@Autowired private DataSource dataSource;
-	@Autowired private SysSystemEntityService systemEntityService;
-	@Autowired private AccAccountService accountService;
-	@Autowired private AccIdentityAccountService identityAccountService;
-	@Autowired private DefaultSysSystemMappingService mappingService;
-	@Autowired private ApplicationContext context;
-	@Autowired private SysSyncConfigService syncConfigService;
-	@Autowired private SysSyncItemLogService syncItemLogService;
-	@Autowired private SysSyncActionLogService syncActionLogService;
-	@Autowired private IdmRoleTreeNodeService roleTreeNodeService;
-	@Autowired private IdmAutomaticRoleAttributeService automaticRoleAttributeService;
-	@Autowired private AccUniformPasswordService uniformPasswordService;
-	@Autowired private SysSystemGroupService systemGroupService;
-	@Autowired private SysSystemOwnerService systemOwnerService;
-	@Autowired private SysSystemOwnerRoleService systemOwnerRoleService;
-	@Autowired private AccAccountRoleAssignmentService accAccountRoleAssignmentService;
-	@Autowired private IdmRoleRequestService roleRequestService;
-	@Autowired private AccAccountConceptRoleRequestService accountConceptRoleRequestService;
-	@Autowired private IdmFormAttributeService formAttributeService;
+	@Autowired
+	private SysSystemService systemService;
+	@Autowired
+	private SysSystemMappingService systemMappingService;
+	@Autowired
+	private SysSystemAttributeMappingService systemAttributeMappingService;
+	@Autowired
+	private SysSchemaAttributeService schemaAttributeService;
+	@Autowired
+	private SysRoleSystemService roleSystemService;
+	@Autowired
+	private FormService formService;
+	@Autowired
+	private DataSource dataSource;
+	@Autowired
+	private SysSystemEntityService systemEntityService;
+	@Autowired
+	private AccAccountService accountService;
+	@Autowired
+	private AccIdentityAccountService identityAccountService;
+	@Autowired
+	private DefaultSysSystemMappingService mappingService;
+	@Autowired
+	private ApplicationContext context;
+	@Autowired
+	private SysSyncConfigService syncConfigService;
+	@Autowired
+	private SysSyncItemLogService syncItemLogService;
+	@Autowired
+	private SysSyncActionLogService syncActionLogService;
+	@Autowired
+	private IdmRoleTreeNodeService roleTreeNodeService;
+	@Autowired
+	private IdmAutomaticRoleAttributeService automaticRoleAttributeService;
+	@Autowired
+	private AccUniformPasswordService uniformPasswordService;
+	@Autowired
+	private SysSystemGroupService systemGroupService;
+	@Autowired
+	private SysSystemOwnerService systemOwnerService;
+	@Autowired
+	private SysSystemOwnerRoleService systemOwnerRoleService;
+	@Autowired
+	private AccAccountRoleAssignmentService accAccountRoleAssignmentService;
+	@Autowired
+	private IdmRoleRequestService roleRequestService;
+	@Autowired
+	private AccAccountConceptRoleRequestService accountConceptRoleRequestService;
+	@Autowired
+	private IdmFormAttributeService formAttributeService;
+	@Autowired
+	private AccPasswordService accPasswordService;
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public TestResource findResource(String uid) {
 		return entityManager.find(TestResource.class, uid);
 	}
-	
+
 	@Override
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public TestResource saveResource(TestResource testResource) {
@@ -156,7 +188,7 @@ public class DefaultAccTestHelper extends eu.bcvsolutions.idm.test.api.DefaultTe
 		//
 		return testResource;
 	}
-	
+
 	@Override
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void deleteAllResourceData() {
@@ -164,21 +196,19 @@ public class DefaultAccTestHelper extends eu.bcvsolutions.idm.test.api.DefaultTe
 		Query q = entityManager.createNativeQuery("DELETE FROM " + TestResource.TABLE_NAME);
 		q.executeUpdate();
 	}
-	
+
 	/**
 	 * Create test system connected to same database (using configuration from dataSource)
 	 * Generated system name will be used.
-	 * 
+	 *
 	 * @return
 	 */
 	@Override
 	public SysSystemDto createSystem(String tableName) {
 		return createSystem(tableName, null);
 	}
-	
+
 	/**
-	 * 
-	 * 
 	 * @param tableName
 	 * @param systemName
 	 * @return
@@ -187,10 +217,8 @@ public class DefaultAccTestHelper extends eu.bcvsolutions.idm.test.api.DefaultTe
 	public SysSystemDto createSystem(String tableName, String systemName) {
 		return this.createSystem(tableName, systemName, "status", "name");
 	}
-	
+
 	/**
-	 * 
-	 * 
 	 * @param tableName
 	 * @param systemName
 	 * @return
@@ -228,7 +256,7 @@ public class DefaultAccTestHelper extends eu.bcvsolutions.idm.test.api.DefaultTe
 		IdmFormValueDto table = new IdmFormValueDto(savedFormDefinition.getMappedAttributeByCode("table"));
 		table.setValue(tableName);
 		values.add(table);
-		if(!Strings.isNullOrEmpty(keyColumnName)) {
+		if (!Strings.isNullOrEmpty(keyColumnName)) {
 			IdmFormValueDto keyColumn = new IdmFormValueDto(
 					savedFormDefinition.getMappedAttributeByCode("keyColumn"));
 			keyColumn.setValue(keyColumnName);
@@ -246,7 +274,7 @@ public class DefaultAccTestHelper extends eu.bcvsolutions.idm.test.api.DefaultTe
 				savedFormDefinition.getMappedAttributeByCode("rethrowAllSQLExceptions"));
 		rethrowAllSQLExceptions.setValue(true);
 		values.add(rethrowAllSQLExceptions);
-		if(!Strings.isNullOrEmpty(statusColumnName)) {
+		if (!Strings.isNullOrEmpty(statusColumnName)) {
 			IdmFormValueDto statusColumn = new IdmFormValueDto(
 					savedFormDefinition.getMappedAttributeByCode("statusColumn"));
 			statusColumn.setValue(statusColumnName);
@@ -264,17 +292,17 @@ public class DefaultAccTestHelper extends eu.bcvsolutions.idm.test.api.DefaultTe
 				savedFormDefinition.getMappedAttributeByCode("changeLogColumn"));
 		changeLogColumnValue.setValue(null);
 		values.add(changeLogColumnValue);
-		
+
 		formService.saveValues(system, savedFormDefinition, values);
 
 		return system;
 	}
-	
+
 	@Override
 	public SysSystemDto createTestResourceSystem(boolean withMapping) {
 		return createTestResourceSystem(withMapping, null);
 	}
-	
+
 	@Override
 	public SysSystemDto createTestResourceSystem(boolean withMapping, String systemName) {
 		// create test system
@@ -305,7 +333,7 @@ public class DefaultAccTestHelper extends eu.bcvsolutions.idm.test.api.DefaultTe
 		schemaAttributeFilter.setSystemId(system.getId());
 
 		Page<SysSchemaAttributeDto> schemaAttributesPage = schemaAttributeService.find(schemaAttributeFilter, null);
-		for(SysSchemaAttributeDto schemaAttr : schemaAttributesPage) {
+		for (SysSchemaAttributeDto schemaAttr : schemaAttributesPage) {
 			if (ATTRIBUTE_MAPPING_NAME.equals(schemaAttr.getName())) {
 				SysSystemAttributeMappingDto attributeMapping = new SysSystemAttributeMappingDto();
 				attributeMapping.setUid(true);
@@ -381,17 +409,17 @@ public class DefaultAccTestHelper extends eu.bcvsolutions.idm.test.api.DefaultTe
 		//
 		return getDefaultMapping(system.getId());
 	}
-	
+
 	@Override
 	public SysSystemMappingDto getDefaultMapping(UUID systemId) {
 		List<SysSystemMappingDto> mappings = systemMappingService.findBySystemId(systemId, SystemOperationType.PROVISIONING, IdentitySynchronizationExecutor.SYSTEM_ENTITY_TYPE);
-		if(mappings.isEmpty()) {
+		if (mappings.isEmpty()) {
 			throw new CoreException(String.format("Default mapping for system[%s] not found", systemId));
 		}
 		//
 		return mappings.get(0);
 	}
-	
+
 	@Override
 	public SysRoleSystemDto createRoleSystem(IdmRoleDto role, SysSystemDto system) {
 		return createRoleSystem(role, system, AccountType.PERSONAL);
@@ -404,7 +432,7 @@ public class DefaultAccTestHelper extends eu.bcvsolutions.idm.test.api.DefaultTe
 
 	@Override
 	public SysRoleSystemDto createRoleSystem(IdmRoleDto role, SysSystemDto system, AccountType accountType,
-				boolean createAccountByDefault) {
+											 boolean createAccountByDefault) {
 		SysRoleSystemDto roleSystem = new SysRoleSystemDto();
 		roleSystem.setRole(role.getId());
 		roleSystem.setSystem(system.getId());
@@ -446,6 +474,7 @@ public class DefaultAccTestHelper extends eu.bcvsolutions.idm.test.api.DefaultTe
 		return identityAccountService.save(accountIdentity);
 	}
 
+
 	@Override
 	public SysSystemMappingDto createMappingSystem(String systemEntityType, SysSchemaObjectClassDto objectClass) {
 		// system mapping
@@ -463,14 +492,14 @@ public class DefaultAccTestHelper extends eu.bcvsolutions.idm.test.api.DefaultTe
 	public void startSynchronization(AbstractSysSyncConfigDto config) {
 		Assert.notNull(config, "Sync config is required to be start.");
 		SynchronizationSchedulableTaskExecutor lrt = context.getAutowireCapableBeanFactory()
-		.createBean(SynchronizationSchedulableTaskExecutor.class);
+				.createBean(SynchronizationSchedulableTaskExecutor.class);
 		lrt.init(ImmutableMap.of(SynchronizationService.PARAMETER_SYNCHRONIZATION_ID, config.getId().toString()));
 		lrt.process();
 	}
-	
+
 	@Override
 	public SysSyncLogDto checkSyncLog(AbstractSysSyncConfigDto config, SynchronizationActionType actionType, int count,
-			OperationResultType resultType) {
+									  OperationResultType resultType) {
 		SysSyncConfigFilter logFilter = new SysSyncConfigFilter();
 		logFilter.setId(config.getId());
 		logFilter.setIncludeLastLog(Boolean.TRUE);
@@ -502,10 +531,10 @@ public class DefaultAccTestHelper extends eu.bcvsolutions.idm.test.api.DefaultTe
 
 		return log;
 	}
-	
+
 	/**
 	 * Schema is generated in lower case for postgresql.
-	 * 
+	 *
 	 * @param columnName
 	 * @return
 	 */
@@ -518,8 +547,8 @@ public class DefaultAccTestHelper extends eu.bcvsolutions.idm.test.api.DefaultTe
 			return columnName;
 		}
 		//
-        String dbName = getDatabaseName();
-        if (dbName.equals(IdmFlywayMigrationStrategy.POSTGRESQL_DBNAME)) {
+		String dbName = getDatabaseName();
+		if (dbName.equals(IdmFlywayMigrationStrategy.POSTGRESQL_DBNAME)) {
 			return columnName.toLowerCase();
 		}
 		//
@@ -553,6 +582,7 @@ public class DefaultAccTestHelper extends eu.bcvsolutions.idm.test.api.DefaultTe
 
 	/**
 	 * create system owner by identity
+	 *
 	 * @param system
 	 * @param owner
 	 * @return
@@ -567,6 +597,7 @@ public class DefaultAccTestHelper extends eu.bcvsolutions.idm.test.api.DefaultTe
 
 	/**
 	 * create system owner by role
+	 *
 	 * @param system
 	 * @param owner
 	 * @return
@@ -609,8 +640,9 @@ public class DefaultAccTestHelper extends eu.bcvsolutions.idm.test.api.DefaultTe
 	public AccAccountDto createAccount() {
 		return createAccount(null);
 	}
+
 	@Override
-	public AccAccountDto createAccount(GuardedString password){
+	public AccAccountDto createAccount(GuardedString password) {
 		IdmIdentityDto identity = this.createIdentity(password);
 		//
 		SysSystemDto system = this.createSystem("test_resource", createName());
@@ -620,9 +652,9 @@ public class DefaultAccTestHelper extends eu.bcvsolutions.idm.test.api.DefaultTe
 		//
 		this.createIdentityRole(identity, roleOne);
 		//
-			AccAccountFilter accountFilter = new AccAccountFilter();
-			accountFilter.setUid(identity.getUsername());
-			AccAccountDto account = accountService.find(accountFilter, null).stream().findFirst().orElse(null);
+		AccAccountFilter accountFilter = new AccAccountFilter();
+		accountFilter.setUid(identity.getUsername());
+		AccAccountDto account = accountService.find(accountFilter, null).stream().findFirst().orElse(null);
 		return account;
 	}
 
@@ -680,7 +712,7 @@ public class DefaultAccTestHelper extends eu.bcvsolutions.idm.test.api.DefaultTe
 			accountRoleFilter.setRoleId(roleId);
 			List<AccAccountRoleAssignmentDto> roleAssignments = accAccountRoleAssignmentService.find(accountRoleFilter, null).getContent();
 			roleAssignments.forEach(rA ->
-				createAccountConceptRoleRequest(roleRequestId, roleId, accAccountDto.getId(), rA.getId(), ConceptRoleRequestOperation.REMOVE)
+					createAccountConceptRoleRequest(roleRequestId, roleId, accAccountDto.getId(), rA.getId(), ConceptRoleRequestOperation.REMOVE)
 			);
 		}
 		IdmRoleRequestDto processedRoleRequest = this.executeRequest(roleRequest, false, true);
@@ -701,8 +733,8 @@ public class DefaultAccTestHelper extends eu.bcvsolutions.idm.test.api.DefaultTe
 
 	@Override
 	public AccAccountConceptRoleRequestDto createAccountConceptRoleRequest(UUID requestId, UUID roleId,
-			UUID accountId, UUID roleAssignmentId, ConceptRoleRequestOperation operationType, LocalDate validFrom,
-			LocalDate validTill) {
+																		   UUID accountId, UUID roleAssignmentId, ConceptRoleRequestOperation operationType, LocalDate validFrom,
+																		   LocalDate validTill) {
 		AccAccountConceptRoleRequestDto concept = new AccAccountConceptRoleRequestDto();
 		concept.setAccount(accountId);
 		concept.setRole(roleId);
@@ -716,13 +748,13 @@ public class DefaultAccTestHelper extends eu.bcvsolutions.idm.test.api.DefaultTe
 
 	@Override
 	public AccAccountConceptRoleRequestDto createAccountConceptRoleRequest(UUID requestId, UUID roleId,
-			UUID accountId, UUID roleAssignmentId, ConceptRoleRequestOperation operationType) {
+																		   UUID accountId, UUID roleAssignmentId, ConceptRoleRequestOperation operationType) {
 		return this.createAccountConceptRoleRequest(requestId, roleId, accountId, roleAssignmentId, operationType, null, null);
 	}
 
 	@Override
 	public AccAccountConceptRoleRequestDto createAccountConceptRoleRequest(UUID requestId, UUID roleId,
-			UUID accountId) {
+																		   UUID accountId) {
 		return this.createAccountConceptRoleRequest(requestId, roleId, accountId, null, ConceptRoleRequestOperation.ADD, null, null);
 	}
 
@@ -768,5 +800,20 @@ public class DefaultAccTestHelper extends eu.bcvsolutions.idm.test.api.DefaultTe
 				.findFirst()
 				.orElse(null);
 		this.setEavValue(account, uidFormAttribute, AccAccount.class, newAccountUid, PersistentType.SHORTTEXT, formDefinitionDto);
+	}
+
+	@Override
+	public AccAccountDto createAccountWithPassword(SysSystemDto system, String password) {
+		AccAccountDto account = new AccAccountDto();
+		account.setEntityType("TECHNICAL_ACCOUNT");
+		account.setUid(createName());
+		account.setSystem(system.getId());
+		account = accountService.save(account);
+
+		PasswordChangeDto passwordChange = new PasswordChangeDto();
+		passwordChange.setNewPassword(new GuardedString(password));
+		accPasswordService.save(account, passwordChange);
+
+		return account;
 	}
 }
