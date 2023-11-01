@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.zaxxer.hikari.HikariDataSource;
 
