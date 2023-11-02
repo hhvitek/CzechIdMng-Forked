@@ -42,6 +42,7 @@ import eu.bcvsolutions.idm.core.api.domain.CoreResultCode;
 import eu.bcvsolutions.idm.core.api.dto.IdmIdentityDto;
 import eu.bcvsolutions.idm.core.api.exception.ResultCodeException;
 import eu.bcvsolutions.idm.core.api.service.IdmIdentityService;
+import eu.bcvsolutions.idm.core.model.entity.IdmIdentity;
 import eu.bcvsolutions.idm.core.rest.AbstractBaseDtoService;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
@@ -86,7 +87,15 @@ public class DefaultWorkflowProcessInstanceService
 		Assert.hasText(definitionKey, "Definition key cannot be null!");
 		UUID implementerId = securityService.getCurrentId();
 		UUID originalImplementerId = securityService.getOriginalId();
- 
+
+		String applicantUsername = null;
+		if (IdmIdentity.class.getSimpleName().equals(objectType)) {
+			IdmIdentityDto applicant = identityService.get(objectIdentifier);
+			if (applicant != null) {
+				applicantUsername = applicant.getUsername();
+			}
+		}
+
 		ProcessInstanceBuilder builder = runtimeService.createProcessInstanceBuilder()
 				.processDefinitionKey(definitionKey)//
 				.variable(WorkflowProcessInstanceService.OBJECT_TYPE, objectType)
@@ -94,7 +103,7 @@ public class DefaultWorkflowProcessInstanceService
 				.variable(WorkflowProcessInstanceService.OBJECT_IDENTIFIER, objectIdentifier)
 				.variable(WorkflowProcessInstanceService.IMPLEMENTER_IDENTIFIER, implementerId == null ? null : implementerId.toString())
 				.variable(WorkflowProcessInstanceService.ORIGINAL_IMPLEMENTER_IDENTIFIER, originalImplementerId == null ? null : originalImplementerId.toString())
-				.variable(WorkflowProcessInstanceService.APPLICANT_USERNAME, objectIdentifier)
+				.variable(WorkflowProcessInstanceService.APPLICANT_USERNAME, applicantUsername)
 				.variable(WorkflowProcessInstanceService.APPLICANT_IDENTIFIER, UUID.fromString(objectIdentifier));
 		if (variables != null) {
 			for (Entry<String, Object> entry : variables.entrySet()) {
