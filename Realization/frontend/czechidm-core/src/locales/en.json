@@ -1737,7 +1737,7 @@
         "createdDate": "Created on",
         "applicantFullName": "Applicant name",
         "applicant": "Requested for",
-        "implementerIdentifier": "Applicant",
+        "implementerIdentifier": "Requester",
         "successComplete": "Task {{name}} successfully solved.",
         "completeTaskConfirmTitle": "Confirmation of task completion",
         "completeTaskConfirmDetail": "Do you really want to settle this task?",
@@ -1764,7 +1764,7 @@
       },
       "DefaultTaskDetail": {
         "applicant": "Requested for",
-        "implementerIdentifier": "Applicant",
+        "implementerIdentifier": "Requester",
         "createdDate": "Created date",
         "approvers": "Approvers of this task",
         "note": "$t(entity.ApprovalTask.note)",
@@ -2659,7 +2659,7 @@
     "roleRequests": {
       "header": "Requests for change roles",
       "title": "Requests for roles",
-      "applicant": "Applicant",
+      "applicant": "Requests for user",
       "create": {
         "header": "Create new request to change assigned roles"
       },
@@ -5104,7 +5104,7 @@
       "superProcessInstanceId": "Parent process id",
       "processDefinitionKey": "Code of the process definition",
       "id": "Id",
-      "applicant": "Applicant"
+      "applicant": "Requested for"
     },
     "WorkflowHistoricTaskInstance": {
       "name": "Task name",
@@ -5712,7 +5712,7 @@
       "_type": "Request for change roles",
       "systemState": "State on systems",
       "applicant": "Requested for",
-      "implementer": "Applicant",
+      "implementer": "Requester",
       "state": "State in IdM",
       "states": "State in IdM / systems",
       "executeImmediately": {
@@ -5772,7 +5772,7 @@
     },
     "AutomaticRoleRequest": {
       "role": "Requested for role",
-      "implementer": "Applicant",
+      "implementer": "Requester",
       "automaticAttributeRole": "Automatic role (by attribute)",
       "automaticTreeRole": "Automatic role (by tree)",
       "requestType": "Type of automatic role",
@@ -6209,7 +6209,7 @@
         "resultLabel": "Rejected"
       },
       "backToApplicant": {
-        "label" : "Return to applicant",
+        "label" : "Return to requester",
         "tooltip": "Returns request to requester.",
         "warning": "Do you want to return the request?",
         "resultLabel": "Returned to requester."
