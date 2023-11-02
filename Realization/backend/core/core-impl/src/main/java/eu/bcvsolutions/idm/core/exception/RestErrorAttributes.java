@@ -44,16 +44,16 @@ public class RestErrorAttributes extends DefaultErrorAttributes {
 	            		break;
 	            	}
 	            	case 403: {
-	            		errorModel = new DefaultErrorModel(CoreResultCode.FORBIDDEN, ImmutableMap.of("path", errorAttributes.get("path"), "message", errorAttributes.get("message")));
+	            		errorModel = new DefaultErrorModel(CoreResultCode.FORBIDDEN, ImmutableMap.of("path", errorAttributes.get("path"), "message", errorAttributes.get("error")));
 	            		break;
 	            	}
 	            	case 404: {
-	            		errorModel = new DefaultErrorModel(CoreResultCode.ENDPOINT_NOT_FOUND, ImmutableMap.of("path", errorAttributes.get("path"), "message", errorAttributes.get("message")));
+	            		errorModel = new DefaultErrorModel(CoreResultCode.ENDPOINT_NOT_FOUND, ImmutableMap.of("path", errorAttributes.get("path"), "message", errorAttributes.get("error")));
 	            		break;
 	            	}
 	            	case 400:
 	            	case 405: {
-	            		errorModel = new DefaultErrorModel(CoreResultCode.METHOD_NOT_ALLOWED, ImmutableMap.of("path", errorAttributes.get("path"), "message", errorAttributes.get("message")));
+	            		errorModel = new DefaultErrorModel(CoreResultCode.METHOD_NOT_ALLOWED, ImmutableMap.of("path", errorAttributes.get("path"), "message", errorAttributes.get("error")));
 	            		break;
 	            	}
 	            	default: {

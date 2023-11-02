@@ -7,7 +7,6 @@ import {
 } from '../../services';
 import FlashMessagesManager from '../flash/FlashMessagesManager';
 import { Actions } from '../config/constants';
-import ConfigurationManager from '../data/ConfigurationManager';
 
 /**
  * action types
