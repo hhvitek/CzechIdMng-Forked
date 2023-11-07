@@ -59,7 +59,7 @@ public class DefaultModuleService implements ModuleService {
 	}
 	
 	public ModuleDescriptor getModule(String moduleId) {
-		return moduleDescriptorRegistry.getPluginFor(moduleId);
+		return moduleDescriptorRegistry.getPluginFor(moduleId).orElse(null);
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class DefaultModuleService implements ModuleService {
 
 	@Override
 	public boolean isEnabled(String moduleId) {
-		return isEnabled(moduleDescriptorRegistry.getPluginFor(moduleId));
+		return isEnabled(moduleDescriptorRegistry.getPluginFor(moduleId).orElse(null));
 	}
 	
 	@Override
@@ -101,7 +101,7 @@ public class DefaultModuleService implements ModuleService {
 
 	@Override
 	public void setEnabled(String moduleId, boolean enabled) {
-		ModuleDescriptor moduleDescriptor = moduleDescriptorRegistry.getPluginFor(moduleId);
+		ModuleDescriptor moduleDescriptor = moduleDescriptorRegistry.getPluginFor(moduleId).orElse(null);
 		ModuleDescriptorDto moduleDescriptorDto = null;
 		if (moduleDescriptor == null) {
 			LOG.info("Frontend module [{}] will be enabled [{}].", moduleId, enabled);

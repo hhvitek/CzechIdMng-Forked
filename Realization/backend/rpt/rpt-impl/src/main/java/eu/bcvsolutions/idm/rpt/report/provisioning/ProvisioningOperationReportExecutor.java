@@ -95,7 +95,7 @@ public class ProvisioningOperationReportExecutor extends AbstractReportExecutor 
 				jGenerator.writeStartArray();		
 				// form instance has useful methods to transform form values
 				IdmFormInstanceDto formInstance = new IdmFormInstanceDto(report, getFormDefinition(), report.getFilter());
-				Pageable pageable = PageRequest.of(0, 100, new Sort(Direction.ASC, SysProvisioningOperation_.created.getName()));
+				Pageable pageable = PageRequest.of(0, 100, Sort.by(Direction.ASC, SysProvisioningOperation_.created.getName()));
 				SysProvisioningOperationFilter filterOperations = new SysProvisioningOperationFilter();
 				Serializable systemId = formInstance.toSinglePersistentValue(PARAMETER_SYSTEM);
 				if (systemId != null) {

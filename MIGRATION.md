@@ -770,3 +770,295 @@ set system_mapping_id = (select ssm.id
                                   join sys_system_mapping ssm on ssm.object_class_id = oc.id
                          where aa.id = to_update.id and ssm.operation_type = 'PROVISIONING' and aa.entity_type = ssm.entity_type);
 ```
+
+# Migration Guide : CzechIdM 13.0.x to CzechIdM 13.1.x
+
+## 💡 Introduction
+
+This guide describes the various things that are needed when migrating from CzechIdM version 13.0.x to version 13.1.x.
+Version 13.1 brings updates to all major backend and frontend technologies.
+
+# 🌗 Backend
+
+### 🚀 Upgraded libraries
+- Spring Boot ``2.1.18.RELEASE`` => ``2.2.13.RELEASE``
+  - Spring ``5.1.9.RELEASE`` => ``5.2.0.RELEASE``
+  - Mockito ``3.1``
+  - Flyway ``5.2`` => ``6.0``
+- Swagger ``2.9.2`` => ``3.0.0``
+- ... *other minor and third party libraries*.
+
+## Update custom module
+
+Due to breaking changes above, custom module requires some refactoring, before it's compatible with CzechIdM version 13.1.x. Some refactoring can be done with replaces, but some places need to be changed manually.
+
+### Replaces
+
+> Case sensitive find is expected.
+
+- 🟠 ``org.springframework.hateoas.core.Relation`` ⇒ ``org.springframework.hateoas.server.core.Relation``
+- 🟠 ``org.springframework.hateoas.Resource`` ⇒ ``org.springframework.hateoas.EntityModel``
+- 🟠 ``Resource`` ⇒ ``EntityModel``
+- 🟠 ``toResource`` ⇒ ``toModel``
+- 🟠 ``org.springframework.hateoas.Resources`` ⇒ ``org.springframework.hateoas.CollectionModel``
+- 🟠 ``Resources`` ⇒ ``CollectionModel``
+- 🟠 ``toResources`` ⇒ ``toCollectionModel``
+- 🟠 ``org.springframework.hateoas.PagedResources`` ⇒ ``org.springframework.hateoas.PagedModel``
+- 🟠 ``PagedResources`` ⇒ ``PagedModel``
+- 🟠 ``org.springframework.hateoas.ResourceSupport`` ⇒ ``org.springframework.hateoas.RepresentationModel``
+- 🟠 ``ResourceSupport`` ⇒ ``RepresentationModel``
+- 🟠 ``org.springframework.hateoas.mvc.ControllerLinkBuilder`` ⇒ ``org.springframework.hateoas.server.mvc.WebMvcLinkBuilder``
+- 🟠 ``ControllerLinkBuilder`` ⇒ ``WebMvcLinkBuilder``
+
+### Manual changes / cookbook
+
+- *Replaces above are expected*
+- 🟠 **Flyway module configuration** usage:
+  - The way Flyway is configured changes. To resolve properties correctly, you must to override the getPropertyPrefix() method in <module>FlywayConfig.java:
+  - Example:
+  ```java
+    @Override
+    public String getPropertyPrefix() {
+      return "flyway.acc"; // the prefix of keys in flyway-<module>.properties
+    }
+  ```
+  - You also need to contifure Flyway to ignore if Flyway scripts are missing from a default location which we are not using. Edit the application-<>.properties and append:
+  ```
+  spring.flyway.check-location = false
+  ```
+- 🟠 **Plugin.getPluginFor()** usage:
+  - Plugin.getPluginFor() now returns an Optional. You need to handle the possible null value when retrieving the value, e. g.:
+  ```java
+    notificationSenders.getPluginFor(IdmConsoleLog.NOTIFICATION_TYPE).orElse(null);
+  ```
+  - Some further refactoring of this code is advised since Optional allows for better null handling.
+- 🟠 **Default lazy bean initialization** must be turned off:
+  - Spring Boot 2.2 introduces default lazy bean initialization as a default. This will cause issues with annotation handling and must be disabled. Files application-<>.properties must include:
+  ```
+  spring.main.lazy-initialization=false
+  ```
+- 🟠 **Changes in Mockito**:
+  - The new version of Mockito will no longer properly support using the @InjectMocks annotation. If you are using this annotation, rewrite the test following DefaultLongRunningTaskManagerUnitTest.
+- 🟠 **Profile configuration changes**:
+  - You application-<>.property file can no longer contain the `spring.profiles.active` key. Remove all such instances. The profile is resolved based on the name of the file now.
+- 🟠 **Quartz configuration changes**:
+  - Quartz now requires its own data source. It will create it itself based on our configuration.
+  - If you use a custom quartz-<>.properties files (stand-alone installation typically), add the following properties:
+  ```
+  # Configure DataSource
+  org.quartz.jobStore.dataSource=quartzDataSource
+  org.quartz.dataSource.quartzDataSource.URL=jdbc:postgresql://localhost:5432/bcv_idm_13
+  org.quartz.dataSource.quartzDataSource.user=idmadmin
+  org.quartz.dataSource.quartzDataSource.password=idmadmin
+  org.quartz.dataSource.quartzDataSource.driver=org.postgresql.Driver
+  org.quartz.dataSource.quartzDataSource.validationQuery=SELECT 1
+  org.quartz.dataSource.quartzDataSource.maxConnections =20
+  ```
+
+### Migrate from springfox to springdoc
+Change annotations
+
+- 🟠 ``@Api`` ⇒ ``@Tag``
+- 🟠 ``@Api.value`` ⇒ ``@Tag.name``
+- 🟠 ``@Api.tags``, ``@Api.produces``, ``@Api.consumes`` ⇒ can be removed
+- 🟠 ``import io.swagger.annotations.Api;`` ⇒ ``import io.swagger.v3.oas.annotations.tags.Tag;``
+
+    - Example:
+  ```java
+  @Api( value = IdmAuthorizationPolicyController.TAG, 
+        description = "Operations with authorization policies", 
+        tags = { IdmAuthorizationPolicyController.TAG }, 
+        produces = BaseController.APPLICATION_HAL_JSON_VALUE,
+        consumes = MediaType.APPLICATION_JSON_VALUE)
+  ```
+    - to
+  ```java
+  @Tag( name = IdmAuthorizationPolicyController.TAG, 
+        description = "Operations with authorization policies" )
+  ```
+- 🟠 ``@ApiOperation`` ⇒ ``@Operation``
+- 🟠 ``@ApiOperation.value`` ⇒ ``@Operation.summary``
+- 🟠 ``@ApiOperation.nickname`` ⇒ ``@Operation.operationId``
+- 🟠 ``@ApiOperation.authorizations`` ⇒ ``@SecurityRequirements``
+- 🟠 ``@ApiOperation.response`` ⇒ ``@Operation.responses = @ApiResponse``
+- 🟠 
+        ```
+        import io.swagger.annotations.ApiOperation;
+        import io.swagger.annotations.Authorization;
+        import io.swagger.annotations.AuthorizationScope;
+        ``` 
+        ⇒
+        ```
+        import io.swagger.v3.oas.annotations.Operation;
+        import io.swagger.v3.oas.annotations.media.Content;
+        import io.swagger.v3.oas.annotations.media.Schema;
+        import io.swagger.v3.oas.annotations.responses.ApiResponse;
+        import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+        import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+        ```
+
+    - Example:
+  ```java
+  @ApiOperation(
+      value = "Authorization policy detail",
+      nickname = "getAuthorizationPolicy",
+      response = IdmAuthorizationPolicyDto.class,
+      tags = { IdmAuthorizationPolicyController.TAG },
+      authorizations = {
+          @Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+              @AuthorizationScope(scope = CoreGroupPermission.AUTHORIZATIONPOLICY_READ, description = "") }),
+          @Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+              @AuthorizationScope(scope = CoreGroupPermission.AUTHORIZATIONPOLICY_READ, description = "") })
+      }
+  )
+  ```
+    - to
+  ```java
+  @Operation(
+      summary = "Authorization policy detail",
+      operationId = "getAuthorizationPolicy",
+      responses = @ApiResponse(
+          responseCode = "200",
+          content = {
+              @Content(
+                  mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                  schema = @Schema(
+                      implementation = IdmAuthorizationPolicyDto.class
+                  )
+              )
+          }
+      ),
+      tags = { IdmAuthorizationPolicyController.TAG }
+  )
+  @SecurityRequirements({
+      @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {CoreGroupPermission.AUTHORIZATIONPOLICY_READ }),
+      @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {CoreGroupPermission.AUTHORIZATIONPOLICY_READ })
+  })
+  ```
+- 🟠 ``@ApiParam`` ⇒ ``@Parameter``
+- 🟠 ``@ApiParam.value`` ⇒ ``@Parameter.description``
+- 🟠 ``import io.swagger.annotations.ApiParam;`` ⇒ ``import io.swagger.v3.oas.annotations.Parameter;``
+
+    - Example:
+  ```java
+  @ApiParam(value = "Policy's uuid identifier.", required = true)
+  ```
+    - to
+  ```java
+  @Parameter(description = "Policy's uuid identifier.", required = true)
+  ```
+- 🟠 ``@ApiModel`` ⇒ ``@Schema``
+- 🟠 ``@ApiModelProperty`` ⇒ ``@Schema``
+- 🟠 ``@ApiModelProperty.notes`` ⇒ ``@Schema.description``
+- 🟠 ``@ApiModelProperty.required = true`` ⇒ ``@Parameter.requiredMode = Schema.RequiredMode.REQUIRED``
+- 🟠 ``@ApiModelProperty.required = false`` ⇒ ``@Parameter.requiredMode = Schema.RequiredMode.NOT_REQUIRED``
+- 🟠
+      ```
+      import io.swagger.annotations.ApiModel;
+      import io.swagger.annotations.ApiModelProperty;
+      ```
+      ⇒
+      ```
+      import io.swagger.v3.oas.annotations.media.Schema;
+      ```
+
+  - Example:
+  ```java
+  @Relation(collectionRelation = "attributes")
+  @ApiModel(description = "Attribute of request item")
+  public class IdmRequestItemAttributeDto implements Serializable {
+  
+      @NotEmpty
+      @Size(min = 1, max = DefaultFieldLengths.NAME)
+      @ApiModelProperty(required = true, notes = "Name of attribute")
+      private String name;
+      ...
+  ```
+    - to
+  ```java
+  @Relation(collectionRelation = "attributes")
+  @Schema(description = "Attribute of request item")
+  public class IdmRequestItemAttributeDto implements Serializable {
+  
+      @NotEmpty
+      @Size(min = 1, max = DefaultFieldLengths.NAME)
+      @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Name of attribute")
+      private String name;
+      ...
+  ```
+
+and then in your implementation of ``AbstractSwaggerConfig`` change this:
+
+- 🟠 ``@ConditionalOnProperty(prefix = "springfox.documentation.swagger", name = "enabled", matchIfMissing = true)`` ⇒ ``@ConditionalOnProperty(prefix = "springdoc.swagger-ui", name = "enabled", matchIfMissing = true)``
+- 🟠 and ``api()`` now returns ``GroupedOpenApi`` instead of  ``Docket``
+- 🟠 ``import springfox.documentation.spring.web.plugins.Docket;`` ⇒ ``import org.springdoc.core.GroupedOpenApi;``
+
+also is nesesery to change swagger2markup to openapi-generator:
+
+from
+```xml
+<plugin>
+    <groupId>io.github.swagger2markup</groupId>
+    <artifactId>swagger2markup-maven-plugin</artifactId>
+    <version>${swagger2markup.version}</version>
+
+    <configuration>
+        <swaggerInput>${swagger.input}</swaggerInput>
+        <outputDir>${generated.asciidoc.directory}</outputDir>
+        <config>
+            <swagger2markup.markupLanguage>ASCIIDOC</swagger2markup.markupLanguage>
+            <swagger2markup.outputLanguage>EN</swagger2markup.outputLanguage>
+            <swagger2markup.pathsGroupedBy>TAGS</swagger2markup.pathsGroupedBy>
+            <swagger2markup.generatedExamplesEnabled>false</swagger2markup.generatedExamplesEnabled>
+
+            <swagger2markup.extensions.dynamicOverview.contentPath>${asciidoctor.input.extensions.directory}/overview</swagger2markup.extensions.dynamicOverview.contentPath>
+            <swagger2markup.extensions.dynamicDefinitions.contentPath>${asciidoctor.input.extensions.directory}/definitions</swagger2markup.extensions.dynamicDefinitions.contentPath>
+            <swagger2markup.extensions.dynamicPaths.contentPath>${asciidoctor.input.extensions.directory}/paths</swagger2markup.extensions.dynamicPaths.contentPath>
+            <swagger2markup.extensions.dynamicSecurity.contentPath>${asciidoctor.input.extensions.directory}/security/</swagger2markup.extensions.dynamicSecurity.contentPath>
+
+            <swagger2markup.extensions.springRestDocs.snippetBaseUri>${swagger.snippetOutput.dir}</swagger2markup.extensions.springRestDocs.snippetBaseUri>
+            <swagger2markup.extensions.springRestDocs.defaultSnippets>true</swagger2markup.extensions.springRestDocs.defaultSnippets>
+        </config>
+    </configuration>
+    <executions>
+        <execution>
+            <phase>test</phase>
+            <goals>
+                <goal>convertSwagger2markup</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+```
+to
+```xml
+<plugin>
+    <groupId>org.openapitools</groupId>
+    <artifactId>openapi-generator-maven-plugin</artifactId>
+    <version>${openapi-generator.version}</version>
+    <executions>
+        <execution>
+            <phase>test</phase>
+            <goals>
+                <goal>generate</goal>
+            </goals>
+            <configuration>
+                <inputSpec>${swagger.input}</inputSpec>
+                <output>${generated.asciidoc.directory}</output>
+                <generatorName>asciidoc</generatorName>
+                <skipValidateSpec>true</skipValidateSpec>
+                <generateAliasAsModel>true</generateAliasAsModel>
+                <configOptions>
+                    <useIntroduction>true</useIntroduction>
+                    <skipExamples>false</skipExamples>
+                </configOptions>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+```
+then update src/docs/asciidoc/index.adoc to incude
+```adoc
+include::{generated}/index.adoc[]
+```
+overview, security, paths and definitions can by removed

@@ -415,7 +415,7 @@ public class DefaultSysProvisioningOperationService
 		List<SysProvisioningOperationDto> sortedList = this
 				.findByBatchId(
 					batchId, 
-					PageRequest.of(0, Integer.MAX_VALUE, new Sort(Direction.ASC, SysProvisioningOperation_.created.getName()))
+					PageRequest.of(0, Integer.MAX_VALUE, Sort.by(Direction.ASC, SysProvisioningOperation_.created.getName()))
 				)
 				.getContent();
 		

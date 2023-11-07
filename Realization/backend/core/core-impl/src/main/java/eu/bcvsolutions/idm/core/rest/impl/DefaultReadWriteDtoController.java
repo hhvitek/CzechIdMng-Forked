@@ -7,9 +7,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.util.MultiValueMap;
@@ -26,7 +27,7 @@ import eu.bcvsolutions.idm.core.api.dto.ResultModels;
 import eu.bcvsolutions.idm.core.api.dto.filter.BaseFilter;
 import eu.bcvsolutions.idm.core.api.rest.AbstractReadWriteDtoController;
 import eu.bcvsolutions.idm.core.api.service.ReadWriteDtoService;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Parameter;
 
 /**
  * Default CRUD controller for given {@link BaseDto}.
@@ -46,8 +47,10 @@ public abstract class DefaultReadWriteDtoController<DTO extends BaseDto, F exten
 	@Override
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
-	public Resources<?> find(
+	@PageableAsQueryParam
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -62,16 +65,20 @@ public abstract class DefaultReadWriteDtoController<DTO extends BaseDto, F exten
 	@Override
 	@ResponseBody
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
-	public Resources<?> findQuick(
+	@PageableAsQueryParam
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
 	
 	@ResponseBody
 	@RequestMapping(value = "/search/autocomplete", method = RequestMethod.GET)
-	public Resources<?> autocomplete(
+	@PageableAsQueryParam
+	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -86,7 +93,7 @@ public abstract class DefaultReadWriteDtoController<DTO extends BaseDto, F exten
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Record's uuid identifier or unique code, if record supports Codeable interface.", required = true)
+			 @Parameter(description = "Record's uuid identifier or unique code, if record supports Codeable interface.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -95,7 +102,7 @@ public abstract class DefaultReadWriteDtoController<DTO extends BaseDto, F exten
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<?> post(
-			@ApiParam(value = "Record (dto).", required = true)
+			 @Parameter(description = "Record (dto).", required = true)
 			@Valid @RequestBody DTO dto) {
 		return super.post(dto);
 	}
@@ -104,9 +111,9 @@ public abstract class DefaultReadWriteDtoController<DTO extends BaseDto, F exten
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	public ResponseEntity<?> put(
-			@ApiParam(value = "Record's uuid identifier or unique code, if record supports Codeable interface.", required = true)
+			 @Parameter(description = "Record's uuid identifier or unique code, if record supports Codeable interface.", required = true)
 			@PathVariable @NotNull String backendId, 
-			@ApiParam(value = "Record (dto).", required = true)
+			 @Parameter(description = "Record (dto).", required = true)
 			@Valid @RequestBody DTO dto) {
 		return super.put(backendId, dto);
 	}
@@ -115,7 +122,7 @@ public abstract class DefaultReadWriteDtoController<DTO extends BaseDto, F exten
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PATCH)
 	public ResponseEntity<?> patch(
-			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -126,7 +133,7 @@ public abstract class DefaultReadWriteDtoController<DTO extends BaseDto, F exten
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "Record's uuid identifier or unique code, if record supports Codeable interface.", required = true)
+			 @Parameter(description = "Record's uuid identifier or unique code, if record supports Codeable interface.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -135,7 +142,7 @@ public abstract class DefaultReadWriteDtoController<DTO extends BaseDto, F exten
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	public Set<String> getPermissions(
-			@ApiParam(value = "Record's uuid identifier or unique code, if record supports Codeable interface.", required = true)
+			 @Parameter(description = "Record's uuid identifier or unique code, if record supports Codeable interface.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}

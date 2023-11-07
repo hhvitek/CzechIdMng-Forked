@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import { Basic, Advanced, Utils, Managers, Domain } from 'czechidm-core';
 import { ExportImportManager, ImportLogManager } from '../../redux';
 import ExportImportTypeEnum from '../../enums/ExportImportTypeEnum';
-import ConceptRoleRequestOperationEnum from '../../enums/ConceptRoleRequestOperationEnum';
+import ConceptRoleRequestOperationEnum
+from '../../enums/ConceptRoleRequestOperationEnum';
 import OperationStateEnum from '../../enums/OperationStateEnum';
 
 const manager = new ExportImportManager();
@@ -12,11 +13,11 @@ const longRunningTaskManager = new Managers.LongRunningTaskManager();
 const importLogManager = new ImportLogManager();
 
 /**
-* Detail of export-imports
-*
-* @author Vít Švanda
-*
-*/
+ * Detail of export-imports
+ *
+ * @author Vít Švanda
+ *
+ */
 export class ExportImportDetail extends Advanced.AbstractTableContent {
 
   constructor(props, context) {
@@ -72,9 +73,9 @@ export class ExportImportDetail extends Advanced.AbstractTableContent {
   }
 
   /**
-  * Method get last string of split string by dot.
-  * Used for get niceLabel for type entity.
-  */
+   * Method get last string of split string by dot.
+   * Used for get niceLabel for type entity.
+   */
   _getType(name) {
     return Utils.Ui.getSimpleJavaType(name);
   }
@@ -85,7 +86,7 @@ export class ExportImportDetail extends Advanced.AbstractTableContent {
       detail,
       longRunningTask,
     } = this.props;
-    const { activeKey } = this.state;
+    const {activeKey} = this.state;
 
     let isImport = false;
     if (detail.entity && detail.entity.type) {
@@ -97,35 +98,40 @@ export class ExportImportDetail extends Advanced.AbstractTableContent {
 
     return (
       <Basic.Div showLoading={showLoading}>
-        <Basic.Tabs activeKey={ activeKey } onSelect={ this._onChangeSelectTabs.bind(this) }>
+        <Basic.Tabs
+          activeKey={activeKey}
+          onSelect={this._onChangeSelectTabs.bind(this)}>
           <Basic.Tab
-            eventKey={ 1 }
+            eventKey={1}
             title={this.i18n('content.export-imports.detail.tab')}
             className="bordered">
             <Basic.Panel className="no-border">
               <Basic.AbstractForm
                 ref="form"
                 data={detail.entity}
-                readOnly={ !Utils.Entity.isNew(detail.entity) }
+                readOnly={!Utils.Entity.isNew(detail.entity)}
                 className="panel-body">
                 <Basic.EnumLabel
                   ref="type"
-                  enum={ ExportImportTypeEnum }
+                  enum={ExportImportTypeEnum}
                   style={{marginRight: '5px'}}/>
                 <Basic.TextField
                   ref="name"
                   readOnly
-                  label={ this.i18n('entity.ExportImport.name.label') }/>
+                  label={this.i18n('entity.ExportImport.name.label')}/>
                 <Basic.Div rendered={longRunningTask}>
                   <Basic.Row>
-                    <Basic.Col lg={ 6 }>
-                      <Basic.LabelWrapper label={this.i18n('entity.LongRunningTask.counter')}>
-                        { longRunningTaskManager.getProcessedCount(longRunningTask) }
+                    <Basic.Col lg={6}>
+                      <Basic.LabelWrapper
+                        label={this.i18n('entity.LongRunningTask.counter')}>
+                        {longRunningTaskManager.getProcessedCount(longRunningTask)}
                       </Basic.LabelWrapper>
                     </Basic.Col>
-                    <Basic.Col lg={ 6 }>
-                      <Basic.Div rendered={longRunningTask && longRunningTask.taskStarted}>
-                        <Basic.LabelWrapper label={this.i18n('entity.LongRunningTask.duration')}>
+                    <Basic.Col lg={6}>
+                      <Basic.Div
+                        rendered={longRunningTask && longRunningTask.taskStarted}>
+                        <Basic.LabelWrapper
+                          label={this.i18n('entity.LongRunningTask.duration')}>
                           <Basic.TimeDuration
                             start={longRunningTask ? longRunningTask.taskStarted : null}
                             end={longRunningTask ? longRunningTask.modified : null}
@@ -134,7 +140,9 @@ export class ExportImportDetail extends Advanced.AbstractTableContent {
                       </Basic.Div>
                     </Basic.Col>
                   </Basic.Row>
-                  <Advanced.OperationResult value={ longRunningTask ? longRunningTask.result : null} face="full"/>
+                  <Advanced.OperationResult
+                    value={longRunningTask ? longRunningTask.result : null}
+                    face="full"/>
                 </Basic.Div>
               </Basic.AbstractForm>
             </Basic.Panel>
@@ -145,28 +153,28 @@ export class ExportImportDetail extends Advanced.AbstractTableContent {
             title={this.i18n('content.export-imports.treeLogs.name')}
             className="bordered">
             <Advanced.Tree
-              manager={ importLogManager }
-              forceSearchParameters={ tableImportLogforceSearchParameters }
+              manager={importLogManager}
+              forceSearchParameters={tableImportLogforceSearchParameters}
               className="panel-body"
-              header={ null }
-              onChange={ () => false }
-              nodeStyle={{ paddingLeft: 0 }}
-              nodeIconClassName={ null }
-              nodeContent={ ({ node }) => {
+              header={null}
+              onChange={() => false}
+              nodeStyle={{paddingLeft: 0}}
+              nodeIconClassName={null}
+              renderNode={({node}) => {
                 const operation = node.operation;
                 return (
                   <span>
                     <Basic.EnumValue
                       value={operation}
-                      enum={ ConceptRoleRequestOperationEnum }
+                      enum={ConceptRoleRequestOperationEnum}
                       style={{marginRight: '5px'}}/>
                     <Advanced.EntityInfo
-                      entityType={ this._getType(node.type) }
-                      entityIdentifier={ node.dto ? node.dto.id : null}
+                      entityType={this._getType(node.type)}
+                      entityIdentifier={node.dto ? node.dto.id : null}
                       showTree={false}
                       showLink={operation === 'UPDATE'}
                       face="popover"
-                      entity={ node.dto }
+                      entity={node.dto}
                       showEntityType
                       showIcon/>
                   </span>
@@ -183,30 +191,34 @@ export class ExportImportDetail extends Advanced.AbstractTableContent {
               ref="table_import_log"
               uiKey="table-import-log"
               filterOpened
-              manager={ importLogManager }
-              rowClass={ ({rowIndex, data}) => { return Utils.Ui.getRowClass(data[rowIndex]); } }
-              forceSearchParameters={ tableImportLogforceSearchParameters }
+              manager={importLogManager}
+              rowClass={({
+                rowIndex,
+                data
+              }) => { return Utils.Ui.getRowClass(data[rowIndex]); }}
+              forceSearchParameters={tableImportLogforceSearchParameters}
               filter={
                 <Advanced.Filter onSubmit={this.useLogFilter.bind(this)}>
                   <Basic.AbstractForm ref="logFilterForm">
                     <Basic.Row>
-                      <Basic.Col lg={ 8 }>
+                      <Basic.Col lg={8}>
                         <Advanced.Filter.TextField
                           ref="text"
                           placeholder={this.i18n('filter.textLog.placeholder')}/>
                       </Basic.Col>
-                      <Basic.Col lg={ 4 } className="text-right">
-                        <Advanced.Filter.FilterButtons cancelFilter={this.cancelLogFilter.bind(this)}/>
+                      <Basic.Col lg={4} className="text-right">
+                        <Advanced.Filter.FilterButtons
+                          cancelFilter={this.cancelLogFilter.bind(this)}/>
                       </Basic.Col>
                     </Basic.Row>
                     <Basic.Row className="last">
-                      <Basic.Col lg={ 6 }>
+                      <Basic.Col lg={6}>
                         <Advanced.Filter.EnumSelectBox
                           ref="operation"
                           placeholder={this.i18n('filter.operation.placeholder')}
-                          enum={ ConceptRoleRequestOperationEnum }/>
+                          enum={ConceptRoleRequestOperationEnum}/>
                       </Basic.Col>
-                      <Basic.Col lg={ 6 }>
+                      <Basic.Col lg={6}>
                         <Advanced.Filter.EnumSelectBox
                           ref="operationState"
                           placeholder={this.i18n('filter.operationState.placeholder')}
@@ -219,10 +231,10 @@ export class ExportImportDetail extends Advanced.AbstractTableContent {
             >
               <Advanced.Column
                 property="id"
-                header={ this.i18n('content.export-imports.ImportDescriptor.dto') }
+                header={this.i18n('content.export-imports.ImportDescriptor.dto')}
                 cell={
                   /* eslint-disable react/no-multi-comp */
-                  ({ rowIndex, data }) => {
+                  ({rowIndex, data}) => {
                     const value = data[rowIndex];
                     if (!value) {
                       return null;
@@ -230,10 +242,10 @@ export class ExportImportDetail extends Advanced.AbstractTableContent {
                     const operation = value.operation;
                     return (
                       <Advanced.EntityInfo
-                        entityType={ this._getType(value.type) }
-                        entityIdentifier={ value.dto ? value.dto.id : null}
+                        entityType={this._getType(value.type)}
+                        entityIdentifier={value.dto ? value.dto.id : null}
                         face="popover"
-                        entity={ value.dto }
+                        entity={value.dto}
                         showEntityType
                         showLink={operation === 'UPDATE'}
                         showIcon/>
@@ -245,25 +257,26 @@ export class ExportImportDetail extends Advanced.AbstractTableContent {
                 face="enum"
                 enumClass={ConceptRoleRequestOperationEnum}
                 sort
-                header={ this.i18n('content.export-imports.ImportDescriptor.operation') }
-                width={ 100 }/>
+                header={this.i18n('content.export-imports.ImportDescriptor.operation')}
+                width={100}/>
               <Advanced.Column
                 property="type"
-                header={ this.i18n('content.export-imports.ImportDescriptor.type') }
+                header={this.i18n('content.export-imports.ImportDescriptor.type')}
                 sort
                 cell={
-                  ({ data, rowIndex }) => {
+                  ({data, rowIndex}) => {
                     return this._getType(data[rowIndex].type);
                   }
                 }/>
               <Advanced.Column
                 property="result"
-                header={ this.i18n('content.export-imports.ImportDescriptor.result') }
+                header={this.i18n('content.export-imports.ImportDescriptor.result')}
                 sort
                 sortProperty="result.state"
                 cell={
-                  ({ data, rowIndex }) => {
-                    return <Advanced.OperationResult value={ data[rowIndex].result }/>;
+                  ({data, rowIndex}) => {
+                    return <Advanced.OperationResult
+                      value={data[rowIndex].result}/>;
                   }
                 }/>
             </Advanced.Table>
@@ -281,4 +294,4 @@ function select(state, component) {
   };
 }
 
-export default connect(select, null, null, { forwardRef: true })(ExportImportDetail);
+export default connect(select, null, null, {forwardRef: true})(ExportImportDetail);

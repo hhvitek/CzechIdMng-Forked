@@ -36,11 +36,16 @@ public class VirtualSystemFlywayConfig extends AbstractFlywayConfiguration {
 	@Bean
 	@DependsOn("flywayCore")
 	@ConditionalOnMissingBean(name = "flywayModuleVirtualSystem")
-	@ConditionalOnExpression("${flyway.enabled:true} && '${flyway.vs.locations}'!=''")
+	@ConditionalOnExpression("${spring.flyway.enabled:true} && '${flyway.vs.locations}'!=''")
 	@ConfigurationProperties(prefix = "flyway.vs")
 	public Flyway flywayModuleVirtualSystem() {
 		Flyway flyway = super.createFlyway();		
 		LOG.info("Starting flyway migration for vs module [{}]: ", flyway.getConfiguration().getTable());
 		return flyway;
+	}
+
+	@Override
+	public String getPropertyPrefix() {
+		return "flyway.vs";
 	}
 }

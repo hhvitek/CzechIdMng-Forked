@@ -9,7 +9,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 import eu.bcvsolutions.idm.core.api.domain.Codeable;
 import eu.bcvsolutions.idm.core.api.domain.ConfigurationMap;
@@ -17,7 +17,7 @@ import eu.bcvsolutions.idm.core.api.domain.DefaultFieldLengths;
 import eu.bcvsolutions.idm.core.api.domain.Disableable;
 import eu.bcvsolutions.idm.core.api.domain.InstanceIdentifiable;
 import eu.bcvsolutions.idm.core.api.dto.AbstractDto;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Configured monitoring evaluator.
@@ -30,7 +30,7 @@ public class IdmMonitoringDto extends AbstractDto implements Disableable, Instan
 
 	private static final long serialVersionUID = 1L;
 	//
-	@ApiModelProperty(required = true, notes = "Monitoring code.")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Monitoring code.")
     @Size(max = DefaultFieldLengths.NAME)
     private String code;
 	@NotNull

@@ -70,6 +70,7 @@ public class DefaultAttachmentManager
 	// or create "temp" attachment without owner in the same storage?
 	private static final String DEFAULT_TEMP_FILE_EXTENSION = "tmp";
 	//
+
 	@Autowired private AttachmentConfiguration attachmentConfiguration;
 	@Autowired private LookupService lookupService;
 	
@@ -289,7 +290,7 @@ public class DefaultAttachmentManager
 		//
 		return find(
 				filter, 
-				PageRequest.of(0, Integer.MAX_VALUE, new Sort(Direction.DESC, IdmAttachment_.versionNumber.getName())),
+				PageRequest.of(0, Integer.MAX_VALUE, Sort.by(Direction.DESC, IdmAttachment_.versionNumber.getName())),
 				permission)
 				.getContent();
 	}
@@ -506,7 +507,7 @@ public class DefaultAttachmentManager
 		filter.setName(name);
 		filter.setLastVersionOnly(Boolean.TRUE);
 		//
-		return find(filter, PageRequest.of(0, Integer.MAX_VALUE, new Sort(Direction.ASC, IdmAttachment_.name.getName())), permission).getContent();
+		return find(filter, PageRequest.of(0, Integer.MAX_VALUE, Sort.by(Direction.ASC, IdmAttachment_.name.getName())), permission).getContent();
 	}
 	
 	private File saveFile(IdmAttachmentDto attachment, InputStream in) throws Exception {

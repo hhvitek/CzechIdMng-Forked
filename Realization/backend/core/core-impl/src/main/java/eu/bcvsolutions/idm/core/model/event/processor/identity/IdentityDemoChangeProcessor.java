@@ -13,6 +13,7 @@ import eu.bcvsolutions.idm.core.api.event.EventResult;
 import eu.bcvsolutions.idm.core.api.event.processor.IdentityProcessor;
 import eu.bcvsolutions.idm.core.api.utils.AutowireHelper;
 import eu.bcvsolutions.idm.core.model.event.IdentityEvent.IdentityEventType;
+import eu.bcvsolutions.idm.core.model.event.EntityPasswordEvent.EntityPasswordEventType;
 import eu.bcvsolutions.idm.core.model.event.processor.module.InitAdminIdentityProcessor;
 import eu.bcvsolutions.idm.core.model.event.processor.module.InitMonitoringProcessor;
 import eu.bcvsolutions.idm.core.monitoring.api.dto.IdmMonitoringDto;
@@ -39,7 +40,7 @@ public class IdentityDemoChangeProcessor
 	@Autowired private MonitoringManager manager;
 
 	public IdentityDemoChangeProcessor() {
-		super(IdentityEventType.CREATE, IdentityEventType.UPDATE, IdentityEventType.DELETE, IdentityEventType.PASSWORD);
+		super(IdentityEventType.CREATE, IdentityEventType.UPDATE, IdentityEventType.DELETE, EntityPasswordEventType.PASSWORD);
 	}
 	
 	@Override

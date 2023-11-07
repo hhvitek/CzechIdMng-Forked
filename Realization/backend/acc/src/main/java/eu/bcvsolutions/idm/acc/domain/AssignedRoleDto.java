@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import java.time.LocalDate;
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 import eu.bcvsolutions.idm.core.api.dto.AbstractDto;
 import eu.bcvsolutions.idm.core.api.dto.AbstractIdmAutomaticRoleDto;

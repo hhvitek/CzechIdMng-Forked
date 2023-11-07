@@ -7,8 +7,7 @@ import java.time.ZonedDateTime;
 import org.springframework.util.Assert;
 
 import eu.bcvsolutions.idm.core.api.dto.BaseDto;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Example ping - pong response dto
@@ -16,16 +15,16 @@ import io.swagger.annotations.ApiModelProperty;
  * @author Radek Tomiška
  *
  */
-@ApiModel(description = "Ping - Pong response")
+@Schema(description = "Ping - Pong response")
 public class Pong implements BaseDto {
 	
 	private static final long serialVersionUID = 1L;
 	//
-	@ApiModelProperty(required = true, notes = "Unique pong identifier")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Unique pong identifier")
 	private UUID id;
-	@ApiModelProperty(notes = "Ping - Pong response message")
+	@Schema(description = "Ping - Pong response message")
 	private String message;
-	@ApiModelProperty(required = true, notes = "Creation time")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Creation time")
 	private ZonedDateTime created;
 
 	@Override

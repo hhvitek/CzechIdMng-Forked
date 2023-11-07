@@ -1,25 +1,10 @@
 package eu.bcvsolutions.idm.core.model.service.impl;
 
-import eu.bcvsolutions.idm.core.api.domain.RoleRequestedByType;
-import eu.bcvsolutions.idm.core.api.dto.AbstractRoleAssignmentDto;
-import eu.bcvsolutions.idm.core.api.dto.BaseDto;
-import eu.bcvsolutions.idm.core.api.dto.IdmRequestIdentityRoleDto;
-import eu.bcvsolutions.idm.core.api.dto.IdmRoleRequestDto;
-import eu.bcvsolutions.idm.core.api.dto.filter.BaseFilter;
-import eu.bcvsolutions.idm.core.api.dto.filter.IdmRequestIdentityRoleFilter;
-import eu.bcvsolutions.idm.core.api.service.IdmConceptRoleRequestManager;
-import eu.bcvsolutions.idm.core.api.service.IdmRequestIdentityRoleService;
-import eu.bcvsolutions.idm.core.api.service.IdmRoleAssignmentManager;
-import eu.bcvsolutions.idm.core.api.service.IdmRoleRequestService;
-import eu.bcvsolutions.idm.core.api.service.IdmRoleService;
-import eu.bcvsolutions.idm.core.api.service.IdmRoleSystemService;
-import eu.bcvsolutions.idm.core.api.service.LookupService;
-import eu.bcvsolutions.idm.core.api.service.adapter.AdaptableService;
-import eu.bcvsolutions.idm.core.model.entity.AbstractConceptRoleRequest_;
-import eu.bcvsolutions.idm.core.model.service.util.MultiSourcePagedResource;
-import eu.bcvsolutions.idm.core.rest.AbstractBaseDtoService;
-import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
-import eu.bcvsolutions.idm.core.workflow.service.WorkflowProcessInstanceService;
+import static eu.bcvsolutions.idm.core.api.domain.ConceptRoleRequestOperation.ADD;
+
+import java.io.Serializable;
+import java.text.MessageFormat;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,13 +14,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import java.io.Serializable;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-import static eu.bcvsolutions.idm.core.api.domain.ConceptRoleRequestOperation.ADD;
+import eu.bcvsolutions.idm.core.api.dto.AbstractRoleAssignmentDto;
+import eu.bcvsolutions.idm.core.api.dto.IdmRequestIdentityRoleDto;
+import eu.bcvsolutions.idm.core.api.dto.IdmRoleRequestDto;
+import eu.bcvsolutions.idm.core.api.dto.filter.IdmRequestIdentityRoleFilter;
+import eu.bcvsolutions.idm.core.api.service.IdmConceptRoleRequestManager;
+import eu.bcvsolutions.idm.core.api.service.IdmRequestIdentityRoleService;
+import eu.bcvsolutions.idm.core.api.service.IdmRoleAssignmentManager;
+import eu.bcvsolutions.idm.core.api.service.IdmRoleRequestService;
+import eu.bcvsolutions.idm.core.model.entity.AbstractConceptRoleRequest_;
+import eu.bcvsolutions.idm.core.model.service.util.MultiSourcePagedResource;
+import eu.bcvsolutions.idm.core.rest.AbstractBaseDtoService;
+import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
 
 /**
  * Default implementation of service for search and processing changes in assigned identity roles

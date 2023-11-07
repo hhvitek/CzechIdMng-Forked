@@ -2,7 +2,7 @@ package eu.bcvsolutions.idm.acc.dto;
 
 import java.util.UUID;
 
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 import eu.bcvsolutions.idm.acc.entity.SysProvisioningBreakRecipient;
 import eu.bcvsolutions.idm.core.api.domain.Embedded;

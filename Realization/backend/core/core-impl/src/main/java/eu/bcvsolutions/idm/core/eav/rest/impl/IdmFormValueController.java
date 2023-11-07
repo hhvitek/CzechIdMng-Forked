@@ -4,14 +4,14 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resources;
-import org.springframework.http.MediaType;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -35,10 +35,14 @@ import eu.bcvsolutions.idm.core.eav.api.entity.FormableEntity;
 import eu.bcvsolutions.idm.core.eav.api.service.FormService;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Form values edpoint - all form values from all definitions.
@@ -48,13 +52,7 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/form-values")
-@Api(
-		value = IdmFormValueController.TAG,
-		description = "Operations with form values",
-		tags = {IdmFormValueController.TAG},
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE
-)
+@Tag(name = IdmFormValueController.TAG, description = "Operations with form values")
 public class IdmFormValueController extends AbstractReadWriteDtoController<IdmFormValueDto, IdmFormValueFilter<?>> {
 
 	protected static final String TAG = "Form values";
@@ -72,18 +70,18 @@ public class IdmFormValueController extends AbstractReadWriteDtoController<IdmFo
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_VALUE_READ + "')")
-	@ApiOperation(
-			value = "Search form values (/search/quick alias)", 
-			nickname = "searchFormValues",
-			tags = { IdmFormValueController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_VALUE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_VALUE_READ, description = "") })
-				})
-	public Resources<?> find(
+	@Operation(
+			summary = "Search form values (/search/quick alias)",
+			operationId = "searchFormValues",
+			tags = { IdmFormValueController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.FORM_VALUE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.FORM_VALUE_READ })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -92,18 +90,18 @@ public class IdmFormValueController extends AbstractReadWriteDtoController<IdmFo
 	@ResponseBody
 	@RequestMapping(value= "/search/quick", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_VALUE_READ + "')")
-	@ApiOperation(
-			value = "Search form values", 
-			nickname = "searchQuickFormValues", 
-			tags = { IdmFormValueController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_VALUE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_VALUE_READ, description = "") })
-				})
-	public Resources<?> findQuick(
+	@Operation(
+			summary = "Search form values",
+			operationId = "searchQuickFormValues",
+			tags = { IdmFormValueController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.FORM_VALUE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.FORM_VALUE_READ })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -112,18 +110,18 @@ public class IdmFormValueController extends AbstractReadWriteDtoController<IdmFo
 	@ResponseBody
 	@RequestMapping(value = "/search/autocomplete", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_VALUE_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "Autocomplete form values (selectbox usage)", 
-			nickname = "autocompleteFormValues", 
-			tags = { IdmFormValueController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_VALUE_AUTOCOMPLETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_VALUE_AUTOCOMPLETE, description = "") })
-				})
-	public Resources<?> autocomplete(
+	@Operation(
+			summary = "Autocomplete form values (selectbox usage)",
+			operationId = "autocompleteFormValues",
+			tags = { IdmFormValueController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.FORM_VALUE_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.FORM_VALUE_AUTOCOMPLETE })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -137,16 +135,14 @@ public class IdmFormValueController extends AbstractReadWriteDtoController<IdmFo
 	@ResponseBody
 	@RequestMapping(value = "/search/count", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_VALUE_COUNT + "')")
-	@ApiOperation(
-			value = "The number of entities that match the filter", 
-			nickname = "countFormValues", 
-			tags = { IdmFormValueController.TAG },
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_VALUE_COUNT, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_VALUE_COUNT, description = "") })
-				})
+	@Operation(
+			summary = "The number of entities that match the filter",
+			operationId = "countFormValues",
+			tags = { IdmFormValueController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.FORM_VALUE_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.FORM_VALUE_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -160,16 +156,14 @@ public class IdmFormValueController extends AbstractReadWriteDtoController<IdmFo
 	@ResponseBody
 	@RequestMapping(value = "/bulk/actions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_VALUE_READ + "')")
-	@ApiOperation(
-			value = "Get available bulk actions",
-			nickname = "availableBulkAction",
-			tags = { IdmFormValueController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.FORM_VALUE_READ, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.FORM_VALUE_READ, description = "") })
-			})
+	@Operation(
+			summary = "Get available bulk actions",
+			operationId = "availableBulkAction",
+			tags = { IdmFormValueController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.FORM_VALUE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.FORM_VALUE_READ })
+    })
 	public List<IdmBulkActionDto> getAvailableBulkActions() {
 		return super.getAvailableBulkActions();
 	}
@@ -178,17 +172,28 @@ public class IdmFormValueController extends AbstractReadWriteDtoController<IdmFo
 	@ResponseBody
 	@RequestMapping(path = "/bulk/action", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_VALUE_UPDATE + "')")
-	@ApiOperation(
-			value = "Process bulk action for form values",
-			nickname = "bulkAction",
-			response = IdmBulkActionDto.class,
-			tags = { IdmFormValueController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.FORM_VALUE_READ, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.FORM_VALUE_READ, description = "")})
-			})
+	@Operation(
+			summary = "Process bulk action for form values",
+			operationId = "bulkAction",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { IdmFormValueController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							CoreGroupPermission.FORM_VALUE_READ}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							CoreGroupPermission.FORM_VALUE_READ})
+        }
+    )
 	public ResponseEntity<IdmBulkActionDto> bulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.bulkAction(bulkAction);
 	}
@@ -197,17 +202,28 @@ public class IdmFormValueController extends AbstractReadWriteDtoController<IdmFo
 	@ResponseBody
 	@RequestMapping(path = "/bulk/prevalidate", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.FORM_VALUE_READ + "')")
-	@ApiOperation(
-			value = "Prevalidate bulk action for form values",
-			nickname = "prevalidateBulkAction",
-			response = IdmBulkActionDto.class,
-			tags = { IdmFormValueController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.FORM_VALUE_READ, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.FORM_VALUE_READ, description = "")})
-			})
+	@Operation(
+			summary = "Prevalidate bulk action for form values",
+			operationId = "prevalidateBulkAction",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { IdmFormValueController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							CoreGroupPermission.FORM_VALUE_READ}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							CoreGroupPermission.FORM_VALUE_READ})
+        }
+    )
 	public ResponseEntity<ResultModels> prevalidateBulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.prevalidateBulkAction(bulkAction);
 	}

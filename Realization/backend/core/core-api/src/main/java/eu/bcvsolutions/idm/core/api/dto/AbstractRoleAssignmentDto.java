@@ -5,7 +5,7 @@ import eu.bcvsolutions.idm.core.api.domain.Embedded;
 import eu.bcvsolutions.idm.core.api.domain.ExternalIdentifiable;
 import eu.bcvsolutions.idm.core.api.entity.ValidableEntity;
 import eu.bcvsolutions.idm.core.api.utils.DtoUtils;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.Size;
 import java.io.ObjectInputStream;
@@ -18,7 +18,7 @@ import java.util.UUID;
 public abstract class AbstractRoleAssignmentDto extends FormableDto implements ValidableEntity, ExternalIdentifiable {
     //
     @Size(max = DefaultFieldLengths.NAME)
-    @ApiModelProperty(notes = "Unique external identifier.")
+    @Schema(description = "Unique external identifier.")
     protected String externalId;
     @Embedded(dtoClass = IdmRoleDto.class)
     protected UUID role;

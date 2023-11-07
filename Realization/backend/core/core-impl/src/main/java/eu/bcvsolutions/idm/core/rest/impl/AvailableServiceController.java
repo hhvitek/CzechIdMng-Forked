@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.MediaType;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,10 +21,10 @@ import eu.bcvsolutions.idm.core.api.dto.filter.AvailableServiceFilter;
 import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.service.IdmScriptAuthorityService;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 
 /**
  * available service administration.
@@ -34,12 +34,7 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseController.BASE_PATH + "/available-service")
-@Api(
-		value = AvailableServiceController.TAG,
-		description = "Displays available services",
-		tags = { AvailableServiceController.TAG },
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = AvailableServiceController.TAG, description = "Displays available services")
 public class AvailableServiceController  {
 
 	protected static final String TAG = "available service";
@@ -49,26 +44,24 @@ public class AvailableServiceController  {
 
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Find all available services",
-			nickname = "findAllAvailableServices",
+	@Operation(
+			summary = "Find all available services",
+			operationId = "findAllAvailableServices",
 			tags = { AvailableServiceController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = CoreGroupPermission.MODULE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = CoreGroupPermission.MODULE_READ, description = "") })
-				},
-			notes = "Returns all available services.")
+						description = "Returns all available services.")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.MODULE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.MODULE_READ })
+    })
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Resources<?> find(
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 	List<AvailableServiceDto> serviceDtos = availableServiceService.findServices(toFilter(parameters));
 		PageImpl page = new PageImpl(serviceDtos, PageRequest.of(0, serviceDtos.size() == 0 ? 10 : serviceDtos.size()), serviceDtos.size());
 		if (page.getContent().isEmpty()) {
-			return pagedResourcesAssembler.toEmptyResource(page, AvailableServiceDto.class);
+			return pagedResourcesAssembler.toEmptyModel(page, AvailableServiceDto.class);
 		}
-		return pagedResourcesAssembler.toResource(page);
+		return pagedResourcesAssembler.toModel(page);
 	}
 	
 	

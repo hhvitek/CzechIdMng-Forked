@@ -1,6 +1,5 @@
 package eu.bcvsolutions.idm.core.model.event.processor.password;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
 
@@ -9,25 +8,36 @@ import eu.bcvsolutions.idm.core.api.event.CoreEventProcessor;
 import eu.bcvsolutions.idm.core.api.event.DefaultEventResult;
 import eu.bcvsolutions.idm.core.api.event.EntityEvent;
 import eu.bcvsolutions.idm.core.api.event.EventResult;
-import eu.bcvsolutions.idm.core.api.service.IdmPasswordService;
 import eu.bcvsolutions.idm.core.model.event.PasswordEvent.PasswordEventType;
 
 /**
- * Processor for persist password for identity.
+ * Check password never expires and remove valid till.
  *
- * @author Ondrej Kopr <kopr@xyxy.cz>
+ * @author Ondrej Kopr
  *
  */
-@Component
-@Description("Persists password for identity.")
-public class PasswordSaveProcessor extends CoreEventProcessor<IdmPasswordDto> {
+@Component(IdentityPasswordNeverExpiresProcessor.PROCESSOR_NAME)
+@Description("Check password never expires.")
+public class IdentityPasswordNeverExpiresProcessor extends CoreEventProcessor<IdmPasswordDto> {
 
-	private static final String PROCESSOR_NAME = "password-save-processor";
-	@Autowired
-	private IdmPasswordService service;
+	public static final String PROCESSOR_NAME = "identity-password-never-expires-processor";
 
-	public PasswordSaveProcessor() {
+	public IdentityPasswordNeverExpiresProcessor() {
 		super(PasswordEventType.CREATE, PasswordEventType.UPDATE);
+	}
+
+	@Override
+	public EventResult<IdmPasswordDto> process(EntityEvent<IdmPasswordDto> event) {
+		IdmPasswordDto passwordDto = event.getContent();
+		//
+		// If this password never expires, set valid till to null. Even if someone set valid till value.
+		if (passwordDto.isPasswordNeverExpires()) {
+			passwordDto.setValidTill(null);
+		}
+		//
+		event.setContent(passwordDto);
+		//
+		return new DefaultEventResult<>(event, this);
 	}
 
 	@Override
@@ -36,13 +46,7 @@ public class PasswordSaveProcessor extends CoreEventProcessor<IdmPasswordDto> {
 	}
 
 	@Override
-	public EventResult<IdmPasswordDto> process(EntityEvent<IdmPasswordDto> event) {
-		IdmPasswordDto passwordDto = event.getContent();
-		//
-		passwordDto = service.saveInternal(passwordDto);
-		//
-		event.setContent(passwordDto);
-		//
-		return new DefaultEventResult<>(event, this);
+	public int getOrder() {
+		return -10;
 	}
 }

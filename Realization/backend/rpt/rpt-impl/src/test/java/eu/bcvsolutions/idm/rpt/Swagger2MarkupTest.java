@@ -6,7 +6,7 @@ import eu.bcvsolutions.idm.test.api.AbstractSwaggerTest;
 
 
 /**
- * Static swagger generation to sources - will be used as input for swagger2Markup build
+ * Static swagger generation to sources - will be used as input for openapi-generator build
  * 
  * @author Radek Tomiška
  *

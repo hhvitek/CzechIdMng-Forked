@@ -6,14 +6,14 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import javax.validation.constraints.NotEmpty;
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 import eu.bcvsolutions.idm.core.api.domain.DefaultFieldLengths;
 import eu.bcvsolutions.idm.core.api.domain.Embedded;
 import eu.bcvsolutions.idm.core.api.domain.ExternalIdentifiable;
 import eu.bcvsolutions.idm.core.api.dto.FormableDto;
 import eu.bcvsolutions.idm.core.notification.api.domain.NotificationLevel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Code lists 
@@ -36,14 +36,14 @@ public class IdmCodeListItemDto extends FormableDto implements ExternalIdentifia
     @Size(min = 1, max = DefaultFieldLengths.NAME)
     private String name;
 	@Size(max = DefaultFieldLengths.NAME)
-	@ApiModelProperty(notes = "Unique external identifier.")
+	@Schema(description = "Unique external identifier.")
 	private String externalId;
 	@Size(max = DefaultFieldLengths.DESCRIPTION)
     private String description;
-	@ApiModelProperty(notes = "Items level - decorator only (label with color).")
+	@Schema(description = "Items level - decorator only (label with color).")
 	private NotificationLevel level;
 	@Size(max = DefaultFieldLengths.NAME)
-	@ApiModelProperty(notes = "Items icon - decorator only.")
+	@Schema(description = "Items icon - decorator only.")
 	private String icon;
 	
 	public void setName(String name) {

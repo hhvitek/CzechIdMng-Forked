@@ -6,12 +6,12 @@ import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
-import org.springframework.http.MediaType;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.Assert;
@@ -42,11 +42,14 @@ import eu.bcvsolutions.idm.vs.dto.VsAccountDto;
 import eu.bcvsolutions.idm.vs.dto.filter.VsAccountFilter;
 import eu.bcvsolutions.idm.vs.entity.VsAccount;
 import eu.bcvsolutions.idm.vs.service.api.VsAccountService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Rest methods for virtual system account
@@ -56,12 +59,7 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/vs/accounts")
-@Api(
-		value = VsAccountController.TAG,  
-		tags = { VsAccountController.TAG }, 
-		description = "Operations with accounts (in virtual system)",
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = VsAccountController.TAG, description = "Operations with accounts (in virtual system)")
 public class VsAccountController extends AbstractReadWriteDtoController<VsAccountDto, VsAccountFilter> {
 
 	protected static final String TAG = "Accounts";
@@ -83,18 +81,18 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_ACCOUNT_READ + "')")
-	@ApiOperation(
-			value = "Search accounts (/search/quick alias)", 
-			nickname = "searchAccounts", 
-			tags = { VsAccountController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_ACCOUNT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_ACCOUNT_READ, description = "") })
-				})
-	public Resources<?> find(
+	@Operation(
+			summary = "Search accounts (/search/quick alias)", 
+			operationId = "searchAccounts",
+			tags = { VsAccountController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_READ })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -103,18 +101,18 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 	@ResponseBody
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_ACCOUNT_READ + "')")
-	@ApiOperation(
-			value = "Search accounts", 
-			nickname = "searchQuickAccounts", 
-			tags = { VsAccountController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_ACCOUNT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_ACCOUNT_READ, description = "") })
-				})
-	public Resources<?> findQuick(
+	@Operation(
+			summary = "Search accounts", 
+			operationId = "searchQuickAccounts",
+			tags = { VsAccountController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_READ })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -123,18 +121,18 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 	@ResponseBody
 	@RequestMapping(value = "/search/autocomplete", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_ACCOUNT_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "Autocomplete accounts (selectbox usage)", 
-			nickname = "autocompleteAccounts", 
-			tags = { VsAccountController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_ACCOUNT_AUTOCOMPLETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_ACCOUNT_AUTOCOMPLETE, description = "") })
-				})
-	public Resources<?> autocomplete(
+	@Operation(
+			summary = "Autocomplete accounts (selectbox usage)", 
+			operationId = "autocompleteAccounts",
+			tags = { VsAccountController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_AUTOCOMPLETE })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -143,19 +141,27 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_ACCOUNT_READ + "')")
-	@ApiOperation(
-			value = "Account detail", 
-			nickname = "getAccount", 
-			response = VsAccountDto.class, 
-			tags = { VsAccountController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_ACCOUNT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_ACCOUNT_READ, description = "") })
-				})
+	@Operation(
+			summary = "Account detail", 
+			operationId = "getAccount",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = VsAccountDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { VsAccountController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_READ })
+    })
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Account's uuid identifier.", required = true)
+			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -164,19 +170,30 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_ACCOUNT_CREATE + "') or hasAuthority('" + VirtualSystemGroupPermission.VS_ACCOUNT_UPDATE + "')")
-	@ApiOperation(
-			value = "Create / update account", 
-			nickname = "postAccount", 
-			response = VsAccountDto.class, 
-			tags = { VsAccountController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_ACCOUNT_CREATE, description = ""),
-						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_ACCOUNT_UPDATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_ACCOUNT_CREATE, description = ""),
-						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_ACCOUNT_UPDATE, description = "")})
-				})
+	@Operation(
+			summary = "Create / update account", 
+			operationId = "postAccount",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = VsAccountDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { VsAccountController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						VirtualSystemGroupPermission.VS_ACCOUNT_CREATE,
+						VirtualSystemGroupPermission.VS_ACCOUNT_UPDATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						VirtualSystemGroupPermission.VS_ACCOUNT_CREATE,
+						VirtualSystemGroupPermission.VS_ACCOUNT_UPDATE})
+        }
+    )
 	public ResponseEntity<?> post(@Valid @RequestBody VsAccountDto dto) {
 		return super.post(dto);
 	}
@@ -185,19 +202,27 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_ACCOUNT_UPDATE + "')")
-	@ApiOperation(
-			value = "Update account", 
-			nickname = "putAccount", 
-			response = VsAccountDto.class, 
-			tags = { VsAccountController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_ACCOUNT_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_ACCOUNT_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update account", 
+			operationId = "putAccount",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = VsAccountDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { VsAccountController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_UPDATE })
+    })
 	public ResponseEntity<?> put(
-			@ApiParam(value = "Account's uuid identifier.", required = true)
+			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody VsAccountDto dto) {
 		return super.put(backendId, dto);
@@ -208,18 +233,16 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_ACCOUNT_DELETE + "')")
-	@ApiOperation(
-			value = "Delete account", 
-			nickname = "deleteAccount", 
-			tags = { VsAccountController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_ACCOUNT_DELETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_ACCOUNT_DELETE, description = "") })
-				})
+	@Operation(
+			summary = "Delete account", 
+			operationId = "deleteAccount",
+			tags = { VsAccountController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_DELETE })
+    })
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "Account's uuid identifier.", required = true)
+			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -229,20 +252,21 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_ACCOUNT_READ + "')"
 			+ " or hasAuthority('" + VirtualSystemGroupPermission.VS_ACCOUNT_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "What logged account can do with given record", 
-			nickname = "getPermissionsOnAccount", 
-			tags = { VsAccountController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_ACCOUNT_READ, description = ""),
-						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_ACCOUNT_AUTOCOMPLETE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_ACCOUNT_READ, description = ""),
-						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_ACCOUNT_AUTOCOMPLETE, description = "")})
-				})
+	@Operation(
+			summary = "What logged account can do with given record", 
+			operationId = "getPermissionsOnAccount",
+			tags = { VsAccountController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						VirtualSystemGroupPermission.VS_ACCOUNT_READ,
+						VirtualSystemGroupPermission.VS_ACCOUNT_AUTOCOMPLETE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						VirtualSystemGroupPermission.VS_ACCOUNT_READ,
+						VirtualSystemGroupPermission.VS_ACCOUNT_AUTOCOMPLETE})
+        }
+    )
 	public Set<String> getPermissions(
-			@ApiParam(value = "Account's uuid identifier.", required = true)
+			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -256,18 +280,16 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/form-definitions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_ACCOUNT_READ + "')")
-	@ApiOperation(
-			value = "Account extended attributes form definitions", 
-			nickname = "getAccountFormDefinitions", 
-			tags = { VsAccountController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_ACCOUNT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_ACCOUNT_READ, description = "") })
-				})
+	@Operation(
+			summary = "Account extended attributes form definitions", 
+			operationId = "getAccountFormDefinitions",
+			tags = { VsAccountController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_READ })
+    })
 	public ResponseEntity<?> getFormDefinitions(
-			@ApiParam(value = "Account's uuid identifier.", required = true)
+			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return formDefinitionController.getDefinitions(VsAccount.class);
 	}
@@ -281,20 +303,18 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/form-values", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_ACCOUNT_READ + "')")
-	@ApiOperation(
-			value = "Account form definition - read values", 
-			nickname = "getAccountFormValues", 
-			tags = { VsAccountController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_ACCOUNT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_ACCOUNT_READ, description = "") })
-				})
-	public Resource<?> getFormValues(
-			@ApiParam(value = "Account's uuid identifier.", required = true)
+	@Operation(
+			summary = "Account form definition - read values", 
+			operationId = "getAccountFormValues",
+			tags = { VsAccountController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_READ })
+    })
+	public EntityModel<?> getFormValues(
+			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
-			@ApiParam(value = "Code of form definition (default will be used if no code is given).", required = false, defaultValue = FormService.DEFAULT_DEFINITION_CODE)
+			 @Parameter(description = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
 			@RequestParam(name = "definitionCode", required = false) String definitionCode) {
 		VsAccountDto entity = getDto(backendId);
 		if (entity == null) {
@@ -316,22 +336,20 @@ public class VsAccountController extends AbstractReadWriteDtoController<VsAccoun
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + VirtualSystemGroupPermission.VS_ACCOUNT_UPDATE + "')")
 	@RequestMapping(value = "/{backendId}/form-values", method = RequestMethod.POST)
-	@ApiOperation(
-			value = "Account form definition - save values", 
-			nickname = "postAccountFormValues", 
-			tags = { VsAccountController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_ACCOUNT_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = VirtualSystemGroupPermission.VS_ACCOUNT_UPDATE, description = "") })
-				})
-	public Resource<?> saveFormValues(
-			@ApiParam(value = "Account's uuid identifier.", required = true)
+	@Operation(
+			summary = "Account form definition - save values", 
+			operationId = "postAccountFormValues",
+			tags = { VsAccountController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { VirtualSystemGroupPermission.VS_ACCOUNT_UPDATE })
+    })
+	public EntityModel<?> saveFormValues(
+			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
-			@ApiParam(value = "Code of form definition (default will be used if no code is given).", required = false, defaultValue = FormService.DEFAULT_DEFINITION_CODE)
+			 @Parameter(description = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
 			@RequestParam(name = "definitionCode", required = false) String definitionCode,
-			@ApiParam(value = "Filled form data.", required = true)
+			 @Parameter(description = "Filled form data.", required = true)
 			@RequestBody @Valid List<IdmFormValueDto> formValues) {		
 		VsAccountDto entity = getDto(backendId);
 		if (entity == null) {

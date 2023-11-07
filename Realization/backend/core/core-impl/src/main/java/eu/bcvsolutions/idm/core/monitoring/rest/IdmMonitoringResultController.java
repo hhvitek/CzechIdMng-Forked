@@ -12,13 +12,13 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -63,11 +63,14 @@ import eu.bcvsolutions.idm.core.rest.DeferredResultWrapper;
 import eu.bcvsolutions.idm.core.rest.LongPollingSubscriber;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Configgured monitoringResult evaluators.
@@ -77,12 +80,7 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/monitoring-results")
-@Api(
-		value = IdmMonitoringResultController.TAG, 
-		description = "Operations with monitoring  results", 
-		tags = { IdmMonitoringResultController.TAG }, 
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = IdmMonitoringResultController.TAG, description = "Operations with monitoring  results")
 public class IdmMonitoringResultController extends AbstractEventableDtoController<IdmMonitoringResultDto, IdmMonitoringResultFilter> {
 	
 	protected static final String TAG = "Monitoring results";
@@ -101,18 +99,18 @@ public class IdmMonitoringResultController extends AbstractEventableDtoControlle
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + MonitoringGroupPermission.MONITORINGRESULT_READ + "')")
-	@ApiOperation(
-			value = "Search monitoring results (/search/quick alias)", 
-			nickname = "searchMonitoringResults", 
-			tags = { IdmMonitoringResultController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_READ, description = "") })
-				})
-	public Resources<?> find(
+	@Operation(
+			summary = "Search monitoring results (/search/quick alias)", 
+			operationId = "searchMonitoringResults",
+			tags = { IdmMonitoringResultController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { MonitoringGroupPermission.MONITORINGRESULT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { MonitoringGroupPermission.MONITORINGRESULT_READ })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -121,18 +119,18 @@ public class IdmMonitoringResultController extends AbstractEventableDtoControlle
 	@ResponseBody
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + MonitoringGroupPermission.MONITORINGRESULT_READ + "')")
-	@ApiOperation(
-			value = "Search monitoring results", 
-			nickname = "searchQuickMonitoringResults", 
-			tags = { IdmMonitoringResultController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_READ, description = "") })
-				})
-	public Resources<?> findQuick(
+	@Operation(
+			summary = "Search monitoring results", 
+			operationId = "searchQuickMonitoringResults",
+			tags = { IdmMonitoringResultController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { MonitoringGroupPermission.MONITORINGRESULT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { MonitoringGroupPermission.MONITORINGRESULT_READ })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -141,18 +139,18 @@ public class IdmMonitoringResultController extends AbstractEventableDtoControlle
 	@ResponseBody
 	@RequestMapping(value = "/search/autocomplete", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + MonitoringGroupPermission.MONITORINGRESULT_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "Autocomplete monitoring results (selectbox usage)", 
-			nickname = "autocompleteMonitoringResults", 
-			tags = { IdmMonitoringResultController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_AUTOCOMPLETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_AUTOCOMPLETE, description = "") })
-				})
-	public Resources<?> autocomplete(
+	@Operation(
+			summary = "Autocomplete monitoring results (selectbox usage)", 
+			operationId = "autocompleteMonitoringResults",
+			tags = { IdmMonitoringResultController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { MonitoringGroupPermission.MONITORINGRESULT_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { MonitoringGroupPermission.MONITORINGRESULT_AUTOCOMPLETE })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -160,38 +158,36 @@ public class IdmMonitoringResultController extends AbstractEventableDtoControlle
 	@ResponseBody
 	@RequestMapping(value= "/search/last-results", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + MonitoringGroupPermission.MONITORINGRESULT_READ + "')")
-	@ApiOperation(
-			value = "Find last monitoring results", 
-			nickname = "findLastMonitoringResults", 
-			tags = { IdmMonitoringResultController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_READ, description = "") })
-				})
-	public Resources<?> findLastResults(
+	@Operation(
+			summary = "Find last monitoring results", 
+			operationId = "findLastMonitoringResults",
+			tags = { IdmMonitoringResultController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { MonitoringGroupPermission.MONITORINGRESULT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { MonitoringGroupPermission.MONITORINGRESULT_READ })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> findLastResults(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		Page<IdmMonitoringResultDto> lastResults = monitoringManager.getLastResults(toFilter(parameters), pageable, IdmBasePermission.READ);
 		//
-		return toResources(loadDtos(lastResults), getDtoClass());
+		return toCollectionModel(loadDtos(lastResults), getDtoClass());
 	}
 	
 	@Override
 	@ResponseBody
 	@RequestMapping(value = "/search/count", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + MonitoringGroupPermission.MONITORINGRESULT_COUNT + "')")
-	@ApiOperation(
-			value = "The number of entities that match the filter", 
-			nickname = "countMonitoringResults", 
-			tags = { IdmMonitoringResultController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_COUNT, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_COUNT, description = "") })
-				})
+	@Operation(
+			summary = "The number of entities that match the filter", 
+			operationId = "countMonitoringResults",
+			tags = { IdmMonitoringResultController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { MonitoringGroupPermission.MONITORINGRESULT_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { MonitoringGroupPermission.MONITORINGRESULT_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -200,19 +196,27 @@ public class IdmMonitoringResultController extends AbstractEventableDtoControlle
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + MonitoringGroupPermission.MONITORINGRESULT_READ + "')")
-	@ApiOperation(
-			value = "MonitoringResult detail", 
-			nickname = "getMonitoringResult", 
-			response = IdmMonitoringResultDto.class, 
-			tags = { IdmMonitoringResultController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_READ, description = "") })
-				})
+	@Operation(
+			summary = "MonitoringResult detail", 
+			operationId = "getMonitoringResult",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmMonitoringResultDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { IdmMonitoringResultController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { MonitoringGroupPermission.MONITORINGRESULT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { MonitoringGroupPermission.MONITORINGRESULT_READ })
+    })
 	public ResponseEntity<?> get(
-			@ApiParam(value = "MonitoringResult's uuid identifier or username.", required = true)
+			 @Parameter(description = "MonitoringResult's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -242,19 +246,30 @@ public class IdmMonitoringResultController extends AbstractEventableDtoControlle
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + MonitoringGroupPermission.MONITORINGRESULT_CREATE + "')"
 			+ " or hasAuthority('" + MonitoringGroupPermission.MONITORINGRESULT_UPDATE + "')")
-	@ApiOperation(
-			value = "Create / update monitoring result", 
-			nickname = "postMonitoringResult", 
-			response = IdmMonitoringResultDto.class, 
-			tags = { IdmMonitoringResultController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_CREATE, description = ""),
-						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_UPDATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_CREATE, description = ""),
-						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_UPDATE, description = "")})
-				})
+	@Operation(
+			summary = "Create / update monitoring result", 
+			operationId = "postMonitoringResult",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmMonitoringResultDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { IdmMonitoringResultController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						MonitoringGroupPermission.MONITORINGRESULT_CREATE,
+						MonitoringGroupPermission.MONITORINGRESULT_UPDATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						MonitoringGroupPermission.MONITORINGRESULT_CREATE,
+						MonitoringGroupPermission.MONITORINGRESULT_UPDATE})
+        }
+    )
 	public ResponseEntity<?> post(@Valid @RequestBody IdmMonitoringResultDto dto) {
 		return super.post(dto);
 	}
@@ -263,19 +278,27 @@ public class IdmMonitoringResultController extends AbstractEventableDtoControlle
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + MonitoringGroupPermission.MONITORINGRESULT_UPDATE + "')")
-	@ApiOperation(
-			value = "Update monitoring result", 
-			nickname = "putMonitoringResult", 
-			response = IdmMonitoringResultDto.class, 
-			tags = { IdmMonitoringResultController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update monitoring result", 
+			operationId = "putMonitoringResult",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmMonitoringResultDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { IdmMonitoringResultController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { MonitoringGroupPermission.MONITORINGRESULT_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { MonitoringGroupPermission.MONITORINGRESULT_UPDATE })
+    })
 	public ResponseEntity<?> put(
-			@ApiParam(value = "MonitoringResult's uuid identifier or username.", required = true)
+			 @Parameter(description = "MonitoringResult's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmMonitoringResultDto dto) {
 		return super.put(backendId, dto);
@@ -285,19 +308,27 @@ public class IdmMonitoringResultController extends AbstractEventableDtoControlle
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PATCH)
 	@PreAuthorize("hasAuthority('" + MonitoringGroupPermission.MONITORINGRESULT_UPDATE + "')")
-	@ApiOperation(
-			value = "Update monitoring result", 
-			nickname = "patchMonitoringResult", 
-			response = IdmMonitoringResultDto.class, 
-			tags = { IdmMonitoringResultController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update monitoring result", 
+			operationId = "patchMonitoringResult",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmMonitoringResultDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { IdmMonitoringResultController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { MonitoringGroupPermission.MONITORINGRESULT_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { MonitoringGroupPermission.MONITORINGRESULT_UPDATE })
+    })
 	public ResponseEntity<?> patch(
-			@ApiParam(value = "MonitoringResult's uuid identifier or username.", required = true)
+			 @Parameter(description = "MonitoringResult's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -308,18 +339,16 @@ public class IdmMonitoringResultController extends AbstractEventableDtoControlle
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('" + MonitoringGroupPermission.MONITORINGRESULT_DELETE + "')")
-	@ApiOperation(
-			value = "Delete monitoring result", 
-			nickname = "deleteMonitoringResult", 
-			tags = { IdmMonitoringResultController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_DELETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_DELETE, description = "") })
-				})
+	@Operation(
+			summary = "Delete monitoring result", 
+			operationId = "deleteMonitoringResult",
+			tags = { IdmMonitoringResultController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { MonitoringGroupPermission.MONITORINGRESULT_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { MonitoringGroupPermission.MONITORINGRESULT_DELETE })
+    })
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "MonitoringResult's uuid identifier or username.", required = true)
+			 @Parameter(description = "MonitoringResult's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -329,20 +358,21 @@ public class IdmMonitoringResultController extends AbstractEventableDtoControlle
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + MonitoringGroupPermission.MONITORINGRESULT_READ + "')"
 			+ " or hasAuthority('" + MonitoringGroupPermission.MONITORINGRESULT_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "What logged identity can do with given record", 
-			nickname = "getPermissionsOnMonitoringResult", 
-			tags = { IdmMonitoringResultController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_READ, description = ""),
-						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_AUTOCOMPLETE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_READ, description = ""),
-						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_AUTOCOMPLETE, description = "")})
-				})
+	@Operation(
+			summary = "What logged identity can do with given record", 
+			operationId = "getPermissionsOnMonitoringResult",
+			tags = { IdmMonitoringResultController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						MonitoringGroupPermission.MONITORINGRESULT_READ,
+						MonitoringGroupPermission.MONITORINGRESULT_AUTOCOMPLETE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						MonitoringGroupPermission.MONITORINGRESULT_READ,
+						MonitoringGroupPermission.MONITORINGRESULT_AUTOCOMPLETE})
+        }
+    )
 	public Set<String> getPermissions(
-			@ApiParam(value = "MonitoringResult's uuid identifier.", required = true)
+			 @Parameter(description = "MonitoringResult's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -351,16 +381,14 @@ public class IdmMonitoringResultController extends AbstractEventableDtoControlle
 	@ResponseBody
 	@RequestMapping(value = "/bulk/actions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + MonitoringGroupPermission.MONITORINGRESULT_READ + "')")
-	@ApiOperation(
-			value = "Get available bulk actions", 
-			nickname = "availableBulkAction", 
-			tags = { IdmMonitoringResultController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_READ, description = "") })
-				})
+	@Operation(
+			summary = "Get available bulk actions", 
+			operationId = "availableBulkAction",
+			tags = { IdmMonitoringResultController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { MonitoringGroupPermission.MONITORINGRESULT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { MonitoringGroupPermission.MONITORINGRESULT_READ })
+    })
 	public List<IdmBulkActionDto> getAvailableBulkActions() {
 		return super.getAvailableBulkActions();
 	}
@@ -369,17 +397,28 @@ public class IdmMonitoringResultController extends AbstractEventableDtoControlle
 	@ResponseBody
 	@RequestMapping(path = "/bulk/action", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + MonitoringGroupPermission.MONITORINGRESULT_READ + "')")
-	@ApiOperation(
-			value = "Process bulk action", 
-			nickname = "bulkAction", 
-			response = IdmBulkActionDto.class, 
-			tags = { IdmMonitoringResultController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_READ, description = "")})
-				})
+	@Operation(
+			summary = "Process bulk action", 
+			operationId = "bulkAction",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { IdmMonitoringResultController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						MonitoringGroupPermission.MONITORINGRESULT_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						MonitoringGroupPermission.MONITORINGRESULT_READ})
+        }
+    )
 	public ResponseEntity<IdmBulkActionDto> bulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.bulkAction(bulkAction);
 	}
@@ -388,17 +427,28 @@ public class IdmMonitoringResultController extends AbstractEventableDtoControlle
 	@ResponseBody
 	@RequestMapping(path = "/bulk/prevalidate", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + MonitoringGroupPermission.MONITORINGRESULT_READ + "')")
-	@ApiOperation(
-			value = "Prevalidate bulk action", 
-			nickname = "prevalidateBulkAction", 
-			response = IdmBulkActionDto.class, 
-			tags = { IdmMonitoringResultController.TAG },
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_READ, description = "")})
-				})
+	@Operation(
+			summary = "Prevalidate bulk action", 
+			operationId = "prevalidateBulkAction",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { IdmMonitoringResultController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						MonitoringGroupPermission.MONITORINGRESULT_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						MonitoringGroupPermission.MONITORINGRESULT_READ})
+        }
+    )
 	public ResponseEntity<ResultModels> prevalidateBulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.prevalidateBulkAction(bulkAction);
 	}
@@ -445,18 +495,19 @@ public class IdmMonitoringResultController extends AbstractEventableDtoControlle
 	@ResponseBody
 	@RequestMapping(value = "{backendId}/check-last-monitoring-results", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + MonitoringGroupPermission.MONITORINGRESULT_READ + "')")
-	@ApiOperation(
-			value = "Check changes of last monitoring results (Long-polling request).", 
-			nickname = "checkLastMonitoringResults", 
-			tags = { IdmMonitoringResultController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLE_REQUEST_READ, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLE_REQUEST_READ, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "")})
-				})
+	@Operation(
+			summary = "Check changes of last monitoring results (Long-polling request).", 
+			operationId = "checkLastMonitoringResults",
+			tags = { IdmMonitoringResultController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.ROLE_REQUEST_READ,
+						CoreGroupPermission.IDENTITY_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.ROLE_REQUEST_READ,
+						CoreGroupPermission.IDENTITY_READ})
+        }
+    )
 	public DeferredResult<OperationResultDto> checkLastMonitoringResults() {
 		DeferredResultWrapper result = new DeferredResultWrapper(
 				LONG_POOLING_IDENTIFIER,
@@ -499,19 +550,17 @@ public class IdmMonitoringResultController extends AbstractEventableDtoControlle
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.PUT, value = "/{backendId}/execute")
 	@PreAuthorize("hasAuthority('" + MonitoringGroupPermission.MONITORINGRESULT_EXECUTE + "')")
-	@ApiOperation(
-			value = "Execute monitoring evaluator",
-			nickname = "executeMonitoring",
+	@Operation(
+			summary = "Execute monitoring evaluator",
+			operationId = "executeMonitoring",
 			tags={ IdmMonitoringController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_EXECUTE, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = MonitoringGroupPermission.MONITORINGRESULT_EXECUTE, description = "") })
-			},
-			notes = "Execute related monitoring evaluator with setting from result again synchronously..")
+			description = "Execute related monitoring evaluator with setting from result again synchronously..")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { MonitoringGroupPermission.MONITORINGRESULT_EXECUTE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { MonitoringGroupPermission.MONITORINGRESULT_EXECUTE })
+    })
 	public ResponseEntity<?> execute(
-			@ApiParam(value = "Monitoring result identifier.", required = true)
+			 @Parameter(description = "Monitoring result identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		IdmMonitoringResultDto monitoringResult = getDto(backendId);
 		if (monitoringResult == null) {
@@ -526,7 +575,7 @@ public class IdmMonitoringResultController extends AbstractEventableDtoControlle
 			new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 		// return current result
-		return new ResponseEntity<>(toResource(currentResult), HttpStatus.CREATED);
+		return new ResponseEntity<>(toModel(currentResult), HttpStatus.CREATED);
 	}
 
 	/**

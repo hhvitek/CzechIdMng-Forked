@@ -7,11 +7,10 @@ import java.util.List;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 import eu.bcvsolutions.idm.core.api.domain.DefaultFieldLengths;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * DTO for request item with marked changed values
@@ -20,16 +19,16 @@ import io.swagger.annotations.ApiModelProperty;
  *
  */
 @Relation(collectionRelation = "items")
-@ApiModel(description = "Request item with marked changed values")
+@Schema(description = "Request item with marked changed values")
 public class IdmRequestItemChangesDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	@NotEmpty
 	@Size(min = 1, max = DefaultFieldLengths.NAME)
-	@ApiModelProperty(required = true, notes = "Request item")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Request item")
 	private IdmRequestItemDto requestItem;
-	@ApiModelProperty(required = false, notes = "Object attributes with mark changes")
+	@Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, description = "Object attributes with mark changes")
 	private List<IdmRequestItemAttributeDto> attributes;
 
 	public IdmRequestItemDto getRequestItem() {

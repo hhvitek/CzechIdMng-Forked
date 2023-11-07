@@ -5,14 +5,14 @@ import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -48,11 +48,14 @@ import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.model.entity.IdmRequestItem_;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Request's items endpoint
@@ -62,12 +65,7 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/request-items")
-@Api(
-		value = IdmRequestItemController.TAG, 
-		description = "Operations with request items", 
-		tags = { IdmRequestItemController.TAG }, 
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = IdmRequestItemController.TAG, description = "Operations with request items")
 public class IdmRequestItemController extends AbstractReadWriteDtoController<IdmRequestItemDto, IdmRequestItemFilter>{
 
 	protected static final String TAG = "Request's items";
@@ -104,18 +102,18 @@ public class IdmRequestItemController extends AbstractReadWriteDtoController<Idm
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.REQUEST_ITEM_READ + "')")
-	@ApiOperation(
-			value = "Search request items (/search/quick alias)", 
-			nickname = "searchRequestItems", 
-			tags = { IdmRequestItemController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.REQUEST_ITEM_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.REQUEST_ITEM_READ, description = "") })
-				})
-	public Resources<?> find(
+	@Operation(
+			summary = "Search request items (/search/quick alias)", 
+			operationId = "searchRequestItems", 
+			tags = { IdmRequestItemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.REQUEST_ITEM_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.REQUEST_ITEM_READ })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -124,18 +122,18 @@ public class IdmRequestItemController extends AbstractReadWriteDtoController<Idm
 	@ResponseBody
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.REQUEST_ITEM_READ + "')")
-	@ApiOperation(
-			value = "Search request items", 
-			nickname = "searchQuickRequestItems", 
-			tags = { IdmRequestItemController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.REQUEST_ITEM_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.REQUEST_ITEM_READ, description = "") })
-				})
-	public Resources<?> findQuick(
+	@Operation(
+			summary = "Search request items", 
+			operationId = "searchQuickRequestItems", 
+			tags = { IdmRequestItemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.REQUEST_ITEM_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.REQUEST_ITEM_READ })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -143,18 +141,18 @@ public class IdmRequestItemController extends AbstractReadWriteDtoController<Idm
 	@ResponseBody
 	@RequestMapping(value= "/search/autocomplete", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.REQUEST_ITEM_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "Autocomplete request items (selectbox usage)", 
-			nickname = "autocompleteRequestItems", 
-			tags = { IdmRequestItemController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.REQUEST_ITEM_AUTOCOMPLETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.REQUEST_ITEM_AUTOCOMPLETE, description = "") })
-				})
-	public Resources<?> autocomplete(
+	@Operation(
+			summary = "Autocomplete request items (selectbox usage)", 
+			operationId = "autocompleteRequestItems", 
+			tags = { IdmRequestItemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.REQUEST_ITEM_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.REQUEST_ITEM_AUTOCOMPLETE })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -163,19 +161,27 @@ public class IdmRequestItemController extends AbstractReadWriteDtoController<Idm
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.REQUEST_ITEM_READ + "')")
-	@ApiOperation(
-			value = "Request detail item", 
-			nickname = "getRequestItem", 
-			response = IdmRequestItemDto.class, 
-			tags = { IdmRequestItemController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.REQUEST_ITEM_READ, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.REQUEST_ITEM_READ, description = "") })
-					})
+	@Operation(
+			summary = "Request detail item", 
+			operationId = "getRequestItem", 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRequestItemDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { IdmRequestItemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.REQUEST_ITEM_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.REQUEST_ITEM_READ })
+    })
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Item's uuid identifier.", required = true)
+			 @Parameter(description = "Item's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -185,19 +191,30 @@ public class IdmRequestItemController extends AbstractReadWriteDtoController<Idm
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.REQUEST_ITEM_CREATE + "')"
 			+ " or hasAuthority('" + CoreGroupPermission.REQUEST_ITEM_UPDATE + "')")
-	@ApiOperation(
-			value = "Create / update request item", 
-			nickname = "postRequestItem", 
-			response = IdmRequestItemDto.class, 
-			tags = { IdmRequestItemController.TAG },
-			authorizations = { 
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.REQUEST_ITEM_CREATE, description = ""),
-							@AuthorizationScope(scope = CoreGroupPermission.REQUEST_ITEM_UPDATE, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.REQUEST_ITEM_CREATE, description = ""),
-							@AuthorizationScope(scope = CoreGroupPermission.REQUEST_ITEM_UPDATE, description = "")})
-					})
+	@Operation(
+			summary = "Create / update request item", 
+			operationId = "postRequestItem", 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRequestItemDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { IdmRequestItemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+							CoreGroupPermission.REQUEST_ITEM_CREATE,
+							CoreGroupPermission.REQUEST_ITEM_UPDATE}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+							CoreGroupPermission.REQUEST_ITEM_CREATE,
+							CoreGroupPermission.REQUEST_ITEM_UPDATE})
+        }
+    )
 	public ResponseEntity<?> post(@RequestBody @NotNull IdmRequestItemDto request) {
 		if (getService().isNew(request)) { 
 			request.setResult(new OperationResultDto(OperationState.CREATED));
@@ -209,19 +226,27 @@ public class IdmRequestItemController extends AbstractReadWriteDtoController<Idm
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.REQUEST_ITEM_UPDATE + "')")
-	@ApiOperation(
-			value = "Update request item", 
-			nickname = "putRequestItem", 
-			response = IdmRequestItemDto.class, 
-			tags = { IdmRequestItemController.TAG },
-			authorizations = { 
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.REQUEST_ITEM_UPDATE, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.REQUEST_ITEM_UPDATE, description = "") })
-					})
+	@Operation(
+			summary = "Update request item", 
+			operationId = "putRequestItem", 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRequestItemDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { IdmRequestItemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.REQUEST_ITEM_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.REQUEST_ITEM_UPDATE })
+    })
 	public ResponseEntity<?> put(
-			@ApiParam(value = "Item's uuid identifier.", required = true)
+			 @Parameter(description = "Item's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@RequestBody @NotNull IdmRequestItemDto dto) {
 		return super.put(backendId, dto);
@@ -232,18 +257,16 @@ public class IdmRequestItemController extends AbstractReadWriteDtoController<Idm
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.REQUEST_ITEM_DELETE + "')")
-	@ApiOperation(
-			value = "Delete request item", 
-			nickname = "deleteRequestItem",
-			tags = { IdmRequestItemController.TAG },
-			authorizations = { 
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.REQUEST_ITEM_DELETE, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.REQUEST_ITEM_DELETE, description = "") })
-					})
+	@Operation(
+			summary = "Delete request item", 
+			operationId = "deleteRequestItem",
+			tags = { IdmRequestItemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.REQUEST_ITEM_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.REQUEST_ITEM_DELETE })
+    })
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "Item's uuid identifier.", required = true)
+			 @Parameter(description = "Item's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		IdmRequestItemService service = ((IdmRequestItemService)this.getService());
 		IdmRequestItemDto dto = service.get(backendId);
@@ -274,18 +297,16 @@ public class IdmRequestItemController extends AbstractReadWriteDtoController<Idm
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.REQUEST_ITEM_READ + "')")
-	@ApiOperation(
-			value = "What logged identity can do with given record", 
-			nickname = "getPermissionsOnRequest", 
-			tags = { IdmRequestItemController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.REQUEST_ITEM_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.REQUEST_ITEM_READ, description = "") })
-				})
+	@Operation(
+			summary = "What logged identity can do with given record", 
+			operationId = "getPermissionsOnRequest", 
+			tags = { IdmRequestItemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.REQUEST_ITEM_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.REQUEST_ITEM_READ })
+    })
 	public Set<String> getPermissions(
-			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -293,19 +314,27 @@ public class IdmRequestItemController extends AbstractReadWriteDtoController<Idm
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/changes", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.REQUEST_ITEM_READ + "')")
-	@ApiOperation(
-			value = "Request detail item", 
-			nickname = "getRequestItem", 
-			response = IdmRequestItemDto.class, 
-			tags = { IdmRequestItemController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.REQUEST_ITEM_READ, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.REQUEST_ITEM_READ, description = "") })
-					})
+	@Operation(
+			summary = "Request detail item", 
+			operationId = "getRequestItem", 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmRequestItemDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { IdmRequestItemController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.REQUEST_ITEM_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.REQUEST_ITEM_READ })
+    })
 	public ResponseEntity<?> getChanges(
-			@ApiParam(value = "Item's uuid identifier.", required = true)
+			 @Parameter(description = "Item's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		IdmRequestItemDto dto = this.getDto(backendId);
 		IdmRequestItemChangesDto result = requestManager.getChanges(dto);

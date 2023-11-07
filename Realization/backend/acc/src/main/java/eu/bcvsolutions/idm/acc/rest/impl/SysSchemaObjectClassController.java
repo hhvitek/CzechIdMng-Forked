@@ -2,11 +2,11 @@ package eu.bcvsolutions.idm.acc.rest.impl;
 
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resources;
-import org.springframework.http.MediaType;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -28,11 +28,15 @@ import eu.bcvsolutions.idm.core.api.rest.AbstractReadWriteDtoController;
 import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.security.api.domain.Enabled;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 
 /**
  * Schema object class rest
@@ -43,12 +47,7 @@ import io.swagger.annotations.AuthorizationScope;;
 @RestController
 @Enabled(AccModuleDescriptor.MODULE_ID)
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/schema-object-classes")
-@Api(
-		value = SysSchemaObjectClassController.TAG, 
-		tags = SysSchemaObjectClassController.TAG, 
-		description = "Schema configuration",
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = SysSchemaObjectClassController.TAG, description = "Schema configuration")
 public class SysSchemaObjectClassController extends AbstractReadWriteDtoController<SysSchemaObjectClassDto, SysSchemaObjectClassFilter> {
 
 	protected static final String TAG = "System schema - object classes";
@@ -62,18 +61,21 @@ public class SysSchemaObjectClassController extends AbstractReadWriteDtoControll
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
-	@ApiOperation(
-			value = "Search schema object classes (/search/quick alias)", 
-			nickname = "searchSchemaObjectClasses",
-			tags = { SysSchemaObjectClassController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")})
-				})
-	public Resources<?> find(
+	@Operation(
+        summary = "Search schema object classes (/search/quick alias)",
+        operationId = "searchSchemaObjectClasses"
+    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.SYSTEM_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.SYSTEM_READ})
+        }
+    )
+	@PageableAsQueryParam
+	public CollectionModel<?> find(
 			@RequestParam(required = true) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -81,18 +83,21 @@ public class SysSchemaObjectClassController extends AbstractReadWriteDtoControll
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Search schema object classes", 
-			nickname = "searchQuickSchemaObjectClasses",
-			tags = { SysSchemaObjectClassController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")})
-				})
-	public Resources<?> findQuick(
+	@Operation(
+			summary = "Search schema object classes", 
+			operationId = "searchQuickSchemaObjectClasses",
+			tags = { SysSchemaObjectClassController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.SYSTEM_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.SYSTEM_READ})
+        }
+    )
+	@PageableAsQueryParam
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = true) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -101,19 +106,30 @@ public class SysSchemaObjectClassController extends AbstractReadWriteDtoControll
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Schema object class detail", 
-			nickname = "getSchemaObjectClass", 
-			response = SysSchemaObjectClassDto.class, 
-			tags = { SysSchemaObjectClassController.TAG }, 
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")})
-					})
+	@Operation(
+			summary = "Schema object class detail", 
+			operationId = "getSchemaObjectClass",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysSchemaObjectClassDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { SysSchemaObjectClassController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							AccGroupPermission.SYSTEM_READ}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							AccGroupPermission.SYSTEM_READ})
+        }
+    )
 	public ResponseEntity<?> get(
-			@ApiParam(value = "System schema's uuid identifier.", required = true)
+			 @Parameter(description = "System schema's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -122,17 +138,28 @@ public class SysSchemaObjectClassController extends AbstractReadWriteDtoControll
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_UPDATE + "')")
 	@RequestMapping(method = RequestMethod.POST)
-	@ApiOperation(
-			value = "Create / update schema object class", 
-			nickname = "postSchemaObjectClass", 
-			response = SysSchemaObjectClassDto.class, 
-			tags = { SysSchemaObjectClassController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "")})
-				})
+	@Operation(
+			summary = "Create / update schema object class", 
+			operationId = "postSchemaObjectClass",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysSchemaObjectClassDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { SysSchemaObjectClassController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.SYSTEM_UPDATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						AccGroupPermission.SYSTEM_UPDATE})
+        }
+    )
 	public ResponseEntity<?> post(@RequestBody @NotNull SysSchemaObjectClassDto dto) {
 		return super.post(dto);
 	}
@@ -141,19 +168,27 @@ public class SysSchemaObjectClassController extends AbstractReadWriteDtoControll
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_UPDATE + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
-	@ApiOperation(
-			value = "Update schema object class",
-			nickname = "putSchemaObjectClass", 
-			response = SysSchemaObjectClassDto.class, 
-			tags = { SysSchemaObjectClassController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update schema object class",
+			operationId = "putSchemaObjectClass",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SysSchemaObjectClassDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { SysSchemaObjectClassController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_UPDATE })
+    })
 	public ResponseEntity<?> put(
-			@ApiParam(value = "System schema's uuid identifier.", required = true)
+			 @Parameter(description = "System schema's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@RequestBody @NotNull SysSchemaObjectClassDto dto) {
 		return super.put(backendId, dto);
@@ -163,18 +198,16 @@ public class SysSchemaObjectClassController extends AbstractReadWriteDtoControll
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_DELETE + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
-	@ApiOperation(
-			value = "Delete schema object class", 
-			nickname = "deleteSchemaObjectClass", 
-			tags = { SysSchemaObjectClassController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_DELETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.SYSTEM_DELETE, description = "") })
-				})
+	@Operation(
+			summary = "Delete schema object class", 
+			operationId = "deleteSchemaObjectClass",
+			tags = { SysSchemaObjectClassController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.SYSTEM_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.SYSTEM_DELETE })
+    })
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "System schema's uuid identifier.", required = true)
+			 @Parameter(description = "System schema's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}

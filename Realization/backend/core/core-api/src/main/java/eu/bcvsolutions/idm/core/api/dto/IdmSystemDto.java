@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import eu.bcvsolutions.idm.core.api.domain.Codeable;
 import eu.bcvsolutions.idm.core.api.domain.Disableable;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.UUID;
 
 /**
@@ -21,7 +21,7 @@ public class IdmSystemDto extends FormableDto implements Codeable, Disableable {
 	private String name;
 	private String description;
 	private boolean readonly;
-	@ApiModelProperty(notes = "Just write operation is disabled on the system, ACM and wish is constructed, provisioning operation is available in queue.")
+	@Schema(description = "Just write operation is disabled on the system, ACM and wish is constructed, provisioning operation is available in queue.")
 	private boolean disabled;
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private boolean virtual;

@@ -9,12 +9,12 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -44,11 +44,14 @@ import eu.bcvsolutions.idm.core.ecm.api.entity.AttachableEntity;
 import eu.bcvsolutions.idm.core.ecm.api.service.AttachmentManager;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Default controller for scripts, basic methods.
@@ -58,12 +61,7 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/scripts")
-@Api(
-		value = IdmScriptController.TAG,  
-		tags = { IdmScriptController.TAG }, 
-		description = "Groovy scripts administration",
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = IdmScriptController.TAG, description = "Groovy scripts administration")
 public class IdmScriptController extends AbstractReadWriteDtoController<IdmScriptDto, IdmScriptFilter> {
 	
 	protected static final String TAG = "Scripts";
@@ -82,18 +80,18 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_READ + "')")
-	@ApiOperation(
-			value = "Search scripts (/search/quick alias)", 
-			nickname = "searchScripts", 
-			tags = { IdmScriptController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_READ, description = "") })
-				})
-	public Resources<?> find(
+	@Operation(
+			summary = "Search scripts (/search/quick alias)", 
+			operationId = "searchScripts",
+			tags = { IdmScriptController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCRIPT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCRIPT_READ })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -102,18 +100,18 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@ResponseBody
 	@RequestMapping(value= "/search/quick", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_READ + "')")
-	@ApiOperation(
-			value = "Search scripts", 
-			nickname = "searchQuickScripts", 
-			tags = { IdmScriptController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_READ, description = "") })
-				})
-	public Resources<?> findQuick(
+	@Operation(
+			summary = "Search scripts", 
+			operationId = "searchQuickScripts",
+			tags = { IdmScriptController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCRIPT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCRIPT_READ })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -122,18 +120,18 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@ResponseBody
 	@RequestMapping(value = "/search/autocomplete", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "Autocomplete scripts (selectbox usage)", 
-			nickname = "autocompleteScripts", 
-			tags = { IdmScriptController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_AUTOCOMPLETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_AUTOCOMPLETE, description = "") })
-				})
-	public Resources<?> autocomplete(
+	@Operation(
+			summary = "Autocomplete scripts (selectbox usage)", 
+			operationId = "autocompleteScripts",
+			tags = { IdmScriptController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCRIPT_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCRIPT_AUTOCOMPLETE })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -142,19 +140,27 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_READ + "')")
-	@ApiOperation(
-			value = "Script detail", 
-			nickname = "getScript", 
-			response = IdmScriptDto.class, 
-			tags = { IdmScriptController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_READ, description = "") })
-				})
+	@Operation(
+			summary = "Script detail", 
+			operationId = "getScript",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmScriptDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmScriptController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCRIPT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCRIPT_READ })
+    })
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Script's uuid identifier or code.", required = true)
+			 @Parameter(description = "Script's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -164,19 +170,30 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_CREATE + "')"
 			+ " or hasAuthority('" + CoreGroupPermission.SCRIPT_UPDATE + "')")
 	@RequestMapping(method = RequestMethod.POST)
-	@ApiOperation(
-			value = "Create / update script", 
-			nickname = "postScript", 
-			response = IdmScriptDto.class, 
-			tags = { IdmScriptController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_CREATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_UPDATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_CREATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_UPDATE, description = "")})
-				})
+	@Operation(
+			summary = "Create / update script", 
+			operationId = "postScript",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmScriptDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmScriptController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.SCRIPT_CREATE,
+						CoreGroupPermission.SCRIPT_UPDATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.SCRIPT_CREATE,
+						CoreGroupPermission.SCRIPT_UPDATE})
+        }
+    )
 	public ResponseEntity<?> post(@RequestBody @NotNull IdmScriptDto dto) {
 		return super.post(dto);
 	}
@@ -185,19 +202,27 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_UPDATE + "')")
-	@ApiOperation(
-			value = "Update script", 
-			nickname = "putScript", 
-			response = IdmScriptDto.class, 
-			tags = { IdmScriptController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update script", 
+			operationId = "putScript",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmScriptDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmScriptController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCRIPT_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCRIPT_UPDATE })
+    })
 	public ResponseEntity<?> put(
-			@ApiParam(value = "Script's uuid identifier or code.", required = true)
+			 @Parameter(description = "Script's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @NotNull IdmScriptDto dto) {
 		return super.put(backendId, dto);
@@ -207,18 +232,16 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_DELETE + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
-	@ApiOperation(
-			value = "Delete script", 
-			nickname = "deleteScript", 
-			tags = { IdmScriptController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_DELETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_DELETE, description = "") })
-				})
+	@Operation(
+			summary = "Delete script", 
+			operationId = "deleteScript",
+			tags = { IdmScriptController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCRIPT_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCRIPT_DELETE })
+    })
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "Script's uuid identifier or code.", required = true)
+			 @Parameter(description = "Script's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -226,70 +249,84 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/redeploy", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_UPDATE + "')")
-	@ApiOperation(
-			value = "Redeploy script", 
-			nickname = "redeployScript", 
-			response = IdmScriptDto.class, 
-			tags = { IdmScriptController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_UPDATE, description = "") })
-				},
-			notes = "Redeploy script. Redeployed will be only scripts, that has pattern in resource."
+	@Operation(
+			summary = "Redeploy script", 
+			operationId = "redeployScript",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmScriptDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmScriptController.TAG },
+			description = "Redeploy script. Redeployed will be only scripts, that has pattern in resource."
 					+ " Before save newly loaded DO will be backup the old script into backup directory.")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCRIPT_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCRIPT_UPDATE })
+    })
 	public ResponseEntity<?> redeploy(
-			@ApiParam(value = "Script's uuid identifier or code.", required = true)
+			 @Parameter(description = "Script's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		IdmScriptDto script = service.get(backendId);
 		if (script == null) {
 			throw new ResultCodeException(CoreResultCode.NOT_FOUND, backendId);
 		}
 		script = service.redeploy(script, IdmBasePermission.UPDATE);
-		return new ResponseEntity<>(toResource(script), HttpStatus.OK);
+		return new ResponseEntity<>(toModel(script), HttpStatus.OK);
 	}
 	
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/backup", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_READ + "')")
-	@ApiOperation(
-			value = "Backup script", 
-			nickname = "backupScript", 
-			response = IdmScriptDto.class, 
+	@Operation(
+			summary = "Backup script", 
+			operationId = "backupScript",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmScriptDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmScriptController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_READ, description = "") })
-				},
-			notes = "Backup template to directory given in application properties.")
+						description = "Backup template to directory given in application properties.")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCRIPT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCRIPT_READ })
+    })
 	public ResponseEntity<?> backup(
-			@ApiParam(value = "Script's uuid identifier or code.", required = true)
+			 @Parameter(description = "Script's uuid identifier or code.", required = true)
 			@PathVariable @NotNull String backendId) {
 		IdmScriptDto script = service.get(backendId);
 		if (script == null) {
 			throw new ResultCodeException(CoreResultCode.NOT_FOUND, backendId);
 		}
 		service.backup(script);
-		return new ResponseEntity<>(toResource(script), HttpStatus.OK);
+		return new ResponseEntity<>(toModel(script), HttpStatus.OK);
 	}
 
 	@Override
 	@ResponseBody
 	@RequestMapping(value = "/search/count", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_COUNT + "')")
-	@ApiOperation(
-			value = "The number of entities that match the filter", 
-			nickname = "countScripts", 
-			tags = { IdmScriptController.TAG }, 
-			authorizations = { 
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_COUNT, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_COUNT, description = "") })
-			})
+	@Operation(
+			summary = "The number of entities that match the filter", 
+			operationId = "countScripts",
+			tags = { IdmScriptController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCRIPT_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCRIPT_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -298,19 +335,27 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PATCH)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_UPDATE + "')")
-	@ApiOperation(
-			value = "Update script",
-			nickname = "patchScript", 
-			response = IdmScriptDto.class, 
-			tags = { IdmScriptController.TAG }, 
-			authorizations = { 
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_UPDATE, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_UPDATE, description = "") })
-			})
+	@Operation(
+			summary = "Update script",
+			operationId = "patchScript",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmScriptDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmScriptController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCRIPT_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCRIPT_UPDATE })
+    })
 	public ResponseEntity<?> patch(
-			@ApiParam(value = "Script's uuid identifier.", required = true)
+			 @Parameter(description = "Script's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 					throws HttpMessageNotReadableException {
@@ -321,18 +366,16 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_READ + "')")
-	@ApiOperation(
-			value = "What logged identity can do with given record", 
-			nickname = "getPermissionsOnScript", 
-			tags = { IdmScriptController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_READ, description = "") })
-				})
+	@Operation(
+			summary = "What logged identity can do with given record", 
+			operationId = "getPermissionsOnScript",
+			tags = { IdmScriptController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCRIPT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCRIPT_READ })
+    })
 	public Set<String> getPermissions(
-			@ApiParam(value = "Script's uuid identifier.", required = true)
+			 @Parameter(description = "Script's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -351,19 +394,20 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@RequestMapping(value = "/deploy", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_CREATE + "')"
 			+ " or hasAuthority('" + CoreGroupPermission.SCRIPT_UPDATE + "')")
-	@ApiOperation(
-			value = "Upload scripts.", 
-			nickname = "uploadScripts", 
+	@Operation(
+			summary = "Upload scripts.", 
+			operationId = "uploadScripts",
 			tags = { IdmScriptController.TAG }, 
-			authorizations = { 
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_CREATE, description = ""),
-							@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_UPDATE, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_CREATE, description = ""),
-							@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_UPDATE, description = "")})
-					},
-			notes="Scripts in archive (ZIP) or single scripts (XML) can be uploaded.")
+						description="Scripts in archive (ZIP) or single scripts (XML) can be uploaded.")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+                    CoreGroupPermission.SCRIPT_CREATE,
+                    CoreGroupPermission.SCRIPT_UPDATE}),
+            @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+                    CoreGroupPermission.SCRIPT_CREATE,
+                    CoreGroupPermission.SCRIPT_UPDATE})
+        }
+    )
 	public ResponseEntity<?> deploy(String name, String fileName, MultipartFile data) throws IOException {
 		// save attachment
 		IdmAttachmentDto attachment = new IdmAttachmentDto();
@@ -382,16 +426,14 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@ResponseBody
 	@RequestMapping(value = "/bulk/actions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_READ + "')")
-	@ApiOperation(
-			value = "Get available bulk actions", 
-			nickname = "availableBulkAction", 
-			tags = { IdmScriptController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_READ, description = "") })
-				})
+	@Operation(
+			summary = "Get available bulk actions", 
+			operationId = "availableBulkAction",
+			tags = { IdmScriptController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCRIPT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCRIPT_READ })
+    })
 	public List<IdmBulkActionDto> getAvailableBulkActions() {
 		return super.getAvailableBulkActions();
 	}
@@ -400,17 +442,28 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@ResponseBody
 	@RequestMapping(path = "/bulk/action", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_READ + "')")
-	@ApiOperation(
-			value = "Process bulk action for script definition", 
-			nickname = "bulkAction", 
-			response = IdmBulkActionDto.class, 
-			tags = { IdmScriptController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_READ, description = "")})
-				})
+	@Operation(
+			summary = "Process bulk action for script definition", 
+			operationId = "bulkAction",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmScriptController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.SCRIPT_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.SCRIPT_READ})
+        }
+    )
 	public ResponseEntity<IdmBulkActionDto> bulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.bulkAction(bulkAction);
 	}
@@ -419,17 +472,28 @@ public class IdmScriptController extends AbstractReadWriteDtoController<IdmScrip
 	@ResponseBody
 	@RequestMapping(path = "/bulk/prevalidate", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCRIPT_READ + "')")
-	@ApiOperation(
-			value = "Prevalidate bulk action for script definition", 
-			nickname = "prevalidateBulkAction", 
-			response = IdmBulkActionDto.class, 
-			tags = { IdmScriptController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCRIPT_READ, description = "")})
-				})
+	@Operation(
+			summary = "Prevalidate bulk action for script definition", 
+			operationId = "prevalidateBulkAction",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmScriptController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.SCRIPT_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.SCRIPT_READ})
+        }
+    )
 	public ResponseEntity<ResultModels> prevalidateBulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.prevalidateBulkAction(bulkAction);
 	}

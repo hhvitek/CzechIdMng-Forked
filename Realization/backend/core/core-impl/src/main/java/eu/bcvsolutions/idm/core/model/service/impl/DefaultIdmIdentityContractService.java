@@ -381,7 +381,7 @@ public class DefaultIdmIdentityContractService
 				.findExpiredContractsByIdentity(
 						identityId,
 						expiration == null ? LocalDate.now() : expiration,
-						PageRequest.of(0, 1, new Sort(Sort.Direction.DESC, IdmIdentityContract_.validTill.getName()))		
+						PageRequest.of(0, 1, Sort.by(Sort.Direction.DESC, IdmIdentityContract_.validTill.getName()))
 				)
 				.getContent();
 		//

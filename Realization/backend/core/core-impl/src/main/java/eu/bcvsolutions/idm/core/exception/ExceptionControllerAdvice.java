@@ -13,6 +13,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
@@ -254,7 +255,7 @@ public class ExceptionControllerAdvice implements ErrorController {
 			// if source exception is not set (e.g. from controller security ~ forbidden), return base error attributes.
 			RestErrorAttributes attributes = new RestErrorAttributes();
 			attributes.resolveException(request, response, null, null);
-			Map<String, Object> errorAttributes = attributes.getErrorAttributes(new ServletWebRequest(request, response), false);
+			Map<String, Object> errorAttributes = attributes.getErrorAttributes(new ServletWebRequest(request, response), ErrorAttributeOptions.defaults());
 			//
 			// fill http status
 			HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -291,12 +292,7 @@ public class ExceptionControllerAdvice implements ErrorController {
 		//
 		return new ResponseEntity<>(new ResultModels(errorModel), httpHeaders, errorModel.getStatus());
 	}
-	
-	@Override
-	public String getErrorPath() {
-		return null;
-	}
-	
+
 	/**
 	 * TODO: CorsProcessor should be registered before filters with exception => this method can be removed after.
 	 * 

@@ -6,11 +6,11 @@ import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resources;
-import org.springframework.http.MediaType;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.Assert;
@@ -43,11 +43,14 @@ import eu.bcvsolutions.idm.core.notification.api.service.IdmNotificationLogServi
 import eu.bcvsolutions.idm.core.notification.api.service.IdmNotificationRecipientService;
 import eu.bcvsolutions.idm.core.notification.api.service.NotificationManager;
 import eu.bcvsolutions.idm.core.notification.domain.NotificationGroupPermission;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Read and send notification.
@@ -57,12 +60,7 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/notifications")
-@Api(
-		value = IdmNotificationLogController.TAG, 
-		description = "Operations with notifications, history",
-		tags = { IdmNotificationLogController.TAG }, 
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = IdmNotificationLogController.TAG, description = "Operations with notifications, history")
 public class IdmNotificationLogController
 		extends AbstractReadWriteDtoController<IdmNotificationLogDto, IdmNotificationFilter> {
 
@@ -91,18 +89,18 @@ public class IdmNotificationLogController
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATION_READ + "')")
-	@ApiOperation(
-			value = "Search notification logs (/search/quick alias)", 
-			nickname = "searchNotificationLogs", 
-			tags = { IdmNotificationLogController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATION_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATION_READ, description = "") })
-				})
-	public Resources<?> find(
+	@Operation(
+			summary = "Search notification logs (/search/quick alias)",
+			operationId = "searchNotificationLogs",
+			tags = { IdmNotificationLogController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { NotificationGroupPermission.NOTIFICATION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { NotificationGroupPermission.NOTIFICATION_READ })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -110,18 +108,18 @@ public class IdmNotificationLogController
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATION_READ + "')")
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Search notification logs", 
-			nickname = "searchQuickNotificationLogs", 
-			tags = { IdmNotificationLogController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATION_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATION_READ, description = "") })
-				})
-	public Resources<?> findQuick(
+	@Operation(
+			summary = "Search notification logs",
+			operationId = "searchQuickNotificationLogs",
+			tags = { IdmNotificationLogController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { NotificationGroupPermission.NOTIFICATION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { NotificationGroupPermission.NOTIFICATION_READ })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -130,19 +128,27 @@ public class IdmNotificationLogController
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATION_READ + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Notification log detail", 
-			nickname = "getNotificationLog", 
-			response = IdmNotificationLogDto.class, 
-			tags = { IdmNotificationLogController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATION_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATION_READ, description = "") })
-				})
+	@Operation(
+			summary = "Notification log detail",
+			operationId = "getNotificationLog",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmNotificationLogDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmNotificationLogController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { NotificationGroupPermission.NOTIFICATION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { NotificationGroupPermission.NOTIFICATION_READ })
+    })
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Notification log's uuid identifier.", required = true)
+			 @Parameter(description = "Notification log's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -157,19 +163,30 @@ public class IdmNotificationLogController
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATION_CREATE + "')"
 			+ " or hasAuthority('" + NotificationGroupPermission.NOTIFICATION_UPDATE + "')")
 	@RequestMapping(method = RequestMethod.POST)
-	@ApiOperation(
-			value = "Send notification", 
-			nickname = "postNotificationLog", 
-			response = IdmNotificationLogDto.class, 
-			tags = { IdmNotificationLogController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATION_CREATE, description = ""),
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATION_UPDATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATION_CREATE, description = ""),
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATION_UPDATE, description = "")})
-				})
+	@Operation(
+			summary = "Send notification",
+			operationId = "postNotificationLog",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmNotificationLogDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmNotificationLogController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						NotificationGroupPermission.NOTIFICATION_CREATE,
+						NotificationGroupPermission.NOTIFICATION_UPDATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						NotificationGroupPermission.NOTIFICATION_CREATE,
+						NotificationGroupPermission.NOTIFICATION_UPDATE})
+        }
+    )
 	public ResponseEntity<?> post(@RequestBody @NotNull IdmNotificationLogDto dto) {
 		return super.post(dto);
 	}
@@ -203,18 +220,16 @@ public class IdmNotificationLogController
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATION_DELETE + "')")
-	@ApiOperation(
-			value = "Delete notification", 
-			nickname = "deleteNotification", 
-			tags = { IdmNotificationLogController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATION_DELETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATION_DELETE, description = "") })
-				})
+	@Operation(
+			summary = "Delete notification",
+			operationId = "deleteNotification",
+			tags = { IdmNotificationLogController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { NotificationGroupPermission.NOTIFICATION_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { NotificationGroupPermission.NOTIFICATION_DELETE })
+    })
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "Notification's uuid identifier.", required = true)
+			 @Parameter(description = "Notification's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -223,18 +238,19 @@ public class IdmNotificationLogController
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATION_READ + "')")
-	@ApiOperation(
-			value = "What logged identity can do with given record", 
-			nickname = "getPermissionsOnNotification", 
-			tags = { IdmNotificationLogController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATION_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATION_READ, description = "")})
-				})
+	@Operation(
+			summary = "What logged identity can do with given record",
+			operationId = "getPermissionsOnNotification",
+			tags = { IdmNotificationLogController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						NotificationGroupPermission.NOTIFICATION_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						NotificationGroupPermission.NOTIFICATION_READ})
+        }
+    )
 	public Set<String> getPermissions(
-			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -245,16 +261,14 @@ public class IdmNotificationLogController
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + NotificationGroupPermission.NOTIFICATION_READ + "')")
 	@RequestMapping(value = "/{backendId}/recipients", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Notification recipients", 
-			nickname = "getNotificationRecipients", 
-			tags = { IdmNotificationLogController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATION_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = NotificationGroupPermission.NOTIFICATION_READ, description = "") })
-				})
+	@Operation(
+			summary = "Notification recipients",
+			operationId = "getNotificationRecipients",
+			tags = { IdmNotificationLogController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { NotificationGroupPermission.NOTIFICATION_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { NotificationGroupPermission.NOTIFICATION_READ })
+    })
 	public List<IdmNotificationRecipientDto> getRecipients(@PathVariable @NotNull String backendId) {
 		IdmNotificationRecipientFilter filter = new IdmNotificationRecipientFilter();
 		filter.setNotification(DtoUtils.toUuid(backendId));

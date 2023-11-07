@@ -11,13 +11,13 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.Assert;
@@ -56,11 +56,14 @@ import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
 import eu.bcvsolutions.idm.core.security.api.dto.IdmJwtAuthenticationDto;
 import eu.bcvsolutions.idm.core.security.api.filter.IdmAuthenticationFilter;
 import eu.bcvsolutions.idm.core.security.service.impl.JwtAuthenticationMapper;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * IdM tokens.
@@ -70,12 +73,7 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/tokens")
-@Api(
-		value = IdmTokenController.TAG, 
-		description = "Operations with IdM tokens", 
-		tags = { IdmTokenController.TAG }, 
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = IdmTokenController.TAG, description = "Operations with IdM tokens")
 public class IdmTokenController extends AbstractEventableDtoController<IdmTokenDto, IdmTokenFilter> {
 	
 	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(IdmTokenController.class);
@@ -94,18 +92,18 @@ public class IdmTokenController extends AbstractEventableDtoController<IdmTokenD
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.TOKEN_READ + "')")
-	@ApiOperation(
-			value = "Search tokens (/search/quick alias)", 
-			nickname = "searchTokens",
-			tags = { IdmTokenController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TOKEN_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TOKEN_READ, description = "") })
-				})
-	public Resources<?> find(
+	@Operation(
+			summary = "Search tokens (/search/quick alias)",
+			operationId = "searchTokens",
+			tags = { IdmTokenController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.TOKEN_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.TOKEN_READ })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -113,18 +111,18 @@ public class IdmTokenController extends AbstractEventableDtoController<IdmTokenD
 	@ResponseBody
 	@RequestMapping(value= "/search/quick", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.TOKEN_READ + "')")
-	@ApiOperation(
-			value = "Search tokens", 
-			nickname = "searchQuickTokens", 
-			tags = { IdmTokenController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TOKEN_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TOKEN_READ, description = "") })
-				})
-	public Resources<?> findQuick(
+	@Operation(
+			summary = "Search tokens",
+			operationId = "searchQuickTokens",
+			tags = { IdmTokenController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.TOKEN_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.TOKEN_READ })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -133,16 +131,14 @@ public class IdmTokenController extends AbstractEventableDtoController<IdmTokenD
 	@ResponseBody
 	@RequestMapping(value = "/search/count", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.TOKEN_COUNT + "')")
-	@ApiOperation(
-			value = "The number of entities that match the filter", 
-			nickname = "countTokens", 
-			tags = { IdmTokenController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TOKEN_COUNT, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TOKEN_COUNT, description = "") })
-				})
+	@Operation(
+			summary = "The number of entities that match the filter",
+			operationId = "countTokens",
+			tags = { IdmTokenController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.TOKEN_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.TOKEN_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -151,19 +147,27 @@ public class IdmTokenController extends AbstractEventableDtoController<IdmTokenD
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.TOKEN_READ + "')")
-	@ApiOperation(
-			value = "Token detail", 
-			nickname = "getToken", 
-			response = IdmTokenDto.class, 
-			tags = { IdmTokenController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TOKEN_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TOKEN_READ, description = "") })
-				})
+	@Operation(
+			summary = "Token detail",
+			operationId = "getToken",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmTokenDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmTokenController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.TOKEN_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.TOKEN_READ })
+    })
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Token uuid identifier.", required = true)
+			 @Parameter(description = "Token uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -175,17 +179,28 @@ public class IdmTokenController extends AbstractEventableDtoController<IdmTokenD
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.TOKEN_CREATE + "')")
-	@ApiOperation(
-			value = "Geerate new token", 
-			nickname = "generateToken", 
-			response = IdmTokenDto.class, 
-			tags = { IdmTokenController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TOKEN_CREATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TOKEN_CREATE, description = "")})
-				})
+	@Operation(
+			summary = "Geerate new token",
+			operationId = "generateToken",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmTokenDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmTokenController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.TOKEN_CREATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.TOKEN_CREATE})
+        }
+    )
 	public ResponseEntity<?> post(@RequestBody IdmTokenDto dto) {
 		// generate token
 		BaseDto owner = getLookupService().lookupDto(dto.getOwnerType(), dto.getOwnerId());
@@ -220,25 +235,23 @@ public class IdmTokenController extends AbstractEventableDtoController<IdmTokenD
 				jwtTokenMapper.writeToken(authenticationDto)
 		);
 		//
-		return new ResponseEntity<>(toResource(clone), HttpStatus.CREATED);
+		return new ResponseEntity<>(toModel(clone), HttpStatus.CREATED);
 	}
 	
 	@Override
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.TOKEN_DELETE + "')")
-	@ApiOperation(
-			value = "Delete token", 
-			nickname = "deleteToken", 
-			tags = { IdmTokenController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TOKEN_DELETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TOKEN_DELETE, description = "") })
-				})
+	@Operation(
+			summary = "Delete token",
+			operationId = "deleteToken",
+			tags = { IdmTokenController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.TOKEN_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.TOKEN_DELETE })
+    })
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "Token uuid identifier.", required = true)
+			 @Parameter(description = "Token uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -247,18 +260,16 @@ public class IdmTokenController extends AbstractEventableDtoController<IdmTokenD
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.TOKEN_READ + "')")
-	@ApiOperation(
-			value = "What logged identity can do with given record", 
-			nickname = "getPermissionsOnToken", 
-			tags = { IdmTokenController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TOKEN_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TOKEN_READ, description = "") })
-				})
+	@Operation(
+			summary = "What logged identity can do with given record",
+			operationId = "getPermissionsOnToken",
+			tags = { IdmTokenController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.TOKEN_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.TOKEN_READ })
+    })
 	public Set<String> getPermissions(
-			@ApiParam(value = "Token uuid identifier.", required = true)
+			 @Parameter(description = "Token uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -267,16 +278,14 @@ public class IdmTokenController extends AbstractEventableDtoController<IdmTokenD
 	@ResponseBody
 	@RequestMapping(value = "/bulk/actions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.TOKEN_READ + "')")
-	@ApiOperation(
-			value = "Get available bulk actions", 
-			nickname = "availableBulkAction", 
-			tags = { IdmTokenController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TOKEN_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TOKEN_READ, description = "") })
-				})
+	@Operation(
+			summary = "Get available bulk actions",
+			operationId = "availableBulkAction",
+			tags = { IdmTokenController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.TOKEN_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.TOKEN_READ })
+    })
 	public List<IdmBulkActionDto> getAvailableBulkActions() {
 		return super.getAvailableBulkActions();
 	}
@@ -285,17 +294,28 @@ public class IdmTokenController extends AbstractEventableDtoController<IdmTokenD
 	@ResponseBody
 	@RequestMapping(path = "/bulk/action", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.TOKEN_READ + "')")
-	@ApiOperation(
-			value = "Process bulk action for token", 
-			nickname = "bulkAction", 
-			response = IdmBulkActionDto.class, 
-			tags = { IdmTokenController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TOKEN_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TOKEN_READ, description = "")})
-				})
+	@Operation(
+			summary = "Process bulk action for token",
+			operationId = "bulkAction",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmTokenController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.TOKEN_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.TOKEN_READ})
+        }
+    )
 	public ResponseEntity<IdmBulkActionDto> bulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.bulkAction(bulkAction);
 	}
@@ -304,17 +324,28 @@ public class IdmTokenController extends AbstractEventableDtoController<IdmTokenD
 	@ResponseBody
 	@RequestMapping(path = "/bulk/prevalidate", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.TOKEN_READ + "')")
-	@ApiOperation(
-			value = "Prevalidate bulk action for token", 
-			nickname = "prevalidateBulkAction", 
-			response = IdmBulkActionDto.class, 
-			tags = { IdmTokenController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TOKEN_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TOKEN_READ, description = "")})
-				})
+	@Operation(
+			summary = "Prevalidate bulk action for token",
+			operationId = "prevalidateBulkAction",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmTokenController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.TOKEN_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.TOKEN_READ})
+        }
+    )
 	public ResponseEntity<ResultModels> prevalidateBulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.prevalidateBulkAction(bulkAction);
 	}

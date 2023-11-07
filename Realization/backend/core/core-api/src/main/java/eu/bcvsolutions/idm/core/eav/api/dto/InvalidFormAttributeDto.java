@@ -3,7 +3,7 @@ package eu.bcvsolutions.idm.core.eav.api.dto;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 import eu.bcvsolutions.idm.core.api.dto.AbstractDto;
 import eu.bcvsolutions.idm.core.api.service.LookupService;

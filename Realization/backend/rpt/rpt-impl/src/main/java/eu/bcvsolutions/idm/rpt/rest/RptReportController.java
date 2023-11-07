@@ -9,12 +9,13 @@ import java.util.UUID;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -53,11 +54,14 @@ import eu.bcvsolutions.idm.rpt.api.dto.RptReportExecutorDto;
 import eu.bcvsolutions.idm.rpt.api.dto.filter.RptReportFilter;
 import eu.bcvsolutions.idm.rpt.api.service.ReportManager;
 import eu.bcvsolutions.idm.rpt.api.service.RptReportService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Report controller.
@@ -68,12 +72,7 @@ import io.swagger.annotations.AuthorizationScope;
 @RestController
 @Enabled(RptModuleDescriptor.MODULE_ID)
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/" + RptModuleDescriptor.MODULE_ID + "/reports")
-@Api(
-		value = RptReportController.TAG,  
-		tags = { RptReportController.TAG }, 
-		description = "Reports",
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = RptReportController.TAG, description = "Reports")
 public class RptReportController extends AbstractReadWriteDtoController<RptReportDto, RptReportFilter>  {
 
 	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(RptReportController.class);
@@ -96,18 +95,18 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + RptGroupPermission.REPORT_READ + "')")
-	@ApiOperation(
-			value = "Search reports (/search/quick alias)", 
-			nickname = "searchReports", 
-			tags = { RptReportController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = RptGroupPermission.REPORT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = RptGroupPermission.REPORT_READ, description = "") })
-				})
-	public Resources<?> find(
+	@Operation(
+			summary = "Search reports (/search/quick alias)", 
+			operationId = "searchReports", 
+			tags = { RptReportController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { RptGroupPermission.REPORT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { RptGroupPermission.REPORT_READ })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -116,18 +115,18 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 	@ResponseBody
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + RptGroupPermission.REPORT_READ + "')")
-	@ApiOperation(
-			value = "Search reports", 
-			nickname = "searchQuickReports", 
-			tags = { RptReportController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = RptGroupPermission.REPORT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = RptGroupPermission.REPORT_READ, description = "") })
-				})
-	public Resources<?> findQuick(
+	@Operation(
+			summary = "Search reports", 
+			operationId = "searchQuickReports", 
+			tags = { RptReportController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { RptGroupPermission.REPORT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { RptGroupPermission.REPORT_READ })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -136,18 +135,18 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 	@ResponseBody
 	@RequestMapping(value = "/search/autocomplete", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + RptGroupPermission.REPORT_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "Autocomplete reports (selectbox usage)", 
-			nickname = "autocompleteReports", 
-			tags = { RptReportController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = RptGroupPermission.REPORT_AUTOCOMPLETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = RptGroupPermission.REPORT_AUTOCOMPLETE, description = "") })
-				})
-	public Resources<?> autocomplete(
+	@Operation(
+			summary = "Autocomplete reports (selectbox usage)", 
+			operationId = "autocompleteReports", 
+			tags = { RptReportController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { RptGroupPermission.REPORT_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { RptGroupPermission.REPORT_AUTOCOMPLETE })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -156,16 +155,14 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 	@ResponseBody
 	@RequestMapping(value = "/search/count", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + RptGroupPermission.REPORT_COUNT + "')")
-	@ApiOperation(
-			value = "The number of entities that match the filter", 
-			nickname = "countReports", 
-			tags = { RptReportController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = RptGroupPermission.REPORT_COUNT, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = RptGroupPermission.REPORT_COUNT, description = "") })
-				})
+	@Operation(
+			summary = "The number of entities that match the filter", 
+			operationId = "countReports", 
+			tags = { RptReportController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { RptGroupPermission.REPORT_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { RptGroupPermission.REPORT_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -174,19 +171,27 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + RptGroupPermission.REPORT_READ + "')")
-	@ApiOperation(
-			value = "Report detail", 
-			nickname = "getReport", 
-			response = RptReportDto.class, 
-			tags = { RptReportController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = RptGroupPermission.REPORT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = RptGroupPermission.REPORT_READ, description = "") })
-				})
+	@Operation(
+			summary = "Report detail", 
+			operationId = "getReport", 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = RptReportDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { RptReportController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { RptGroupPermission.REPORT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { RptGroupPermission.REPORT_READ })
+    })
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Report's uuid identifier.", required = true)
+			 @Parameter(description = "Report's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -194,39 +199,48 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + RptGroupPermission.REPORT_CREATE + "')")
-	@ApiOperation(
-			value = "Create report", 
-			nickname = "createReport", 
-			response = RptReportDto.class, 
-			tags = { RptReportController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = RptGroupPermission.REPORT_CREATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = RptGroupPermission.REPORT_CREATE, description = "")})
-				})
+	@Operation(
+			summary = "Create report", 
+			operationId = "createReport", 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = RptReportDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { RptReportController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						RptGroupPermission.REPORT_CREATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						RptGroupPermission.REPORT_CREATE})
+        }
+    )
 	public ResponseEntity<?> createReport(@Valid @RequestBody RptReportDto report) {
 		checkAccess(report, IdmBasePermission.CREATE);
 		//
-		return new ResponseEntity<>(toResource(reportManager.generate(report)), HttpStatus.ACCEPTED);
+		return new ResponseEntity<>(toModel(reportManager.generate(report)), HttpStatus.ACCEPTED);
 	}
 	
 	@Override
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('" + RptGroupPermission.REPORT_DELETE + "')")
-	@ApiOperation(
-			value = "Delete report", 
-			nickname = "deleteReport", 
-			tags = { RptReportController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = RptGroupPermission.REPORT_DELETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = RptGroupPermission.REPORT_DELETE, description = "") })
-				})
+	@Operation(
+			summary = "Delete report", 
+			operationId = "deleteReport", 
+			tags = { RptReportController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { RptGroupPermission.REPORT_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { RptGroupPermission.REPORT_DELETE })
+    })
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "Report's uuid identifier.", required = true)
+			 @Parameter(description = "Report's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -236,20 +250,21 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + RptGroupPermission.REPORT_READ + "')"
 			+ " or hasAuthority('" + RptGroupPermission.REPORT_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "What logged identity can do with given record", 
-			nickname = "getPermissionsOnReport", 
-			tags = { RptReportController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = RptGroupPermission.REPORT_READ, description = ""),
-						@AuthorizationScope(scope = RptGroupPermission.REPORT_AUTOCOMPLETE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = RptGroupPermission.REPORT_READ, description = ""),
-						@AuthorizationScope(scope = RptGroupPermission.REPORT_AUTOCOMPLETE, description = "")})
-				})
+	@Operation(
+			summary = "What logged identity can do with given record", 
+			operationId = "getPermissionsOnReport", 
+			tags = { RptReportController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						RptGroupPermission.REPORT_READ,
+						RptGroupPermission.REPORT_AUTOCOMPLETE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						RptGroupPermission.REPORT_READ,
+						RptGroupPermission.REPORT_AUTOCOMPLETE})
+        }
+    )
 	public Set<String> getPermissions(
-			@ApiParam(value = "Report's uuid identifier.", required = true)
+			 @Parameter(description = "Report's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -259,9 +274,9 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/render", method = RequestMethod.GET)
 	public ResponseEntity<InputStreamResource> renderReport(
-			@ApiParam(value = "Report's uuid identifier.", required = true)
+			 @Parameter(description = "Report's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
-			@ApiParam(value = "Renderer's identifier.", required = true)
+			 @Parameter(description = "Renderer's identifier.", required = true)
 			@RequestParam(required = true, name = "renderer") @NotNull String rendererName) {
 		//
 		RptReportDto report = getDto(backendId);
@@ -319,16 +334,14 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 	@ResponseBody
 	@RequestMapping(value = "/bulk/actions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + RptGroupPermission.REPORT_READ + "')")
-	@ApiOperation(
-			value = "Get available bulk actions", 
-			nickname = "availableBulkAction", 
-			tags = { RptReportController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = RptGroupPermission.REPORT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = RptGroupPermission.REPORT_READ, description = "") })
-				})
+	@Operation(
+			summary = "Get available bulk actions", 
+			operationId = "availableBulkAction", 
+			tags = { RptReportController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { RptGroupPermission.REPORT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { RptGroupPermission.REPORT_READ })
+    })
 	public List<IdmBulkActionDto> getAvailableBulkActions() {
 		return super.getAvailableBulkActions();
 	}
@@ -337,17 +350,28 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 	@ResponseBody
 	@RequestMapping(path = "/bulk/action", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + RptGroupPermission.REPORT_READ + "')")
-	@ApiOperation(
-			value = "Process bulk action for report", 
-			nickname = "bulkAction", 
-			response = IdmBulkActionDto.class, 
-			tags = { RptReportController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = RptGroupPermission.REPORT_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = RptGroupPermission.REPORT_READ, description = "")})
-				})
+	@Operation(
+			summary = "Process bulk action for report", 
+			operationId = "bulkAction", 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { RptReportController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						RptGroupPermission.REPORT_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						RptGroupPermission.REPORT_READ})
+        }
+    )
 	public ResponseEntity<IdmBulkActionDto> bulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.bulkAction(bulkAction);
 	}
@@ -356,17 +380,28 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 	@ResponseBody
 	@RequestMapping(path = "/bulk/prevalidate", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + RptGroupPermission.REPORT_READ + "')")
-	@ApiOperation(
-			value = "Prevalidate bulk action for reports", 
-			nickname = "prevalidateBulkAction", 
-			response = IdmBulkActionDto.class, 
-			tags = { RptReportController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = RptGroupPermission.REPORT_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = RptGroupPermission.REPORT_READ, description = "")})
-				})
+	@Operation(
+			summary = "Prevalidate bulk action for reports", 
+			operationId = "prevalidateBulkAction", 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { RptReportController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						RptGroupPermission.REPORT_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						RptGroupPermission.REPORT_READ})
+        }
+    )
 	public ResponseEntity<ResultModels> prevalidateBulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.prevalidateBulkAction(bulkAction);
 	}
@@ -374,18 +409,16 @@ public class RptReportController extends AbstractReadWriteDtoController<RptRepor
 	@ResponseBody
 	@RequestMapping(path = "/search/supported", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + RptGroupPermission.REPORT_CREATE + "')")
-	@ApiOperation(
-			value = "Get supported reports", 
-			nickname = "getSupportedReports", 
-			tags={ RptReportController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = RptGroupPermission.REPORT_CREATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = RptGroupPermission.REPORT_CREATE, description = "") })
-				})
-	public Resources<RptReportExecutorDto> find() {
-		return new Resources<>(reportManager.getExecutors());
+	@Operation(
+			summary = "Get supported reports", 
+			operationId = "getSupportedReports", 
+			tags={ RptReportController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { RptGroupPermission.REPORT_CREATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { RptGroupPermission.REPORT_CREATE })
+    })
+	public CollectionModel<RptReportExecutorDto> find() {
+		return new CollectionModel<>(reportManager.getExecutors());
 	}
 	
 	@Override

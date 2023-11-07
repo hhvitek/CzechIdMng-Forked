@@ -469,7 +469,7 @@ public class DefaultIdmIdentityServiceIntegrationTest extends AbstractIntegratio
 		getHelper().createIdentity((GuardedString) null);
 		getHelper().createIdentity((GuardedString) null);
 		//
-		Page<UUID> findIds = identityService.findIds(null, PageRequest.of(0, 2, new Sort(Direction.ASC, IdmIdentity_.username.getName())));
+		Page<UUID> findIds = identityService.findIds(null, PageRequest.of(0, 2, Sort.by(Direction.ASC, IdmIdentity_.username.getName())));
 		UUID firstIdentity = findIds.getContent().get(0);
 		UUID secondIdentity = findIds.getContent().get(1);
 		//
@@ -477,7 +477,7 @@ public class DefaultIdmIdentityServiceIntegrationTest extends AbstractIntegratio
 		Assert.assertNotNull(secondIdentity);
 		Assert.assertTrue(findIds.getTotalElements() > 1);
 		//
-		findIds = identityService.findIds(null, PageRequest.of(0, 2, new Sort(Direction.DESC, IdmIdentity_.username.getName())));
+		findIds = identityService.findIds(null, PageRequest.of(0, 2, Sort.by(Direction.DESC, IdmIdentity_.username.getName())));
 		//
 		Assert.assertNotEquals(firstIdentity, findIds.getContent().get(0));
 		Assert.assertNotEquals(secondIdentity, findIds.getContent().get(1));

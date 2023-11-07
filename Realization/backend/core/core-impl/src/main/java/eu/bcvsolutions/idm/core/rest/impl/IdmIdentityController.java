@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.envers.exception.RevisionDoesNotExistException;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
@@ -21,10 +22,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.ResourceSupport;
-import org.springframework.hateoas.Resources;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -103,11 +104,14 @@ import eu.bcvsolutions.idm.core.rest.LongPollingSubscriber;
 import eu.bcvsolutions.idm.core.security.api.domain.IdentityBasePermission;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
 import eu.bcvsolutions.idm.core.security.api.service.GrantedAuthoritiesFactory;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Rest methods for IdmIdentity resource
@@ -117,13 +121,8 @@ import io.swagger.annotations.AuthorizationScope;
  * @author Tomáš Doischer
  */
 @RestController
-@RequestMapping(value = BaseDtoController.BASE_PATH + "/identities") //produces= BaseController.APPLICATION_HAL_JSON_VALUE - I have to remove this (username cannot have "@.com" in user name)
-@Api(
-		value = IdmIdentityController.TAG,  
-		tags = { IdmIdentityController.TAG }, 
-		description = "Operations with identities",
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = BaseDtoController.BASE_PATH + "/identities") //I have to remove this (username cannot have "@.com" in user name)
+@Tag(name = IdmIdentityController.TAG, description = "Operations with identities")
 public class IdmIdentityController extends AbstractFormableDtoController<IdmIdentityDto, IdmIdentityFilter> {
 
 	protected static final String TAG = "Identities";
@@ -157,18 +156,18 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_READ + "')")
-	@ApiOperation(
-			value = "Search identities (/search/quick alias)", 
-			nickname = "searchIdentities", 
-			tags = { IdmIdentityController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "") })
-				})
-	public Resources<?> find(
+	@Operation(
+			summary = "Search identities (/search/quick alias)", 
+			operationId = "searchIdentities",
+			tags = { IdmIdentityController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITY_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITY_READ })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -177,18 +176,18 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@ResponseBody
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_READ + "')")
-	@ApiOperation(
-			value = "Search identities", 
-			nickname = "searchQuickIdentities", 
-			tags = { IdmIdentityController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "") })
-				})
-	public Resources<?> findQuick(
+	@Operation(
+			summary = "Search identities", 
+			operationId = "searchQuickIdentities",
+			tags = { IdmIdentityController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITY_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITY_READ })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -197,18 +196,18 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@ResponseBody
 	@RequestMapping(value = "/search/autocomplete", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "Autocomplete identities (selectbox usage)", 
-			nickname = "autocompleteIdentities", 
-			tags = { IdmIdentityController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_AUTOCOMPLETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_AUTOCOMPLETE, description = "") })
-				})
-	public Resources<?> autocomplete(
+	@Operation(
+			summary = "Autocomplete identities (selectbox usage)", 
+			operationId = "autocompleteIdentities",
+			tags = { IdmIdentityController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITY_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITY_AUTOCOMPLETE })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -217,16 +216,14 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@ResponseBody
 	@RequestMapping(value = "/search/count", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_COUNT + "')")
-	@ApiOperation(
-			value = "The number of entities that match the filter", 
-			nickname = "countIdentities", 
-			tags = { IdmIdentityController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_COUNT, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_COUNT, description = "") })
-				})
+	@Operation(
+			summary = "The number of entities that match the filter", 
+			operationId = "countIdentities",
+			tags = { IdmIdentityController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITY_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITY_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -235,19 +232,27 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_READ + "')")
-	@ApiOperation(
-			value = "Identity detail", 
-			nickname = "getIdentity", 
-			response = IdmIdentityDto.class, 
-			tags = { IdmIdentityController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "") })
-				})
+	@Operation(
+			summary = "Identity detail", 
+			operationId = "getIdentity",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmIdentityDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { IdmIdentityController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITY_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITY_READ })
+    })
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -257,19 +262,30 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_CREATE + "')"
 			+ " or hasAuthority('" + CoreGroupPermission.IDENTITY_UPDATE + "')")
-	@ApiOperation(
-			value = "Create / update identity", 
-			nickname = "postIdentity", 
-			response = IdmIdentityDto.class, 
-			tags = { IdmIdentityController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_CREATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_UPDATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_CREATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_UPDATE, description = "")})
-				})
+	@Operation(
+			summary = "Create / update identity", 
+			operationId = "postIdentity",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmIdentityDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { IdmIdentityController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.IDENTITY_CREATE,
+						CoreGroupPermission.IDENTITY_UPDATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.IDENTITY_CREATE,
+						CoreGroupPermission.IDENTITY_UPDATE})
+        }
+    )
 	public ResponseEntity<?> post(@Valid @RequestBody IdmIdentityDto dto) {
 		return super.post(dto);
 	}
@@ -278,19 +294,27 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_UPDATE + "')")
-	@ApiOperation(
-			value = "Update identity", 
-			nickname = "putIdentity", 
-			response = IdmIdentityDto.class, 
-			tags = { IdmIdentityController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update identity", 
+			operationId = "putIdentity",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmIdentityDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { IdmIdentityController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITY_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITY_UPDATE })
+    })
 	public ResponseEntity<?> put(
-			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmIdentityDto dto) {
 		return super.put(backendId, dto);
@@ -300,19 +324,27 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PATCH)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_UPDATE + "')")
-	@ApiOperation(
-			value = "Update identity", 
-			nickname = "patchIdentity", 
-			response = IdmIdentityDto.class, 
-			tags = { IdmIdentityController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update identity", 
+			operationId = "patchIdentity",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmIdentityDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { IdmIdentityController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITY_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITY_UPDATE })
+    })
 	public ResponseEntity<?> patch(
-			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -327,26 +359,34 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_MANUALLYENABLE + "')")
 	@RequestMapping(value = "/{backendId}/enable", method = RequestMethod.PATCH)
-	@ApiOperation(
-			value = "Activate identity", 
-			nickname = "activateIdentity", 
-			response = IdmIdentityDto.class, 
+	@Operation(
+			summary = "Activate identity", 
+			operationId = "activateIdentity",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmIdentityDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { IdmIdentityController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_MANUALLYENABLE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_MANUALLYENABLE, description = "") })
-				},
-			notes = "Enable manually disabled identity. Identity will have automatically recounted state assigned by their contract state." )
+						description = "Enable manually disabled identity. Identity will have automatically recounted state assigned by their contract state." )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITY_MANUALLYENABLE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITY_MANUALLYENABLE })
+    })
 	public ResponseEntity<?> enable(
-			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		IdmIdentityDto identity = getDto(backendId);
 		if (identity == null) {
 			throw new ResultCodeException(CoreResultCode.NOT_FOUND, ImmutableMap.of("entity", backendId));
 		}
-		return new ResponseEntity<>(toResource(identityService.enable(identity.getId(), IdentityBasePermission.MANUALLYENABLE)), HttpStatus.OK);
+		return new ResponseEntity<>(toModel(identityService.enable(identity.getId(), IdentityBasePermission.MANUALLYENABLE)), HttpStatus.OK);
 	}
 	
 	/**
@@ -357,45 +397,51 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_MANUALLYDISABLE + "')")
 	@RequestMapping(value = "/{backendId}/disable", method = RequestMethod.PATCH)
-	@ApiOperation(
-			value = "Disable identity", 
-			nickname = "disableIdentity", 
-			response = IdmIdentityDto.class, 
-			tags = { IdmIdentityController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_MANUALLYDISABLE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_MANUALLYDISABLE, description = "") })
-				},
-			notes = "Disable identity manually. This identity will be disabled even with valid contracts."
+	@Operation(
+			summary = "Disable identity", 
+			operationId = "disableIdentity",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmIdentityDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { IdmIdentityController.TAG },
+			description = "Disable identity manually. This identity will be disabled even with valid contracts."
 					+ " Identity can be enabled manually again only. See 'enable' method." )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITY_MANUALLYDISABLE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITY_MANUALLYDISABLE })
+    })
 	public ResponseEntity<?> disable(
-			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		IdmIdentityDto identity = getDto(backendId);
 		if (identity == null) {
 			throw new ResultCodeException(CoreResultCode.NOT_FOUND, ImmutableMap.of("entity", backendId));
 		}
-		return new ResponseEntity<>(toResource(identityService.disable(identity.getId(), IdentityBasePermission.MANUALLYDISABLE)), HttpStatus.OK);
+		return new ResponseEntity<>(toModel(identityService.disable(identity.getId(), IdentityBasePermission.MANUALLYDISABLE)), HttpStatus.OK);
 	}
 
 	@Override
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_DELETE + "')")
-	@ApiOperation(
-			value = "Delete identity", 
-			nickname = "deleteIdentity", 
-			tags = { IdmIdentityController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_DELETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_DELETE, description = "") })
-				})
+	@Operation(
+			summary = "Delete identity", 
+			operationId = "deleteIdentity",
+			tags = { IdmIdentityController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITY_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITY_DELETE })
+    })
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -405,20 +451,21 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_READ + "')"
 			+ " or hasAuthority('" + CoreGroupPermission.IDENTITY_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "What logged identity can do with given record", 
-			nickname = "getPermissionsOnIdentity", 
-			tags = { IdmIdentityController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_AUTOCOMPLETE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_AUTOCOMPLETE, description = "")})
-				})
+	@Operation(
+			summary = "What logged identity can do with given record", 
+			operationId = "getPermissionsOnIdentity",
+			tags = { IdmIdentityController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.IDENTITY_READ,
+						CoreGroupPermission.IDENTITY_AUTOCOMPLETE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.IDENTITY_READ,
+						CoreGroupPermission.IDENTITY_AUTOCOMPLETE})
+        }
+    )
 	public Set<String> getPermissions(
-			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -432,16 +479,14 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@ResponseBody
 	@RequestMapping(value = "/bulk/actions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_READ + "')")
-	@ApiOperation(
-			value = "Get available bulk actions", 
-			nickname = "availableBulkAction", 
-			tags = { IdmIdentityController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "") })
-				})
+	@Operation(
+			summary = "Get available bulk actions", 
+			operationId = "availableBulkAction",
+			tags = { IdmIdentityController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITY_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITY_READ })
+    })
 	public List<IdmBulkActionDto> getAvailableBulkActions() {
 		return super.getAvailableBulkActions();
 	}
@@ -456,17 +501,28 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@ResponseBody
 	@RequestMapping(path = "/bulk/action", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_READ + "')")
-	@ApiOperation(
-			value = "Process bulk action for identity", 
-			nickname = "bulkAction", 
-			response = IdmBulkActionDto.class, 
-			tags = { IdmIdentityController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "")})
-				})
+	@Operation(
+			summary = "Process bulk action for identity", 
+			operationId = "bulkAction",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { IdmIdentityController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.IDENTITY_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.IDENTITY_READ})
+        }
+    )
 	public ResponseEntity<IdmBulkActionDto> bulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.bulkAction(bulkAction);
 	}
@@ -481,17 +537,28 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@ResponseBody
 	@RequestMapping(path = "/bulk/prevalidate", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_READ + "')")
-	@ApiOperation(
-			value = "Prevalidate bulk action for identities", 
-			nickname = "prevalidateBulkAction", 
-			response = IdmBulkActionDto.class, 
-			tags = { IdmIdentityController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "")})
-				})
+	@Operation(
+			summary = "Prevalidate bulk action for identities", 
+			operationId = "prevalidateBulkAction",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { IdmIdentityController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.IDENTITY_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.IDENTITY_READ})
+        }
+    )
 	public ResponseEntity<ResultModels> prevalidateBulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.prevalidateBulkAction(bulkAction);
 	}
@@ -500,17 +567,28 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@ResponseBody
 	@RequestMapping(path = "/bulk/preprocess", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_READ + "')")
-	@ApiOperation(
-			value = "Preprocess bulk action for identities", 
-			nickname = "preprocessBulkAction", 
-			response = IdmBulkActionDto.class, 
-			tags = { IdmIdentityController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "")})
-				})
+	@Operation(
+			summary = "Preprocess bulk action for identities", 
+			operationId = "preprocessBulkAction",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { IdmIdentityController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.IDENTITY_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.IDENTITY_READ})
+        }
+    )
 	public ResponseEntity<IdmBulkActionDto> preprocessBulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.preprocessBulkAction(bulkAction);
 	}
@@ -524,18 +602,16 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/authorities", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_READ + "')")
-	@ApiOperation(
-			value = "Identity granted authorities", 
-			nickname = "getIdentityAuthorities", 
-			tags = { IdmIdentityController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "") })
-				})
+	@Operation(
+			summary = "Identity granted authorities", 
+			operationId = "getIdentityAuthorities",
+			tags = { IdmIdentityController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITY_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITY_READ })
+    })
 	public List<? extends GrantedAuthority> getGrantedAuthotrities(
-			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable String backendId) {
 		IdmIdentityDto identity = getDto(backendId);
 		if (identity == null) {
@@ -549,19 +625,17 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/incompatible-roles", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_READ + "')")
-	@ApiOperation(
-			value = "Incompatible roles assigned to identity", 
-			nickname = "getIdentityIncompatibleRoles", 
+	@Operation(
+			summary = "Incompatible roles assigned to identity", 
+			operationId = "getIdentityIncompatibleRoles",
 			tags = { IdmIdentityController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "") })
-				},
-			notes = "Incompatible roles are resolved from assigned identity roles, which can logged used read.")
-	public Resources<?> getIncompatibleRoles(
-			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
+						description = "Incompatible roles are resolved from assigned identity roles, which can logged used read.")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITY_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITY_READ })
+    })
+	public CollectionModel<?> getIncompatibleRoles(
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable String backendId) {	
 		IdmIdentityDto identity = getDto(backendId);
 		if (identity == null) {
@@ -583,7 +657,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 					.collect(Collectors.toList())
 				);
 		//
-		return toResources(incompatibleRoles, ResolvedIncompatibleRoleDto.class);
+		return toCollectionModel(incompatibleRoles, ResolvedIncompatibleRoleDto.class);
 	}
 	
 	/**
@@ -595,18 +669,16 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/work-position", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_READ + "')")
-	@ApiOperation(
-			value = "Identity prime position in organization.", 
-			nickname = "getIdentityPosition", 
-			tags = { IdmIdentityController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "") })
-				})
+	@Operation(
+			summary = "Identity prime position in organization.", 
+			operationId = "getIdentityPosition",
+			tags = { IdmIdentityController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITY_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITY_READ })
+    })
 	public ResponseEntity<?> organizationPosition(
-			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable String backendId) {
 		IdmIdentityDto identity = getDto(backendId);
 		if (identity == null) {
@@ -620,7 +692,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 		WorkPositionDto position = new WorkPositionDto(identity, primeContract);
 		if (primeContract.getWorkPosition() != null) {
 			IdmTreeNodeDto contractPosition = treeNodeService.get(primeContract.getWorkPosition());
-			position.getPath().addAll(treeNodeService.findAllParents(contractPosition.getId(), new Sort(Direction.ASC, "forestIndex.lft")));
+			position.getPath().addAll(treeNodeService.findAllParents(contractPosition.getId(), Sort.by(Direction.ASC, "forestIndex.lft")));
 			position.getPath().add(contractPosition);
 		}
 		return new ResponseEntity<WorkPositionDto>(position, HttpStatus.OK);
@@ -629,20 +701,18 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/revisions/{revId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_READ + "')")
-	@ApiOperation(
-			value = "Identity audit - read revision detail", 
-			nickname = "getIdentityRevision", 
-			tags = { IdmIdentityController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "") })
-				})
+	@Operation(
+			summary = "Identity audit - read revision detail", 
+			operationId = "getIdentityRevision",
+			tags = { IdmIdentityController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITY_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITY_READ })
+    })
 	public ResponseEntity<?> findRevision(
-			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable("backendId") String backendId, 
-			@ApiParam(value = "Revision identifier.", required = true)
+			 @Parameter(description = "Revision identifier.", required = true)
 			@PathVariable("revId") Long revId) {
 		IdmIdentityDto originalEntity = getDto(backendId);
 		if (originalEntity == null) {
@@ -662,18 +732,16 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/revisions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_READ + "')")
-	@ApiOperation(
-			value = "Identity audit - read all revisions", 
-			nickname = "getIdentityRevisions", 
-			tags = { IdmIdentityController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "") })
-				})
-	public Resources<?> findRevisions(
-			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
+	@Operation(
+			summary = "Identity audit - read all revisions", 
+			operationId = "getIdentityRevisions",
+			tags = { IdmIdentityController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITY_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITY_READ })
+    })
+	public CollectionModel<?> findRevisions(
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable("backendId") String backendId, 
 			Pageable pageable) {
 		IdmIdentityDto originalEntity = getDto(backendId);
@@ -682,27 +750,28 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 		}
 		// get original entity id
 		Page<IdmAuditDto> results = this.auditService.findRevisionsForEntity(IdmIdentity.class.getSimpleName(), originalEntity.getId(), pageable);
-		return toResources(results, IdmAuditDto.class);
+		return toCollectionModel(results, IdmAuditDto.class);
 	}
 	
 	@Override
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/form-definitions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_READ + "')")
-	@ApiOperation(
-			value = "Identity extended attributes form definitions", 
-			nickname = "getIdentityFormDefinitions", 
-			tags = { IdmIdentityController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_AUTOCOMPLETE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_AUTOCOMPLETE, description = "")})
-				})
+	@Operation(
+			summary = "Identity extended attributes form definitions", 
+			operationId = "getIdentityFormDefinitions",
+			tags = { IdmIdentityController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.IDENTITY_READ,
+						CoreGroupPermission.FORM_DEFINITION_AUTOCOMPLETE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.IDENTITY_READ,
+						CoreGroupPermission.FORM_DEFINITION_AUTOCOMPLETE})
+        }
+    )
 	public ResponseEntity<?> getFormDefinitions(
-			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getFormDefinitions(backendId);
 	}
@@ -711,18 +780,19 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@ResponseBody
 	@RequestMapping(value = "/form-values/prepare", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_READ + "')")
-	@ApiOperation(
-			value = "Identity form definition - prepare available values", 
-			nickname = "prepareIdentityFormValues", 
-			tags = { IdmIdentityController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "")})
-				})
-	public Resource<?> prepareFormValues(
-			@ApiParam(value = "Code of form definition (default will be used if no code is given).", required = false, defaultValue = FormService.DEFAULT_DEFINITION_CODE)
+	@Operation(
+			summary = "Identity form definition - prepare available values", 
+			operationId = "prepareIdentityFormValues",
+			tags = { IdmIdentityController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.IDENTITY_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.IDENTITY_READ})
+        }
+    )
+	public EntityModel<?> prepareFormValues(
+			 @Parameter(description = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
 			@RequestParam(name = IdmFormAttributeFilter.PARAMETER_FORM_DEFINITION_CODE, required = false) String definitionCode) {
 		return super.prepareFormValues(definitionCode);
 	}
@@ -736,20 +806,21 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/form-values", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_READ + "')")
-	@ApiOperation(
-			value = "Identity form definition - read values", 
-			nickname = "getIdentityFormValues", 
-			tags = { IdmIdentityController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "")})
-				})
-	public Resource<?> getFormValues(
-			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
+	@Operation(
+			summary = "Identity form definition - read values", 
+			operationId = "getIdentityFormValues",
+			tags = { IdmIdentityController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.IDENTITY_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.IDENTITY_READ})
+        }
+    )
+	public EntityModel<?> getFormValues(
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId, 
-			@ApiParam(value = "Code of form definition (default will be used if no code is given).", required = false, defaultValue = FormService.DEFAULT_DEFINITION_CODE)
+			 @Parameter(description = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
 			@RequestParam(name = IdmFormAttributeFilter.PARAMETER_FORM_DEFINITION_CODE, required = false) String definitionCode) {
 		IdmIdentityDto dto = getDto(backendId);
 		if (dto == null) {
@@ -775,25 +846,26 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_UPDATE + "')"
 			+ "or hasAuthority('" + CoreGroupPermission.FORM_VALUE_UPDATE + "')")
 	@RequestMapping(value = "/{backendId}/form-values", method = { RequestMethod.POST, RequestMethod.PATCH })
-	@ApiOperation(
-			value = "Identity form definition - save values", 
-			nickname = "postIdentityFormValues", 
+	@Operation(
+			summary = "Identity form definition - save values", 
+			operationId = "postIdentityFormValues",
 			tags = { IdmIdentityController.TAG }, 
-			notes = "Only given form attributes by the given values will be saved.",
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_UPDATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_VALUE_UPDATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_UPDATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_VALUE_UPDATE, description = "")})
-				})
-	public Resource<?> saveFormValues(
-			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
+			description = "Only given form attributes by the given values will be saved.")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.IDENTITY_UPDATE,
+						CoreGroupPermission.FORM_VALUE_UPDATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.IDENTITY_UPDATE,
+						CoreGroupPermission.FORM_VALUE_UPDATE})
+        }
+    )
+	public EntityModel<?> saveFormValues(
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId,
-			@ApiParam(value = "Code of form definition (default will be used if no code is given).", required = false, defaultValue = FormService.DEFAULT_DEFINITION_CODE)
+			 @Parameter(description = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
 			@RequestParam(name = IdmFormAttributeFilter.PARAMETER_FORM_DEFINITION_CODE, required = false) String definitionCode,
-			@ApiParam(value = "Filled form data.", required = true)
+			 @Parameter(description = "Filled form data.", required = true)
 			@RequestBody @Valid List<IdmFormValueDto> formValues) {		
 		IdmIdentityDto dto = getDto(backendId);
 		if (dto == null) {
@@ -820,20 +892,21 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_UPDATE + "')"
 			+ "or hasAuthority('" + CoreGroupPermission.FORM_VALUE_UPDATE + "')")
 	@RequestMapping(value = "/{backendId}/form-value", method = { RequestMethod.POST } )
-	@ApiOperation(
-			value = "Identity form definition - save value", 
-			nickname = "postRoleFormValue", 
-			tags = { IdmIdentityController.TAG }, 
-			authorizations = { 
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_UPDATE, description = ""),
-							@AuthorizationScope(scope = CoreGroupPermission.FORM_VALUE_UPDATE, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_UPDATE, description = ""),
-							@AuthorizationScope(scope = CoreGroupPermission.FORM_VALUE_UPDATE, description = "")})
-					})
-	public Resource<?> saveFormValue(
-			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
+	@Operation(
+			summary = "Identity form definition - save value", 
+			operationId = "postRoleFormValue",
+			tags = { IdmIdentityController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+							CoreGroupPermission.IDENTITY_UPDATE,
+							CoreGroupPermission.FORM_VALUE_UPDATE}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+							CoreGroupPermission.IDENTITY_UPDATE,
+							CoreGroupPermission.FORM_VALUE_UPDATE})
+        }
+    )
+	public EntityModel<?> saveFormValue(
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @Valid IdmFormValueDto formValue) {		
 		IdmIdentityDto dto = getDto(backendId);
@@ -855,21 +928,19 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@RequestMapping(value = "/{backendId}/form-values/{formValueId}/download", method = RequestMethod.GET)
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_READ + "')")
-	@ApiOperation(
-			value = "Download form value attachment", 
-			nickname = "downloadFormValue",
+	@Operation(
+			summary = "Download form value attachment", 
+			operationId = "downloadFormValue",
 			tags = { IdmIdentityController.TAG },
-			notes = "Returns input stream to attachment saved in given form value.",
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "") })
-					})
+			description = "Returns input stream to attachment saved in given form value.")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITY_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITY_READ })
+    })
 	public ResponseEntity<InputStreamResource> downloadFormValue(
-			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable String backendId,
-			@ApiParam(value = "Form value identifier.", required = true)
+			 @Parameter(description = "Form value identifier.", required = true)
 			@PathVariable String formValueId) {
 		IdmIdentityDto dto = getDto(backendId);
 		if (dto == null) {
@@ -893,21 +964,19 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@RequestMapping(value = "/{backendId}/form-values/{formValueId}/preview", method = RequestMethod.GET)
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_READ + "')")
-	@ApiOperation(
-			value = "Download form value attachment preview", 
-			nickname = "downloadFormValue",
+	@Operation(
+			summary = "Download form value attachment preview", 
+			operationId = "downloadFormValue",
 			tags = { IdmIdentityController.TAG },
-			notes = "Returns input stream to attachment preview saved in given form value. Preview is supported for the png, jpg and jpeg mime types only",
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "") })
-					})
+			description = "Returns input stream to attachment preview saved in given form value. Preview is supported for the png, jpg and jpeg mime types only")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.IDENTITY_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.IDENTITY_READ })
+    })
 	public ResponseEntity<InputStreamResource> previewFormValue(
-			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable String backendId,
-			@ApiParam(value = "Form value identifier.", required = true)
+			 @Parameter(description = "Form value identifier.", required = true)
 			@PathVariable String formValueId) {
 		IdmIdentityDto dto = getDto(backendId);
 		if (dto == null) {
@@ -929,20 +998,29 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@RequestMapping(value = "/{backendId}/profile", method = RequestMethod.GET)
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.PROFILE_READ + "')")
-	@ApiOperation(
-			value = "Profile", 
-			nickname = "getProfile",
-			tags = { IdmIdentityController.TAG },
-			notes = "Returns identity profile.",
-			response = IdmProfileDto.class, 
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.PROFILE_READ, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.PROFILE_READ, description = "") })
-					})
+	@Operation(
+        summary = "Profile",
+        operationId = "getProfile",
+        tags = { IdmIdentityController.TAG },
+        description = "Returns identity profile.",
+        responses = @ApiResponse(
+            responseCode = "200",
+            content = {
+                @Content(
+                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                    schema = @Schema(
+                        implementation = IdmProfileDto.class
+                    )
+                )
+            }
+        )
+    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.PROFILE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.PROFILE_READ })
+    })
 	public ResponseEntity<?> getProfile(
-			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable String backendId) {
 		IdmProfileDto profile = profileService.findOneByIdentity(backendId, IdmBasePermission.READ);
 		if (profile == null) {
@@ -960,20 +1038,29 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@RequestMapping(value = "/{backendId}/profile", method = RequestMethod.PATCH)
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.PROFILE_UPDATE + "')")
-	@ApiOperation(
-			value = "Save profile (create + patch)", 
-			nickname = "patchProfile",
-			tags = { IdmIdentityController.TAG },
-			notes = "Save identity profile. Profile is created, when no profile is found, then is updated (patch).",
-			response = IdmProfileDto.class, 
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.PROFILE_UPDATE, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.PROFILE_UPDATE, description = "") })
-					})
+	@Operation(
+        summary = "Save profile (create + patch)",
+        operationId = "patchProfile",
+        tags = { IdmIdentityController.TAG },
+        description = "Save identity profile. Profile is created, when no profile is found, then is updated (patch).",
+        responses = @ApiResponse(
+            responseCode = "200",
+            content = {
+                @Content(
+                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                    schema = @Schema(
+                        implementation = IdmProfileDto.class
+                    )
+                )
+            }
+        )
+    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.PROFILE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.PROFILE_UPDATE })
+    })
 	public ResponseEntity<?> patchProfile(
-			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable String backendId,
 			HttpServletRequest nativeRequest) throws HttpMessageNotReadableException {
 		IdmProfileDto profile = profileService.findOrCreateByIdentity(backendId, IdmBasePermission.UPDATE);
@@ -990,19 +1077,17 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@RequestMapping(value = "/{backendId}/profile/image", method = RequestMethod.GET)
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.PROFILE_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "Profile image", 
-			nickname = "getProfileImage",
+	@Operation(
+			summary = "Profile image", 
+			operationId = "getProfileImage",
 			tags = { IdmIdentityController.TAG },
-			notes = "Returns input stream to identity profile image.",
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.PROFILE_AUTOCOMPLETE, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.PROFILE_AUTOCOMPLETE, description = "") })
-					})
+			description = "Returns input stream to identity profile image.")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.PROFILE_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.PROFILE_AUTOCOMPLETE })
+    })
 	public ResponseEntity<InputStreamResource> getProfileImage(
-			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable String backendId) {
 		IdmProfileDto profile = profileService.findOneByIdentity(backendId, IdmBasePermission.AUTOCOMPLETE);
 		if (profile == null) {
@@ -1043,19 +1128,18 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/profile/image", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.PROFILE_UPDATE + "')")
-	@ApiOperation(
-			value = "Update profile picture", 
-			nickname = "postProfilePicture", 
+	@Operation(
+			summary = "Update profile picture", 
+			operationId = "postProfilePicture",
 			tags = {
 			IdmProfileController.TAG }, 
-			notes = "Upload new profile image",
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.PROFILE_UPDATE, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.PROFILE_UPDATE, description = "") }) })
+			description = "Upload new profile image")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.PROFILE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.PROFILE_UPDATE })
+    })
 	public ResponseEntity<?> uploadProfileImage(
-			@ApiParam(value = "Identity's uuid identifier or username.", required = false) 
+			 @Parameter(description = "Identity's uuid identifier or username.", required = false) 
 			@PathVariable String backendId,
 			@RequestParam(required = true, name = "fileName") @NotNull String fileName,
 			@RequestParam(required = true, name = "data") MultipartFile data) {
@@ -1067,7 +1151,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 		context.setAddPermissions(true);
 		profile = profileController.getService().get(profile, context, IdmBasePermission.READ);
 		//
-		return new ResponseEntity<>(profileController.toResource(profile), HttpStatus.OK);
+		return new ResponseEntity<>(profileController.toModel(profile), HttpStatus.OK);
 	}
 	
 	/**
@@ -1079,19 +1163,17 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@RequestMapping(value = "/{backendId}/profile/image", method = RequestMethod.DELETE)
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.PROFILE_UPDATE + "')")
-	@ApiOperation(
-			value = "Profile picture", 
-			nickname = "deleteProfilePicure",
+	@Operation(
+			summary = "Profile picture", 
+			operationId = "deleteProfilePicure",
 			tags = { IdmIdentityController.TAG },
-			notes = "Deletes profile picture from identity.",
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.PROFILE_UPDATE, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.PROFILE_UPDATE, description = "") })
-					})
+			description = "Deletes profile picture from identity.")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.PROFILE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.PROFILE_UPDATE })
+    })
 	public ResponseEntity<?> deleteProfileImage(
-			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable String backendId) {
 		IdmProfileDto profile = profileService.findOneByIdentity(backendId, IdmBasePermission.READ, IdmBasePermission.UPDATE);
 		//
@@ -1101,7 +1183,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 		context.setAddPermissions(true);
 		profile = profileController.getService().get(profile, context, IdmBasePermission.READ);
 		//
-		return new ResponseEntity<>(profileController.toResource(profile), HttpStatus.OK);
+		return new ResponseEntity<>(profileController.toModel(profile), HttpStatus.OK);
 	}
 	
 	/**
@@ -1115,21 +1197,19 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@RequestMapping(value = "/{backendId}/profile/panels/{panelId}/collapse", method = RequestMethod.PATCH)
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.PROFILE_UPDATE + "')")
-	@ApiOperation(
-			value = "Collapse panel", 
-			nickname = "collapsePanel",
+	@Operation(
+			summary = "Collapse panel", 
+			operationId = "collapsePanel",
 			tags = { IdmIdentityController.TAG },
-			notes = "Collapse panel - persist updated identity profile setting.",
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.PROFILE_UPDATE, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.PROFILE_UPDATE, description = "") })
-					})
+			description = "Collapse panel - persist updated identity profile setting.")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.PROFILE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.PROFILE_UPDATE })
+    })
 	public ResponseEntity<?> collapsePanel(
-			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId,
-			@ApiParam(value = "Panel identifier - uiKey.", required = true)
+			 @Parameter(description = "Panel identifier - uiKey.", required = true)
 			@PathVariable @NotNull String panelId) {
 		IdmIdentityDto identity = getDto(backendId);
 		if (identity == null) {
@@ -1142,7 +1222,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 		context.setAddPermissions(true);
 		profile = profileController.getService().get(profile, context, IdmBasePermission.READ);
 		//
-		return new ResponseEntity<>(profileController.toResource(profile), HttpStatus.OK);
+		return new ResponseEntity<>(profileController.toModel(profile), HttpStatus.OK);
 	}
 	
 	/**
@@ -1156,21 +1236,19 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@RequestMapping(value = "/{backendId}/profile/panels/{panelId}/expand", method = RequestMethod.PATCH)
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.PROFILE_UPDATE + "')")
-	@ApiOperation(
-			value = "Expand panel", 
-			nickname = "expandPanel",
+	@Operation(
+			summary = "Expand panel", 
+			operationId = "expandPanel",
 			tags = { IdmIdentityController.TAG },
-			notes = "Expand panel - persist updated identity profile setting.",
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.PROFILE_UPDATE, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.PROFILE_UPDATE, description = "") })
-					})
+			description = "Expand panel - persist updated identity profile setting.")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.PROFILE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.PROFILE_UPDATE })
+    })
 	public ResponseEntity<?> expandPanel(
-			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId,
-			@ApiParam(value = "Panel identifier - uiKey.", required = true)
+			 @Parameter(description = "Panel identifier - uiKey.", required = true)
 			@PathVariable @NotNull String panelId) {
 		IdmIdentityDto identity = getDto(backendId);
 		if (identity == null) {
@@ -1183,7 +1261,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 		context.setAddPermissions(true);
 		profile = profileController.getService().get(profile, context, IdmBasePermission.READ);
 		//
-		return new ResponseEntity<>(profileController.toResource(profile), HttpStatus.OK);
+		return new ResponseEntity<>(profileController.toModel(profile), HttpStatus.OK);
 	}
 	
 	/**
@@ -1196,20 +1274,21 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@RequestMapping(value = "/{backendId}/profile/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.PROFILE_READ + "')"
 			+ " or hasAuthority('" + CoreGroupPermission.PROFILE_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "What logged identity can do with identity profile", 
-			nickname = "getPermissionsOnIdentityProfile", 
-			tags = { IdmIdentityController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.PROFILE_READ, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.PROFILE_AUTOCOMPLETE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.PROFILE_READ, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.PROFILE_AUTOCOMPLETE, description = "")})
-				})
+	@Operation(
+			summary = "What logged identity can do with identity profile", 
+			operationId = "getPermissionsOnIdentityProfile",
+			tags = { IdmIdentityController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.PROFILE_READ,
+						CoreGroupPermission.PROFILE_AUTOCOMPLETE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.PROFILE_READ,
+						CoreGroupPermission.PROFILE_AUTOCOMPLETE})
+        }
+    )
 	public Set<String> getProfilePermissions(
-			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		IdmProfileDto profile = profileService.findOneByIdentity(backendId);
 		if (profile == null) {
@@ -1228,19 +1307,27 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.PASSWORD_READ + "')")
 	@RequestMapping(value = "/{backendId}/password", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Get password by identity", 
-			nickname = "getIdentityPassword",
-			response = IdmPasswordDto.class, 
-			tags = { IdmPasswordController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.PASSWORD_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.PASSWORD_READ, description = "") })
-				})
+	@Operation(
+			summary = "Get password by identity", 
+			operationId = "getIdentityPassword",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmPasswordDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { IdmPasswordController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.PASSWORD_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.PASSWORD_READ })
+    })
 	public ResponseEntity<?> getPassword(
-			@ApiParam(value = "Identity's uuid identifier or username.", required = true)
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true)
 			@PathVariable @NotNull String backendId) {
 		IdmIdentityDto dto = getDto(backendId);
 		if (dto == null) {
@@ -1250,7 +1337,7 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 		if (passwordDto == null) {
 			return new ResponseEntity<InputStreamResource>(HttpStatus.NO_CONTENT);
 		}
-		return new ResponseEntity<>(passwordController.toResource(passwordDto), HttpStatus.OK);
+		return new ResponseEntity<>(passwordController.toModel(passwordDto), HttpStatus.OK);
 	}
 	
 	
@@ -1270,20 +1357,21 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	@RequestMapping(value = "{backendId}/check-unresolved-request", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.ROLE_REQUEST_READ + "')"
 			+ " and hasAuthority('" + CoreGroupPermission.IDENTITY_READ + "')")
-	@ApiOperation(
-			value = "Check changes of unresloved requests for the identity (Long-polling request).", 
-			nickname = "checkUnresolvedRequests", 
-			tags = { IdmIdentityController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLE_REQUEST_READ, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.ROLE_REQUEST_READ, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.IDENTITY_READ, description = "")})
-				})
+	@Operation(
+			summary = "Check changes of unresloved requests for the identity (Long-polling request).", 
+			operationId = "checkUnresolvedRequests",
+			tags = { IdmIdentityController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
+						CoreGroupPermission.ROLE_REQUEST_READ,
+						CoreGroupPermission.IDENTITY_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.ROLE_REQUEST_READ,
+						CoreGroupPermission.IDENTITY_READ})
+        }
+    )
 	public DeferredResult<OperationResultDto> checkUnresolvedRequests(
-			@ApiParam(value = "Identity's uuid identifier or username.", required = true) @PathVariable @NotNull String backendId) {
+			 @Parameter(description = "Identity's uuid identifier or username.", required = true) @PathVariable @NotNull String backendId) {
 		
 		IdmIdentityDto dto = getDto(backendId);
 		if (dto == null) {
@@ -1354,13 +1442,13 @@ public class IdmIdentityController extends AbstractFormableDtoController<IdmIden
 	}
 	
 	@Override
-	public ResourceSupport toResource(IdmIdentityDto dto) {
-		ResourceSupport resource = super.toResource(dto);
+	public RepresentationModel toModel(IdmIdentityDto dto) {
+		RepresentationModel resource = super.toModel(dto);
 		//
 		// add additional links to enable / disable identity
 		resource.add(
-				ControllerLinkBuilder.linkTo(this.getClass()).slash(dto.getId()).slash("profile").withRel("profile"),
-				ControllerLinkBuilder.linkTo(this.getClass()).slash(dto.getId()).slash("form-values").withRel("form-values")
+				WebMvcLinkBuilder.linkTo(this.getClass()).slash(dto.getId()).slash("profile").withRel("profile"),
+				WebMvcLinkBuilder.linkTo(this.getClass()).slash(dto.getId()).slash("form-values").withRel("form-values")
 		);
 		//
 		return resource;

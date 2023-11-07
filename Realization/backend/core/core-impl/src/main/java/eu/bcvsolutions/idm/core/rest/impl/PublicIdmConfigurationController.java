@@ -29,9 +29,12 @@ import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.service.ConfigurationService;
 import eu.bcvsolutions.idm.core.ecm.api.dto.IdmAttachmentDto;
 import eu.bcvsolutions.idm.core.ecm.api.service.AttachmentManager;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Provides public configurations.
@@ -41,11 +44,7 @@ import io.swagger.annotations.ApiParam;
  */
 @RestController
 @RequestMapping(value = BaseController.BASE_PATH + "/public/configurations")
-@Api( 
-		tags = { IdmConfigurationController.TAG }, 
-		description = "Public configuration items",
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = IdmConfigurationController.TAG, description = "Public configuration items")
 public class PublicIdmConfigurationController implements BaseController {
 	
 	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(PublicIdmConfigurationController.class);
@@ -68,9 +67,9 @@ public class PublicIdmConfigurationController implements BaseController {
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Read public configuration items", 
-			nickname = "findAllPublicConfigurations", 
+	@Operation(
+			summary = "Read public configuration items", 
+			operationId = "findAllPublicConfigurations", 
 			tags = { IdmConfigurationController.TAG })
 	public List<IdmConfigurationDto> getAllPublicConfigurations() {
 		// TODO: resource wrapper + assembler
@@ -84,9 +83,9 @@ public class PublicIdmConfigurationController implements BaseController {
 	 * @since 12.0.0
 	 */
 	@RequestMapping(value = "/application/logo", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Download application logo", 
-			nickname = "downloadApplicationLogo", 
+	@Operation(
+			summary = "Download application logo", 
+			operationId = "downloadApplicationLogo", 
 			tags = { IdmConfigurationController.TAG })
 	public ResponseEntity<InputStreamResource> downloadApplicationLogo() {
 		UUID uuid = applicationConfiguration.getApplicationLogoId();
@@ -129,13 +128,23 @@ public class PublicIdmConfigurationController implements BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/application/theme", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Identity detail", 
-			nickname = "getApplicationTheme", 
-			response = ThemeDto.class, 
+	@Operation(
+			summary = "Identity detail", 
+			operationId = "getApplicationTheme", 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = ThemeDto.class
+                                    )
+                            )
+                    }
+            ), 
 			tags = { IdmConfigurationController.TAG })
 	public ResponseEntity<ThemeDto> getApplicationTheme(
-			@ApiParam(value = "Theme type.", required = false, defaultValue = "light")
+			 @Parameter(description = "Theme type.", required = false, example = "light")
 			@RequestParam(name = "type", required = false) String themeType) {
 		//
 		// TODO: dark theme can be configured on BE - only for development on FE now only

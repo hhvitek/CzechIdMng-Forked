@@ -62,7 +62,7 @@ public class DefaultFormPropertyManager implements FormPropertyManager {
 	private FormPropertyConverter getPropertyConverter(IcConfigurationProperty propertyConfiguration) {
 		Assert.notNull(propertyConfiguration, "Property configuration is required");
 		//
-		return propertyConverters.getPluginFor(propertyConfiguration);
+		return propertyConverters.getPluginFor(propertyConfiguration).orElse(null);
 	}
 	
 	

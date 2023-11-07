@@ -7,9 +7,9 @@ import eu.bcvsolutions.idm.core.api.dto.IdmPasswordPolicyDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmSystemDto;
 import eu.bcvsolutions.idm.ic.api.IcConnectorInstance;
 import eu.bcvsolutions.idm.ic.impl.IcConnectorInstanceImpl;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.UUID;
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 /**
  * Target system setting - is used for account management and provisioning DTO
@@ -23,7 +23,7 @@ public class SysSystemDto extends IdmSystemDto {
 	private static final long serialVersionUID = 1L;
 	public static final String PROPERTY_REMOTE_SERVER = "remoteServer";
 
-	@ApiModelProperty(notes = "Provisioning is disabled on system - just account uid and ACM is executed. Provisioning operation is not created into queue, wish is not constructed.")
+	@Schema(description = "Provisioning is disabled on system - just account uid and ACM is executed. Provisioning operation is not created into queue, wish is not constructed.")
 	private boolean disabledProvisioning;  // @since 9.6.0
 	private boolean queue;
 	private Long version; // Optimistic lock - will be used with ETag

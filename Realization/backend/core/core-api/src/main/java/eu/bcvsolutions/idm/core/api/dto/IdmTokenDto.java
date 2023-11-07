@@ -7,14 +7,14 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 import eu.bcvsolutions.idm.core.api.domain.Auditable;
 import eu.bcvsolutions.idm.core.api.domain.ConfigurationMap;
 import eu.bcvsolutions.idm.core.api.domain.DefaultFieldLengths;
 import eu.bcvsolutions.idm.core.api.domain.Disableable;
 import eu.bcvsolutions.idm.core.api.domain.ExternalIdentifiable;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Persisted tokens.
@@ -28,7 +28,7 @@ public class IdmTokenDto extends AbstractDto implements Disableable, ExternalIde
 	private static final long serialVersionUID = 1L;
 	//
 	@Size(max = DefaultFieldLengths.NAME)
-	@ApiModelProperty(notes = "Unique external identifier.")
+	@Schema(description = "Unique external identifier.")
 	private String externalId;
 	@NotEmpty
 	@Size(min = 1, max = DefaultFieldLengths.NAME)

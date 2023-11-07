@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Abstract representation of wizard dto
@@ -24,7 +24,7 @@ public class AbstractWizardDto extends AbstractComponentDto {
 	private int order;
 
 	@JsonProperty(value = EmbeddedDto.PROPERTY_EMBEDDED, access = JsonProperty.Access.READ_ONLY)
-	@ApiModelProperty(accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY)
 	private Map<String, BaseDto> embedded;
 
 	public String getWizardStepName() {

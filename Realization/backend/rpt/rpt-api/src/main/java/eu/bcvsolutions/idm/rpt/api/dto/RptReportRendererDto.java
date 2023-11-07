@@ -1,6 +1,6 @@
 package eu.bcvsolutions.idm.rpt.api.dto;
 
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 import org.springframework.http.MediaType;
 
 import eu.bcvsolutions.idm.core.api.dto.AbstractComponentDto;

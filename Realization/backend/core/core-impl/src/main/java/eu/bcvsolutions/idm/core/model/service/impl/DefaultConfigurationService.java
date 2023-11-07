@@ -72,9 +72,8 @@ public class DefaultConfigurationService
 	private final IdmConfigurationRepository repository;
 	private final ConfidentialStorage confidentialStorage;
 	private final ConfigurableEnvironment env;
-	//
 	@Autowired private IdmCacheManager cacheManager;
-	
+	//
 	@Autowired
 	public DefaultConfigurationService(
 			IdmConfigurationRepository repository,

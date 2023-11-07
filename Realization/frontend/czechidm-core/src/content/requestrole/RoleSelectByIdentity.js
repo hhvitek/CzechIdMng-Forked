@@ -5,7 +5,13 @@ import Immutable from 'immutable';
 //
 import * as Basic from '../../components/basic';
 import * as Advanced from '../../components/advanced';
-import { RoleManager, IdentityManager, IdentityRoleManager, IdentityContractManager, ConfigurationManager } from '../../redux';
+import {
+  RoleManager,
+  IdentityManager,
+  IdentityRoleManager,
+  IdentityContractManager,
+  ConfigurationManager
+} from '../../redux';
 import ConfigLoader from '../../utils/ConfigLoader';
 //
 import SearchParameters from '../../domain/SearchParameters';
@@ -18,11 +24,11 @@ const TREE_COMPONENT_HEIGHT = 400;
 const IDENTITY_ROLE_BY_IDENTITY_UIKEY = 'identity-role-by-identity';
 
 /**
-* Component for select roles by identity.
-*
-* @author Ondrej Kopr
-* @author Radek Tomiška
-*/
+ * Component for select roles by identity.
+ *
+ * @author Ondrej Kopr
+ * @author Radek Tomiška
+ */
 class RoleSelectByIdentity extends Basic.AbstractContextComponent {
 
   constructor(props, context) {
@@ -53,7 +59,7 @@ class RoleSelectByIdentity extends Basic.AbstractContextComponent {
   }
 
   getValue() {
-    const { selectedIdentityRoles } = this.state;
+    const {selectedIdentityRoles} = this.state;
     return selectedIdentityRoles;
   }
 
@@ -66,8 +72,8 @@ class RoleSelectByIdentity extends Basic.AbstractContextComponent {
    * Whole request can be send to backend into rest.
    */
   createRoleRequestByIdentity() {
-    const { request } = this.props;
-    const { selectedIdentityRoles } = this.state;
+    const {request} = this.props;
+    const {selectedIdentityRoles} = this.state;
     const identityContract = this.refs.identityContract.getValue();
 
     const roleRequestByIdentity = {
@@ -86,7 +92,7 @@ class RoleSelectByIdentity extends Basic.AbstractContextComponent {
    * Return selected identity
    */
   getSelectedIdentity() {
-    const { selectedIdentity } = this.state;
+    const {selectedIdentity} = this.state;
     return selectedIdentity;
   }
 
@@ -174,7 +180,7 @@ class RoleSelectByIdentity extends Basic.AbstractContextComponent {
     if (event) {
       event.preventDefault();
     }
-    const { selectedIdentityRoles, identityRoleRoots } = this.state;
+    const {selectedIdentityRoles, identityRoleRoots} = this.state;
 
     // In add all case is mandatory check id, because roleRoots is object.
     identityRoleRoots.forEach(newIdentityRole => {
@@ -198,7 +204,7 @@ class RoleSelectByIdentity extends Basic.AbstractContextComponent {
       event.preventDefault();
     }
 
-    const { selectedIdentityRoles } = this.state;
+    const {selectedIdentityRoles} = this.state;
     const newIdentityRoles = this.refs.identityRoleSelect.getValue();
     newIdentityRoles.forEach(newIdentityRole => {
       if (_.findIndex(selectedIdentityRoles, (selectIdentityRole) => {
@@ -220,7 +226,7 @@ class RoleSelectByIdentity extends Basic.AbstractContextComponent {
     if (event) {
       event.preventDefault();
     }
-    const { selectedIdentityRoles } = this.state;
+    const {selectedIdentityRoles} = this.state;
     this.setState({
       selectedIdentityRoles: _.pullAll(selectedIdentityRoles, this.refs.selectedIdentityRoles.getValue())
     });
@@ -246,11 +252,16 @@ class RoleSelectByIdentity extends Basic.AbstractContextComponent {
       const identityContract = identityRole._embedded.identityContract;
       return (
         <span>
-          { `${this.roleManager.getNiceLabel(role)} - (${this.identityContractManager.getNiceLabel(identityContract, false)})` }
+          {`${this.roleManager.getNiceLabel(role)} - (${this.identityContractManager.getNiceLabel(identityContract, false)})`}
           <Basic.ShortText
-            value={ role.description }
-            maxLength={ 100 }
-            style={{ display: 'block', marginLeft: 15, fontSize: '0.95em', fontStyle: 'italic' }}/>
+            value={role.description}
+            maxLength={100}
+            style={{
+              display: 'block',
+              marginLeft: 15,
+              fontSize: '0.95em',
+              fontStyle: 'italic'
+            }}/>
         </span>
       );
     }
@@ -282,7 +293,11 @@ class RoleSelectByIdentity extends Basic.AbstractContextComponent {
       event.preventDefault();
     }
     const showOnlyDirectRoles = event.currentTarget.checked;
-    const { selectedIdentity, selectedIdentityContract, environment } = this.state;
+    const {
+      selectedIdentity,
+      selectedIdentityContract,
+      environment
+    } = this.state;
     //
     this.setState({
       showOnlyDirectRoles
@@ -292,12 +307,12 @@ class RoleSelectByIdentity extends Basic.AbstractContextComponent {
   }
 
   _selectedIdentityContract(identityContract) {
-    const { selectedIdentity, showOnlyDirectRoles, environment } = this.state;
+    const {selectedIdentity, showOnlyDirectRoles, environment} = this.state;
     this._changeIdentityOrContract(selectedIdentity, identityContract, showOnlyDirectRoles, environment);
   }
 
   _selectIdentity(identity) {
-    const { showOnlyDirectRoles, environment } = this.state;
+    const {showOnlyDirectRoles, environment} = this.state;
     this.refs.selectedIdentityContract.setValue(null);
     this._changeIdentityOrContract(identity, null, showOnlyDirectRoles, environment);
   }
@@ -322,7 +337,11 @@ class RoleSelectByIdentity extends Basic.AbstractContextComponent {
       }
     }
     //
-    const { selectedIdentity, selectedIdentityContract, showOnlyDirectRoles } = this.state;
+    const {
+      selectedIdentity,
+      selectedIdentityContract,
+      showOnlyDirectRoles
+    } = this.state;
     this.setState({
       environment: codes
     }, () => {
@@ -331,7 +350,13 @@ class RoleSelectByIdentity extends Basic.AbstractContextComponent {
   }
 
   render() {
-    const { identityRoles, identityRoleShowLoading, identityUsername, identity, showEnvironment } = this.props;
+    const {
+      identityRoles,
+      identityRoleShowLoading,
+      identityUsername,
+      identity,
+      showEnvironment
+    } = this.props;
     const {
       selectedIdentity,
       identityRoleRoots,
@@ -342,79 +367,82 @@ class RoleSelectByIdentity extends Basic.AbstractContextComponent {
     } = this.state;
 
     const existIdentityRoles = identityRoles && identityRoles.length > 0;
-    const buttonsStyle = { width: 34, height: 34, fontSize: 8, marginTop: 5 };
+    const buttonsStyle = {width: 34, height: 34, fontSize: 8, marginTop: 5};
     return (
       <div>
         <Basic.AbstractForm ref="form">
           <Basic.Row>
-            <Basic.Col lg={ 6 }>
+            <Basic.Col lg={6}>
               <Basic.ContentHeader
                 text={
                   <span>
-                    { this.i18n('source.header') }
-                    <small style={{ fontSize: '0.7em', marginLeft: 5 }}>
+                    {this.i18n('source.header')}
+                    <small style={{fontSize: '0.7em', marginLeft: 5}}>
                       <Basic.ShortText
-                        text={ identityManager.getNiceLabel(selectedIdentity) }
-                        maxLength={ 30 }
+                        text={identityManager.getNiceLabel(selectedIdentity)}
+                        maxLength={30}
                         cutChar=""/>
                     </small>
                   </span>
                 }
                 className="marginable"
-                style={{ paddingTop: 0 }}
+                style={{paddingTop: 0}}
                 icon="component:identity"/>
 
               <Advanced.IdentitySelect
                 ref="select"
-                label={ this.i18n('selectUser.label') }
-                helpBlock={ this.i18n('selectUser.help') }
-                onChange={ this._selectIdentity.bind(this) }
-                manager={ this.getIdentityManager() }/>
+                label={this.i18n('selectUser.label')}
+                helpBlock={this.i18n('selectUser.help')}
+                onChange={this._selectIdentity.bind(this)}
+                manager={this.getIdentityManager()}/>
 
               <Advanced.IdentityContractSelect
                 ref="selectedIdentityContract"
-                readOnly={ !selectedIdentity }
-                manager={ this.identityContractManager }
+                readOnly={!selectedIdentity}
+                manager={this.identityContractManager}
                 forceSearchParameters={
                   new SearchParameters().setFilter('identity', selectedIdentity ? selectedIdentity.username : null)
                 }
                 defaultSearchParameters={
                   new SearchParameters().clearSort()
                 }
-                pageSize={ 100 }
-                label={ this.i18n('selectIdentityContract.label') }
-                placeholder={ this.i18n('selectIdentityContract.placeholder') }
-                helpBlock={ this.i18n('selectIdentityContract.help') }
-                onChange={ this._selectedIdentityContract.bind(this) }
-                niceLabel={ (contract) => { return this.identityContractManager.getNiceLabel(contract, false); }}/>
+                pageSize={100}
+                label={this.i18n('selectIdentityContract.label')}
+                placeholder={this.i18n('selectIdentityContract.placeholder')}
+                helpBlock={this.i18n('selectIdentityContract.help')}
+                onChange={this._selectedIdentityContract.bind(this)}
+                niceLabel={(contract) => { return this.identityContractManager.getNiceLabel(contract, false); }}/>
 
               <Advanced.CodeListSelect
                 code="environment"
-                label={ this.i18n('entity.Role.environment.label') }
-                placeholder={ this.i18n('entity.Role.environment.help') }
+                label={this.i18n('entity.Role.environment.label')}
+                placeholder={this.i18n('entity.Role.environment.help')}
                 multiSelect
-                onChange={ this._onEnvironmentChange.bind(this) }
-                value={ environment }
-                helpBlock={ this.i18n('environment.help') }
-                hidden={ !showEnvironment }/>
+                onChange={this._onEnvironmentChange.bind(this)}
+                value={environment}
+                helpBlock={this.i18n('environment.help')}
+                hidden={!showEnvironment}/>
             </Basic.Col>
-            <Basic.Col lg={ 6 }>
+            <Basic.Col lg={6}>
               <Basic.ContentHeader
                 text={
                   <span>
-                    { this.i18n('target.header') }
-                    <small style={{ fontSize: '0.7em', marginLeft: 5 }}>
-                      <Basic.ShortText text={ identityManager.getNiceLabel(identity) } maxLength={ 30 } cutChar="" />
+                    {this.i18n('target.header')}
+                    <small style={{fontSize: '0.7em', marginLeft: 5}}>
+                      <Basic.ShortText
+                        text={identityManager.getNiceLabel(identity)}
+                        maxLength={30}
+                        cutChar=""/>
                     </small>
                   </span>
                 }
                 className="marginable"
-                style={{ paddingTop: 0 }}
+                style={{paddingTop: 0}}
                 icon="fa:arrow-right"/>
 
               <Advanced.IdentityContractSelect
                 ref="identityContract"
-                manager={ this.identityContractManager }
+                manager={this.identityContractManager}
                 forceSearchParameters={
                   new SearchParameters()
                     .setFilter('identity', identityUsername)
@@ -425,42 +453,49 @@ class RoleSelectByIdentity extends Basic.AbstractContextComponent {
                 defaultSearchParameters={
                   new SearchParameters().clearSort()
                 }
-                pageSize={ 100 }
-                label={ this.i18n('targetIdentityContract.label') }
-                placeholder={ this.i18n('entity.IdentityRole.identityContract.placeholder') }
-                helpBlock={ this.i18n('entity.IdentityRole.identityContract.help') }
-                returnProperty={ false }
-                niceLabel={ (contract) => { return this.identityContractManager.getNiceLabel(contract, false); }}
-                value={ selectedIdentityContract }
+                pageSize={100}
+                label={this.i18n('targetIdentityContract.label')}
+                placeholder={this.i18n('entity.IdentityRole.identityContract.placeholder')}
+                helpBlock={this.i18n('entity.IdentityRole.identityContract.help')}
+                returnProperty={false}
+                niceLabel={(contract) => { return this.identityContractManager.getNiceLabel(contract, false); }}
+                value={selectedIdentityContract}
                 required
                 useFirst
-                clearable={ false }/>
+                clearable={false}/>
 
               <Basic.DateTimePicker
                 mode="date"
                 ref="validFrom"
-                label={ this.i18n('label.validFrom') }/>
+                label={this.i18n('label.validFrom')}/>
 
               <Basic.DateTimePicker
                 mode="date"
                 ref="validTill"
-                label={ this.i18n('label.validTill') }/>
+                label={this.i18n('label.validTill')}/>
 
               <Basic.Checkbox
                 ref="copyRoleParameters"
-                label={ this.i18n('copyRoleParameters.label') }
-                helpBlock={ this.i18n('copyRoleParameters.help') }/>
+                label={this.i18n('copyRoleParameters.label')}
+                helpBlock={this.i18n('copyRoleParameters.help')}/>
             </Basic.Col>
           </Basic.Row>
         </Basic.AbstractForm>
         <Basic.Alert
-          rendered={ !existIdentityRoles }
+          rendered={!existIdentityRoles}
           level="info"
-          text={ selectedIdentity ? this.i18n('noIdentityRoles') : this.i18n('noIdentity') }/>
-        <Basic.Div rendered={ existIdentityRoles && identityRoleRoots.length > 0 }>
-          <Basic.Div style={{ marginLeft: -15, marginRight: -15 }}>
-            <Basic.ContentHeader text={ this.i18n('roleSelectionHeader') } style={{ paddingRight: 15, paddingLeft: 15, marginBottom: 0 }}/>
-            <div style={{ display: 'flex' }}>
+          text={selectedIdentity ? this.i18n('noIdentityRoles') : this.i18n('noIdentity')}/>
+        <Basic.Div
+          rendered={existIdentityRoles && identityRoleRoots.length > 0}>
+          <Basic.Div style={{marginLeft: -15, marginRight: -15}}>
+            <Basic.ContentHeader
+              text={this.i18n('roleSelectionHeader')}
+              style={{
+                paddingRight: 15,
+                paddingLeft: 15,
+                marginBottom: 0
+              }}/>
+            <div style={{display: 'flex'}}>
               <div
                 style={{
                   flex: 1,
@@ -470,65 +505,65 @@ class RoleSelectByIdentity extends Basic.AbstractContextComponent {
                   minHeight: TREE_COMPONENT_HEIGHT
                 }}>
                 <Advanced.Tree
-                  showLoading={ identityRoleShowLoading }
+                  showLoading={identityRoleShowLoading}
                   ref="identityRoleSelect"
                   uiKey="roles-tree"
-                  manager={ identityRoleManager }
-                  roots={ identityRoleRoots }
+                  manager={identityRoleManager}
+                  roots={identityRoleRoots}
                   multiSelect
                   traverse
                   showRefreshButton={false}
-                  nodeNiceLabel={ this._identityRoleNiceLabel.bind(this) }
-                  nodeIcon={ this._identityRoleIcon.bind(this)}
-                  nodeIconClassName={ null }
-                  header={ this.i18n('roleSelect', { username: identityManager.getNiceLabel(selectedIdentity) }) }
-                  bodyStyle={{ overflowX: 'visible' }}/>
+                  nodeNiceLabel={this._identityRoleNiceLabel.bind(this)}
+                  nodeIcon={this._identityRoleIcon.bind(this)}
+                  nodeIconClassName={null}
+                  header={this.i18n('roleSelect', {username: identityManager.getNiceLabel(selectedIdentity)})}
+                  bodyStyle={{overflowX: 'visible'}}/>
               </div>
 
               <div
                 className="text-center"
-                style={{ marginTop: 100, width: 50 }}>
+                style={{marginTop: 100, width: 50}}>
                 <Basic.Row>
                   <Basic.Button
-                    onClick={ this._addAllIdentityRoles.bind(this) }
-                    title={ this.i18n('buttons.addAllIdentityRoles') }
+                    onClick={this._addAllIdentityRoles.bind(this)}
+                    title={this.i18n('buttons.addAllIdentityRoles')}
                     titleDelayShow="0"
                     ref="addAll"
                     level="success"
-                    style={ buttonsStyle }>
+                    style={buttonsStyle}>
                     <Basic.Icon icon="fa:chevron-right"/>
                     <Basic.Icon icon="fa:chevron-right"/>
                   </Basic.Button>
                 </Basic.Row>
                 <Basic.Row>
                   <Basic.Button
-                    style={ buttonsStyle }
+                    style={buttonsStyle}
                     level="success"
                     titleDelayShow="0"
-                    title={ this.i18n('buttons.addSelectedIdentityRoles') }
-                    onClick={ this._addSelectedIdentityRoles.bind(this) }
+                    title={this.i18n('buttons.addSelectedIdentityRoles')}
+                    onClick={this._addSelectedIdentityRoles.bind(this)}
                     ref="addSelected">
                     <Basic.Icon icon="fa:chevron-right"/>
                   </Basic.Button>
                 </Basic.Row>
                 <Basic.Row>
                   <Basic.Button
-                    style={ buttonsStyle }
+                    style={buttonsStyle}
                     level="danger"
                     titleDelayShow="0"
-                    title={ this.i18n('buttons.removeSelectedIdentityRoles') }
-                    onClick={ this._removeSelectedIdentityRoles.bind(this) }
+                    title={this.i18n('buttons.removeSelectedIdentityRoles')}
+                    onClick={this._removeSelectedIdentityRoles.bind(this)}
                     ref="removeSelected">
                     <Basic.Icon icon="fa:chevron-left"/>
                   </Basic.Button>
                 </Basic.Row>
                 <Basic.Row>
                   <Basic.Button
-                    style={ buttonsStyle }
+                    style={buttonsStyle}
                     level="danger"
                     titleDelayShow="0"
-                    title={ this.i18n('buttons.removeAllIdentityRoles') }
-                    onClick={ this._removeAllIdentityRoles.bind(this) }
+                    title={this.i18n('buttons.removeAllIdentityRoles')}
+                    onClick={this._removeAllIdentityRoles.bind(this)}
                     ref="removeAll">
                     <Basic.Icon icon="fa:chevron-left"/>
                     <Basic.Icon icon="fa:chevron-left"/>
@@ -545,37 +580,47 @@ class RoleSelectByIdentity extends Basic.AbstractContextComponent {
                   maxHeight: TREE_COMPONENT_HEIGHT
                 }}>
                 <Advanced.Tree
-                  showLoading={ identityRoleShowLoading }
+                  showLoading={identityRoleShowLoading}
                   ref="selectedIdentityRoles"
                   uiKey="selected-identity-roles-tree"
-                  manager={ identityRoleManager }
-                  roots={ selectedIdentityRoles }
+                  manager={identityRoleManager}
+                  roots={selectedIdentityRoles}
                   multiSelect
                   traverse
-                  showRefreshButton={ false }
-                  noData={ this.i18n('noSelectedIdentityRoles') }
-                  nodeNiceLabel={ this._identityRoleNiceLabel.bind(this) }
-                  nodeIcon={ this._identityRoleIcon.bind(this) }
-                  nodeIconClassName={ null }
-                  header={ this.i18n('selectedIdentityRoles') }
-                  bodyStyle={{ overflowX: 'visible' }}/>
+                  showRefreshButton={false}
+                  noData={this.i18n('noSelectedIdentityRoles')}
+                  nodeNiceLabel={this._identityRoleNiceLabel.bind(this)}
+                  nodeIcon={this._identityRoleIcon.bind(this)}
+                  nodeIconClassName={null}
+                  header={this.i18n('selectedIdentityRoles')}
+                  bodyStyle={{overflowX: 'visible'}}/>
               </div>
             </div>
           </Basic.Div>
 
           <Basic.Checkbox
-            value={ showOnlyDirectRoles }
-            label={ this.i18n('showOnlyDirectRoles.label', { escape: false }) }
-            helpBlock={ this.i18n('showOnlyDirectRoles.help', { escape: false }) }
-            onChange={ this._showDirectRoles.bind(this) }/>
+            value={showOnlyDirectRoles}
+            label={this.i18n('showOnlyDirectRoles.label', {escape: false})}
+            helpBlock={this.i18n('showOnlyDirectRoles.help', {escape: false})}
+            onChange={this._showDirectRoles.bind(this)}/>
 
-          <Basic.Alert level="info" style={{ marginTop: 15 }}>
-            <i>{ this.i18n('legend.header') }:</i>
-            <div><Basic.Icon value="component:role"/> { this.i18n('legend.role-types.role') }</div>
-            <div><Basic.Icon value="component:business-role"/> { this.i18n('legend.role-types.business-role') }</div>
-            <div><Basic.Icon value="component:automatic-role"/> { this.i18n('legend.role-types.automatic-role') }</div>
-            <div><Basic.Icon value="component:sub-role"/> { this.i18n('legend.role-types.sub-role') }</div>
-            <h4 className="disabled">{ this.i18n('legend.role-types.disabled') }</h4>
+          <Basic.Alert level="info" style={{marginTop: 15}}>
+            <i>{this.i18n('legend.header')}:</i>
+            <div><Basic.Icon
+              value="component:role"/> {this.i18n('legend.role-types.role')}
+            </div>
+            <div><Basic.Icon
+              value="component:business-role"/> {this.i18n('legend.role-types.business-role')}
+            </div>
+            <div><Basic.Icon
+              value="component:automatic-role"/> {this.i18n('legend.role-types.automatic-role')}
+            </div>
+            <div><Basic.Icon
+              value="component:sub-role"/> {this.i18n('legend.role-types.sub-role')}
+            </div>
+            <h4
+              className="disabled">{this.i18n('legend.role-types.disabled')}
+            </h4>
           </Basic.Alert>
         </Basic.Div>
       </div>
@@ -593,4 +638,4 @@ function select(state, component) {
   };
 }
 
-export default connect(select, null, null, { forwardRef: true})(RoleSelectByIdentity);
+export default connect(select, null, null, {forwardRef: true})(RoleSelectByIdentity);

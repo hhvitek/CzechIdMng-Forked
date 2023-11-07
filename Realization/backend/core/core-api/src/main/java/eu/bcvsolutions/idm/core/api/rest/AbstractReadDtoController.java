@@ -11,7 +11,7 @@ import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 
-import eu.bcvsolutions.idm.core.api.utils.ReflectionUtils;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -19,11 +19,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.ResourceSupport;
-import org.springframework.hateoas.Resources;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
@@ -38,7 +39,6 @@ import com.google.common.collect.Lists;
 import eu.bcvsolutions.idm.core.api.bulk.action.BulkActionManager;
 import eu.bcvsolutions.idm.core.api.bulk.action.dto.IdmBulkActionDto;
 import eu.bcvsolutions.idm.core.api.config.swagger.SwaggerConfig;
-import eu.bcvsolutions.idm.core.api.domain.Identifiable;
 import eu.bcvsolutions.idm.core.api.dto.BaseDto;
 import eu.bcvsolutions.idm.core.api.dto.ResultModels;
 import eu.bcvsolutions.idm.core.api.dto.filter.BaseFilter;
@@ -46,7 +46,6 @@ import eu.bcvsolutions.idm.core.api.dto.filter.DataFilter;
 import eu.bcvsolutions.idm.core.api.dto.filter.PermissionContext;
 import eu.bcvsolutions.idm.core.api.exception.EntityNotFoundException;
 import eu.bcvsolutions.idm.core.api.exception.ForbiddenEntityException;
-//import eu.bcvsolutions.idm.core.api.exception.ResultCodeException;
 import eu.bcvsolutions.idm.core.api.service.LookupService;
 import eu.bcvsolutions.idm.core.api.service.ReadDtoService;
 import eu.bcvsolutions.idm.core.api.utils.DtoUtils;
@@ -54,11 +53,10 @@ import eu.bcvsolutions.idm.core.api.utils.FilterConverter;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
 import eu.bcvsolutions.idm.core.security.api.utils.PermissionUtils;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 
 /**
  * Read operations (get, find, autocomplete)
@@ -121,18 +119,20 @@ public abstract class AbstractReadDtoController<DTO extends BaseDto, F extends B
 	 * @param backendId
 	 * @return
 	 */
-	@ApiOperation(value = "Read record", authorizations = { 
-			@Authorization(SwaggerConfig.AUTHENTICATION_BASIC),
-			@Authorization(SwaggerConfig.AUTHENTICATION_CIDMST)
-			})
-	public ResponseEntity<?> get(
-			@ApiParam(value = "Record's uuid identifier or unique code, if record supports Codeable interface.", required = true)
+	@Operation(summary = "Read record")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+            @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
+        }
+    )
+    public ResponseEntity<?> get(
+			 @Parameter(description = "Record's uuid identifier or unique code, if record supports Codeable interface.", required = true)
 			@PathVariable @NotNull String backendId) {
 		DTO dto = getDto(backendId);
 		if (dto == null) {
 			throw new EntityNotFoundException(getService().getEntityClass(), backendId);
 		}
-		ResourceSupport resource = toResource(dto);
+		RepresentationModel resource = toModel(dto);
 		if (resource == null) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
@@ -192,29 +192,24 @@ public abstract class AbstractReadDtoController<DTO extends BaseDto, F extends B
 	 * @return
      * @see #toFilter(MultiValueMap)
 	 */
-	@ApiOperation(value = "Search records (/search/quick alias)", authorizations = { 
-			@Authorization(SwaggerConfig.AUTHENTICATION_BASIC),
-			@Authorization(SwaggerConfig.AUTHENTICATION_CIDMST)
-			})
-	@ApiImplicitParams({
-        @ApiImplicitParam(name = "page", dataType = "string", paramType = "query",
-                value = "Results page you want to retrieve (0..N)"),
-        @ApiImplicitParam(name = "size", dataType = "string", paramType = "query",
-                value = "Number of records per page."),
-        @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query",
-                value = "Sorting criteria in the format: property(,asc|desc). " +
-                        "Default sort order is ascending. " +
-                        "Multiple sort criteria are supported.")
-	})
-	public Resources<?> find(
+	@Operation(summary = "Search records (/search/quick alias)")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+                    @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
+            }
+    )
+	@PageableAsQueryParam
+    //PagedModel<?>
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		BasePermission[] evaluatePermissions = evaluatePermissions(parameters, IdmBasePermission.READ);
 		if (evaluatePermissions.length > 1) {
-			return toResources(findWithOperator(toFilter(parameters), pageable, evaluatePermissions), getDtoClass());
+			return toCollectionModel(findWithOperator(toFilter(parameters), pageable, evaluatePermissions), getDtoClass());
 		}
 		//
-		return toResources(find(toFilter(parameters), pageable, evaluatePermissions[0]), getDtoClass());
+		return toCollectionModel(find(toFilter(parameters), pageable, evaluatePermissions[0]), getDtoClass());
 	}
 	
 	/**
@@ -225,22 +220,16 @@ public abstract class AbstractReadDtoController<DTO extends BaseDto, F extends B
 	 * @return
 	 * @see #toFilter(MultiValueMap)
 	 */
-	@ApiOperation(value = "Search records", authorizations = { 
-			@Authorization(SwaggerConfig.AUTHENTICATION_BASIC),
-			@Authorization(SwaggerConfig.AUTHENTICATION_CIDMST)
-			})
-	@ApiImplicitParams({
-        @ApiImplicitParam(name = "page", dataType = "string", paramType = "query",
-                value = "Results page you want to retrieve (0..N)"),
-        @ApiImplicitParam(name = "size", dataType = "string", paramType = "query",
-                value = "Number of records per page."),
-        @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query",
-                value = "Sorting criteria in the format: property(,asc|desc). " +
-                        "Default sort order is ascending. " +
-                        "Multiple sort criteria are supported.")
-	})
-	public Resources<?> findQuick(
+	@Operation(summary = "Search records")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+            @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
+        }
+    )
+	@PageableAsQueryParam
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return find(parameters, pageable);
 	}
@@ -253,29 +242,23 @@ public abstract class AbstractReadDtoController<DTO extends BaseDto, F extends B
 	 * @return
      * @see #toFilter(MultiValueMap)
 	 */
-	@ApiOperation(value = "Autocomplete records (selectbox usage)", authorizations = { 
-			@Authorization(SwaggerConfig.AUTHENTICATION_BASIC),
-			@Authorization(SwaggerConfig.AUTHENTICATION_CIDMST)
-			})
-	@ApiImplicitParams({
-        @ApiImplicitParam(name = "page", dataType = "string", paramType = "query",
-                value = "Results page you want to retrieve (0..N)"),
-        @ApiImplicitParam(name = "size", dataType = "string", paramType = "query",
-                value = "Number of records per page."),
-        @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query",
-                value = "Sorting criteria in the format: property(,asc|desc). " +
-                        "Default sort order is ascending. " +
-                        "Multiple sort criteria are supported.")
-	})
-	public Resources<?> autocomplete(
+	@Operation(summary = "Autocomplete records (selectbox usage)")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+            @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
+        }
+    )
+	@PageableAsQueryParam
+	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		BasePermission[] evaluatePermissions = evaluatePermissions(parameters, IdmBasePermission.AUTOCOMPLETE);
 		if (evaluatePermissions.length > 1) {
-			return toResources(findWithOperator(toFilter(parameters), pageable, evaluatePermissions), getDtoClass());
+			return toCollectionModel(findWithOperator(toFilter(parameters), pageable, evaluatePermissions), getDtoClass());
 		}
 		//
-		return toResources(find(toFilter(parameters), pageable, evaluatePermissions[0]), getDtoClass());
+		return toCollectionModel(find(toFilter(parameters), pageable, evaluatePermissions[0]), getDtoClass());
 	}
 	
 	/**
@@ -285,10 +268,12 @@ public abstract class AbstractReadDtoController<DTO extends BaseDto, F extends B
 	 * @return
      * @see #toFilter(MultiValueMap)
 	 */
-	@ApiOperation(value = "The number of entities that match the filter", authorizations = { 
-			@Authorization(SwaggerConfig.AUTHENTICATION_BASIC),
-			@Authorization(SwaggerConfig.AUTHENTICATION_CIDMST)
-			})
+	@Operation(summary = "The number of entities that match the filter")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+            @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
+        }
+    )
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		BasePermission[] evaluatePermissions = evaluatePermissions(parameters, IdmBasePermission.COUNT);
 		if (evaluatePermissions.length > 1) {
@@ -352,12 +337,14 @@ public abstract class AbstractReadDtoController<DTO extends BaseDto, F extends B
 	 * @param backendId
 	 * @return
 	 */
-	@ApiOperation(value = "What logged identity can do with given record", authorizations = { 
-			@Authorization(SwaggerConfig.AUTHENTICATION_BASIC),
-			@Authorization(SwaggerConfig.AUTHENTICATION_CIDMST)
-			})
+	@Operation(summary = "What logged identity can do with given record")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC),
+            @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST)
+        }
+    )
 	public Set<String> getPermissions(
-			@ApiParam(value = "Record's uuid identifier or unique code, if record supports Codeable interface.", required = true)
+			 @Parameter(description = "Record's uuid identifier or unique code, if record supports Codeable interface.", required = true)
 			@PathVariable @NotNull String backendId) {
 		DTO dto = getDto(backendId);
 		if (dto == null) {
@@ -372,20 +359,20 @@ public abstract class AbstractReadDtoController<DTO extends BaseDto, F extends B
 	 * @param dto
 	 * @return
 	 */
-	public ResourceSupport toResource(DTO dto) {
+	public RepresentationModel toModel(DTO dto) {
 		if (dto == null) { 
 			return null;
 		} 
-		Link selfLink = ControllerLinkBuilder.linkTo(this.getClass()).slash(dto.getId()).withSelfRel();
-		Resource<DTO> resourceSupport = new Resource<DTO>(dto, selfLink);
+		Link selfLink = WebMvcLinkBuilder.linkTo(this.getClass()).slash(dto.getId()).withSelfRel();
+		EntityModel<DTO> resourceSupport = new EntityModel<DTO>(dto, selfLink);
 		//
 		return resourceSupport;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	protected Resources<?> toResources(Iterable<?> source, Class<?> domainType) {
+	protected CollectionModel<?> toCollectionModel(Iterable<?> source, Class<?> domainType) {
 		if (source == null) {
-			return new Resources(Collections.emptyList());
+			return new CollectionModel(Collections.emptyList());
 		}
 		Page<Object> page;
 		if (source instanceof Page) {
@@ -398,27 +385,16 @@ public abstract class AbstractReadDtoController<DTO extends BaseDto, F extends B
 		return pageToResources(page, domainType);
 	}
 
-	@SuppressWarnings("unchecked")
-	protected Resources<?> pageToResources(Page<Object> page, Class<?> domainType) {
-		Assert.notNull(page, "Resource page (content) is required.");
-		//
-		if (page.getContent().isEmpty()) {
-			return pagedResourcesAssembler.toEmptyResource(page, domainType);
-		}
-		//
-		return pagedResourcesAssembler.toResource(page, it -> {
-			if (!(it instanceof Identifiable)) {
-				// just for sure - if some response with different dto is returned manually
-				return new Resource<>(it);
-			}
-			if (!getDtoClass().isAssignableFrom(it.getClass())) {
-				// not controlled dto => self link is not correct
-				return new Resource<>(it);
-			}
-			// controlled dto
-			return toResource((DTO) it);
-		});
-	}
+    @SuppressWarnings("unchecked")
+    protected CollectionModel<?> pageToResources(Page<Object> page, Class<?> domainType) {
+        Assert.notNull(page, "EntityModel page (content) is required.");
+        //
+        if (page.getContent().isEmpty()) {
+            return pagedResourcesAssembler.toEmptyModel(page, domainType);
+        }
+        //
+        return pagedResourcesAssembler.toModel(page);
+    }
 
 	/**
 	 * Transforms request parameters to:

@@ -36,11 +36,16 @@ public class AccTestFlywayConfig extends AbstractFlywayConfiguration {
 	@Bean
 	@DependsOn("flywayAcc")
 	@ConditionalOnMissingBean(name = "flywayAccTest")
-	@ConditionalOnExpression("${flyway.enabled:true} && '${flyway.acctest.locations}'!=''")
+	@ConditionalOnExpression("${spring.flyway.enabled:true} && '${flyway.acctest.locations}'!=''")
 	@ConfigurationProperties(prefix = "flyway.acctest")
 	public Flyway flywayAccTest() {
 		Flyway flyway = super.createFlyway();		
 		LOG.info("Starting flyway migration for module acc test [{}]: ", flyway.getConfiguration().getTable());
 		return flyway;
+	}
+
+	@Override
+	public String getPropertyPrefix() {
+		return "flyway.acctest";
 	}
 }

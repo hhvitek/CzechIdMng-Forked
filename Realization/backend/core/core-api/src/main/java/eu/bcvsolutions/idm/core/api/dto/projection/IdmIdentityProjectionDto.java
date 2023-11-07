@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 import com.google.common.collect.Lists;
 
@@ -15,7 +15,7 @@ import eu.bcvsolutions.idm.core.api.dto.IdmIdentityContractDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmIdentityDto;
 import eu.bcvsolutions.idm.core.api.dto.IdmIdentityRoleDto;
 import eu.bcvsolutions.idm.core.api.utils.DtoUtils;
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Identity projection - "full" detail version with eavs, contract, assigned roles etc.
@@ -24,7 +24,7 @@ import io.swagger.annotations.ApiModel;
  * @since 10.2.0
  */
 @Relation(collectionRelation = "identities")
-@ApiModel(description = "Identity domain object")
+@Schema(description = "Identity domain object")
 public class IdmIdentityProjectionDto extends AbstractDto {
 	
 	private static final long serialVersionUID = 1L;

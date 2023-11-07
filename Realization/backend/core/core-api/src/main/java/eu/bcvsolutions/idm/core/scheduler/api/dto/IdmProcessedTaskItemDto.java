@@ -2,7 +2,7 @@ package eu.bcvsolutions.idm.core.scheduler.api.dto;
 
 import java.util.UUID;
 
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
@@ -11,8 +11,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import eu.bcvsolutions.idm.core.api.domain.Embedded;
 import eu.bcvsolutions.idm.core.api.dto.AbstractDto;
 import eu.bcvsolutions.idm.core.api.entity.OperationResult;
-import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.ApiModelProperty.AccessMode;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 
 /**
  * LRT item - contains processed item state.
@@ -34,7 +34,7 @@ public class IdmProcessedTaskItemDto extends AbstractDto {
 	@Embedded(dtoClass = IdmScheduledTaskDto.class)
 	private UUID scheduledTaskQueueOwner;
 	@JsonProperty(access = Access.READ_ONLY)
-	@ApiModelProperty(accessMode = AccessMode.READ_ONLY, notes = "Related entity was already deleted.")
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY, description = "Related entity was already deleted.")
 	private transient boolean deleted;
 
 	public UUID getReferencedEntityId() {

@@ -8,7 +8,7 @@ import org.springframework.util.Assert;
 import eu.bcvsolutions.idm.core.api.config.domain.IdentityConfiguration;
 import eu.bcvsolutions.idm.core.api.service.IdmPasswordPolicyService;
 import eu.bcvsolutions.idm.core.api.service.IdmPasswordService;
-import eu.bcvsolutions.idm.core.model.event.IdentityEvent.IdentityEventType;
+import eu.bcvsolutions.idm.core.model.event.EntityPasswordEvent.EntityPasswordEventType;
 import eu.bcvsolutions.idm.core.security.api.authentication.AuthenticationManager;
 import eu.bcvsolutions.idm.core.security.api.service.SecurityService;
 
@@ -34,7 +34,7 @@ public class IdentityPasswordValidateProcessor extends AbstractIdentityPasswordV
 		IdmPasswordPolicyService passwordPolicyService,
 		AuthenticationManager authenticationManager,
 		IdentityConfiguration identityConfiguration) {
-		super(identityConfiguration, passwordService, authenticationManager, passwordPolicyService, securityService, IdentityEventType.PASSWORD);
+		super(identityConfiguration, passwordService, authenticationManager, passwordPolicyService, securityService, EntityPasswordEventType.PASSWORD);
 		//
 		Assert.notNull(securityService, "Service is required.");
 		//

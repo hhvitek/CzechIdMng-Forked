@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.core.Ordered;
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -21,7 +21,7 @@ import eu.bcvsolutions.idm.core.api.dto.AbstractComponentDto;
 import eu.bcvsolutions.idm.core.api.dto.filter.BaseFilter;
 import eu.bcvsolutions.idm.core.eav.api.dto.IdmFormAttributeDto;
 import eu.bcvsolutions.idm.core.notification.api.domain.NotificationLevel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Basic DTO for bulk actions. The DTO contains information about bulk
@@ -57,17 +57,17 @@ public class IdmBulkActionDto extends AbstractComponentDto implements Ordered {
 	private List<IdmFormAttributeDto> formAttributes;
 	private boolean showWithoutSelection;
 	private boolean showWithSelection;
-	@ApiModelProperty(notes = "Action level - decorator only (label with color).")
+	@Schema(description = "Action level - decorator only (label with color).")
 	private NotificationLevel level;
-	@ApiModelProperty(notes = "Action order - order in selectbox on FE.")
+	@Schema(description = "Action order - order in selectbox on FE.")
 	private int order;
-	@ApiModelProperty(notes = "Action deletes records. This action will be sorted on the end section on FE.")
+	@Schema(description = "Action deletes records. This action will be sorted on the end section on FE.")
 	private boolean deleteAction;
-	@ApiModelProperty(notes = "Action FE icon. Icon from locale will be used by default.")
+	@Schema(description = "Action FE icon. Icon from locale will be used by default.")
 	private String icon;
-	@ApiModelProperty(notes = "Action will be included in quick buttons on FE. Action will be shown as quick button, when icon is defined (in locale or by icon property).")
+	@Schema(description = "Action will be included in quick buttons on FE. Action will be shown as quick button, when icon is defined (in locale or by icon property).")
 	private boolean quickButton = false;
-	@ApiModelProperty(notes = "Action can be included in quick buttons on FE. Action can be shown as quick button, when icon is defined (in locale or by icon property).")
+	@Schema(description = "Action can be included in quick buttons on FE. Action can be shown as quick button, when icon is defined (in locale or by icon property).")
 	private boolean quickButtonable = true;
 	private boolean supportsPreprocessing;
 

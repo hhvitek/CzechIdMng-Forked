@@ -4,53 +4,20 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 /**
- * Password filtering
+ * Identity password filtering
  * 
  * @author Ondřej Kopr
  * @author Radek Tomiška
  *
  */
-public class IdmPasswordFilter extends QuickFilter {
+public class IdmPasswordFilter extends AbstractPasswordFilter {
 
-    private String password;
-    private LocalDate validTill;
-    private LocalDate validFrom;
     private UUID identityId;
     private String identityUsername;
-    private Boolean mustChange;
     private Boolean identityDisabled;
-
-    public LocalDate getValidTill() {
-        return validTill;
-    }
-
-    public void setValidTill(LocalDate validTill) {
-        this.validTill = validTill;
-    }
-
-    public LocalDate getValidFrom() {
-        return validFrom;
-    }
-
-    public void setValidFrom(LocalDate validFrom) {
-        this.validFrom = validFrom;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Boolean getMustChange() {
-        return mustChange;
-    }
-
-    public void setMustChange(Boolean mustChange) {
-        this.mustChange = mustChange;
-    }
+	private LocalDate validTill;
+	private LocalDate validFrom;
+	private Boolean mustChange;
 
     public UUID getIdentityId() {
         return identityId;
@@ -59,13 +26,13 @@ public class IdmPasswordFilter extends QuickFilter {
     public void setIdentityId(UUID identityId) {
         this.identityId = identityId;
     }
-    
+
+	public Boolean getIdentityDisabled() {
+		return identityDisabled;
+	}
+
     public void setIdentityDisabled(Boolean identityDisabled) {
 		this.identityDisabled = identityDisabled;
-	}
-    
-    public Boolean getIdentityDisabled() {
-		return identityDisabled;
 	}
 
 	public String getIdentityUsername() {
@@ -75,4 +42,32 @@ public class IdmPasswordFilter extends QuickFilter {
 	public void setIdentityUsername(String identityUsername) {
 		this.identityUsername = identityUsername;
 	}
+
+	public LocalDate getValidTill() {
+		return validTill;
+	}
+
+	public void setValidTill(LocalDate validTill) {
+		this.validTill = validTill;
+	}
+
+	public LocalDate getValidFrom() {
+		return validFrom;
+	}
+
+	public void setValidFrom(LocalDate validFrom) {
+		this.validFrom = validFrom;
+	}
+	public Boolean getMustChange() {
+		return mustChange;
+	}
+
+	public void setMustChange(Boolean mustChange) {
+		this.mustChange = mustChange;
+	}
+	@Override
+	public UUID getEntityId() { return getIdentityId(); }
+
+	@Override
+	public void setEntityId(UUID entityId) { setIdentityId(entityId); }
 }

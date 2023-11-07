@@ -15,9 +15,12 @@ import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.security.api.dto.RecaptchaRequest;
 import eu.bcvsolutions.idm.core.security.api.dto.RecaptchaResponse;
 import eu.bcvsolutions.idm.core.security.api.service.RecaptchaService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Controller for checking ReCaptcha.
@@ -26,7 +29,7 @@ import io.swagger.annotations.ApiParam;
  */
 @Controller
 @RequestMapping(value = BaseController.BASE_PATH + RecaptchaController.URL_PATH)
-@Api(value = RecaptchaController.TAG, tags = RecaptchaController.TAG, description = "Operation with reCAPTCHA protection")
+@Tag(name = RecaptchaController.TAG, description = "Operation with reCAPTCHA protection")
 public class RecaptchaController implements BaseController {
 	
 	protected static final String TAG = "Recaptcha";
@@ -39,13 +42,23 @@ public class RecaptchaController implements BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.POST)
-	@ApiOperation(
-			value = "Check reCAPTCHA protection", 
-			nickname = "confirmRecaptcha", 
-			tags = { RecaptchaController.TAG },
-			response = RecaptchaResponse.class)
+	@Operation(
+        summary = "Check reCAPTCHA protection",
+        operationId = "confirmRecaptcha",
+        responses = @ApiResponse(
+            responseCode = "200",
+            content = {
+                @Content(
+                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                    schema = @Schema(
+                        implementation = RecaptchaResponse.class
+                    )
+                )
+            }
+        )
+    )
 	public ResponseEntity<RecaptchaResponse> confirmRecaptcha(
-			@ApiParam(value = "Request to check.", required = true)
+			 @Parameter(description = "Request to check.", required = true)
 			@RequestBody @Valid RecaptchaRequest request) {
 		RecaptchaResponse response = recaptchaService.checkRecaptcha(request);
 		//

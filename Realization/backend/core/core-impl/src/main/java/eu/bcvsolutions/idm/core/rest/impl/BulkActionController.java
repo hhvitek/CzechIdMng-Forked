@@ -8,9 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,11 +30,11 @@ import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.service.LookupService;
 import eu.bcvsolutions.idm.core.api.utils.FilterConverter;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Bulk action administration.
@@ -47,12 +46,7 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseController.BASE_PATH + "/bulk-actions")
-@Api(
-		value = BulkActionController.TAG, 
-		description = "Configure bulk actions", 
-		tags = { BulkActionController.TAG }, 
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = BulkActionController.TAG, description = "Configure bulk actions")
 public class BulkActionController {
 
 	protected static final String TAG = "Bulk action administration";	
@@ -67,26 +61,24 @@ public class BulkActionController {
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.MODULE_READ + "')")
-	@ApiOperation(
-			value = "Find all bulk actions", 
-			nickname = "findAllBulkActions", 
+	@Operation(
+			summary = "Find all bulk actions",
+			operationId = "findAllBulkActions", 
 			tags = { BulkActionController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.MODULE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.MODULE_READ, description = "") })
-				},
-			notes = "Returns all registered bulk actions with state properties (disabled, order).")
+						description = "Returns all registered bulk actions with state properties (disabled, order).")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.MODULE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.MODULE_READ })
+    })
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Resources<?> find(
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		List<IdmBulkActionDto> records = bulkActionManager.find(toFilter(parameters));
 		PageImpl page = new PageImpl(records, PageRequest.of(0, records.size() == 0 ? 10 : records.size()), records.size());
 		if (page.getContent().isEmpty()) {
-			return pagedResourcesAssembler.toEmptyResource(page, IdmBulkActionDto.class);
+			return pagedResourcesAssembler.toEmptyModel(page, IdmBulkActionDto.class);
 		}
-		return pagedResourcesAssembler.toResource(page);
+		return pagedResourcesAssembler.toModel(page);
 	}
 	
 	/**
@@ -97,18 +89,16 @@ public class BulkActionController {
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	@RequestMapping(value = "/{bulkActionId}/enable", method = { RequestMethod.PATCH, RequestMethod.PUT })
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.MODULE_UPDATE + "')")
-	@ApiOperation(
-			value = "Enable bulk action",
-			nickname = "enableBulkAction",
-			tags = { BulkActionController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.MODULE_UPDATE, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.MODULE_UPDATE, description = "") })
-			})
+	@Operation(
+			summary = "Enable bulk action",
+			operationId = "enableBulkAction",
+			tags = { BulkActionController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.MODULE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.MODULE_UPDATE })
+    })
 	public void enable(
-			@ApiParam(value = "Bulk action identifier.", required = true)
+			 @Parameter(description = "Bulk action identifier.", required = true)
 			@PathVariable @NotNull String bulkActionId) {
 		bulkActionManager.enable(bulkActionId);
 	}
@@ -121,18 +111,16 @@ public class BulkActionController {
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	@RequestMapping(value = "/{bulkActionId}/disable", method = { RequestMethod.PATCH, RequestMethod.PUT })
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.MODULE_UPDATE + "')")
-	@ApiOperation(
-			value = "Disable bulk action",
-			nickname = "disableBulkAction",
-			tags = { BulkActionController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.MODULE_UPDATE, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.MODULE_UPDATE, description = "") })
-			})
+	@Operation(
+			summary = "Disable bulk action",
+			operationId = "disableBulkAction",
+			tags = { BulkActionController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.MODULE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.MODULE_UPDATE })
+    })
 	public void disable(
-			@ApiParam(value = "Bulk action identifier.", required = true)
+			 @Parameter(description = "Bulk action identifier.", required = true)
 			@PathVariable @NotNull String bulkActionId) {
 		bulkActionManager.disable(bulkActionId);
 	}

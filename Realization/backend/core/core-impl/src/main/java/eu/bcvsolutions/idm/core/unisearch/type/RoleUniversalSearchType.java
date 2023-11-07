@@ -1,5 +1,11 @@
 package eu.bcvsolutions.idm.core.unisearch.type;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Component;
+
 import eu.bcvsolutions.idm.core.CoreModuleDescriptor;
 import eu.bcvsolutions.idm.core.api.dto.IdmRoleDto;
 import eu.bcvsolutions.idm.core.api.dto.filter.IdmRoleFilter;
@@ -9,11 +15,6 @@ import eu.bcvsolutions.idm.core.api.service.ReadDtoService;
 import eu.bcvsolutions.idm.core.eav.api.service.AbstractUniversalSearchType;
 import eu.bcvsolutions.idm.core.model.entity.IdmRole_;
 import eu.bcvsolutions.idm.core.security.api.domain.Enabled;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Component;
 
 /**
  *
@@ -40,7 +41,7 @@ public class RoleUniversalSearchType extends AbstractUniversalSearchType<IdmRole
 
 	@Override
 	protected Pageable getPageable(Pageable pageable) {
-		Sort sort = new Sort(Sort.Direction.ASC, IdmRole_.code.getName());
+		Sort sort = Sort.by(Sort.Direction.ASC, IdmRole_.code.getName());
 
 		return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 	}

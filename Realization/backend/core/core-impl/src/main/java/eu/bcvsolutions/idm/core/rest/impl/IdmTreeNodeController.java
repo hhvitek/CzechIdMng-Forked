@@ -10,15 +10,15 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.envers.exception.RevisionDoesNotExistException;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -59,13 +59,14 @@ import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
 import eu.bcvsolutions.idm.core.model.entity.IdmTreeNode;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
 import eu.bcvsolutions.idm.core.security.api.utils.PermissionUtils;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Tree nodes endpoint.
@@ -75,12 +76,7 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + BaseDtoController.TREE_BASE_PATH + "-nodes")
-@Api(
-		value = IdmTreeNodeController.TAG,  
-		tags = { IdmTreeNodeController.TAG }, 
-		description = "Operation with tree nodes",
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = IdmTreeNodeController.TAG, description = "Operation with tree nodes")
 public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTreeNodeDto, IdmTreeNodeFilter> {
 	
 	protected static final String TAG = "Tree structure - nodes";
@@ -111,18 +107,18 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.TREENODE_READ + "')")
-	@ApiOperation(
-			value = "Search tree nodes (/search/quick alias)", 
-			nickname = "searchTreeNodes",
-			tags = { IdmTreeNodeController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_READ, description = "") })
-				})
-	public Resources<?> find(
+	@Operation(
+			summary = "Search tree nodes (/search/quick alias)",
+			operationId = "searchTreeNodes",
+			tags = { IdmTreeNodeController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.TREENODE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.TREENODE_READ })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -130,18 +126,18 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 	@ResponseBody
 	@RequestMapping(value= "/search/quick", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.TREENODE_READ + "')")
-	@ApiOperation(
-			value = "Search tree nodes", 
-			nickname = "searchQuickTreeNodes", 
-			tags = { IdmTreeNodeController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_READ, description = "") })
-				})
-	public Resources<?> findQuick(
+	@Operation(
+			summary = "Search tree nodes",
+			operationId = "searchQuickTreeNodes", 
+			tags = { IdmTreeNodeController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.TREENODE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.TREENODE_READ })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.findQuick(parameters, pageable);
 	}
@@ -149,18 +145,18 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 	@ResponseBody
 	@RequestMapping(value= "/search/autocomplete", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.TREENODE_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "Autocomplete tree nodes (selectbox usage)", 
-			nickname = "autocompleteTreeNodes", 
-			tags = { IdmTreeNodeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_AUTOCOMPLETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_AUTOCOMPLETE, description = "") })
-				})
-	public Resources<?> autocomplete(
+	@Operation(
+			summary = "Autocomplete tree nodes (selectbox usage)",
+			operationId = "autocompleteTreeNodes", 
+			tags = { IdmTreeNodeController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.TREENODE_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.TREENODE_AUTOCOMPLETE })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -169,16 +165,14 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 	@ResponseBody
 	@RequestMapping(value = "/search/count", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.TREENODE_COUNT + "')")
-	@ApiOperation(
-			value = "The number of entities that match the filter", 
-			nickname = "countTreeNodes", 
-			tags = { IdmTreeNodeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_COUNT, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_COUNT, description = "") })
-				})
+	@Operation(
+			summary = "The number of entities that match the filter",
+			operationId = "countTreeNodes", 
+			tags = { IdmTreeNodeController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.TREENODE_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.TREENODE_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -187,19 +181,27 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.TREENODE_READ + "')")
-	@ApiOperation(
-			value = "Tree node detail", 
-			nickname = "getTreeNode", 
-			response = IdmTreeNodeDto.class, 
-			tags = { IdmTreeNodeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_READ, description = "") })
-				})
+	@Operation(
+			summary = "Tree node detail",
+			operationId = "getTreeNode", 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmTreeNodeDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmTreeNodeController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.TREENODE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.TREENODE_READ })
+    })
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Node's uuid identifier.", required = true)
+			 @Parameter(description = "Node's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -209,19 +211,30 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.TREENODE_CREATE + "')"
 			+ " or hasAuthority('" + CoreGroupPermission.TREENODE_UPDATE + "')")
-	@ApiOperation(
-			value = "Create / update tree node", 
-			nickname = "postTreeNode", 
-			response = IdmTreeNodeDto.class, 
-			tags = { IdmTreeNodeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_CREATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_UPDATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_CREATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_UPDATE, description = "")})
-				})
+	@Operation(
+			summary = "Create / update tree node",
+			operationId = "postTreeNode", 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmTreeNodeDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmTreeNodeController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.TREENODE_CREATE,
+						CoreGroupPermission.TREENODE_UPDATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.TREENODE_CREATE,
+						CoreGroupPermission.TREENODE_UPDATE})
+        }
+    )
 	public ResponseEntity<?> post(@Valid @RequestBody IdmTreeNodeDto dto) {
 		return super.post(dto);
 	}
@@ -230,19 +243,27 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.TREENODE_UPDATE + "')")
-	@ApiOperation(
-			value = "Update tree node",
-			nickname = "putTreeNode", 
-			response = IdmTreeNodeDto.class, 
-			tags = { IdmTreeNodeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update tree node",
+			operationId = "putTreeNode", 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmTreeNodeDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmTreeNodeController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.TREENODE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.TREENODE_UPDATE })
+    })
 	public ResponseEntity<?> put(
-			@ApiParam(value = "Node's uuid identifier.", required = true)
+			 @Parameter(description = "Node's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmTreeNodeDto dto) {
 		return super.put(backendId, dto);
@@ -252,19 +273,27 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PATCH)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.TREENODE_UPDATE + "')")
-	@ApiOperation(
-			value = "Update tree node",
-			nickname = "patchTreeNode", 
-			response = IdmTreeNodeDto.class, 
-			tags = { IdmTreeNodeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update tree node",
+			operationId = "patchTreeNode", 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmTreeNodeDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmTreeNodeController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.TREENODE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.TREENODE_UPDATE })
+    })
 	public ResponseEntity<?> patch(
-			@ApiParam(value = "Node's uuid identifier.", required = true)
+			 @Parameter(description = "Node's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -275,18 +304,16 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.TREENODE_DELETE + "')")
-	@ApiOperation(
-			value = "Delete tree node", 
-			nickname = "deleteTreeNode", 
-			tags = { IdmTreeNodeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_DELETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_DELETE, description = "") })
-				})
+	@Operation(
+			summary = "Delete tree node",
+			operationId = "deleteTreeNode", 
+			tags = { IdmTreeNodeController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.TREENODE_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.TREENODE_DELETE })
+    })
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "Node's uuid identifier.", required = true)
+			 @Parameter(description = "Node's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -295,18 +322,16 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.TREENODE_READ + "')")
-	@ApiOperation(
-			value = "What logged identity can do with given record", 
-			nickname = "getPermissionsOnTreeNode", 
-			tags = { IdmTreeNodeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_READ, description = "") })
-				})
+	@Operation(
+			summary = "What logged identity can do with given record",
+			operationId = "getPermissionsOnTreeNode", 
+			tags = { IdmTreeNodeController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.TREENODE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.TREENODE_READ })
+    })
 	public Set<String> getPermissions(
-			@ApiParam(value = "Node's uuid identifier.", required = true)
+			 @Parameter(description = "Node's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -315,16 +340,14 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 	@ResponseBody
 	@RequestMapping(value = "/bulk/actions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.TREENODE_READ + "')")
-	@ApiOperation(
-			value = "Get available bulk actions", 
-			nickname = "availableBulkAction", 
-			tags = { IdmTreeNodeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_READ, description = "") })
-				})
+	@Operation(
+			summary = "Get available bulk actions",
+			operationId = "availableBulkAction", 
+			tags = { IdmTreeNodeController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.TREENODE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.TREENODE_READ })
+    })
 	public List<IdmBulkActionDto> getAvailableBulkActions() {
 		return super.getAvailableBulkActions();
 	}
@@ -333,17 +356,28 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 	@ResponseBody
 	@RequestMapping(path = "/bulk/action", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.TREENODE_READ + "')")
-	@ApiOperation(
-			value = "Process bulk action for tree nodes", 
-			nickname = "bulkAction", 
-			response = IdmBulkActionDto.class, 
-			tags = { IdmTreeNodeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_READ, description = "")})
-				})
+	@Operation(
+			summary = "Process bulk action for tree nodes",
+			operationId = "bulkAction", 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmTreeNodeController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.TREENODE_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.TREENODE_READ})
+        }
+    )
 	public ResponseEntity<IdmBulkActionDto> bulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.bulkAction(bulkAction);
 	}
@@ -352,17 +386,28 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 	@ResponseBody
 	@RequestMapping(path = "/bulk/prevalidate", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.TREENODE_READ + "')")
-	@ApiOperation(
-			value = "Prevalidate bulk action for tree nodes", 
-			nickname = "prevalidateBulkAction", 
-			response = IdmBulkActionDto.class, 
-			tags = { IdmTreeNodeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_READ, description = "")})
-				})
+	@Operation(
+			summary = "Prevalidate bulk action for tree nodes",
+			operationId = "prevalidateBulkAction", 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmTreeNodeController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.TREENODE_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.TREENODE_READ})
+        }
+    )
 	public ResponseEntity<ResultModels> prevalidateBulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.prevalidateBulkAction(bulkAction);
 	}
@@ -370,20 +415,18 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 	@ResponseBody
 	@RequestMapping(value = "{backendId}/revisions/{revId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUDIT_READ + "')")
-	@ApiOperation(
-			value = "Tree node audit - read revision detail", 
-			nickname = "getTreeNodeRevision", 
-			tags = { IdmTreeNodeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.AUDIT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.AUDIT_READ, description = "") })
-				})
+	@Operation(
+			summary = "Tree node audit - read revision detail",
+			operationId = "getTreeNodeRevision", 
+			tags = { IdmTreeNodeController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUDIT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUDIT_READ })
+    })
 	public ResponseEntity<?> findRevision(
-			@ApiParam(value = "Node's uuid identifier.", required = true)
+			 @Parameter(description = "Node's uuid identifier.", required = true)
 			@PathVariable("backendId") String backendId, 
-			@ApiParam(value = "Revision identifier.", required = true)
+			 @Parameter(description = "Revision identifier.", required = true)
 			@PathVariable("revId") Long revId) {
 		IdmTreeNodeDto treeNode = getDto(backendId);
 		if (treeNode == null) {
@@ -403,18 +446,16 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 	@ResponseBody
 	@RequestMapping(value = "{backendId}/revisions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.AUDIT_READ + "')")
-	@ApiOperation(
-			value = "Tree node audit - read all revisions", 
-			nickname = "getTreeNodeRevisions", 
-			tags = { IdmTreeNodeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.AUDIT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.AUDIT_READ, description = "") })
-				})
-	public Resources<?> findRevisions(
-			@ApiParam(value = "Node's uuid identifier.", required = true)
+	@Operation(
+			summary = "Tree node audit - read all revisions",
+			operationId = "getTreeNodeRevisions", 
+			tags = { IdmTreeNodeController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.AUDIT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.AUDIT_READ })
+    })
+	public CollectionModel<?> findRevisions(
+			 @Parameter(description = "Node's uuid identifier.", required = true)
 			@PathVariable("backendId") String backendId, 
 			Pageable pageable) {
 		IdmTreeNodeDto treeNode = getDto(backendId);
@@ -422,32 +463,24 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 			throw new ResultCodeException(CoreResultCode.NOT_FOUND, ImmutableMap.of("treeNode", backendId));
 		}
 		Page<IdmAuditDto> results = this.auditService.findRevisionsForEntity(IdmTreeNode.class.getSimpleName(), DtoUtils.toUuid(backendId), pageable);
-		return toResources(results, IdmTreeNode.class);
+		return toCollectionModel(results, IdmTreeNode.class);
 	}
 	
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.TREENODE_AUTOCOMPLETE + "')")
 	@RequestMapping(value = "/search/roots", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Search root tree nodes", 
-			nickname = "searchRootTreeNodes", 
+	@Operation(
+			summary = "Search root tree nodes",
+			operationId = "searchRootTreeNodes", 
 			tags = { IdmTreeNodeController.TAG },
-			notes = "Tree type parameter can be used. If no tree type ios given, then configured default tree type is used."
+			description = "Tree type parameter can be used. If no tree type ios given, then configured default tree type is used."
 					+ " If no default tree type is configured, then all roots are returnde")
-	@ApiImplicitParams({
-        @ApiImplicitParam(name = "page", dataType = "string", paramType = "query",
-                value = "Results page you want to retrieve (0..N)"),
-        @ApiImplicitParam(name = "size", dataType = "string", paramType = "query",
-                value = "Number of records per page."),
-        @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query",
-                value = "Sorting criteria in the format: property(,asc|desc). " +
-                        "Default sort order is ascending. " +
-                        "Multiple sort criteria are supported.")
-	})
-	public Resources<?> findRoots(
-			@ApiParam(value = "Tree type uuid identifier.", required = false)
+	@PageableAsQueryParam
+	public CollectionModel<?> findRoots(
+			 @Parameter(description = "Tree type uuid identifier.", required = false)
 			@RequestParam(value = "treeTypeId", required = false) String treeTypeId,
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		UUID treeTypeIdentifier = null;
 		if (StringUtils.isNotEmpty(treeTypeId)) {
@@ -465,34 +498,26 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 		}
 		//
 		Page<IdmTreeNodeDto> roots = find(filter, pageable, IdmBasePermission.AUTOCOMPLETE);
-		return toResources(roots, IdmTreeNode.class);
+		return toCollectionModel(roots, IdmTreeNode.class);
 	}
 	
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.TREENODE_AUTOCOMPLETE + "')")
 	@RequestMapping(value = "/search/children", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Search sub tree nodes", 
-			nickname = "searchChildrenTreeNodes", 
+	@Operation(
+			summary = "Search sub tree nodes",
+			operationId = "searchChildrenTreeNodes", 
 			tags = { IdmTreeNodeController.TAG },
-			notes = "Finds direct chilren by given parent node uuid identifier. Set 'parent' parameter.")
-	@ApiImplicitParams({
-        @ApiImplicitParam(name = "page", dataType = "string", paramType = "query",
-                value = "Results page you want to retrieve (0..N)"),
-        @ApiImplicitParam(name = "size", dataType = "string", paramType = "query",
-                value = "Number of records per page."),
-        @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query",
-                value = "Sorting criteria in the format: property(,asc|desc). " +
-                        "Default sort order is ascending. " +
-                        "Multiple sort criteria are supported.")
-	})
-	public Resources<?> findChildren(
+			description = "Finds direct chilren by given parent node uuid identifier. Set 'parent' parameter.")
+	@PageableAsQueryParam
+	public CollectionModel<?> findChildren(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		IdmTreeNodeFilter filter = toFilter(parameters);
 		filter.setRecursively(false);
 		//
-		return toResources(find(filter, pageable, IdmBasePermission.AUTOCOMPLETE), IdmTreeNode.class);
+		return toCollectionModel(find(filter, pageable, IdmBasePermission.AUTOCOMPLETE), IdmTreeNode.class);
 	}
 	
 	/**
@@ -504,18 +529,19 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/form-definitions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.TREENODE_READ + "')")
-	@ApiOperation(
-			value = "Tree node extended attributes form definitions", 
-			nickname = "getTreeNodeFormDefinitions", 
-			tags = { IdmTreeNodeController.TAG },
-			authorizations = { 
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.TREENODE_READ, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.TREENODE_READ, description = "")})
-					})
+	@Operation(
+			summary = "Tree node extended attributes form definitions",
+			operationId = "getTreeNodeFormDefinitions", 
+			tags = { IdmTreeNodeController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							CoreGroupPermission.TREENODE_READ}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							CoreGroupPermission.TREENODE_READ})
+        }
+    )
 	public ResponseEntity<?> getFormDefinitions(
-			@ApiParam(value = "Node's uuid identifier.", required = true)
+			 @Parameter(description = "Node's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return formDefinitionController.getDefinitions(IdmTreeNode.class);
 	}
@@ -528,14 +554,14 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/form-values", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Tree node form definition - read values", 
-			nickname = "getTreeNodeFormValues", 
+	@Operation(
+			summary = "Tree node form definition - read values",
+			operationId = "getTreeNodeFormValues", 
 			tags = { IdmTreeNodeController.TAG })
-	public Resource<?> getFormValues(
-			@ApiParam(value = "Node's uuid identifier.", required = true)
+	public EntityModel<?> getFormValues(
+			 @Parameter(description = "Node's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
-			@ApiParam(value = "Code of form definition (default will be used if no code is given).", required = false, defaultValue = FormService.DEFAULT_DEFINITION_CODE)
+			 @Parameter(description = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
 			@RequestParam(name = "definitionCode", required = false) String definitionCode) {
 		IdmTreeNodeDto dto = getDto(backendId);
 		if (dto == null) {
@@ -557,14 +583,14 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.TREENODE_UPDATE + "')")
 	@RequestMapping(value = "/{backendId}/form-values", method = { RequestMethod.POST, RequestMethod.PATCH })
-	@ApiOperation(
-			value = "Tree node form definition - save values", 
-			nickname = "postTreeNodeFormValues", 
+	@Operation(
+			summary = "Tree node form definition - save values",
+			operationId = "postTreeNodeFormValues", 
 			tags = { IdmTreeNodeController.TAG })
-	public Resource<?> saveFormValues(
-			@ApiParam(value = "Node's uuid identifier.", required = true)
+	public EntityModel<?> saveFormValues(
+			 @Parameter(description = "Node's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
-			@ApiParam(value = "Code of form definition (default will be used if no code is given).", required = false, defaultValue = FormService.DEFAULT_DEFINITION_CODE)
+			 @Parameter(description = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
 			@RequestParam(name = "definitionCode", required = false) String definitionCode,
 			@RequestBody @Valid List<IdmFormValueDto> formValues) {		
 		IdmTreeNodeDto dto = getDto(backendId);
@@ -588,18 +614,16 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.TREENODE_UPDATE + "')")
 	@RequestMapping(value = "/{backendId}/form-value", method = { RequestMethod.POST } )
-	@ApiOperation(
-			value = "TreeNode form definition - save value", 
-			nickname = "postTreeNodeFormValue", 
-			tags = { IdmTreeNodeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.TREENODE_UPDATE, description = "") })
-				})
-	public Resource<?> saveFormValue(
-			@ApiParam(value = "Node's uuid identifier.", required = true)
+	@Operation(
+			summary = "TreeNode form definition - save value",
+			operationId = "postTreeNodeFormValue", 
+			tags = { IdmTreeNodeController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.TREENODE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.TREENODE_UPDATE })
+    })
+	public EntityModel<?> saveFormValue(
+			 @Parameter(description = "Node's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @Valid IdmFormValueDto formValue) {		
 		IdmTreeNodeDto dto = getDto(backendId);
@@ -622,21 +646,19 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 	@RequestMapping(value = "/{backendId}/form-values/{formValueId}/download", method = RequestMethod.GET)
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.TREENODE_READ + "')")
-	@ApiOperation(
-			value = "Download form value attachment", 
-			nickname = "downloadFormValue",
+	@Operation(
+			summary = "Download form value attachment",
+			operationId = "downloadFormValue",
 			tags = { IdmTreeNodeController.TAG },
-			notes = "Returns input stream to attachment saved in given form value.",
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.TREENODE_READ, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.TREENODE_READ, description = "") })
-					})
+			description = "Returns input stream to attachment saved in given form value.")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.TREENODE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.TREENODE_READ })
+    })
 	public ResponseEntity<InputStreamResource> downloadFormValue(
-			@ApiParam(value = "Node's uuid identifier.", required = true)
+			 @Parameter(description = "Node's uuid identifier.", required = true)
 			@PathVariable String backendId,
-			@ApiParam(value = "Form value identifier.", required = true)
+			 @Parameter(description = "Form value identifier.", required = true)
 			@PathVariable String formValueId) {
 		IdmTreeNodeDto dto = getDto(backendId);
 		if (dto == null) {
@@ -660,21 +682,19 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 	@RequestMapping(value = "/{backendId}/form-values/{formValueId}/preview", method = RequestMethod.GET)
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.TREENODE_READ + "')")
-	@ApiOperation(
-			value = "Download form value attachment preview", 
-			nickname = "downloadFormValue",
+	@Operation(
+			summary = "Download form value attachment preview",
+			operationId = "downloadFormValue",
 			tags = { IdmTreeNodeController.TAG },
-			notes = "Returns input stream to attachment preview saved in given form value. Preview is supported for the png, jpg and jpeg mime types only",
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.TREENODE_READ, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.TREENODE_READ, description = "") })
-					})
+			description = "Returns input stream to attachment preview saved in given form value. Preview is supported for the png, jpg and jpeg mime types only")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.TREENODE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.TREENODE_READ })
+    })
 	public ResponseEntity<InputStreamResource> previewFormValue(
-			@ApiParam(value = "TreeNode's uuid identifier.", required = true)
+			 @Parameter(description = "TreeNode's uuid identifier.", required = true)
 			@PathVariable String backendId,
-			@ApiParam(value = "Form value identifier.", required = true)
+			 @Parameter(description = "Form value identifier.", required = true)
 			@PathVariable String formValueId) {
 		IdmTreeNodeDto dto = getDto(backendId);
 		if (dto == null) {
@@ -696,19 +716,31 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 	@RequestMapping(value= "/search/default", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.TREENODE_AUTOCOMPLETE + "')"
 			+ " or hasAuthority('" + CoreGroupPermission.TREENODE_READ + "')")
-	@ApiOperation(
-			value = "Get default tree node detail", 
-			nickname = "getDefaultTreeNode", 
-			response = IdmTreeNodeDto.class, 
-			tags = { IdmTreeNodeController.TAG }, 
-			authorizations = { 
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.TREENODE_AUTOCOMPLETE, description = ""),
-							@AuthorizationScope(scope = CoreGroupPermission.TREENODE_READ, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							@AuthorizationScope(scope = CoreGroupPermission.TREENODE_AUTOCOMPLETE, description = ""),
-							@AuthorizationScope(scope = CoreGroupPermission.TREENODE_READ, description = "") })
-					})
+	@Operation(
+			summary = "Get default tree node detail",
+			operationId = "getDefaultTreeNode", 
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmTreeNodeDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmTreeNodeController.TAG }
+			)
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							CoreGroupPermission.TREENODE_AUTOCOMPLETE,
+							CoreGroupPermission.TREENODE_READ }),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							CoreGroupPermission.TREENODE_AUTOCOMPLETE,
+							CoreGroupPermission.TREENODE_READ })
+        }
+    )
 	public ResponseEntity<?> getDefaultTreeNode() {
 		IdmTreeNodeDto defaultTreeNode = treeNodeService.getDefaultTreeNode();
 		if (defaultTreeNode == null) {
@@ -718,7 +750,7 @@ public class IdmTreeNodeController extends AbstractEventableDtoController<IdmTre
 		if (!PermissionUtils.hasAnyPermission(permissions, IdmBasePermission.AUTOCOMPLETE, IdmBasePermission.READ)) {
 			throw new ForbiddenEntityException(defaultTreeNode.getId(), IdmBasePermission.AUTOCOMPLETE, IdmBasePermission.READ);
 		}
-		return new ResponseEntity<>(toResource(defaultTreeNode), HttpStatus.OK);
+		return new ResponseEntity<>(toModel(defaultTreeNode), HttpStatus.OK);
 	}
 	
 	@Override

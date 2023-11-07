@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import javax.validation.constraints.Size;
 
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
@@ -14,9 +14,8 @@ import eu.bcvsolutions.idm.core.api.domain.DefaultFieldLengths;
 import eu.bcvsolutions.idm.core.api.domain.Embedded;
 import eu.bcvsolutions.idm.core.ecm.api.dto.IdmAttachmentDto;
 import eu.bcvsolutions.idm.core.security.api.domain.TwoFactorAuthenticationType;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.ApiModelProperty.AccessMode;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 
 /**
  * Dto for identity profile - setting.
@@ -25,7 +24,7 @@ import io.swagger.annotations.ApiModelProperty.AccessMode;
  * @since 9.0.0
  */
 @Relation(collectionRelation = "profiles")
-@ApiModel(description = "Identity profile - e.g. profile image, preffered language")
+@Schema(description = "Identity profile - e.g. profile image, preffered language")
 public class IdmProfileDto extends AbstractDto  {
 
 	private static final long serialVersionUID = 1L;
@@ -35,20 +34,20 @@ public class IdmProfileDto extends AbstractDto  {
 	@Embedded(dtoClass = IdmAttachmentDto.class)
 	private UUID image;
 	@Size(max = DefaultFieldLengths.ENUMARATION)
-	@ApiModelProperty(notes = "This localization will be choosed right after log in.")
+	@Schema(description = "This localization will be choosed right after log in.")
 	private String preferredLanguage;
-	@ApiModelProperty(notes = "Side menu will be collapsed, icons will be shown only.")
+	@Schema(description = "Side menu will be collapsed, icons will be shown only.")
 	private boolean navigationCollapsed;
-	@ApiModelProperty(notes = "Show internal entity identifiers, user transactions, logs and other system information.")
+	@Schema(description = "Show internal entity identifiers, user transactions, logs and other system information.")
 	private boolean systemInformation;
-	@ApiModelProperty(notes = "Tables will show given count of records by default, default application setting will be used otherwise.")
+	@Schema(description = "Tables will show given count of records by default, default application setting will be used otherwise.")
 	private Integer defaultPageSize;
-	@ApiModelProperty(notes = "Additional two factor authentication method.")
+	@Schema(description = "Additional two factor authentication method.")
 	private TwoFactorAuthenticationType twoFactorAuthenticationType;
 	@JsonProperty(value = "setting", access = Access.READ_ONLY)
-	@ApiModelProperty(
-			accessMode = AccessMode.READ_ONLY,
-			notes = "User setting, e.g. panels configuration - collapsed, expanded."
+	@Schema(
+			accessMode = Schema.AccessMode.READ_ONLY,
+			description = "User setting, e.g. panels configuration - collapsed, expanded."
 	)
 	private ConfigurationMap setting;
 

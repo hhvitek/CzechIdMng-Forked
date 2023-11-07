@@ -3,6 +3,7 @@ package eu.bcvsolutions.idm.core.workflow.service.impl;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.activiti.engine.HistoryService;
@@ -35,7 +36,6 @@ import eu.bcvsolutions.idm.core.workflow.service.WorkflowProcessDefinitionServic
 import eu.bcvsolutions.idm.core.workflow.service.WorkflowProcessInstanceService;
 import eu.bcvsolutions.idm.core.workflow.service.WorkflowTaskDefinitionService;
 import eu.bcvsolutions.idm.core.workflow.service.WorkflowTaskInstanceService;
-import java.util.Map;
 
 /**
  * Default implementation of workflow process historic service
@@ -141,7 +141,7 @@ public class DefaultWorkflowHistoricTaskInstanceService
 
 		if (processInstances != null) {
 			processInstances.forEach((instance) -> {
-				dtos.add(toResource(instance));
+				dtos.add(toModel(instance));
 			});
 		}
 
@@ -185,7 +185,7 @@ public class DefaultWorkflowHistoricTaskInstanceService
 		return !resources.isEmpty() ? resources.get(0) : null;
 	}
 
-	private WorkflowHistoricTaskInstanceDto toResource(HistoricTaskInstance task) {
+	private WorkflowHistoricTaskInstanceDto toModel(HistoricTaskInstance task) {
 		if (task == null) {
 			return null;
 		}

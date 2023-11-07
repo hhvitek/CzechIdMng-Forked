@@ -27,7 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.context.ApplicationContext;
 import org.springframework.plugin.core.OrderAwarePluginRegistry;
 import org.springframework.plugin.core.PluginRegistry;
 import org.springframework.stereotype.Service;
@@ -456,7 +455,7 @@ public class DefaultSysSystemAttributeMappingService
 			variables.put(SYSTEM_KEY, system);
 			variables.put(ENTITY_KEY, entity);
 			variables.put(AbstractScriptEvaluator.SCRIPT_EVALUATOR,
-					pluginExecutors.getPluginFor(IdmScriptCategory.TRANSFORM_TO)); // add default script evaluator, for
+					pluginExecutors.getPluginFor(IdmScriptCategory.TRANSFORM_TO).orElse(null)); // add default script evaluator, for
 																					// call another scripts
 			//
 			// Add access for script evaluator
@@ -511,7 +510,7 @@ public class DefaultSysSystemAttributeMappingService
 			variables.put(SYSTEM_KEY, system);
 			variables.put(IC_ATTRIBUTES_KEY, icAttributes);
 			variables.put(AbstractScriptEvaluator.SCRIPT_EVALUATOR,
-					pluginExecutors.getPluginFor(IdmScriptCategory.TRANSFORM_FROM)); // add default script evaluator,
+					pluginExecutors.getPluginFor(IdmScriptCategory.TRANSFORM_FROM).orElse(null)); // add default script evaluator,
 																						// for call another scripts
 			// Add access for script evaluator
 			List<Class<?>> extraClass = new ArrayList<>();

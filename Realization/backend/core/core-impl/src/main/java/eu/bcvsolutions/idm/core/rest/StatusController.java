@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.PublicController;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
 
 /**
  * "Naive" status
@@ -18,12 +18,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @RestController
 @RequestMapping(value = BaseController.BASE_PATH + "/status")
-@Api(
-		value = StatusController.TAG,  
-		tags = { StatusController.TAG }, 
-		description = "Application status",
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = StatusController.TAG, description = "Application status")
 public class StatusController implements PublicController {
 
 	public static final String OK_STATUS_PLAIN = "OK";
@@ -31,17 +26,17 @@ public class StatusController implements PublicController {
 	protected static final String TAG = "Status";
 	
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
-	@ApiOperation(
-			value = "Get status", 
-			nickname = "getPlainStatus",
+	@Operation(
+			summary = "Get status", 
+			operationId = "getPlainStatus",
 			tags = { StatusController.TAG })
 	public String getPlainStatus() {
 		return OK_STATUS_PLAIN;
 	}
 	
-	@ApiOperation(
-			value = "Get status",
-			nickname = "getPlainStatus",
+	@Operation(
+			summary = "Get status",
+			operationId = "getPlainStatus",
 			tags = { StatusController.TAG })
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
 	public String getHtmlStatus() {

@@ -7,7 +7,7 @@ import java.util.UUID;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -23,11 +23,11 @@ import eu.bcvsolutions.idm.core.api.domain.Embedded;
 import eu.bcvsolutions.idm.core.api.domain.ExternalCodeable;
 import eu.bcvsolutions.idm.core.api.domain.ExternalIdentifiable;
 import eu.bcvsolutions.idm.core.api.domain.IdentityState;
+import eu.bcvsolutions.idm.core.api.domain.PasswordManageable;
 import eu.bcvsolutions.idm.core.eav.api.dto.IdmFormProjectionDto;
 import eu.bcvsolutions.idm.core.security.api.domain.GuardedString;
 import eu.bcvsolutions.idm.core.security.api.domain.GuardedStringDeserializer;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Dto for identity.
@@ -36,19 +36,19 @@ import io.swagger.annotations.ApiModelProperty;
  *
  */
 @Relation(collectionRelation = "identities")
-@ApiModel(description = "Identity domain object")
-public class IdmIdentityDto extends FormableDto implements Disableable, Codeable, ExternalCodeable, ExternalIdentifiable, Contextable {
+@Schema(description = "Identity domain object")
+public class IdmIdentityDto extends FormableDto implements Disableable, Codeable, ExternalCodeable, ExternalIdentifiable, Contextable, PasswordManageable {
 
 	private static final long serialVersionUID = 1L;
 	//
 	@Size(max = DefaultFieldLengths.NAME)
-	@ApiModelProperty(required = true, notes = "Unique identity username. Could be used as identifier in rest endpoints")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Unique identity username. Could be used as identifier in rest endpoints")
 	private String username;	
 	@Size(max = DefaultFieldLengths.NAME)
-	@ApiModelProperty(notes = "External code.")
+	@Schema(description = "External code.")
 	private String externalCode;
 	@Size(max = DefaultFieldLengths.NAME)
-	@ApiModelProperty(notes = "Unique external identifier.")
+	@Schema(description = "Unique external identifier.")
 	private String externalId;
 	@JsonProperty(access = Access.WRITE_ONLY)
 	@JsonDeserialize(using = GuardedStringDeserializer.class)
@@ -59,10 +59,10 @@ public class IdmIdentityDto extends FormableDto implements Disableable, Codeable
 	private String lastName;
 	@Email
 	@Size(max = DefaultFieldLengths.EMAIL_ADDRESS)
-	@ApiModelProperty(notes = "Email", dataType = "email")
+	@Schema(description = "Email", type = "email")
 	private String email;
 	@Size(max = 30)
-	@ApiModelProperty(notes = "Phone")
+	@Schema(description = "Phone")
 	private String phone;
 	@Size(max = 100)
 	private String titleBefore;
@@ -78,7 +78,7 @@ public class IdmIdentityDto extends FormableDto implements Disableable, Codeable
 	private transient ZonedDateTime blockLoginDate = null;
 	@JsonIgnore
 	private Map<String, Object> context = null;
-	@ApiModelProperty(notes = "Projection - entity will be created / edited by given form.")
+	@Schema(description = "Projection - entity will be created / edited by given form.")
 	@Embedded(dtoClass = IdmFormProjectionDto.class)
 	private UUID formProjection;
 	/**
@@ -302,5 +302,10 @@ public class IdmIdentityDto extends FormableDto implements Disableable, Codeable
 	@Override
 	public String toString() {
 		return "IdmIdentityDto [username=" + username + "]";
+	}
+
+	@Override
+	public String getName() {
+		return getUsername();
 	}
 }

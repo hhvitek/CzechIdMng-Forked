@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resources;
-import org.springframework.http.MediaType;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,9 +38,12 @@ import eu.bcvsolutions.idm.core.workflow.model.dto.WorkflowHistoricTaskInstanceD
 import eu.bcvsolutions.idm.core.workflow.model.dto.WorkflowTaskInstanceDto;
 import eu.bcvsolutions.idm.core.workflow.service.WorkflowHistoricTaskInstanceService;
 import eu.bcvsolutions.idm.core.workflow.service.WorkflowProcessInstanceService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 
 /**
@@ -53,12 +56,7 @@ import io.swagger.annotations.ApiParam;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/workflow-history-tasks")
-@Api(
-		value = WorkflowHistoricTaskInstanceController.TAG,
-		tags = {WorkflowHistoricTaskInstanceController.TAG},
-		description = "Read WF audit",
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = WorkflowHistoricTaskInstanceController.TAG, description = "Read WF audit")
 public class WorkflowHistoricTaskInstanceController extends AbstractReadDtoController<WorkflowHistoricTaskInstanceDto, WorkflowFilterDto> {
 
 	protected static final String TAG = "Workflow - task instances history";
@@ -83,12 +81,14 @@ public class WorkflowHistoricTaskInstanceController extends AbstractReadDtoContr
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/search/quick")
-	@ApiOperation(
-			value = "Search historic task instances",
-			nickname = "searchQuickHistoricTaskInstances",
+	@Operation(
+			summary = "Search historic task instances",
+			operationId = "searchQuickHistoricTaskInstances",
 			tags = {WorkflowHistoricTaskInstanceController.TAG})
-	public Resources<?> searchQuick(
+	@PageableAsQueryParam
+	public CollectionModel<?> searchQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return find(parameters, pageable);
 	}
@@ -99,14 +99,24 @@ public class WorkflowHistoricTaskInstanceController extends AbstractReadDtoContr
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/{backendId}")
-	@ApiOperation(
-			value = "Historic task instance detail",
-			nickname = "getHistoricTaskInstance",
-			response = WorkflowHistoricTaskInstanceDto.class,
+	@Operation(
+			summary = "Historic task instance detail",
+			operationId = "getHistoricTaskInstance",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = WorkflowHistoricTaskInstanceDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = {WorkflowHistoricTaskInstanceController.TAG})
 	@Override
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Historic task instance id.", required = true)
+			 @Parameter(description = "Historic task instance id.", required = true)
 			@PathVariable String backendId) {
 		return super.get(backendId);
 	}

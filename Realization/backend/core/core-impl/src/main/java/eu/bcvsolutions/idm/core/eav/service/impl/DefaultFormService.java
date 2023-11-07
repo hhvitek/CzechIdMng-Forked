@@ -1293,16 +1293,15 @@ public class DefaultFormService implements FormService {
 	@Override
 	@SuppressWarnings({ "unchecked" })
 	public <O extends FormableEntity> FormValueService<O> getFormValueService(Class<? extends Identifiable> ownerType) {
-		FormValueService<O> formValueService = (FormValueService<O>) formValueServices.getPluginFor(lookupService.getEntityClass(ownerType));
+		FormValueService<O> formValueService = (FormValueService<O>) formValueServices.getPluginFor(lookupService.getEntityClass(ownerType)).orElse(null);
 		if (formValueService == null) {
 			// common form
-			formValueService = (FormValueService<O>) formValueServices.getPluginFor(IdmForm.class);
+			formValueService = (FormValueService<O>) formValueServices.getPluginFor(IdmForm.class).orElseThrow(() -> {
+				return new IllegalStateException(MessageFormat.format(
+						"FormValueService for class [{0}] not found, please check configuration", ownerType));
+			});
 		}
 		//
-		if (formValueService == null) {
-			throw new IllegalStateException(MessageFormat.format(
-					"FormValueService for class [{0}] not found, please check configuration", ownerType));
-		}
 		return formValueService;
 	}
 	

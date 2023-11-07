@@ -9,12 +9,13 @@ import java.util.UUID;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -34,6 +35,7 @@ import eu.bcvsolutions.idm.core.api.config.swagger.SwaggerConfig;
 import eu.bcvsolutions.idm.core.api.dto.ResultModels;
 import eu.bcvsolutions.idm.core.api.exception.EntityNotFoundException;
 import eu.bcvsolutions.idm.core.api.rest.AbstractReadWriteDtoController;
+import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.api.utils.DtoUtils;
 import eu.bcvsolutions.idm.core.eav.api.dto.IdmFormInstanceDto;
@@ -46,11 +48,14 @@ import eu.bcvsolutions.idm.core.scheduler.api.service.IdmLongRunningTaskService;
 import eu.bcvsolutions.idm.core.scheduler.api.service.LongRunningTaskManager;
 import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Default controller long running tasks (LRT)
@@ -60,10 +65,7 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/long-running-tasks")
-@Api(
-		value = IdmLongRunningTaskController.TAG,
-		description = "Operations with long running tasks (LRT)",
-		tags = { IdmLongRunningTaskController.TAG })
+@Tag(name = IdmLongRunningTaskController.TAG, description = "Operations with long running tasks (LRT)")
 public class IdmLongRunningTaskController
 	extends AbstractReadWriteDtoController<IdmLongRunningTaskDto, IdmLongRunningTaskFilter> {
 
@@ -82,18 +84,18 @@ public class IdmLongRunningTaskController
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_READ + "')")
-	@ApiOperation(
-			value = "Search LRTs (/search/quick alias)", 
-			nickname = "searchLongRunningTasks", 
-			tags={ IdmLongRunningTaskController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_READ, description = "") })
-			})
-	public Resources<?> find(
+	@Operation(
+			summary = "Search LRTs (/search/quick alias)", 
+			operationId = "searchLongRunningTasks",
+			tags={ IdmLongRunningTaskController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_READ })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -108,18 +110,18 @@ public class IdmLongRunningTaskController
 	@ResponseBody
 	@RequestMapping(value= "/search/quick", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_READ + "')")
-	@ApiOperation(
-			value = "Search LRTs", 
-			nickname = "searchQuickLongRunningTasks", 
-			tags={ IdmLongRunningTaskController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_READ, description = "") })
-			})
-	public Resources<?> findQuick(
+	@Operation(
+			summary = "Search LRTs", 
+			operationId = "searchQuickLongRunningTasks",
+			tags={ IdmLongRunningTaskController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_READ })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -128,18 +130,18 @@ public class IdmLongRunningTaskController
 	@ResponseBody
 	@RequestMapping(value = "/search/autocomplete", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "Autocomplete LRTs (selectbox usage)", 
-			nickname = "autocompleteLongRunningTasks", 
-			tags = { IdmLongRunningTaskController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_AUTOCOMPLETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_AUTOCOMPLETE, description = "") })
-				})
-	public Resources<?> autocomplete(
+	@Operation(
+			summary = "Autocomplete LRTs (selectbox usage)", 
+			operationId = "autocompleteLongRunningTasks",
+			tags = { IdmLongRunningTaskController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_AUTOCOMPLETE })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -148,16 +150,14 @@ public class IdmLongRunningTaskController
 	@ResponseBody
 	@RequestMapping(value = "/search/count", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_COUNT + "')")
-	@ApiOperation(
-			value = "The number of entities that match the filter", 
-			nickname = "countLongRunningTasks", 
-			tags = { IdmLongRunningTaskController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_COUNT, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_COUNT, description = "") })
-				})
+	@Operation(
+			summary = "The number of entities that match the filter", 
+			operationId = "countLongRunningTasks",
+			tags = { IdmLongRunningTaskController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_COUNT }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_COUNT })
+    })
 	public long count(@RequestParam(required = false) MultiValueMap<String, Object> parameters) {
 		return super.count(parameters);
 	}
@@ -169,19 +169,27 @@ public class IdmLongRunningTaskController
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_READ + "')")
-	@ApiOperation(
-			value = "LRT detail",
-			nickname = "getLongRunningTask",
-			response = IdmLongRunningTaskDto.class,
-			tags={ IdmLongRunningTaskController.TAG }, 
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_READ, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_READ, description = "") })
-					})
+	@Operation(
+			summary = "LRT detail",
+			operationId = "getLongRunningTask",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmLongRunningTaskDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags={ IdmLongRunningTaskController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_READ })
+    })
 	public ResponseEntity<?> get(
-			@ApiParam(value = "LRT's uuid identifier.", required = true)
+			 @Parameter(description = "LRT's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -204,18 +212,16 @@ public class IdmLongRunningTaskController
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_DELETE + "')")
-	@ApiOperation(
-			value = "Delete LRT", 
-			nickname = "deleteLongRunningTask", 
-			tags = { IdmLongRunningTaskController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_DELETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_DELETE, description = "") })
-				})
+	@Operation(
+			summary = "Delete LRT", 
+			operationId = "deleteLongRunningTask",
+			tags = { IdmLongRunningTaskController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_DELETE })
+    })
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "LRT's uuid identifier.", required = true)
+			 @Parameter(description = "LRT's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -224,18 +230,19 @@ public class IdmLongRunningTaskController
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_READ + "')")
-	@ApiOperation(
-			value = "What logged identity can do with given record", 
-			nickname = "getPermissionsOnLongRunningTask", 
-			tags = { IdmLongRunningTaskController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_READ, description = "")})
-				})
+	@Operation(
+			summary = "What logged identity can do with given record", 
+			operationId = "getPermissionsOnLongRunningTask",
+			tags = { IdmLongRunningTaskController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.SCHEDULER_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.SCHEDULER_READ})
+        }
+    )
 	public Set<String> getPermissions(
-			@ApiParam(value = "LRT's uuid identifier.", required = true)
+			 @Parameter(description = "LRT's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -244,16 +251,14 @@ public class IdmLongRunningTaskController
 	@ResponseBody
 	@RequestMapping(value = "/bulk/actions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_READ + "')")
-	@ApiOperation(
-			value = "Get available bulk actions", 
-			nickname = "availableBulkAction", 
-			tags = { IdmLongRunningTaskController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_READ, description = "") })
-				})
+	@Operation(
+			summary = "Get available bulk actions", 
+			operationId = "availableBulkAction",
+			tags = { IdmLongRunningTaskController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_READ })
+    })
 	public List<IdmBulkActionDto> getAvailableBulkActions() {
 		return super.getAvailableBulkActions();
 	}
@@ -262,17 +267,28 @@ public class IdmLongRunningTaskController
 	@ResponseBody
 	@RequestMapping(path = "/bulk/action", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_READ + "')")
-	@ApiOperation(
-			value = "Process bulk action", 
-			nickname = "bulkAction", 
-			response = IdmBulkActionDto.class, 
-			tags = { IdmLongRunningTaskController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_READ, description = "")})
-				})
+	@Operation(
+			summary = "Process bulk action", 
+			operationId = "bulkAction",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmLongRunningTaskController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.SCHEDULER_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.SCHEDULER_READ})
+        }
+    )
 	public ResponseEntity<IdmBulkActionDto> bulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.bulkAction(bulkAction);
 	}
@@ -281,17 +297,28 @@ public class IdmLongRunningTaskController
 	@ResponseBody
 	@RequestMapping(path = "/bulk/prevalidate", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_READ + "')")
-	@ApiOperation(
-			value = "Prevalidate bulk action", 
-			nickname = "prevalidateBulkAction", 
-			response = IdmBulkActionDto.class, 
-			tags = { IdmLongRunningTaskController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_READ, description = "")})
-				})
+	@Operation(
+			summary = "Prevalidate bulk action", 
+			operationId = "prevalidateBulkAction",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmLongRunningTaskController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.SCHEDULER_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						CoreGroupPermission.SCHEDULER_READ})
+        }
+    )
 	public ResponseEntity<ResultModels> prevalidateBulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.prevalidateBulkAction(bulkAction);
 	}
@@ -299,21 +326,29 @@ public class IdmLongRunningTaskController
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/download/{attachmentId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_READ + "')")
-	@ApiOperation(
-			value = "Download result from LRT",
-			nickname = "downloadReslut",
-			response = IdmLongRunningTaskDto.class,
-			tags={ IdmLongRunningTaskController.TAG }, 
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_READ, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_READ, description = "") })
-					})
+	@Operation(
+			summary = "Download result from LRT",
+			operationId = "downloadReslut",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmLongRunningTaskDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags={ IdmLongRunningTaskController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_READ })
+    })
 	public ResponseEntity<?> downloadResult(
-			@ApiParam(value = "LRT's uuid identifier.", required = true)
+			 @Parameter(description = "LRT's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
-			@ApiParam(value = "Attachment's id.", required = true)
+			 @Parameter(description = "Attachment's id.", required = true)
 			@PathVariable @NotNull String attachmentId) {
 		
 		// check if user has permission for read the long running task
@@ -344,19 +379,17 @@ public class IdmLongRunningTaskController
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.PUT, value = "/{backendId}/cancel")
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_UPDATE + "')")
-	@ApiOperation(
-			value = "Cancel running task",
-			nickname = "cancelLongRunningTask",
+	@Operation(
+			summary = "Cancel running task",
+			operationId = "cancelLongRunningTask",
 			tags={ IdmLongRunningTaskController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_UPDATE, description = "") })
-				},
-			notes = "Stop running task in next internal task's iteration (when counter is incremented).")
+						description = "Stop running task in next internal task's iteration (when counter is incremented).")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_UPDATE })
+    })
 	public ResponseEntity<?> cancel(
-			@ApiParam(value = "LRT's uuid identifier.", required = true)
+			 @Parameter(description = "LRT's uuid identifier.", required = true)
 			@PathVariable UUID backendId) {
 		longRunningTaskManager.cancel(backendId);
 		//
@@ -372,19 +405,17 @@ public class IdmLongRunningTaskController
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.PUT, value = "/{backendId}/interrupt")
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_UPDATE + "')")
-	@ApiOperation(
-			value = "Interrupt running task",
-			nickname = "interruptLongRunningTask",
+	@Operation(
+			summary = "Interrupt running task",
+			operationId = "interruptLongRunningTask",
 			tags={ IdmLongRunningTaskController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_UPDATE, description = "") })
-				},
-			notes = "Interrupt given LRT - \"kills\" thread with running task.")
+						description = "Interrupt given LRT - \"kills\" thread with running task.")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_UPDATE })
+    })
 	public ResponseEntity<?> interrupt(
-			@ApiParam(value = "LRT's uuid identifier.", required = true)
+			 @Parameter(description = "LRT's uuid identifier.", required = true)
 			@PathVariable UUID backendId) {
 		longRunningTaskManager.interrupt(backendId);
 		//
@@ -399,19 +430,17 @@ public class IdmLongRunningTaskController
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.POST, value = "/action/process-created")
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_EXECUTE + "')")
-	@ApiOperation(
-			value = "Process created LRTs",
-			nickname = "processCreatedLongRunningTasks",
+	@Operation(
+			summary = "Process created LRTs",
+			operationId = "processCreatedLongRunningTasks",
 			tags={ IdmLongRunningTaskController.TAG },
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-						@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_EXECUTE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-						@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_EXECUTE, description = "") })
-				},
-			notes = "When LRT is created, then is added to queue with state created only."
+			description = "When LRT is created, then is added to queue with state created only."
 					+ " Another scheduled task for processing prepared task will execute them."
 					+ " This operation process prepared tasks immediately.")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_EXECUTE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_EXECUTE })
+    })
 	public ResponseEntity<?> processCreated() {
 		longRunningTaskManager.processCreated();
 		//
@@ -421,21 +450,19 @@ public class IdmLongRunningTaskController
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.PUT, value = "/{backendId}/process")
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_EXECUTE + "')")
-	@ApiOperation(
-			value = "Process created LRT",
-			nickname = "processCreatedLongRunningTask",
+	@Operation(
+			summary = "Process created LRT",
+			operationId = "processCreatedLongRunningTask",
 			tags={ IdmLongRunningTaskController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_EXECUTE, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_EXECUTE, description = "") })
-			},
-			notes = "When LRT is created, then is added to queue with state created only."
+			description = "When LRT is created, then is added to queue with state created only."
 					+ " Another scheduled task for processing prepared task will execute them."
 					+ " This operation process prepared task by given identifier immediately.")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_EXECUTE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_EXECUTE })
+    })
 	public ResponseEntity<?> processCheckedCreated(
-			@ApiParam(value = "LRT's uuid identifier.", required = true)
+			 @Parameter(description = "LRT's uuid identifier.", required = true)
 			@PathVariable UUID backendId) {	
 		longRunningTaskManager.processCreated(backendId);
 		//
@@ -448,21 +475,19 @@ public class IdmLongRunningTaskController
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.PUT, value = "/{backendId}/recover")
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.SCHEDULER_EXECUTE + "')")
-	@ApiOperation(
-			value = "Process LRT again",
-			nickname = "recoverLongRunningTask",
+	@Operation(
+			summary = "Process LRT again",
+			operationId = "recoverLongRunningTask",
 			tags={ IdmLongRunningTaskController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_EXECUTE, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = CoreGroupPermission.SCHEDULER_EXECUTE, description = "") })
-			},
-			notes = "When LRT is executed and recoverable, then task can be executed again."
+			description = "When LRT is executed and recoverable, then task can be executed again."
 					+ " Task will be executed with the same configuration."
 					+ " If task was executed by scheduled task, then scheduled task will be reused => already processed items will be not processed.")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.SCHEDULER_EXECUTE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.SCHEDULER_EXECUTE })
+    })
 	public ResponseEntity<?> recover(
-			@ApiParam(value = "LRT's uuid identifier.", required = true)
+			 @Parameter(description = "LRT's uuid identifier.", required = true)
 			@PathVariable UUID backendId) {
 		longRunningTaskManager.recover(backendId);
 		//

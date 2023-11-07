@@ -2,7 +2,7 @@ package eu.bcvsolutions.idm.core.security.api.dto;
 
 import javax.validation.constraints.NotEmpty;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Two factor authentication init registration response.
@@ -13,12 +13,12 @@ import io.swagger.annotations.ApiModelProperty;
 public class TwoFactorRegistrationResponseDto {
 
 	@NotEmpty
-	@ApiModelProperty(required = true, notes = "Normalized identity username to two factor authentication registration (spinal-case).")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Normalized identity username to two factor authentication registration (spinal-case).")
 	private String username;
 	@NotEmpty
-	@ApiModelProperty(required = true, notes = "Two factor authentication registration secret.")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Two factor authentication registration secret.")
 	private String verificationSecret;
-	@ApiModelProperty(notes = "Two factor authentication registration qrcode (uri), when application is used.")
+	@Schema(description = "Two factor authentication registration qrcode (uri), when application is used.")
 	private String qrcode;
 	
 	public String getUsername() {

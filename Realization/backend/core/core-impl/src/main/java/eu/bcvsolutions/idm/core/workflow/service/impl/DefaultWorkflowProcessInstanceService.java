@@ -1,6 +1,5 @@
 package eu.bcvsolutions.idm.core.workflow.service.impl;
 
-import eu.bcvsolutions.idm.core.workflow.model.dto.WorkflowHistoricProcessInstanceDto;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -48,6 +47,7 @@ import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
 import eu.bcvsolutions.idm.core.security.api.service.SecurityService;
 import eu.bcvsolutions.idm.core.security.api.utils.PermissionUtils;
 import eu.bcvsolutions.idm.core.workflow.model.dto.WorkflowFilterDto;
+import eu.bcvsolutions.idm.core.workflow.model.dto.WorkflowHistoricProcessInstanceDto;
 import eu.bcvsolutions.idm.core.workflow.model.dto.WorkflowProcessInstanceDto;
 import eu.bcvsolutions.idm.core.workflow.service.WorkflowHistoricProcessInstanceService;
 import eu.bcvsolutions.idm.core.workflow.service.WorkflowProcessInstanceService;
@@ -224,7 +224,7 @@ public class DefaultWorkflowProcessInstanceService
 
 		if (processInstances != null) {
 			for (ProcessInstance instance : processInstances) {
-				dtos.add(toResource(instance));
+				dtos.add(toModel(instance));
 			}
 		}
 
@@ -369,7 +369,7 @@ public class DefaultWorkflowProcessInstanceService
 		return historicProcess != null;
 	}
 
-	private WorkflowProcessInstanceDto toResource(ProcessInstance instance) {
+	private WorkflowProcessInstanceDto toModel(ProcessInstance instance) {
 		if (instance == null) {
 			return null;
 		}

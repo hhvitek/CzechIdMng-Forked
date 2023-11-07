@@ -7,11 +7,10 @@ import java.util.List;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 import eu.bcvsolutions.idm.core.api.domain.DefaultFieldLengths;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * DTO for attribute in virtual system
@@ -20,14 +19,14 @@ import io.swagger.annotations.ApiModelProperty;
  *
  */
 @Relation(collectionRelation = "attributes")
-@ApiModel(description = "Attribute of request item")
+@Schema(description = "Attribute of request item")
 public class IdmRequestItemAttributeDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@NotEmpty
 	@Size(min = 1, max = DefaultFieldLengths.NAME)
-	@ApiModelProperty(required = true, notes = "Name of attribute")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Name of attribute")
 	private String name;
 	private boolean multivalue;
 	private boolean changed = false;

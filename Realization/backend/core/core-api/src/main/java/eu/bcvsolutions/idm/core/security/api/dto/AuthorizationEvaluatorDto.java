@@ -1,7 +1,7 @@
 package eu.bcvsolutions.idm.core.security.api.dto;
 
 import javax.validation.constraints.NotEmpty;
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;

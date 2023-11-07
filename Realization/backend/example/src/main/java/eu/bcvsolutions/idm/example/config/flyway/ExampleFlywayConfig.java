@@ -36,11 +36,16 @@ public class ExampleFlywayConfig extends AbstractFlywayConfiguration {
 	@Bean
 	@DependsOn("flywayCore")
 	@ConditionalOnMissingBean(name = "flywayModuleExample")
-	@ConditionalOnExpression("${flyway.enabled:true} && '${flyway.example.locations}'!=''")
+	@ConditionalOnExpression("${spring.flyway.enabled:true} && '${flyway.example.locations}'!=''")
 	@ConfigurationProperties(prefix = "flyway.example")
 	public Flyway flywayModuleExample() {
 		Flyway flyway = super.createFlyway();
 		LOG.info("Starting flyway migration for example module [{}]: ", flyway.getConfiguration().getTable());
 		return flyway;
+	}
+
+	@Override
+	public String getPropertyPrefix() {
+		return "flyway.example";
 	}
 }

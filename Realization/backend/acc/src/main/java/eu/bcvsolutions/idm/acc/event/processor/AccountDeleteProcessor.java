@@ -42,6 +42,7 @@ import eu.bcvsolutions.idm.acc.service.api.AccAccountService;
 import eu.bcvsolutions.idm.acc.service.api.AccContractAccountService;
 import eu.bcvsolutions.idm.acc.service.api.AccContractSliceAccountService;
 import eu.bcvsolutions.idm.acc.service.api.AccIdentityAccountService;
+import eu.bcvsolutions.idm.acc.service.api.AccPasswordHistoryService;
 import eu.bcvsolutions.idm.acc.service.api.AccRoleAccountService;
 import eu.bcvsolutions.idm.acc.service.api.AccRoleCatalogueAccountService;
 import eu.bcvsolutions.idm.acc.service.api.AccTreeAccountService;
@@ -83,6 +84,9 @@ public class AccountDeleteProcessor
 	@Autowired private SysSystemEntityTypeManager systemEntityManager;
 
 	@Autowired private AccAccountRoleAssignmentService accountRoleAssignmentService;
+
+	@Autowired private AccountPasswordProcessor passwordProcessor;
+	@Autowired private AccPasswordHistoryService passwordHistoryService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(AccountDeleteProcessor.class);
 
@@ -204,6 +208,11 @@ public class AccountDeleteProcessor
 		for (AccContractSliceAccountDto contractSliceAccount : contractSliceAccounts) {
 			contractAccountSliceService.delete(contractSliceAccount, deleteTargetAccount);
 		}
+
+		// remove password
+		passwordProcessor.deletePassword(account);
+		// delete password history for identity
+		passwordHistoryService.deleteAllByEntity(account.getId());
 
 		//
 		AccAccountDto refreshAccount = accountService.get(account.getId());

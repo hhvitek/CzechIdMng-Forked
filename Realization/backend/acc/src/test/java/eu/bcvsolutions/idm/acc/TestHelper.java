@@ -449,4 +449,6 @@ public interface TestHelper extends eu.bcvsolutions.idm.test.api.TestHelper {
 	 * @param newAccountUid
 	 */
 	void changeAccountUid(AccAccountDto account, String newAccountUid);
+
+	AccAccountDto createAccountWithPassword(SysSystemDto system, String password);
 }

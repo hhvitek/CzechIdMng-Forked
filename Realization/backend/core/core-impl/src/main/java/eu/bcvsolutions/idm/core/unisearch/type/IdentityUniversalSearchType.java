@@ -1,5 +1,12 @@
 package eu.bcvsolutions.idm.core.unisearch.type;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Component;
+
 import eu.bcvsolutions.idm.core.CoreModuleDescriptor;
 import eu.bcvsolutions.idm.core.api.dto.IdmIdentityDto;
 import eu.bcvsolutions.idm.core.api.dto.filter.IdmIdentityFilter;
@@ -9,12 +16,6 @@ import eu.bcvsolutions.idm.core.api.service.ReadDtoService;
 import eu.bcvsolutions.idm.core.eav.api.service.AbstractUniversalSearchType;
 import eu.bcvsolutions.idm.core.model.entity.IdmIdentity_;
 import eu.bcvsolutions.idm.core.security.api.domain.Enabled;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Component;
 
 /**
  *
@@ -57,7 +58,7 @@ public class IdentityUniversalSearchType extends AbstractUniversalSearchType<Idm
 
 	@Override
 	protected Pageable getPageable(Pageable pageable) {
-		Sort sort = new Sort(Sort.Direction.ASC, IdmIdentity_.username.getName());
+		Sort sort = Sort.by(Sort.Direction.ASC, IdmIdentity_.username.getName());
 		
 		return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 	}

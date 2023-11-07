@@ -5,11 +5,11 @@ import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resources;
-import org.springframework.http.MediaType;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -29,11 +29,14 @@ import eu.bcvsolutions.idm.core.api.rest.BaseController;
 import eu.bcvsolutions.idm.core.api.rest.BaseDtoController;
 import eu.bcvsolutions.idm.core.api.service.IdmContractSliceGuaranteeService;
 import eu.bcvsolutions.idm.core.model.domain.CoreGroupPermission;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Contract guarantee slice controller
@@ -43,12 +46,7 @@ import io.swagger.annotations.AuthorizationScope;
  */
 @RestController
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/contract-slice-guarantees")
-@Api(
-		value = IdmContractSliceGuaranteeController.TAG, 
-		description = "Operations with identity contract slice guarantees", 
-		tags = { IdmContractSliceGuaranteeController.TAG }, 
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = IdmContractSliceGuaranteeController.TAG, description = "Operations with identity contract slice guarantees")
 public class IdmContractSliceGuaranteeController extends AbstractEventableDtoController<IdmContractSliceGuaranteeDto, IdmContractSliceGuaranteeFilter> {
 	
 	protected static final String TAG = "Contract slice guarantees";
@@ -62,18 +60,18 @@ public class IdmContractSliceGuaranteeController extends AbstractEventableDtoCon
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTSLICEGUARANTEE_READ + "')")
-	@ApiOperation(
-			value = "Search contract slice guarantees (/search/quick alias)", 
-			nickname = "searchContractSliceGuarantees", 
-			tags = { IdmContractSliceGuaranteeController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTSLICEGUARANTEE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTSLICEGUARANTEE_READ, description = "") })
-				})
-	public Resources<?> find(
+	@Operation(
+			summary = "Search contract slice guarantees (/search/quick alias)", 
+			operationId = "searchContractSliceGuarantees",
+			tags = { IdmContractSliceGuaranteeController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONTRACTSLICEGUARANTEE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONTRACTSLICEGUARANTEE_READ })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -81,18 +79,18 @@ public class IdmContractSliceGuaranteeController extends AbstractEventableDtoCon
 	@ResponseBody
 	@RequestMapping(value = "/search/quick", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTSLICEGUARANTEE_READ + "')")
-	@ApiOperation(
-			value = "Search contract guarantees", 
-			nickname = "searchQuickContractSliceGuarantees", 
-			tags = { IdmContractSliceGuaranteeController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTSLICEGUARANTEE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTSLICEGUARANTEE_READ, description = "") })
-				})
-	public Resources<?> findQuick(
+	@Operation(
+			summary = "Search contract guarantees", 
+			operationId = "searchQuickContractSliceGuarantees",
+			tags = { IdmContractSliceGuaranteeController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONTRACTSLICEGUARANTEE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONTRACTSLICEGUARANTEE_READ })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -100,18 +98,18 @@ public class IdmContractSliceGuaranteeController extends AbstractEventableDtoCon
 	@ResponseBody
 	@RequestMapping(value = "/search/autocomplete", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTSLICEGUARANTEE_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "Autocomplete contract guarantees (selectbox usage)", 
-			nickname = "autocompleteContractSliceGuarantees", 
-			tags = { IdmContractSliceGuaranteeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTSLICEGUARANTEE_AUTOCOMPLETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTSLICEGUARANTEE_AUTOCOMPLETE, description = "") })
-				})
-	public Resources<?> autocomplete(
+	@Operation(
+			summary = "Autocomplete contract guarantees (selectbox usage)", 
+			operationId = "autocompleteContractSliceGuarantees",
+			tags = { IdmContractSliceGuaranteeController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONTRACTSLICEGUARANTEE_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONTRACTSLICEGUARANTEE_AUTOCOMPLETE })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters,
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -120,19 +118,27 @@ public class IdmContractSliceGuaranteeController extends AbstractEventableDtoCon
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTSLICEGUARANTEE_READ + "')")
-	@ApiOperation(
-			value = "Contract guarantee detail", 
-			nickname = "getContractSliceGuarantee", 
-			response = IdmContractSliceGuaranteeDto.class, 
-			tags = { IdmContractSliceGuaranteeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTSLICEGUARANTEE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTSLICEGUARANTEE_READ, description = "") })
-				})
+	@Operation(
+			summary = "Contract guarantee detail", 
+			operationId = "getContractSliceGuarantee",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmContractSliceGuaranteeDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmContractSliceGuaranteeController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONTRACTSLICEGUARANTEE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONTRACTSLICEGUARANTEE_READ })
+    })
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Contract slice guarantee's uuid identifier.", required = true)
+			 @Parameter(description = "Contract slice guarantee's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -142,19 +148,30 @@ public class IdmContractSliceGuaranteeController extends AbstractEventableDtoCon
 	@RequestMapping(method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTSLICEGUARANTEE_CREATE + "')"
 			+ " or hasAuthority('" + CoreGroupPermission.CONTRACTSLICEGUARANTEE_UPDATE + "')")
-	@ApiOperation(
-			value = "Create / update contract guarantee", 
-			nickname = "postContractSliceGuarantee", 
-			response = IdmContractSliceGuaranteeDto.class, 
-			tags = { IdmContractSliceGuaranteeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTSLICEGUARANTEE_CREATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTSLICEGUARANTEE_UPDATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTSLICEGUARANTEE_CREATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTSLICEGUARANTEE_UPDATE, description = "")})
-				})
+	@Operation(
+			summary = "Create / update contract guarantee", 
+			operationId = "postContractSliceGuarantee",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmContractSliceGuaranteeDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmContractSliceGuaranteeController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						CoreGroupPermission.CONTRACTSLICEGUARANTEE_CREATE,
+						CoreGroupPermission.CONTRACTSLICEGUARANTEE_UPDATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+						CoreGroupPermission.CONTRACTSLICEGUARANTEE_CREATE,
+						CoreGroupPermission.CONTRACTSLICEGUARANTEE_UPDATE})
+        }
+    )
 	public ResponseEntity<?> post(@Valid @RequestBody IdmContractSliceGuaranteeDto dto) {
 		return super.post(dto);
 	}
@@ -163,19 +180,27 @@ public class IdmContractSliceGuaranteeController extends AbstractEventableDtoCon
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTSLICEGUARANTEE_UPDATE + "')")
-	@ApiOperation(
-			value = "Update contract guarantee", 
-			nickname = "putContractSliceGuarantee", 
-			response = IdmContractSliceGuaranteeDto.class, 
-			tags = { IdmContractSliceGuaranteeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTSLICEGUARANTEE_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTSLICEGUARANTEE_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update contract guarantee", 
+			operationId = "putContractSliceGuarantee",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmContractSliceGuaranteeDto.class
+                                    )
+                            )
+                    }
+            ), 
+			tags = { IdmContractSliceGuaranteeController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONTRACTSLICEGUARANTEE_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONTRACTSLICEGUARANTEE_UPDATE })
+    })
 	public ResponseEntity<?> put(
-			@ApiParam(value = "Contract slice guarantee's uuid identifier.", required = true)
+			 @Parameter(description = "Contract slice guarantee's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId, 
 			@Valid @RequestBody IdmContractSliceGuaranteeDto dto) {
 		return super.put(backendId, dto);
@@ -185,18 +210,16 @@ public class IdmContractSliceGuaranteeController extends AbstractEventableDtoCon
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTSLICEGUARANTEE_DELETE + "')")
-	@ApiOperation(
-			value = "Delete contract guarantee", 
-			nickname = "deleteContractSliceGuarantee", 
-			tags = { IdmContractSliceGuaranteeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTSLICEGUARANTEE_DELETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTSLICEGUARANTEE_DELETE, description = "") })
-				})
+	@Operation(
+			summary = "Delete contract guarantee", 
+			operationId = "deleteContractSliceGuarantee",
+			tags = { IdmContractSliceGuaranteeController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONTRACTSLICEGUARANTEE_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONTRACTSLICEGUARANTEE_DELETE })
+    })
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "Contract slice guarantee's uuid identifier.", required = true)
+			 @Parameter(description = "Contract slice guarantee's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -205,18 +228,16 @@ public class IdmContractSliceGuaranteeController extends AbstractEventableDtoCon
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.CONTRACTSLICEGUARANTEE_READ + "')")
-	@ApiOperation(
-			value = "What logged identity can do with given record", 
-			nickname = "getPermissionsOnContractSliceGuarantee", 
-			tags = { IdmContractSliceGuaranteeController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTSLICEGUARANTEE_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = CoreGroupPermission.CONTRACTSLICEGUARANTEE_READ, description = "") })
-				})
+	@Operation(
+			summary = "What logged identity can do with given record", 
+			operationId = "getPermissionsOnContractSliceGuarantee",
+			tags = { IdmContractSliceGuaranteeController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { CoreGroupPermission.CONTRACTSLICEGUARANTEE_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { CoreGroupPermission.CONTRACTSLICEGUARANTEE_READ })
+    })
 	public Set<String> getPermissions(
-			@ApiParam(value = "Contract slice guarantee's uuid identifier.", required = true)
+			 @Parameter(description = "Contract slice guarantee's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}

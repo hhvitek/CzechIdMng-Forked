@@ -5,6 +5,25 @@ import uuid from 'uuid';
 //
 import EntityUtils from './EntityUtils';
 
+export const getUiState = (state, uiKey, id = null) => {
+  const stateKey = `${uiKey}${id ? `-${id}` : ''}`;
+
+  if (!state || !stateKey || !state.data.ui[stateKey]) {
+    return null;
+  }
+  return state.data.ui[stateKey];
+};
+
+export const isUiLoading = (state, uiKey, id = null) => {
+  const uiState = getUiState(state, uiKey, id);
+  return !!uiState?.showLoading;
+};
+
+export const getUiItems = (state, uiKey, id = null) => {
+  const uiState = getUiState(state, uiKey, id);
+  return uiState?.items;
+};
+
 /**
  * Helper methods for ui state.
  *
@@ -19,11 +38,8 @@ export default class UiUtils {
    * @param  {string} uiKey - ui key for loading indicator etc.
    * @return {object} - ui state
    */
-  static getUiState(state, uiKey) {
-    if (!state || !uiKey || !state.data.ui[uiKey]) {
-      return null;
-    }
-    return state.data.ui[uiKey];
+  static getUiState(...args) {
+    return getUiState(...args);
   }
 
   /**
@@ -33,12 +49,8 @@ export default class UiUtils {
    * @param  {string} uiKey - ui key for loading indicator etc.
    * @return {boolean} - true, when loading for given uiKey proceed
    */
-  static isShowLoading(state, uiKey) {
-    const uiState = UiUtils.getUiState(state, uiKey);
-    if (!uiState) {
-      return false;
-    }
-    return uiState.showLoading;
+  static isShowLoading(...args) {
+    return isUiLoading(...args);
   }
 
   /**
@@ -301,13 +313,13 @@ export default class UiUtils {
   }
 
   /**
-  * Do substring on given data by max length. Substring is not on char byt on word.
-  * Last word will be whole.
-  *
-  * @param  {String} data
-  * @param  {Number} maxLength
-  * @return {String}
-  */
+   * Do substring on given data by max length. Substring is not on char byt on word.
+   * Last word will be whole.
+   *
+   * @param  {String} data
+   * @param  {Number} maxLength
+   * @return {String}
+   */
   static substringByWord(data, maxLength, suffix = null) {
     return this.substringBegin(data, maxLength, ' ', suffix);
   }
@@ -442,7 +454,7 @@ export default class UiUtils {
     if (_.isObject(objectValue)) {
       return JSON.stringify(objectValue, null, 2);
     }
-    return `${ objectValue }`;
+    return `${objectValue}`;
   }
 
   /**
@@ -510,7 +522,7 @@ export default class UiUtils {
       return null;
     }
     //
-    const { query } = location;
+    const {query} = location;
     if (query) {
       return query[parameterName];
     }
@@ -530,7 +542,7 @@ export default class UiUtils {
     }
     //
     if (!_.startsWith(route, '/')) {
-      return `/${ route }`;
+      return `/${route}`;
     }
     //
     return route;
@@ -568,7 +580,7 @@ export default class UiUtils {
       return null;
     }
     //
-    return `${ latestDto.id || uuid.v1() }-${ this.spinalCase(latestDto.modified || latestDto.created) }`;
+    return `${latestDto.id || uuid.v1()}-${this.spinalCase(latestDto.modified || latestDto.created)}`;
   }
 
   static trimSlash(routePath) {

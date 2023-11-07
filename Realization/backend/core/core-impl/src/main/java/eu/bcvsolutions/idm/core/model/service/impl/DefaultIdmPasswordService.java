@@ -211,6 +211,9 @@ public class DefaultIdmPasswordService
 	}
 
 	@Override
+	public IdmPasswordDto findOneByEntity(UUID entityId) { return findOneByIdentity(entityId); }
+
+	@Override
 	public void increaseUnsuccessfulAttempts(String username) {
 		IdmPasswordDto passwordDto = getPasswordByIdentityUsername(username);
 		if (passwordDto != null) {

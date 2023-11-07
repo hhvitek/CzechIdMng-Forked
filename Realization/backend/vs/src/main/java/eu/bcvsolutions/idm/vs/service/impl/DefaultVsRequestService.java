@@ -490,7 +490,7 @@ public class DefaultVsRequestService extends AbstractReadWriteDtoService<VsReque
 		filter.setUid(uid);
 		filter.setSystemId(systemId);
 		filter.setState(VsRequestState.IN_PROGRESS);
-		Sort sort = new Sort(Direction.DESC, VsRequest_.created.getName());
+		Sort sort = Sort.by(Direction.DESC, VsRequest_.created.getName());
 		return this.find(filter, PageRequest.of(0, Integer.MAX_VALUE, sort)).getContent();
 	}
 

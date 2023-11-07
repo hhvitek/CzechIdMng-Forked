@@ -5,13 +5,13 @@ import java.util.UUID;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 import eu.bcvsolutions.idm.core.api.domain.DefaultFieldLengths;
 import eu.bcvsolutions.idm.core.api.domain.Embedded;
 import eu.bcvsolutions.idm.core.api.domain.ExternalIdentifiable;
 import eu.bcvsolutions.idm.core.api.domain.Requestable;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Dto for role guarantee - role
@@ -25,7 +25,7 @@ public class IdmRoleGuaranteeRoleDto extends AbstractDto implements ExternalIden
 	private static final long serialVersionUID = 1L;
 
 	@Size(max = DefaultFieldLengths.NAME)
-	@ApiModelProperty(notes = "Unique external identifier.")
+	@Schema(description = "Unique external identifier.")
 	private String externalId;
 	@NotNull
 	@Embedded(dtoClass = IdmRoleDto.class)
@@ -33,7 +33,7 @@ public class IdmRoleGuaranteeRoleDto extends AbstractDto implements ExternalIden
 	@NotNull
 	@Embedded(dtoClass = IdmRoleDto.class)
 	private UUID guaranteeRole; // guarantee as role
-	@ApiModelProperty(notes = "Type (codelist)")
+	@Schema(description = "Type (codelist)")
 	@Size(max = DefaultFieldLengths.NAME)
 	private String type; //Type - codelist
 	@Embedded(dtoClass = IdmRequestItemDto.class)

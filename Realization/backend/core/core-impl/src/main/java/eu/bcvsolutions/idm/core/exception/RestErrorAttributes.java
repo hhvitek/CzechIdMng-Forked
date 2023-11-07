@@ -2,6 +2,7 @@ package eu.bcvsolutions.idm.core.exception;
 
 import java.util.Map;
 
+import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.web.context.request.WebRequest;
 
@@ -26,9 +27,10 @@ public class RestErrorAttributes extends DefaultErrorAttributes {
 	public static final String ATTRIBUTE_ERROR = "error";
 	
 	@Override
-    public Map<String, Object> getErrorAttributes(WebRequest webRequest, boolean includeStackTrace) {
+    public Map<String, Object> getErrorAttributes(WebRequest webRequest, ErrorAttributeOptions errorAttributeOptions) {
 		Throwable error = getError(webRequest);
-		Map<String, Object> errorAttributes = super.getErrorAttributes(webRequest, includeStackTrace);
+		Map<String, Object> errorAttributes = super.getErrorAttributes(webRequest,
+				errorAttributeOptions);
 		//
 		ErrorModel errorModel = null;
 		if (error instanceof ResultCodeException) {
@@ -42,16 +44,16 @@ public class RestErrorAttributes extends DefaultErrorAttributes {
 	            		break;
 	            	}
 	            	case 403: {
-	            		errorModel = new DefaultErrorModel(CoreResultCode.FORBIDDEN, ImmutableMap.of("path", errorAttributes.get("path"), "message", errorAttributes.get("message")));
+	            		errorModel = new DefaultErrorModel(CoreResultCode.FORBIDDEN, ImmutableMap.of("path", errorAttributes.get("path"), "message", errorAttributes.get("error")));
 	            		break;
 	            	}
 	            	case 404: {
-	            		errorModel = new DefaultErrorModel(CoreResultCode.ENDPOINT_NOT_FOUND, ImmutableMap.of("path", errorAttributes.get("path"), "message", errorAttributes.get("message")));
+	            		errorModel = new DefaultErrorModel(CoreResultCode.ENDPOINT_NOT_FOUND, ImmutableMap.of("path", errorAttributes.get("path"), "message", errorAttributes.get("error")));
 	            		break;
 	            	}
 	            	case 400:
 	            	case 405: {
-	            		errorModel = new DefaultErrorModel(CoreResultCode.METHOD_NOT_ALLOWED, ImmutableMap.of("path", errorAttributes.get("path"), "message", errorAttributes.get("message")));
+	            		errorModel = new DefaultErrorModel(CoreResultCode.METHOD_NOT_ALLOWED, ImmutableMap.of("path", errorAttributes.get("path"), "message", errorAttributes.get("error")));
 	            		break;
 	            	}
 	            	default: {

@@ -13,14 +13,14 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -79,11 +79,14 @@ import eu.bcvsolutions.idm.core.security.api.domain.BasePermission;
 import eu.bcvsolutions.idm.core.security.api.domain.Enabled;
 import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
 import eu.bcvsolutions.idm.ic.api.IcConnectorObject;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Accounts on target system
@@ -96,12 +99,7 @@ import io.swagger.annotations.AuthorizationScope;
 @RestController
 @Enabled(AccModuleDescriptor.MODULE_ID)
 @RequestMapping(value = BaseDtoController.BASE_PATH + "/accounts")
-@Api(
-		value = AccAccountController.TAG, 
-		tags = AccAccountController.TAG, 
-		description = "Account on target system",
-		produces = BaseController.APPLICATION_HAL_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = AccAccountController.TAG, description = "Account on target system")
 public class AccAccountController extends AbstractFormableDtoController<AccAccountDto, AccAccountFilter> implements WizardController<AccountWizardDto> {
 	
 	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(AccAccountController.class);
@@ -128,18 +126,18 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ACCOUNT_READ + "')")
-	@ApiOperation(
-			value = "Search accounts (/search/quick alias)", 
-			nickname = "searchAccounts",
-			tags = { AccAccountController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "") })
-				})
-	public Resources<?> find(
+	@Operation(
+        summary = "Search accounts (/search/quick alias)",
+        operationId = "searchAccounts"
+    )
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.ACCOUNT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.ACCOUNT_READ })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> find(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -148,18 +146,18 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ACCOUNT_READ + "')")
 	@RequestMapping(value= "/search/quick", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Search accounts", 
-			nickname = "searchQuickAccounts",
-			tags = { AccAccountController.TAG }, 
-			authorizations = {
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "") })
-				})
-	public Resources<?> findQuick(
+	@Operation(
+			summary = "Search accounts", 
+			operationId = "searchQuickAccounts",
+			tags = { AccAccountController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.ACCOUNT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.ACCOUNT_READ })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> findQuick(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.find(parameters, pageable);
 	}
@@ -179,18 +177,18 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 	@ResponseBody
 	@RequestMapping(value = "/search/autocomplete", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ACCOUNT_AUTOCOMPLETE + "')")
-	@ApiOperation(
-			value = "Autocomplete accounts (selectbox usage)", 
-			nickname = "autocompleteAccounts", 
-			tags = { AccAccountController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_AUTOCOMPLETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_AUTOCOMPLETE, description = "") })
-				})
-	public Resources<?> autocomplete(
+	@Operation(
+			summary = "Autocomplete accounts (selectbox usage)", 
+			operationId = "autocompleteAccounts",
+			tags = { AccAccountController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.ACCOUNT_AUTOCOMPLETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.ACCOUNT_AUTOCOMPLETE })
+    })
+	@PageableAsQueryParam
+	public CollectionModel<?> autocomplete(
 			@RequestParam(required = false) MultiValueMap<String, Object> parameters, 
+			@Parameter(hidden = true)
 			@PageableDefault Pageable pageable) {
 		return super.autocomplete(parameters, pageable);
 	}
@@ -199,19 +197,27 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ACCOUNT_READ + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Account detail", 
-			nickname = "getAccount", 
-			response = AccAccountDto.class, 
-			tags = { AccAccountController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "") })
-				})
+	@Operation(
+			summary = "Account detail", 
+			operationId = "getAccount",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = AccAccountDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { AccAccountController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.ACCOUNT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.ACCOUNT_READ })
+    })
 	public ResponseEntity<?> get(
-			@ApiParam(value = "Account's uuid identifier.", required = true)
+			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.get(backendId);
 	}
@@ -221,19 +227,30 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ACCOUNT_CREATE + "')"
 			+ " or hasAuthority('" + AccGroupPermission.ACCOUNT_UPDATE + "')")
 	@RequestMapping(method = RequestMethod.POST)
-	@ApiOperation(
-			value = "Create / update account", 
-			nickname = "postAccount", 
-			response = AccAccountDto.class, 
-			tags = { AccAccountController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_CREATE, description = ""),
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_UPDATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_CREATE, description = ""),
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_UPDATE, description = "")})
-				})
+	@Operation(
+			summary = "Create / update account", 
+			operationId = "postAccount",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = AccAccountDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { AccAccountController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.ACCOUNT_CREATE,
+						AccGroupPermission.ACCOUNT_UPDATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						AccGroupPermission.ACCOUNT_CREATE,
+						AccGroupPermission.ACCOUNT_UPDATE})
+        }
+    )
 	public ResponseEntity<?> post(@RequestBody @NotNull AccAccountDto dto) {
 		return super.post(dto);
 	}
@@ -242,19 +259,27 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ACCOUNT_UPDATE + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PUT)
-	@ApiOperation(
-			value = "Update account",
-			nickname = "putAccount", 
-			response = AccAccountDto.class, 
-			tags = { AccAccountController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update account",
+			operationId = "putAccount",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = AccAccountDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { AccAccountController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.ACCOUNT_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.ACCOUNT_UPDATE })
+    })
 	public ResponseEntity<?> put(
-			@ApiParam(value = "Account's uuid identifier.", required = true)
+			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			@RequestBody @NotNull AccAccountDto dto) {
 		return super.put(backendId, dto);
@@ -264,19 +289,27 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.PATCH)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ACCOUNT_UPDATE + "')")
-	@ApiOperation(
-			value = "Update account", 
-			nickname = "patchAccount", 
-			response = AccAccountDto.class, 
-			tags = { AccAccountController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_UPDATE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_UPDATE, description = "") })
-				})
+	@Operation(
+			summary = "Update account", 
+			operationId = "patchAccount",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = AccAccountDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { AccAccountController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.ACCOUNT_UPDATE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.ACCOUNT_UPDATE })
+    })
 	public ResponseEntity<?> patch(
-			@ApiParam(value = "Account's uuid identifier.", required = true)
+			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
 			HttpServletRequest nativeRequest)
 			throws HttpMessageNotReadableException {
@@ -287,18 +320,16 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ACCOUNT_DELETE + "')")
 	@RequestMapping(value = "/{backendId}", method = RequestMethod.DELETE)
-	@ApiOperation(
-			value = "Delete account", 
-			nickname = "deleteAccount", 
-			tags = { AccAccountController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_DELETE, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_DELETE, description = "") })
-				})
+	@Operation(
+			summary = "Delete account", 
+			operationId = "deleteAccount",
+			tags = { AccAccountController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.ACCOUNT_DELETE }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.ACCOUNT_DELETE })
+    })
 	public ResponseEntity<?> delete(
-			@ApiParam(value = "Account's uuid identifier.", required = true)
+			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.delete(backendId);
 	}
@@ -324,18 +355,16 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/permissions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ACCOUNT_READ + "')")
-	@ApiOperation(
-			value = "What logged identity can do with given record", 
-			nickname = "getPermissionsOnAccount", 
-			tags = { AccAccountController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "") })
-				})
+	@Operation(
+			summary = "What logged identity can do with given record", 
+			operationId = "getPermissionsOnAccount",
+			tags = { AccAccountController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.ACCOUNT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.ACCOUNT_READ })
+    })
 	public Set<String> getPermissions(
-			@ApiParam(value = "Account's uuid identifier.", required = true)
+			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getPermissions(backendId);
 	}
@@ -343,19 +372,30 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 	@ResponseBody
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.SYSTEM_READ + "')")
 	@RequestMapping(value = "/{backendId}/connector-object", method = RequestMethod.GET)
-	@ApiOperation(
-			value = "Connector object for the account. Contains only attributes for witch have a schema attribute definitons.", 
-			nickname = "getConnectorObject", 
-			response = IcConnectorObject.class, 
-			tags = { SysSystemEntityController.TAG }, 
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-							@AuthorizationScope(scope = AccGroupPermission.SYSTEM_READ, description = "")})
-					})
+	@Operation(
+			summary = "Connector object for the account. Contains only attributes for witch have a schema attribute definitons.", 
+			operationId = "getConnectorObject",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IcConnectorObject.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { SysSystemEntityController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							AccGroupPermission.SYSTEM_READ}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+							AccGroupPermission.SYSTEM_READ})
+        }
+    )
 	public ResponseEntity<IcConnectorObject> getConnectorObject(
-			@ApiParam(value = "Account's uuid identifier.", required = true)
+			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		AccAccountDto account = this.getDto(backendId);
 		if(account == null) {
@@ -378,16 +418,14 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 	@ResponseBody
 	@RequestMapping(value = "/bulk/actions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ACCOUNT_READ + "')")
-	@ApiOperation(
-			value = "Get available bulk actions", 
-			nickname = "availableBulkAction", 
-			tags = { AccAccountController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "") }),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "") })
-				})
+	@Operation(
+			summary = "Get available bulk actions", 
+			operationId = "availableBulkAction",
+			tags = { AccAccountController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.ACCOUNT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.ACCOUNT_READ })
+    })
 	public List<IdmBulkActionDto> getAvailableBulkActions() {
 		return super.getAvailableBulkActions();
 	}
@@ -402,17 +440,28 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 	@ResponseBody
 	@RequestMapping(path = "/bulk/action", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ACCOUNT_READ + "')")
-	@ApiOperation(
-			value = "Process bulk action for account", 
-			nickname = "bulkAction", 
-			response = IdmBulkActionDto.class, 
-			tags = { AccAccountController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "")})
-				})
+	@Operation(
+			summary = "Process bulk action for account", 
+			operationId = "bulkAction",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { AccAccountController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.ACCOUNT_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						AccGroupPermission.ACCOUNT_READ})
+        }
+    )
 	public ResponseEntity<IdmBulkActionDto> bulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.bulkAction(bulkAction);
 	}
@@ -427,17 +476,28 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 	@ResponseBody
 	@RequestMapping(path = "/bulk/prevalidate", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ACCOUNT_READ + "')")
-	@ApiOperation(
-			value = "Prevalidate bulk action for accounts", 
-			nickname = "prevalidateBulkAction", 
-			response = IdmBulkActionDto.class, 
-			tags = { AccAccountController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "")})
-				})
+	@Operation(
+			summary = "Prevalidate bulk action for accounts", 
+			operationId = "prevalidateBulkAction",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { AccAccountController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.ACCOUNT_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						AccGroupPermission.ACCOUNT_READ})
+        }
+    )
 	public ResponseEntity<ResultModels> prevalidateBulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.prevalidateBulkAction(bulkAction);
 	}
@@ -446,17 +506,28 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 	@ResponseBody
 	@RequestMapping(path = "/bulk/preprocess", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ACCOUNT_READ + "')")
-	@ApiOperation(
-			value = "Preprocess bulk action for accounts", 
-			nickname = "preprocessBulkAction", 
-			response = IdmBulkActionDto.class, 
-			tags = { AccAccountController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "")})
-				})
+	@Operation(
+			summary = "Preprocess bulk action for accounts", 
+			operationId = "preprocessBulkAction",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = IdmBulkActionDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { AccAccountController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.ACCOUNT_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						AccGroupPermission.ACCOUNT_READ})
+        }
+    )
 	public ResponseEntity<IdmBulkActionDto> preprocessBulkAction(@Valid @RequestBody IdmBulkActionDto bulkAction) {
 		return super.preprocessBulkAction(bulkAction);
 	}
@@ -465,20 +536,21 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/form-definitions", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ACCOUNT_READ + "')")
-	@ApiOperation(
-			value = "Account extended attributes form definitions", 
-			nickname = "getAccountFormDefinitions", 
-			tags = { AccAccountController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_AUTOCOMPLETE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_DEFINITION_AUTOCOMPLETE, description = "")})
-				})
+	@Operation(
+			summary = "Account extended attributes form definitions", 
+			operationId = "getAccountFormDefinitions",
+			tags = { AccAccountController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.ACCOUNT_READ,
+						CoreGroupPermission.FORM_DEFINITION_AUTOCOMPLETE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						AccGroupPermission.ACCOUNT_READ,
+						CoreGroupPermission.FORM_DEFINITION_AUTOCOMPLETE})
+        }
+    )
 	public ResponseEntity<?> getFormDefinitions(
-			@ApiParam(value = "Account's uuid identifier.", required = true)
+			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		return super.getFormDefinitions(backendId);
 	}
@@ -487,18 +559,19 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 	@ResponseBody
 	@RequestMapping(value = "/form-values/prepare", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ACCOUNT_READ + "')")
-	@ApiOperation(
-			value = "Account form definition - prepare available values", 
-			nickname = "prepareAccountFormValues", 
-			tags = { AccAccountController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "")})
-				})
-	public Resource<?> prepareFormValues(
-			@ApiParam(value = "Code of form definition (default will be used if no code is given).", required = false, defaultValue = FormService.DEFAULT_DEFINITION_CODE)
+	@Operation(
+			summary = "Account form definition - prepare available values", 
+			operationId = "prepareAccountFormValues",
+			tags = { AccAccountController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.ACCOUNT_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						AccGroupPermission.ACCOUNT_READ})
+        }
+    )
+	public EntityModel<?> prepareFormValues(
+			 @Parameter(description = "Code of form definition (default will be used if no code is given).", required = false, example = FormService.DEFAULT_DEFINITION_CODE)
 			@RequestParam(name = IdmFormAttributeFilter.PARAMETER_FORM_DEFINITION_CODE, required = false) String definitionCode) {
 		
 		return super.prepareFormValues(definitionCode);
@@ -513,18 +586,19 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/form-values", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ACCOUNT_READ + "')")
-	@ApiOperation(
-			value = "Account form definition - read values", 
-			nickname = "getAccountFormValues", 
-			tags = { AccAccountController.TAG }, 
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "")})
-				})
-	public Resource<?> getFormValues(
-			@ApiParam(value = "Account's uuid identifier.", required = true)
+	@Operation(
+			summary = "Account form definition - read values", 
+			operationId = "getAccountFormValues",
+			tags = { AccAccountController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.ACCOUNT_READ}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						AccGroupPermission.ACCOUNT_READ})
+        }
+    )
+	public EntityModel<?> getFormValues(
+			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId) {
 		AccAccountDto dto = getDto(backendId);
 		if (dto == null) {
@@ -550,23 +624,24 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ACCOUNT_UPDATE + "')"
 			+ "or hasAuthority('" + CoreGroupPermission.FORM_VALUE_UPDATE + "')")
 	@RequestMapping(value = "/{backendId}/form-values", method = { RequestMethod.POST, RequestMethod.PATCH })
-	@ApiOperation(
-			value = "Account form definition - save values", 
-			nickname = "postAccountFormValues", 
+	@Operation(
+			summary = "Account form definition - save values", 
+			operationId = "postAccountFormValues",
 			tags = { AccAccountController.TAG }, 
-			notes = "Only given form attributes by the given values will be saved.",
-			authorizations = { 
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_UPDATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_VALUE_UPDATE, description = "")}),
-				@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
-						@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_UPDATE, description = ""),
-						@AuthorizationScope(scope = CoreGroupPermission.FORM_VALUE_UPDATE, description = "")})
-				})
-	public Resource<?> saveFormValues(
-			@ApiParam(value = "Account uuid identifier.", required = true)
+			description = "Only given form attributes by the given values will be saved.")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+						AccGroupPermission.ACCOUNT_UPDATE,
+						CoreGroupPermission.FORM_VALUE_UPDATE}),
+				@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { 
+						AccGroupPermission.ACCOUNT_UPDATE,
+						CoreGroupPermission.FORM_VALUE_UPDATE})
+        }
+    )
+	public EntityModel<?> saveFormValues(
+			 @Parameter(description = "Account uuid identifier.", required = true)
 			@PathVariable @NotNull String backendId,
-			@ApiParam(value = "Filled form data.", required = true)
+			 @Parameter(description = "Filled form data.", required = true)
 			@RequestBody @Valid List<IdmFormValueDto> formValues) {		
 		AccAccountDto dto = getDto(backendId);
 		if (dto == null) {
@@ -639,21 +714,22 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET, value = "/search/supported")
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ACCOUNT_READ + "')")
-	@ApiOperation(
-			value = "Get all supported account wizards",
-			nickname = "getSupportedAccountWizards",
-			tags = {AccAccountController.TAG},
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "")})
-			})
-	public Resources<AccountWizardDto> getSupportedTypes() {
+	@Operation(
+			summary = "Get all supported account wizards",
+			operationId = "getSupportedAccountWizards",
+			tags = {AccAccountController.TAG})
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							AccGroupPermission.ACCOUNT_READ}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							AccGroupPermission.ACCOUNT_READ})
+        }
+    )
+	public CollectionModel<AccountWizardDto> getSupportedTypes() {
 		List<AccountWizardsService> supportedTypes = accountWizardManager.getSupportedTypes();
 		List<AccountWizardDto> accountWizardDtos = supportedTypes.stream().map(accountWizardsService -> accountWizardManager.convertTypeToDto(accountWizardsService)).collect(Collectors.toList());
 
-		return new Resources<>(
+		return new CollectionModel<>(
 				accountWizardDtos.stream()
 						.sorted(Comparator.comparing(AccountWizardDto::getOrder))
 						.collect(Collectors.toList())
@@ -664,17 +740,28 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 	@ResponseBody
 	@RequestMapping(path = "/wizards/execute", method = RequestMethod.POST)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ACCOUNT_UPDATE + "')")
-	@ApiOperation(
-			value = "Execute some wizard step.",
-			nickname = "executeWizard",
-			response = AccountWizardDto.class,
-			tags = { AccAccountController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_UPDATE, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_UPDATE, description = "")})
-			})
+	@Operation(
+			summary = "Execute some wizard step.",
+			operationId = "executeWizard",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = AccountWizardDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { AccAccountController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							AccGroupPermission.ACCOUNT_UPDATE}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							AccGroupPermission.ACCOUNT_UPDATE})
+        }
+    )
 	public ResponseEntity<AccountWizardDto> executeWizardType(@Valid @RequestBody AccountWizardDto wizardDto) {
 		AccountWizardDto result = accountWizardManager.execute(wizardDto);
 		return new ResponseEntity<>(result, HttpStatus.CREATED);
@@ -684,17 +771,28 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 	@ResponseBody
 	@RequestMapping(path = "/wizards/load", method = RequestMethod.PUT)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ACCOUNT_READ + "')")
-	@ApiOperation(
-			value = "Load data for specific wizards -> open existed account in the wizard step.",
-			nickname = "loadWizard",
-			response = AccountWizardDto.class,
-			tags = { AccAccountController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "")}),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "")})
-			})
+	@Operation(
+			summary = "Load data for specific wizards -> open existed account in the wizard step.",
+			operationId = "loadWizard",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = AccountWizardDto.class
+                                    )
+                            )
+                    }
+            ),
+			tags = { AccAccountController.TAG })
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
+							AccGroupPermission.ACCOUNT_READ}),
+					@SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
+							AccGroupPermission.ACCOUNT_READ})
+        }
+    )
 	public ResponseEntity<AccountWizardDto> loadWizardType(@NotNull @Valid @RequestBody AccountWizardDto wizardDto) {
 		// Returning error, because loading wizard is not supported, we are using wizard only for new accounts
 		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -703,19 +801,17 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 	@ResponseBody
 	@RequestMapping(value = "/{backendId}/incompatible-roles", method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('" + AccGroupPermission.ACCOUNT_READ + "')")
-	@ApiOperation(
-			value = "Incompatible roles assigned to account",
-			nickname = "getAccountIncompatibleRoles",
+	@Operation(
+			summary = "Incompatible roles assigned to account",
+			operationId = "getAccountIncompatibleRoles",
 			tags = { AccAccountController.TAG },
-			authorizations = {
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_BASIC, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "") }),
-					@Authorization(value = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = {
-							@AuthorizationScope(scope = AccGroupPermission.ACCOUNT_READ, description = "") })
-			},
-			notes = "Incompatible roles are resolved from assigned account roles, which can logged used read.")
-	public Resources<?> getIncompatibleRoles(
-			@ApiParam(value = "Account's uuid identifier.", required = true)
+						description = "Incompatible roles are resolved from assigned account roles, which can logged used read.")
+    @SecurityRequirements({
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_BASIC, scopes = { AccGroupPermission.ACCOUNT_READ }),
+        @SecurityRequirement(name = SwaggerConfig.AUTHENTICATION_CIDMST, scopes = { AccGroupPermission.ACCOUNT_READ })
+    })
+	public CollectionModel<?> getIncompatibleRoles(
+			 @Parameter(description = "Account's uuid identifier.", required = true)
 			@PathVariable String backendId) {
 		AccAccountDto accountDto = getDto(backendId);
 		if (accountDto == null) {
@@ -737,7 +833,7 @@ public class AccAccountController extends AbstractFormableDtoController<AccAccou
 						.collect(Collectors.toList())
 		);
 		//
-		return toResources(incompatibleRoles, ResolvedIncompatibleRoleDto.class);
+		return toCollectionModel(incompatibleRoles, ResolvedIncompatibleRoleDto.class);
 	}
 
 	/**

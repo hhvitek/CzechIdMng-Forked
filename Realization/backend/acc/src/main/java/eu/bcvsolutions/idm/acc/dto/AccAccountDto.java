@@ -6,7 +6,7 @@ import java.util.UUID;
 
 import javax.validation.constraints.Size;
 
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
@@ -15,9 +15,10 @@ import com.google.common.annotations.Beta;
 import eu.bcvsolutions.idm.core.api.domain.DefaultFieldLengths;
 import eu.bcvsolutions.idm.core.api.domain.Embedded;
 import eu.bcvsolutions.idm.core.api.domain.ExternalIdentifiable;
+import eu.bcvsolutions.idm.core.api.domain.PasswordManageable;
 import eu.bcvsolutions.idm.core.api.dto.FormableDto;
 import eu.bcvsolutions.idm.core.eav.api.dto.IdmFormDefinitionDto;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Account on target system DTO
@@ -29,7 +30,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 
 @Relation(collectionRelation = "accounts")
-public class AccAccountDto extends FormableDto implements ExternalIdentifiable, Serializable {
+public class AccAccountDto extends FormableDto implements ExternalIdentifiable, Serializable, PasswordManageable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -37,7 +38,7 @@ public class AccAccountDto extends FormableDto implements ExternalIdentifiable, 
 	public static final String PROPERTY_ECHO = "echo";
 
 	@Size(max = DefaultFieldLengths.NAME)
-	@ApiModelProperty(notes = "Unique external identifier.")
+	@Schema(description = "Unique external identifier.")
 	private String externalId;
 	private String uid;
 	@Embedded(dtoClass = SysSystemDto.class)
@@ -100,7 +101,6 @@ public class AccAccountDto extends FormableDto implements ExternalIdentifiable, 
 	/**
 	 * Check if account is in protection. Validate end of protection too.
 	 * 
-	 * @param account
 	 * @return
 	 */
 	public boolean isAccountProtectedAndValid() {
@@ -176,5 +176,10 @@ public class AccAccountDto extends FormableDto implements ExternalIdentifiable, 
 	@Override
 	public String getExternalId() {
 		return externalId;
+	}
+
+	@Override
+	public String getName() {
+		return getUid();
 	}
 }

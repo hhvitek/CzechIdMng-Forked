@@ -5,12 +5,11 @@ import java.util.UUID;
 import javax.validation.constraints.Size;
 
 import javax.validation.constraints.NotEmpty;
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.server.core.Relation;
 
 import eu.bcvsolutions.idm.core.api.domain.DefaultFieldLengths;
 import eu.bcvsolutions.idm.core.api.dto.AbstractDto;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * DTO for account in virutal system
@@ -19,19 +18,19 @@ import io.swagger.annotations.ApiModelProperty;
  *
  */
 @Relation(collectionRelation = "accounts")
-@ApiModel(description = "Account in virtual system")
+@Schema(description = "Account in virtual system")
 public class VsAccountDto extends AbstractDto {
 
 	private static final long serialVersionUID = 1L;
 	
 	@NotEmpty
 	@Size(min = 1, max = DefaultFieldLengths.NAME)
-	@ApiModelProperty(required = true, notes = "Unique account identifier. UID on system and for connector.")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Unique account identifier. UID on system and for connector.")
 	private String uid;
 	private boolean enable;
-	@ApiModelProperty(required = true, notes = "CzechIdM system identifier. UID on system and for connector.")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "CzechIdM system identifier. UID on system and for connector.")
 	private UUID systemId;
-	@ApiModelProperty(required = true, notes = "Connector identifier. UID on system and for connector.")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Connector identifier. UID on system and for connector.")
 	private String connectorKey;
 
 	public String getUid() {

@@ -1,8 +1,5 @@
 package eu.bcvsolutions.idm.core.model.service.impl;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -12,13 +9,11 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationContext;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import eu.bcvsolutions.idm.core.api.config.domain.TreeConfiguration;
 import eu.bcvsolutions.idm.core.api.dto.BaseDto;
@@ -38,6 +33,8 @@ import eu.bcvsolutions.idm.core.model.repository.IdmIdentityContractRepository;
 import eu.bcvsolutions.idm.core.model.repository.IdmTreeNodeRepository;
 import eu.bcvsolutions.idm.core.model.repository.IdmTreeTypeRepository;
 import eu.bcvsolutions.idm.test.api.AbstractUnitTest;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 /**
  * Identity contract unit tests:
@@ -48,23 +45,25 @@ import eu.bcvsolutions.idm.test.api.AbstractUnitTest;
  */
 public class DefaultIdmIdentityContractServiceUnitTest extends AbstractUnitTest {
 
-	@Mock private IdmIdentityContractRepository repository;
-	@Mock private FormService formService;
-	@Mock private EntityEventManager entityEventManager;
-	@Mock private IdmTreeTypeRepository treeTypeRepository;
-	@Mock private TreeConfiguration treeConfiguration;
-	@Mock private IdmTreeNodeRepository treeNodeRepository;
-	@Mock private IdmContractSliceService contractSliceService;
-	@Mock private LookupService lookupService;
-	@Mock private ApplicationContext applicationContext;
-	@Spy private ModelMapper modelMapper = new ModelMapper();
+	private final IdmIdentityContractRepository repository = mock(IdmIdentityContractRepository.class);;
+	private final FormService formService = mock(FormService.class);;
+	private final EntityEventManager entityEventManager = mock(EntityEventManager.class);;
+	private final IdmTreeTypeRepository treeTypeRepository = mock(IdmTreeTypeRepository.class);;
+	private final TreeConfiguration treeConfiguration = mock(TreeConfiguration.class);;
+	private final IdmTreeNodeRepository treeNodeRepository = mock(IdmTreeNodeRepository.class);;
+	private final IdmContractSliceService contractSliceService = mock(IdmContractSliceService.class);;
+	private final LookupService lookupService = mock(LookupService.class);;
+	private final ApplicationContext applicationContext = mock(ApplicationContext.class);
+	private final ModelMapper modelMapper = spy(ModelMapper.class);
 	//
-	@InjectMocks 
-	private DefaultIdmIdentityContractService service;
+	private final DefaultIdmIdentityContractService service = spy(new DefaultIdmIdentityContractService(repository, formService, entityEventManager));
 	
 	@Before
 	public void init() {
 		modelMapper.getConfiguration().getConverters().add(new EntityToUuidConditionalConverter(modelMapper, applicationContext));
+		ReflectionTestUtils.setField(service, "modelMapper", modelMapper);
+		ReflectionTestUtils.setField(service, "treeConfiguration", treeConfiguration);
+		ReflectionTestUtils.setField(service, "contractSliceService", contractSliceService);
 	}
 	
 	@Test

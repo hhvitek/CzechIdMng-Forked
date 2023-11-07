@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,9 +48,12 @@ import eu.bcvsolutions.idm.core.security.api.service.TokenManager;
 import eu.bcvsolutions.idm.core.security.api.service.TwoFactorAuthenticationManager;
 import eu.bcvsolutions.idm.core.security.auth.filter.AuthenticationExceptionContext;
 import eu.bcvsolutions.idm.core.security.service.impl.JwtAuthenticationMapper;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Identity authentication.
@@ -61,7 +64,7 @@ import io.swagger.annotations.ApiParam;
  */
 @RestController
 @RequestMapping(value = BaseController.BASE_PATH + LoginController.AUTH_PATH)
-@Api(value = LoginController.TAG, description = "Authentication endpoint", tags = { LoginController.TAG })
+@Tag(name = LoginController.TAG, description = "Authentication endpoint")
 public class LoginController implements BaseController {
 	
 	protected static final String TAG = "Authentication";
@@ -85,14 +88,24 @@ public class LoginController implements BaseController {
 	@Autowired @Lazy private RestTemplate restTemplate;
 	
 	@ResponseBody
-	@ApiOperation(
-			value = "Login an get the CIDMST token", 
-			notes= "Login an get the CIDMST token. Use returned token attribute value as \"CIDMST\" http header in next requests.",
-			response = LoginDto.class,
+	@Operation(
+			summary = "Login an get the CIDMST token", 
+			description= "Login an get the CIDMST token. Use returned token attribute value as \"CIDMST\" http header in next requests.",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = LoginDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { LoginController.TAG } )
 	@RequestMapping(method = RequestMethod.POST)
-	public Resource<LoginDto> login(
-			@ApiParam(value = "Identity credentials.", required = true)
+	public EntityModel<LoginDto> login(
+			 @Parameter(description = "Identity credentials.", required = true)
 			@Valid @RequestBody(required = true) LoginRequestDto loginDto) {
 		if (loginDto == null || loginDto.getUsername() == null || loginDto.getPassword() == null){
 			throw new ResultCodeException(CoreResultCode.AUTH_FAILED, "Username and password must be filled");
@@ -104,7 +117,7 @@ public class LoginController implements BaseController {
 			throw new ResultCodeException(CoreResultCode.CAS_IDM_LOGIN_ADMIN_ONLY);
 		}
 		//
-		return new Resource<LoginDto>(authenticate);
+		return new EntityModel<LoginDto>(authenticate);
 	}
 	
 	/**
@@ -115,14 +128,24 @@ public class LoginController implements BaseController {
 	 * @since 10.7.0
 	 */
 	@ResponseBody
-	@ApiOperation(
-			value = "Login - additional two factor authentication", 
-			notes= "Additional two factor authentication with TOTP verification code.",
-			response = LoginDto.class,
+	@Operation(
+			summary = "Login - additional two factor authentication", 
+			description= "Additional two factor authentication with TOTP verification code.",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = LoginDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { LoginController.TAG } )
 	@RequestMapping(path = "/two-factor", method = RequestMethod.POST)
-	public Resource<LoginDto> twoFactor(
-			@ApiParam(value = "Token and verification code.", required = true)
+	public EntityModel<LoginDto> twoFactor(
+			 @Parameter(description = "Token and verification code.", required = true)
 			@Valid @RequestBody(required = true) TwoFactorRequestDto twoFactorDto) {
 		if (twoFactorDto == null 
 				|| twoFactorDto.getVerificationCode() == null
@@ -134,17 +157,27 @@ public class LoginController implements BaseController {
 		loginDto.setPassword(twoFactorDto.getVerificationCode());
 		loginDto.setToken(twoFactorDto.getToken().asString());
 		//
-		return new Resource<LoginDto>(twoFactorAuthenticationManager.authenticate(loginDto));
+		return new EntityModel<LoginDto>(twoFactorAuthenticationManager.authenticate(loginDto));
 	}
 	
-	@ApiOperation(
-			value = "Login with remote token", 
-			notes= "Login with remote token an get the CIDMST token. Remote token can be obtained by external authentication system (e.g. OpenAM, OAuth).",
-			response = LoginDto.class,
+	@Operation(
+			summary = "Login with remote token", 
+			description= "Login with remote token an get the CIDMST token. Remote token can be obtained by external authentication system (e.g. OpenAM, OAuth).",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = LoginDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { LoginController.TAG })
 	@RequestMapping(path = REMOTE_AUTH_PATH, method = RequestMethod.GET)
-	public Resource<LoginDto> loginWithRemoteToken() {
-		return new Resource<LoginDto>(loginService.loginAuthenticatedUser());
+	public EntityModel<LoginDto> loginWithRemoteToken() {
+		return new EntityModel<LoginDto>(loginService.loginAuthenticatedUser());
 	}
 	
 	/**
@@ -156,22 +189,32 @@ public class LoginController implements BaseController {
 	 * @since 10.5.0
 	 */
 	@ResponseBody
-	@ApiOperation(
-			value = "Login as other user", 
-			notes= "Login as other user (switch user).",
-			response = LoginDto.class,
+	@Operation(
+			summary = "Login as other user", 
+			description= "Login as other user (switch user).",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = LoginDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { LoginController.TAG } )
 	@PreAuthorize("hasAuthority('" + CoreGroupPermission.IDENTITY_SWITCHUSER + "')")
 	@RequestMapping(path = "/switch-user", method = RequestMethod.PUT)
-	public Resource<LoginDto> switchUser(
-			@ApiParam(value = "Switch to user by given username.", required = true)
+	public EntityModel<LoginDto> switchUser(
+			 @Parameter(description = "Switch to user by given username.", required = true)
 			@RequestParam @NotNull String username) {
 		// change logged token authorities
 		IdmIdentityDto identity = lookupService.lookupDto(IdmIdentityDto.class, username);
 		if (identity == null) {
 			throw new EntityNotFoundException(IdmIdentity.class, username);
 		}
-		return new Resource<LoginDto>(loginService.switchUser(identity, IdentityBasePermission.SWITCHUSER));
+		return new EntityModel<LoginDto>(loginService.switchUser(identity, IdentityBasePermission.SWITCHUSER));
 	}
 	
 	/**
@@ -182,14 +225,24 @@ public class LoginController implements BaseController {
 	 * @since 10.5.0
 	 */
 	@ResponseBody
-	@ApiOperation(
-			value = "Logout after login as other user", 
-			notes= "Logout after login as other user (switch user logout).",
-			response = LoginDto.class,
+	@Operation(
+			summary = "Logout after login as other user", 
+			description= "Logout after login as other user (switch user logout).",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = BaseController.APPLICATION_HAL_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = LoginDto.class
+                                    )
+                            )
+                    }
+            ),
 			tags = { LoginController.TAG } )
 	@RequestMapping(path = "/switch-user", method = RequestMethod.DELETE)
-	public Resource<LoginDto> switchUserLogout() {
-		return new Resource<LoginDto>(loginService.switchUserLogout());
+	public EntityModel<LoginDto> switchUserLogout() {
+		return new EntityModel<LoginDto>(loginService.switchUserLogout());
 	}
 	
 	/**
