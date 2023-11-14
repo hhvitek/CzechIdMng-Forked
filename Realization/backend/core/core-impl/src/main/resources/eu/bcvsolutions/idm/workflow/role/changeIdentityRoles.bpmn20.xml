@@ -639,8 +639,7 @@ def url = configurationService.getFrontendUrl("/workflow/history/processes/" + e
 def sendNotificationToApplicant = configurationService.getBooleanValue("idm.sec.core.wf.notification.applicant.enabled", true);
 def sendNotificationToImplementer = configurationService.getBooleanValue("idm.sec.core.wf.notification.implementer.enabled", false);
 
-def applicantUsername = execution.getVariable("applicantUsername");
-def applicantIdentity = identityService.getByUsername(applicantUsername);
+def applicantIdentity = roleRequestService.getApplicantAsIdentity(entityEvent.content);
 
 def implementerIdentity = identityService.get(implementerIdentifier);
 
@@ -654,7 +653,7 @@ if (managerDescription == null || managerDescription.isEmpty()) {
 }
 
 //send notification
-if (implementerIdentity.getId().equals(applicantIdentity.getId())) {
+if (applicantIdentity != null &amp;&amp; implementerIdentity.getId().equals(applicantIdentity.getId())) {
   if(sendNotificationToImplementer || sendNotificationToApplicant){
 		notificationManager.send(
 			CoreModuleDescriptor.TOPIC_RETURN_REQUEST_IDENTITY_ROLES_IMPLEMENTER,
@@ -669,7 +668,7 @@ if (implementerIdentity.getId().equals(applicantIdentity.getId())) {
 		);
   }
 }else{
-if(sendNotificationToApplicant){
+if(sendNotificationToApplicant &amp;&amp; applicantIdentity != null){
 	notificationManager.send(
 		CoreModuleDescriptor.TOPIC_RETURN_REQUEST_IDENTITY_ROLES,
 		new IdmMessageDto.Builder()
@@ -716,8 +715,7 @@ def url = configurationService.getFrontendUrl("/workflow/history/processes/" + e
 def sendNotificationToApplicant = configurationService.getBooleanValue("idm.sec.core.wf.notification.applicant.enabled", true);
 def sendNotificationToImplementer = configurationService.getBooleanValue("idm.sec.core.wf.notification.implementer.enabled", false);
 
-def applicantUsername = execution.getVariable("applicantUsername");
-def applicantIdentity = identityService.getByUsername(applicantUsername);
+def applicantIdentity = roleRequestService.getApplicantAsIdentity(entityEvent.content);
 
 def implementerIdentity = identityService.get(implementerIdentifier);
 
@@ -731,7 +729,7 @@ if (managerDescription == null || managerDescription.isEmpty()) {
 }
 
 //send notification
-if (implementerIdentity.getId().equals(applicantIdentity.getId())) {
+if (applicantIdentity != null &amp;&amp; implementerIdentity.getId().equals(applicantIdentity.getId())) {
   if(sendNotificationToImplementer || sendNotificationToApplicant){
 		notificationManager.send(
 			CoreModuleDescriptor.TOPIC_RETURN_REQUEST_IDENTITY_ROLES_IMPLEMENTER,
@@ -746,7 +744,7 @@ if (implementerIdentity.getId().equals(applicantIdentity.getId())) {
 		);
   }
 }else{
-if(sendNotificationToApplicant){
+if(sendNotificationToApplicant &amp;&amp; applicantIdentity != null){
 	notificationManager.send(
 		CoreModuleDescriptor.TOPIC_RETURN_REQUEST_IDENTITY_ROLES,
 		new IdmMessageDto.Builder()
@@ -822,7 +820,7 @@ if (applicantIdentity != null &amp;&amp; implementerIdentity.getId().equals(appl
 		);
   }
 }else{
-if(sendNotificationToApplicant){
+if(sendNotificationToApplicant &amp;&amp; applicantIdentity != null){
 	notificationManager.send(
 		CoreModuleDescriptor.TOPIC_RETURN_REQUEST_IDENTITY_ROLES,
 		new IdmMessageDto.Builder()
