@@ -50,7 +50,15 @@ class SchemaAttributeDetail extends Advanced.AbstractTableContent {
   _initComponent(props) {
     const { attributeId} = props.match.params;
     if (this._getIsNew(props)) {
-      this.setState({attribute: {objectClass: props.location.query.objectClassId}});
+      this.setState({
+          attribute: {
+            objectClass: props.location.query.objectClassId,
+            readable: true,
+            createable: true,
+            updateable: true,
+            returnedByDefault: true
+            },          
+        });
     } else {
       this.context.store.dispatch(this.getManager().fetchEntity(attributeId));
     }
