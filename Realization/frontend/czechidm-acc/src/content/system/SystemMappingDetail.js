@@ -18,7 +18,7 @@ import {
 } from '../../redux';
 import SystemOperationTypeEnum from '../../domain/SystemOperationTypeEnum';
 import ValidationMessageSystemMapping from './ValidationMessageSystemMapping';
-import AccountTypeEnum from '../../domain/AccountTypeEnum';
+import IdentityAccountTypeEnum from '../../domain/IdentityAccountTypeEnum';
 
 const uiKey = 'system-mappings';
 const uiKeyAttributes = 'system-attribute-mappings';
@@ -598,8 +598,10 @@ class SystemMappingDetail extends Advanced.AbstractTableContent {
                   />
                   <Basic.EnumSelectBox
                     ref="accountType"
-                    enum={AccountTypeEnum}
+                    enum={IdentityAccountTypeEnum}
                     label={this.i18n('acc:entity.Account.accountType')}
+                    // Account type selection makes sense only for identities. For other types, account type is either
+                    // not used, or handled on the backend
                     hidden={!isSelectedIdentity}
                     required={isSelectedIdentity}/>
                   <Basic.Checkbox

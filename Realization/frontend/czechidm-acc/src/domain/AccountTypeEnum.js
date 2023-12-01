@@ -1,21 +1,10 @@
 import { Enums } from 'czechidm-core';
+import IdentityAccountTypeEnum from "./IdentityAccountTypeEnum";
 
 /**
  * OperationType for adit operation etc.
  */
-export default class AccountTypeEnum extends Enums.AbstractEnum {
-
-  static getNiceLabel(key) {
-    return super.getNiceLabel(`acc:enums.AccountTypeEnum.${key}`);
-  }
-
-  static findKeyBySymbol(sym) {
-    return super.findKeyBySymbol(this, sym);
-  }
-
-  static findSymbolByKey(key) {
-    return super.findSymbolByKey(this, key);
-  }
+export default class AccountTypeEnum extends IdentityAccountTypeEnum {
 
   static getLevel(key) {
     if (!key) {
@@ -25,22 +14,14 @@ export default class AccountTypeEnum extends Enums.AbstractEnum {
     const sym = super.findSymbolByKey(this, key);
 
     switch (sym) {
-      case this.PERSONAL: {
-        return 'success';
-      }
-      case this.PERSONAL_OTHER: {
-        return 'success';
-      }
       case this.TECHNICAL: {
         return 'primary';
       }
       default: {
-        return 'default';
+        return super.getLevel(key);
       }
     }
   }
 }
 
-AccountTypeEnum.PERSONAL = Symbol('PERSONAL');
-AccountTypeEnum.PERSONAL_OTHER = Symbol('PERSONAL_OTHER');
 AccountTypeEnum.TECHNICAL = Symbol('TECHNICAL');
