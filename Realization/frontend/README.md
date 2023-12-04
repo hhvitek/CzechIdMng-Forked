@@ -112,6 +112,13 @@ After when we have installed all required modules, we have to copy them together
 
 `gulp install`
 
+If this doesn't work when you are adding an external module, you may need to install with npm first.
+Run 
+`npm prune`
+`npm install`
+then
+`gulp install`
+
 ## Development mode with livereload
 
 `gulp`
