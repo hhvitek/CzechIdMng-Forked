@@ -1,7 +1,7 @@
 import { Enums } from 'czechidm-core';
 
 /**
- * OperationType for adit operation etc.
+ * Basic enum containing all supported account types for Identity.
  */
 export default class IdentityAccountTypeEnum extends Enums.AbstractEnum {
 
