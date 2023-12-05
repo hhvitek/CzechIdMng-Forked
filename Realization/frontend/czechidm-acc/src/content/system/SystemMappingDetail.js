@@ -149,10 +149,21 @@ class SystemMappingDetail extends Advanced.AbstractTableContent {
           entityType: 'IDENTITY',
           operationType: SystemOperationTypeEnum.findKeyBySymbol(SystemOperationTypeEnum.PROVISIONING),
           accountType: AccountTypeEnum.findKeyBySymbol(AccountTypeEnum.PERSONAL)
-        }
+        },
+        isSelectedIdentity: true
       });
     } else {
-      this.context.store.dispatch(systemMappingManager.fetchEntity(mappingId));
+      this.context.store.dispatch(systemMappingManager.fetchEntity(mappingId, null, (data) => {
+        const _entityType = data?.entityType;
+        const isSelectedTree = this.isSelectedTree(_entityType);
+        const isSelectedIdentity = this.isSelectedIdentity(_entityType);
+
+        this.setState({
+          _entityType: _entityType,
+          isSelectedTree,
+          isSelectedIdentity
+        });
+      }));
     }
     this.selectNavigationItems(['sys-systems', 'system-mappings']);
     if (!this._getIsNew(props)) {
@@ -302,7 +313,39 @@ class SystemMappingDetail extends Advanced.AbstractTableContent {
   }
 
   _onChangeEntityType(entity) {
-    this.setState({_entityType: entity.value});
+    const _entityType = entity.id;
+    const isSelectedTree = this.isSelectedTree(_entityType);
+    const isSelectedIdentity = this.isSelectedIdentity(_entityType);
+
+    this.setState({
+      _entityType: _entityType,
+      isSelectedTree,
+      isSelectedIdentity
+    });
+  }
+
+  isSelectedIdentity(_entityType) {
+    let isSelectedIdentity = false;
+    if (_entityType !== undefined) {
+      if (_entityType === 'IDENTITY') {
+        isSelectedIdentity = true;
+      }
+    } else if (_entityType === 'IDENTITY') {
+      isSelectedIdentity = true;
+    }
+    return isSelectedIdentity;
+  }
+
+  isSelectedTree(_entityType) {
+    let isSelectedTree = false;
+    if (_entityType !== undefined) {
+      if (_entityType === 'TREE') {
+        isSelectedTree = true;
+      }
+    } else if (_entityType === 'TREE') {
+      isSelectedTree = true;
+    }
+    return isSelectedTree;
   }
 
   _onChangeOperationType(entity) {
@@ -480,31 +523,14 @@ class SystemMappingDetail extends Advanced.AbstractTableContent {
       showOnlyMapping
     } = this.props;
     const {
-      _entityType,
       activeKey,
       validationError,
-      _operationType
+      _operationType,
+      isSelectedTree,
+      isSelectedIdentity
     } = this.state;
     const isNew = this._getIsNew();
     const mapping = isNew ? this.state.mapping : _mapping;
-
-    let isSelectedTree = false;
-    if (_entityType !== undefined) {
-      if (_entityType === 'TREE') {
-        isSelectedTree = true;
-      }
-    } else if (mapping && mapping.entityType === 'TREE') {
-      isSelectedTree = true;
-    }
-
-    let isSelectedIdentity = false;
-    if (_entityType !== undefined) {
-      if (_entityType === 'IDENTITY') {
-        isSelectedIdentity = true;
-      }
-    } else if (mapping && mapping.entityType === 'IDENTITY') {
-      isSelectedIdentity = true;
-    }
 
     let operationTypeToFilter = SystemOperationTypeEnum.findKeyBySymbol(SystemOperationTypeEnum.SYNCHRONIZATION);
     let isSelectedProvisioning = false;
@@ -782,6 +808,7 @@ function select(state, component) {
     entity.objectClass = entity._embedded.objectClass;
     entity.treeType = entity._embedded.treeType;
   }
+
   return {
     _mapping: entity,
     _showLoading: Utils.Ui.isShowLoading(state, `${uiKey}-detail`),
