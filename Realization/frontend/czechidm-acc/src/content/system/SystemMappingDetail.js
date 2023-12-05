@@ -18,7 +18,7 @@ import {
 } from '../../redux';
 import SystemOperationTypeEnum from '../../domain/SystemOperationTypeEnum';
 import ValidationMessageSystemMapping from './ValidationMessageSystemMapping';
-import AccountTypeEnum from '../../domain/AccountTypeEnum';
+import IdentityAccountTypeEnum from '../../domain/IdentityAccountTypeEnum';
 
 const uiKey = 'system-mappings';
 const uiKeyAttributes = 'system-attribute-mappings';
@@ -148,11 +148,22 @@ class SystemMappingDetail extends Advanced.AbstractTableContent {
           system: entityId,
           entityType: 'IDENTITY',
           operationType: SystemOperationTypeEnum.findKeyBySymbol(SystemOperationTypeEnum.PROVISIONING),
-          accountType: AccountTypeEnum.findKeyBySymbol(AccountTypeEnum.PERSONAL)
-        }
+          accountType: IdentityAccountTypeEnum.findKeyBySymbol(IdentityAccountTypeEnum.PERSONAL)
+        },
+        isSelectedIdentity: true
       });
     } else {
-      this.context.store.dispatch(systemMappingManager.fetchEntity(mappingId));
+      this.context.store.dispatch(systemMappingManager.fetchEntity(mappingId, null, (data) => {
+        const _entityType = data?.entityType;
+        const isSelectedTree = this.isSelectedTree(_entityType);
+        const isSelectedIdentity = this.isSelectedIdentity(_entityType);
+
+        this.setState({
+          _entityType: _entityType,
+          isSelectedTree,
+          isSelectedIdentity
+        });
+      }));
     }
     this.selectNavigationItems(['sys-systems', 'system-mappings']);
     if (!this._getIsNew(props)) {
@@ -302,7 +313,39 @@ class SystemMappingDetail extends Advanced.AbstractTableContent {
   }
 
   _onChangeEntityType(entity) {
-    this.setState({_entityType: entity.value});
+    const _entityType = entity.id;
+    const isSelectedTree = this.isSelectedTree(_entityType);
+    const isSelectedIdentity = this.isSelectedIdentity(_entityType);
+
+    this.setState({
+      _entityType: _entityType,
+      isSelectedTree,
+      isSelectedIdentity
+    });
+  }
+
+  isSelectedIdentity(_entityType) {
+    let isSelectedIdentity = false;
+    if (_entityType !== undefined) {
+      if (_entityType === 'IDENTITY') {
+        isSelectedIdentity = true;
+      }
+    } else if (_entityType === 'IDENTITY') {
+      isSelectedIdentity = true;
+    }
+    return isSelectedIdentity;
+  }
+
+  isSelectedTree(_entityType) {
+    let isSelectedTree = false;
+    if (_entityType !== undefined) {
+      if (_entityType === 'TREE') {
+        isSelectedTree = true;
+      }
+    } else if (_entityType === 'TREE') {
+      isSelectedTree = true;
+    }
+    return isSelectedTree;
   }
 
   _onChangeOperationType(entity) {
@@ -480,31 +523,14 @@ class SystemMappingDetail extends Advanced.AbstractTableContent {
       showOnlyMapping
     } = this.props;
     const {
-      _entityType,
       activeKey,
       validationError,
-      _operationType
+      _operationType,
+      isSelectedTree,
+      isSelectedIdentity
     } = this.state;
     const isNew = this._getIsNew();
     const mapping = isNew ? this.state.mapping : _mapping;
-
-    let isSelectedTree = false;
-    if (_entityType !== undefined) {
-      if (_entityType === 'TREE') {
-        isSelectedTree = true;
-      }
-    } else if (mapping && mapping.entityType === 'TREE') {
-      isSelectedTree = true;
-    }
-
-    let isSelectedIdentity = false;
-    if (_entityType !== undefined) {
-      if (_entityType === 'IDENTITY') {
-        isSelectedIdentity = true;
-      }
-    } else if (mapping && mapping.entityType === 'IDENTITY') {
-      isSelectedIdentity = true;
-    }
 
     let operationTypeToFilter = SystemOperationTypeEnum.findKeyBySymbol(SystemOperationTypeEnum.SYNCHRONIZATION);
     let isSelectedProvisioning = false;
@@ -526,6 +552,10 @@ class SystemMappingDetail extends Advanced.AbstractTableContent {
         SystemOperationTypeEnum.findKeyBySymbol(SystemOperationTypeEnum.SYNCHRONIZATION) : SystemOperationTypeEnum.findKeyBySymbol(SystemOperationTypeEnum.PROVISIONING))
       .setFilter('systemId', systemId || Domain.SearchParameters.BLANK_UUID);
 
+    // This handles the case when entityType is switched to Identity and accountType in mapping has unsupported value
+    const resolvedMapping = isSelectedIdentity && !IdentityAccountTypeEnum.findSymbolByKey(mapping?.accountType)
+        ? {...mapping, accountType: null, entityType: "IDENTITY"} : mapping;
+
     return (
       <div>
         <Helmet title={this.i18n('title')}/>
@@ -546,7 +576,7 @@ class SystemMappingDetail extends Advanced.AbstractTableContent {
                 <Basic.AbstractForm
                   ref="form"
                   className="panel-body"
-                  data={mapping}
+                  data={resolvedMapping}
                   showLoading={_showLoading}
                   readOnly={!Managers.SecurityManager.hasAnyAuthority(['SYSTEM_UPDATE'])}>
                   <ValidationMessageSystemMapping error={validationError}/>
@@ -598,8 +628,10 @@ class SystemMappingDetail extends Advanced.AbstractTableContent {
                   />
                   <Basic.EnumSelectBox
                     ref="accountType"
-                    enum={AccountTypeEnum}
+                    enum={IdentityAccountTypeEnum}
                     label={this.i18n('acc:entity.Account.accountType')}
+                    // Account type selection makes sense only for identities. For other types, account type is either
+                    // not used, or handled on the backend
                     hidden={!isSelectedIdentity}
                     required={isSelectedIdentity}/>
                   <Basic.Checkbox
@@ -780,6 +812,7 @@ function select(state, component) {
     entity.objectClass = entity._embedded.objectClass;
     entity.treeType = entity._embedded.treeType;
   }
+
   return {
     _mapping: entity,
     _showLoading: Utils.Ui.isShowLoading(state, `${uiKey}-detail`),
