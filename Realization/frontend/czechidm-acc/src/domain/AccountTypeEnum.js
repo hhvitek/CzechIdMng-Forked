@@ -2,7 +2,7 @@ import { Enums } from 'czechidm-core';
 import IdentityAccountTypeEnum from "./IdentityAccountTypeEnum";
 
 /**
- * OperationType for adit operation etc.
+ * Enum containing all supported account types. It extends IdentityAccountTypeEnum with support for technical accounts.
  */
 export default class AccountTypeEnum extends IdentityAccountTypeEnum {
 
