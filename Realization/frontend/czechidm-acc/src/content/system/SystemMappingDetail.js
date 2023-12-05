@@ -148,7 +148,7 @@ class SystemMappingDetail extends Advanced.AbstractTableContent {
           system: entityId,
           entityType: 'IDENTITY',
           operationType: SystemOperationTypeEnum.findKeyBySymbol(SystemOperationTypeEnum.PROVISIONING),
-          accountType: AccountTypeEnum.findKeyBySymbol(AccountTypeEnum.PERSONAL)
+          accountType: IdentityAccountTypeEnum.findKeyBySymbol(IdentityAccountTypeEnum.PERSONAL)
         },
         isSelectedIdentity: true
       });
