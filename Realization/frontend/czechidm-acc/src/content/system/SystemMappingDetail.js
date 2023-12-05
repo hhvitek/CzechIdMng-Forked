@@ -552,6 +552,10 @@ class SystemMappingDetail extends Advanced.AbstractTableContent {
         SystemOperationTypeEnum.findKeyBySymbol(SystemOperationTypeEnum.SYNCHRONIZATION) : SystemOperationTypeEnum.findKeyBySymbol(SystemOperationTypeEnum.PROVISIONING))
       .setFilter('systemId', systemId || Domain.SearchParameters.BLANK_UUID);
 
+    // This handles the case when entityType is switched to Identity and accountType in mapping has unsupported value
+    const resolvedMapping = isSelectedIdentity && !IdentityAccountTypeEnum.findSymbolByKey(mapping?.accountType)
+        ? {...mapping, accountType: null, entityType: "IDENTITY"} : mapping;
+
     return (
       <div>
         <Helmet title={this.i18n('title')}/>
@@ -572,7 +576,7 @@ class SystemMappingDetail extends Advanced.AbstractTableContent {
                 <Basic.AbstractForm
                   ref="form"
                   className="panel-body"
-                  data={mapping}
+                  data={resolvedMapping}
                   showLoading={_showLoading}
                   readOnly={!Managers.SecurityManager.hasAnyAuthority(['SYSTEM_UPDATE'])}>
                   <ValidationMessageSystemMapping error={validationError}/>
