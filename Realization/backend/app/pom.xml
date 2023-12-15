@@ -144,6 +144,11 @@
 				</dependency>
 				<dependency>
 					<groupId>${project.groupId}</groupId>
+					<artifactId>idm-documents</artifactId>
+					<version>${project.version}</version>
+				</dependency>
+				<dependency>
+					<groupId>${project.groupId}</groupId>
 					<artifactId>idm-vs</artifactId>
 					<version>${project.version}</version>
 				</dependency>
@@ -304,6 +309,11 @@
 				</dependency>
 				<dependency>
 					<groupId>${project.groupId}</groupId>
+					<artifactId>idm-documents</artifactId>
+					<version>${project.version}</version>
+				</dependency>
+				<dependency>
+					<groupId>${project.groupId}</groupId>
 					<artifactId>idm-vs</artifactId>
 					<version>${project.version}</version>
 				</dependency>
@@ -331,6 +341,11 @@
 				<dependency>
 					<groupId>${project.groupId}</groupId>
 					<artifactId>idm-example</artifactId>
+					<version>${project.version}</version>
+				</dependency>
+				<dependency>
+					<groupId>${project.groupId}</groupId>
+					<artifactId>idm-documents</artifactId>
 					<version>${project.version}</version>
 				</dependency>
 				<dependency>
