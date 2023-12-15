@@ -20,6 +20,7 @@
 		<module>../core</module>
 		<module>../app</module>
 		<module>../example</module>
+		<module>../documents</module>
 		<module>../ic</module>
 		<module>../acc</module>
 		<module>../vs</module>
