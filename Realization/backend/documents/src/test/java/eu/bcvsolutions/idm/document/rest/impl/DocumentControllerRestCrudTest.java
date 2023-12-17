@@ -2,19 +2,22 @@ package eu.bcvsolutions.idm.document.rest.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import eu.bcvsolutions.idm.core.api.dto.IdmIdentityDto;
 import eu.bcvsolutions.idm.core.api.rest.AbstractReadWriteDtoController;
 import eu.bcvsolutions.idm.core.api.rest.AbstractReadWriteDtoControllerRestTest;
+import eu.bcvsolutions.idm.document.TestHelper;
 import eu.bcvsolutions.idm.document.dto.DocumentDto;
 
 /**
  * Controller tests
- * 
- * @author Radek Tomiška
  *
  */
-public class ExampleProductControllerRestTest extends AbstractReadWriteDtoControllerRestTest<DocumentDto> {
+public class DocumentControllerRestCrudTest extends AbstractReadWriteDtoControllerRestTest<DocumentDto> {
 
-	@Autowired private ExampleProductController controller;
+	@Autowired
+	private DocumentController controller;
+	@Autowired
+	private TestHelper helper;
 	
 	@Override
 	protected AbstractReadWriteDtoController<DocumentDto, ?> getController() {
@@ -23,10 +26,9 @@ public class ExampleProductControllerRestTest extends AbstractReadWriteDtoContro
 
 	@Override
 	protected DocumentDto prepareDto() {
-		DocumentDto dto = new DocumentDto();
-		//dto.setCode(getHelper().createName());
-		//dto.setName(getHelper().createName());
-		return dto;
+		IdmIdentityDto identity = helper.createIdentityOnly();
+		DocumentDto document = helper.getDocument(identity);
+		return document;
 	}
 	
 	@Override

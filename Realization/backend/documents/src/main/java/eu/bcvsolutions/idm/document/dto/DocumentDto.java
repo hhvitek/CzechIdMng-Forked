@@ -44,7 +44,7 @@ public class DocumentDto extends AbstractDto {
 	private DocumentState state;
 	@NotNull
 	@Embedded(dtoClass = IdmIdentityDto.class)
-	private UUID identityId;
+	private UUID identity; // entity and dto attributes must have exact same name
 
 	public UUID getUuid() {
 		return uuid;
@@ -94,11 +94,11 @@ public class DocumentDto extends AbstractDto {
 		this.state = state;
 	}
 
-	public UUID getIdentityId() {
-		return identityId;
+	public UUID getIdentity() {
+		return identity;
 	}
 
-	public void setIdentityId(UUID identityId) {
-		this.identityId = identityId;
+	public void setIdentity(UUID identity) {
+		this.identity = identity;
 	}
 }

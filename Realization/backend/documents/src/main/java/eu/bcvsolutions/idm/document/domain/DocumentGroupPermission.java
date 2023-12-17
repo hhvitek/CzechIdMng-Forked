@@ -24,13 +24,13 @@ public enum DocumentGroupPermission implements GroupPermission {
 	
 	// String constants could be used in pre / post authotize SpEl expressions
 	
-	public static final String EXAMPLE_PRODUCT_ADMIN = "DOCUMENT" + BasePermission.SEPARATOR + "ADMIN";
-	public static final String EXAMPLE_PRODUCT_COUNT = "DOCUMENT" + BasePermission.SEPARATOR + "COUNT";
-	public static final String EXAMPLE_PRODUCT_AUTOCOMPLETE = "DOCUMENT" + BasePermission.SEPARATOR + "AUTOCOMPLETE";
-	public static final String EXAMPLE_PRODUCT_READ = "DOCUMENT" + BasePermission.SEPARATOR + "READ";
-	public static final String EXAMPLE_PRODUCT_CREATE = "DOCUMENT" + BasePermission.SEPARATOR + "CREATE";
-	public static final String EXAMPLE_PRODUCT_UPDATE = "DOCUMENT" + BasePermission.SEPARATOR + "UPDATE";
-	public static final String EXAMPLE_PRODUCT_DELETE = "DOCUMENT" + BasePermission.SEPARATOR + "DELETE";
+	public static final String DOCUMENT_ADMIN = "DOCUMENT" + BasePermission.SEPARATOR + "ADMIN";
+	public static final String DOCUMENT_COUNT = "DOCUMENT" + BasePermission.SEPARATOR + "COUNT";
+	public static final String DOCUMENT_AUTOCOMPLETE = "DOCUMENT" + BasePermission.SEPARATOR + "AUTOCOMPLETE";
+	public static final String DOCUMENT_READ = "DOCUMENT" + BasePermission.SEPARATOR + "READ";
+	public static final String DOCUMENT_CREATE = "DOCUMENT" + BasePermission.SEPARATOR + "CREATE";
+	public static final String DOCUMENT_UPDATE = "DOCUMENT" + BasePermission.SEPARATOR + "UPDATE";
+	public static final String DOCUMENT_DELETE = "DOCUMENT" + BasePermission.SEPARATOR + "DELETE";
 	
 	private final List<BasePermission> permissions;
 	

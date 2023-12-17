@@ -31,7 +31,7 @@ public enum DocumentResultCode implements ResultCode {
 	}
 	
 	public String getModule() {
-		return "document";
+		return "documents";
 	}
 	
 	public HttpStatus getStatus() {

@@ -1,6 +1,5 @@
 package eu.bcvsolutions.idm.document;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -10,8 +9,6 @@ import org.springframework.stereotype.Component;
 
 import eu.bcvsolutions.idm.core.api.domain.PropertyModuleDescriptor;
 import eu.bcvsolutions.idm.core.api.domain.ResultCode;
-import eu.bcvsolutions.idm.core.notification.api.dto.NotificationConfigurationDto;
-import eu.bcvsolutions.idm.core.notification.entity.IdmConsoleLog;
 import eu.bcvsolutions.idm.core.security.api.domain.GroupPermission;
 import eu.bcvsolutions.idm.document.domain.DocumentGroupPermission;
 import eu.bcvsolutions.idm.document.domain.DocumentResultCode;
@@ -25,8 +22,7 @@ import eu.bcvsolutions.idm.document.domain.DocumentResultCode;
 @ConfigurationProperties(prefix = "module." + DocumentModuleDescriptor.MODULE_ID + ".build", ignoreUnknownFields = true, ignoreInvalidFields = true)
 public class DocumentModuleDescriptor extends PropertyModuleDescriptor {
 
-	public static final String MODULE_ID = "document";
-	public static final String TOPIC_EXAMPLE = String.format("%s:example", MODULE_ID);
+	public static final String MODULE_ID = "documents";
 	
 	@Override
 	public String getId() {
@@ -39,18 +35,6 @@ public class DocumentModuleDescriptor extends PropertyModuleDescriptor {
 	@Override
 	public boolean isDocumentationAvailable() {
 		return true;
-	}
-	
-	@Override
-	public List<NotificationConfigurationDto> getDefaultNotificationConfigurations() {
-		List<NotificationConfigurationDto> configs = new ArrayList<>();
-		configs.add(new NotificationConfigurationDto(
-				TOPIC_EXAMPLE, 
-				null, 
-				IdmConsoleLog.NOTIFICATION_TYPE,
-				"Example notification", 
-				null));
-		return configs;
 	}
 	
 	@Override

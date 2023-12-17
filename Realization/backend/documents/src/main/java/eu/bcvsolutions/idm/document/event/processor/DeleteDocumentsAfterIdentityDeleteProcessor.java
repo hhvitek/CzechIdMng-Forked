@@ -10,33 +10,30 @@ import eu.bcvsolutions.idm.core.api.event.DefaultEventResult;
 import eu.bcvsolutions.idm.core.api.event.EntityEvent;
 import eu.bcvsolutions.idm.core.api.event.EventResult;
 import eu.bcvsolutions.idm.core.api.event.processor.IdentityProcessor;
-import eu.bcvsolutions.idm.core.model.event.IdentityEvent.IdentityEventType;
+import eu.bcvsolutions.idm.core.model.event.IdentityEvent;
 import eu.bcvsolutions.idm.core.security.api.domain.Enabled;
 import eu.bcvsolutions.idm.document.DocumentModuleDescriptor;
 
+
 /**
- * Log identity's username after identity is deleted.
- * 
- * @author Radek Tomiška
- *
+ * Deletes all remaining documents belonging to just deleted identity
  */
 @Enabled(DocumentModuleDescriptor.MODULE_ID)
-//@Component("exampleLogIdentityDeleteProcessor")
-@Description("Logs after identity is deleted")
-public class LogIdentityDeleteProcessor
-		extends CoreEventProcessor<IdmIdentityDto> 
+@Component("deleteDocumentsAfterIdentityDeleteProcessor")
+@Description("Deletes all remaining documents belonging to just deleted identity")
+public class DeleteDocumentsAfterIdentityDeleteProcessor
+		extends CoreEventProcessor<IdmIdentityDto>
 		implements IdentityProcessor {
-	
+
 	/**
 	 * Processor's identifier - has to be unique by module
 	 */
-	public static final String PROCESSOR_NAME = "log-identity-delete-processor";
-	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory
-			.getLogger(LogIdentityDeleteProcessor.class);
+	public static final String PROCESSOR_NAME = "delete-documents-after-identity-delete-processor";
+	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(DeleteDocumentsAfterIdentityDeleteProcessor.class);
 
-	public LogIdentityDeleteProcessor() {
+	public DeleteDocumentsAfterIdentityDeleteProcessor() {
 		// processing identity DELETE event only
-		super(IdentityEventType.DELETE);
+		super(IdentityEvent.IdentityEventType.DELETE);
 	}
 
 	@Override
@@ -50,7 +47,13 @@ public class LogIdentityDeleteProcessor
 		// event content - identity
 		IdmIdentityDto deletedIdentity = event.getContent();
 		// log
-		LOG.info("Identity [{},{}] was deleted.", deletedIdentity.getUsername(), deletedIdentity.getId());
+		LOG.info("Identity [{},{}] was deleted. Now deleting remaining identity's documents", deletedIdentity.getUsername(), deletedIdentity.getId());
+
+		// TODO find all documents belonging to identity by identity id
+		// we cannot lose identityId inside Documents table - foreign key cannot be set to null, must be ignore - invalid table state - no foreign key REFERENCES?
+
+		// TODO deleteAll documents
+
 		// result
 		return new DefaultEventResult<>(event, this);
 	}

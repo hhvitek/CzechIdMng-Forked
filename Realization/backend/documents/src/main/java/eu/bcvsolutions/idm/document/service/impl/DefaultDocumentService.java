@@ -1,9 +1,6 @@
 package eu.bcvsolutions.idm.document.service.impl;
 
-import java.util.List;
-
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import eu.bcvsolutions.idm.core.api.service.AbstractReadWriteDtoService;
 import eu.bcvsolutions.idm.core.security.api.dto.AuthorizableType;
@@ -34,16 +31,5 @@ public class DefaultDocumentService
 	@Override
 	public AuthorizableType getAuthorizableType() {
 		return new AuthorizableType(DocumentGroupPermission.DOCUMENT, getEntityClass());
-	}
-	
-	@Override
-	@Transactional(readOnly = true)
-	public DocumentDto getByUuid(String uuid) {
-		return toDto(repository.findOneByUuid(uuid));
-	}
-
-	@Override
-	public List<DocumentDto> findByText(String text) {
-		return null;
 	}
 }

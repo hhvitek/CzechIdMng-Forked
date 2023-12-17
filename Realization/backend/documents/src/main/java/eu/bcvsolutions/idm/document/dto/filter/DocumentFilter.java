@@ -10,7 +10,7 @@ import eu.bcvsolutions.idm.core.api.utils.ParameterConverter;
 import eu.bcvsolutions.idm.document.dto.DocumentDto;
 
 /**
- * Filter for example products
+ * Filter for documents
  *
  */
 public class DocumentFilter extends DataFilter {

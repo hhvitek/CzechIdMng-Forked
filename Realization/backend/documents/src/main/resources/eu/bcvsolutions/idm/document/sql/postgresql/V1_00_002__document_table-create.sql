@@ -32,6 +32,8 @@ CREATE TABLE document
   CONSTRAINT document_document_pkey PRIMARY KEY (id),
   CONSTRAINT document_document_ux_uuid UNIQUE (uuid),
   CONSTRAINT document_document_fk_idm_identity FOREIGN KEY (identity_id) REFERENCES idm_identity(id)
+            ON UPDATE CASCADE
+            ON DELETE RESTRICT
 );
 
 -- TODO Ensure that each identity can have only one VALID Document of each type
