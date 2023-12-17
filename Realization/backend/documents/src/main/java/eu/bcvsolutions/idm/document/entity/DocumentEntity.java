@@ -17,8 +17,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
-import org.hibernate.envers.Audited;
-
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import eu.bcvsolutions.idm.core.api.domain.DefaultFieldLengths;
@@ -35,7 +33,6 @@ public class DocumentEntity extends AbstractEntity {
 	private static final long serialVersionUID = 1L;
 
 	@NotNull
-	@JsonDeserialize(as = UUID.class)
 	@Column(name = "uuid", nullable = false)
 	private UUID uuid;
 	@NotNull
