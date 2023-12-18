@@ -59,15 +59,6 @@ public class DocumentController extends AbstractReadWriteDtoController<DocumentD
 		super(service);
 	}
 
-	/*
-	AuthenticationFilter
-
-	023-12-17 20:00:05.062  WARN 49088 --- [           main] o.s.s.c.a.web.builders.WebSecurity       : You are asking Spring Security to ignore Ant [pattern='/error/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
-2023-12-17 20:00:05.062  WARN 49088 --- [           main] o.s.s.c.a.web.builders.WebSecurity       : You are asking Spring Security to ignore Ant [pattern='/api/v1/doc']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
-2023-12-17 20:00:05.062  WARN 49088 --- [           main] o.s.s.c.a.web.builders.WebSecurity       : You are asking Spring Security to ignore Ant [pattern='/api/v1/doc/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
-	*/
-
-
 	@Override
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET)

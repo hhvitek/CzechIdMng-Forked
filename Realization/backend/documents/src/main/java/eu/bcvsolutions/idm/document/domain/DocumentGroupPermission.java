@@ -9,7 +9,7 @@ import eu.bcvsolutions.idm.core.security.api.domain.IdmBasePermission;
 import eu.bcvsolutions.idm.document.DocumentModuleDescriptor;
 
 /**
- * Aggregate base permission. Name can't contain character '_' - its used for joining to authority name.
+ * Aggregate base permission. Name can't contain character '_' - it's used for joining to authority name.
  */
 public enum DocumentGroupPermission implements GroupPermission {
 	
@@ -34,12 +34,12 @@ public enum DocumentGroupPermission implements GroupPermission {
 	
 	private final List<BasePermission> permissions;
 	
-	private DocumentGroupPermission(BasePermission... permissions) {
+	DocumentGroupPermission(BasePermission... permissions) {
 		this.permissions = Arrays.asList(permissions);
 	}
 	
 	@Override
-	public List<BasePermission> getPermissions() {		
+	public List<BasePermission> getPermissions() {
 		return permissions;
 	}
 	

@@ -10,5 +10,4 @@ import eu.bcvsolutions.idm.document.dto.DocumentDto;
 public interface TestHelper extends eu.bcvsolutions.idm.test.api.TestHelper {
 
 	DocumentDto getDocument(IdmIdentityDto identity);
-	DocumentDto createDocument(IdmIdentityDto identity);
 }

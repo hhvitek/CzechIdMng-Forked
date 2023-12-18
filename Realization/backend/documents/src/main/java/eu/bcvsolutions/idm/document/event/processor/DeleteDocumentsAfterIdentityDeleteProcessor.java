@@ -1,5 +1,7 @@
 package eu.bcvsolutions.idm.document.event.processor;
 
+import java.util.UUID;
+
 import org.springframework.context.annotation.Description;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +15,8 @@ import eu.bcvsolutions.idm.core.api.event.processor.IdentityProcessor;
 import eu.bcvsolutions.idm.core.model.event.IdentityEvent;
 import eu.bcvsolutions.idm.core.security.api.domain.Enabled;
 import eu.bcvsolutions.idm.document.DocumentModuleDescriptor;
+import eu.bcvsolutions.idm.document.dto.filter.DocumentFilter;
+import eu.bcvsolutions.idm.document.service.api.DocumentService;
 
 
 /**
@@ -31,9 +35,12 @@ public class DeleteDocumentsAfterIdentityDeleteProcessor
 	public static final String PROCESSOR_NAME = "delete-documents-after-identity-delete-processor";
 	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(DeleteDocumentsAfterIdentityDeleteProcessor.class);
 
-	public DeleteDocumentsAfterIdentityDeleteProcessor() {
+	private final DocumentService documentService;
+
+	public DeleteDocumentsAfterIdentityDeleteProcessor(DocumentService documentService) {
 		// processing identity DELETE event only
 		super(IdentityEvent.IdentityEventType.DELETE);
+		this.documentService = documentService;
 	}
 
 	@Override
@@ -49,10 +56,12 @@ public class DeleteDocumentsAfterIdentityDeleteProcessor
 		// log
 		LOG.info("Identity [{},{}] was deleted. Now deleting remaining identity's documents", deletedIdentity.getUsername(), deletedIdentity.getId());
 
-		// TODO find all documents belonging to identity by identity id
-		// we cannot lose identityId inside Documents table - foreign key cannot be set to null, must be ignore - invalid table state - no foreign key REFERENCES?
-
-		// TODO deleteAll documents
+		DocumentFilter filter = new DocumentFilter();
+		filter.setIdentity(deletedIdentity.getId());
+		for (UUID documentId: documentService.findIds(filter, null)) {
+			LOG.info("Deleting document [{}].", documentId);
+			documentService.deleteById(documentId);
+		}
 
 		// result
 		return new DefaultEventResult<>(event, this);

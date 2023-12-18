@@ -1,6 +1,7 @@
 package eu.bcvsolutions.idm.document.rest.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import eu.bcvsolutions.idm.core.api.dto.IdmIdentityDto;
 import eu.bcvsolutions.idm.core.api.rest.AbstractReadWriteDtoController;
@@ -12,6 +13,7 @@ import eu.bcvsolutions.idm.document.dto.DocumentDto;
  * Controller tests
  *
  */
+@Transactional
 public class DocumentControllerRestCrudTest extends AbstractReadWriteDtoControllerRestTest<DocumentDto> {
 
 	@Autowired

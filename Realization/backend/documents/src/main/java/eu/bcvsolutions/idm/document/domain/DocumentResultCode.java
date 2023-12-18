@@ -14,14 +14,17 @@ import eu.bcvsolutions.idm.core.api.domain.ResultCode;
  * - 5xx - server errors
  */
 public enum DocumentResultCode implements ResultCode {
-	
-	DOCUMENT_CLIENT_ERROR(HttpStatus.BAD_REQUEST, "DOCUMENT client error, bad value given [%s]"),
-	DOCUMENT_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "DOCUMENT server error with parameter [%s]");
+
+	DOCUMENT_VALIDATION_IDENTITY_NOT_EXISTS_ERROR(HttpStatus.BAD_REQUEST, "Given identity [%s] does not exist"),
+	DOCUMENT_VALIDATION_IDENTITY_STATE_TYPE_ERROR(
+			HttpStatus.BAD_REQUEST,
+			"Given combination of identity [%s], state [%s] and type [%s] is invalid. You can invalidate already existing document id [%s]."
+	);
 	
 	private final HttpStatus status;
 	private final String message;
 	
-	private DocumentResultCode(HttpStatus status, String message) {
+	DocumentResultCode(HttpStatus status, String message) {
 		this.message = message;
 		this.status = status;
 	}
@@ -40,5 +43,5 @@ public enum DocumentResultCode implements ResultCode {
 	
 	public String getMessage() {
 		return message;
-	}	
+	}
 }
