@@ -6,9 +6,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.UUID;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import eu.bcvsolutions.idm.core.api.dto.IdmIdentityDto;
 import eu.bcvsolutions.idm.core.api.service.ModuleService;
@@ -17,6 +20,7 @@ import eu.bcvsolutions.idm.document.dto.DocumentDto;
 import eu.bcvsolutions.idm.test.api.AbstractRestTest;
 import eu.bcvsolutions.idm.test.api.TestHelper;
 
+@Transactional
 public class DocumentControllerValidationTest extends AbstractRestTest {
 
 	@Autowired
@@ -51,5 +55,19 @@ public class DocumentControllerValidationTest extends AbstractRestTest {
 						.contentType(TestHelper.HAL_CONTENT_TYPE))
 				.andExpect(status().isBadRequest())
 				.andExpect(content().string(containsString("DOCUMENTDTO_FIRSTNAME_NOTEMPTY")));
+	}
+
+	@Test
+	public void createIllegalDocument_NoSuchIdentityExistTest() throws Exception {
+		IdmIdentityDto identity = helper.createIdentityOnly();
+
+		DocumentDto document = helper.getDocument(identity);
+		document.setIdentity(UUID.randomUUID()); // invalidating document, no such identity exists
+		getMockMvc().perform(post(DocumentController.DOCUMENT_BASE_PATH)
+						.with(authentication(getAdminAuthentication()))
+						.content(getMapper().writeValueAsString(document))
+						.contentType(TestHelper.HAL_CONTENT_TYPE))
+				.andExpect(status().isBadRequest())
+				.andExpect(content().string(containsString("DOCUMENT_VALIDATION_IDENTITY_NOT_EXISTS_ERROR")));
 	}
 }

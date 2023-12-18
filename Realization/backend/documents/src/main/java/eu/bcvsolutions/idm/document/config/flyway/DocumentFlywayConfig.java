@@ -26,7 +26,7 @@ import eu.bcvsolutions.idm.core.api.config.flyway.IdmFlywayAutoConfiguration;
 @ConditionalOnProperty(prefix = "flyway", name = "enabled", matchIfMissing = false)
 @AutoConfigureAfter(IdmFlywayAutoConfiguration.IdmFlywayConfiguration.class)
 @EnableConfigurationProperties(FlywayProperties.class)
-@PropertySource("classpath:/flyway-document.properties")
+@PropertySource("classpath:/flyway-documents.properties")
 public class DocumentFlywayConfig extends AbstractFlywayConfiguration {
 
 	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(DocumentFlywayConfig.class);
@@ -34,16 +34,16 @@ public class DocumentFlywayConfig extends AbstractFlywayConfiguration {
 	@Bean
 	@DependsOn("flywayCore")
 	@ConditionalOnMissingBean(name = "flywayModuleDocument")
-	@ConditionalOnExpression("${spring.flyway.enabled:true} && '${flyway.document.locations}'!=''")
-	@ConfigurationProperties(prefix = "flyway.document")
+	@ConditionalOnExpression("${spring.flyway.enabled:true} && '${flyway.documents.locations}'!=''")
+	@ConfigurationProperties(prefix = "flyway.documents")
 	public Flyway flywayModuleDocument() {
 		Flyway flyway = super.createFlyway();
-		LOG.info("Starting flyway migration for document module [{}]: ", flyway.getConfiguration().getTable());
+		LOG.info("Starting flyway migration for documents module [{}]: ", flyway.getConfiguration().getTable());
 		return flyway;
 	}
 
 	@Override
 	public String getPropertyPrefix() {
-		return "flyway.document";
+		return "flyway.documents";
 	}
 }

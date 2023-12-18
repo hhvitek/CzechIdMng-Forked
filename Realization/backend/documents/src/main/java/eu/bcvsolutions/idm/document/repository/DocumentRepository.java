@@ -8,9 +8,4 @@ import eu.bcvsolutions.idm.document.entity.DocumentEntity;
  *
  */
 public interface DocumentRepository extends AbstractEntityRepository<DocumentEntity> {
-
-	/**
-	 * Returns document by unique uuid.
-	 */
-	DocumentEntity findOneByUuid(String uuid);
 }

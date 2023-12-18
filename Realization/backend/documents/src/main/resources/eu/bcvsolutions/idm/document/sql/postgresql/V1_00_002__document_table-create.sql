@@ -30,12 +30,11 @@ CREATE TABLE document
   identity_id bytea NOT NULL,
 
   CONSTRAINT document_document_pkey PRIMARY KEY (id),
-  CONSTRAINT document_document_ux_uuid UNIQUE (uuid),
-  CONSTRAINT document_document_fk_idm_identity FOREIGN KEY (identity_id) REFERENCES idm_identity(id)
-            ON UPDATE CASCADE
-            ON DELETE RESTRICT
+  CONSTRAINT document_document_unique_uuid UNIQUE (uuid),
+  CONSTRAINT document_document_check_state CHECK ( state IN ('VALID', 'INVALID') )
 );
 
--- TODO Ensure that each identity can have only one VALID Document of each type
---
-
+-- Add a unique index with a partial index condition
+CREATE UNIQUE INDEX document_document_unique_identity_type_state
+  ON document (identity_id, type, state)
+  WHERE state = 'VALID';

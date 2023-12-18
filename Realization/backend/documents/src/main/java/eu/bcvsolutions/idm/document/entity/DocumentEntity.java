@@ -17,8 +17,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
 import eu.bcvsolutions.idm.core.api.domain.DefaultFieldLengths;
 import eu.bcvsolutions.idm.core.api.entity.AbstractEntity;
 import eu.bcvsolutions.idm.core.model.entity.IdmIdentity;
@@ -27,7 +25,7 @@ import eu.bcvsolutions.idm.document.domain.DocumentType;
 
 @Entity
 @Table(name = "document", indexes = {
-		@Index(name = "document_document_ux_uuid", columnList = "uuid", unique = true)
+		@Index(name = "document_document_unique_uuid", columnList = "uuid", unique = true)
 })
 public class DocumentEntity extends AbstractEntity {
 	private static final long serialVersionUID = 1L;
@@ -57,7 +55,7 @@ public class DocumentEntity extends AbstractEntity {
 	private DocumentState state;
 	@NotNull
 	@ManyToOne(optional = false) // annotations cloned from IdmIdentity class
-	@JoinColumn(name = "identity_id", referencedColumnName = "id", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
+	@JoinColumn(name = "identity_id", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
 	private IdmIdentity identity;
 
 	public UUID getUuid() {
